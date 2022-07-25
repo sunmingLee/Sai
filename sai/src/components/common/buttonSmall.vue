@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button :class="buttonUsage" @click="onLogin">{{ buttonText }}</button>
+    <button :class="buttonUsage">{{ buttonText }}</button>
   </div>
 </template>
 
@@ -10,12 +10,6 @@ export default {
   props: {
     buttonUsage: String,
     buttonText: String
-  },
-
-  methods: {
-    onLogin () {
-      alert(this.buttonText)
-    }
   }
 }
 </script>
