@@ -1,22 +1,22 @@
 <template>
   <div>
-    <label for="inputBox" v-if="hasLabel">{{ labelName }}</label>
-    <input id="inputBox" type="text" />
+    <label for="input-box" v-if="hasLabel">{{ labelName }}</label>
+    <input class="input-box" id="input-box" type="text" />
   </div>
 </template>
 
 <script>
 export default {
-  name: "inputBox",
+  name: 'InputBox',
   props: {
     hasLabel: Boolean,
-    labelName: String,
-  },
-};
+    labelName: String
+  }
+}
 </script>
 
 <style>
-#inputBox {
+.input-box {
   margin-left: 5px;
   margin-bottom: 10px;
   width: 190px;

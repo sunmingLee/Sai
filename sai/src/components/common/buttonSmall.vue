@@ -6,18 +6,18 @@
 
 <script>
 export default {
-  name: "buttonSmall",
+  name: 'ButtonSmall',
   props: {
     buttonUsage: String,
-    buttonText: String,
+    buttonText: String
   },
 
   methods: {
-    onLogin() {
-      alert(this.buttonText);
-    },
-  },
-};
+    onLogin () {
+      alert(this.buttonText)
+    }
+  }
+}
 </script>
 
 <style>
