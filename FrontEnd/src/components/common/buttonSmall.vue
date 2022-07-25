@@ -10,9 +10,6 @@ export default {
   props: {
     buttonUsage: String,
     buttonText: String
-  },
-
-  methods: {
   }
 }
 </script>
