@@ -1,8 +1,8 @@
 <template>
   <div class="header">
-      <img v-if="hasBack" style="float: left;" src="@/assets/images/arrow-left.png" alt="arrow-left" >
+      <img :class="visibilityBack" src="@/assets/images/arrow-left.png" alt="arrow-left" >
       <h2>{{ title }}</h2>
-      <img v-if="hasIcon" src="@/assets/images/calendar-month.png" alt="calendar">
+      <img :class="visibilityIcon" src="@/assets/images/calendar-month.png" alt="calendar">
   </div>
 </template>
 <script>
@@ -12,6 +12,20 @@ export default {
     title: String,
     hasBack: Boolean,
     hasIcon: Boolean
+  },
+  data () {
+    return {
+      visibilityBack: '',
+      visibilityIcon: ''
+    }
+  },
+  created () {
+    if (!this.hasBack) {
+      this.visibilityBack = 'hidden'
+    }
+    if (!this.hasIcon) {
+      this.visibilityIcon = 'hidden'
+    }
   }
 }
 </script>
@@ -28,5 +42,8 @@ h2{
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.hidden{
+  visibility: hidden;
 }
 </style>
