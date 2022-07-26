@@ -3,13 +3,13 @@
         <HeaderTitle title="비밀번호 찾기"/>
         <SearchGuide guide="회원가입시 등록한 아이디와 이메일을 입력해주세요" guide2="임시 비밀번호가 해당 이메일로 전송됩니다"/>
         <div class="input-wrap">
-          <InputBox :hasLabel="true" labelName="이름"/>
+          <InputBox :hasLabel="true" labelName="이름" @inputCheck="checkName"/>
           <InputBox :hasLabel="true" labelName="아이디" @inputCheck="checkId"/>
-          <p v-if="id" class="valid-id">아이디를 4글자 이상 입력해주세요</p>
+          <p v-if="validId" class="valid-id">아이디는 4글자 이상 입력해주세요</p>
           <InputBox :hasLabel="true" labelName="이메일" @inputCheck="checkEmail"/>
-          <p v-if="email" class="valid-email">이메일 형식이 맞지 않습니다</p>
+          <p v-if="validEmail" class="valid-email">이메일 형식이 맞지 않습니다</p>
         </div>
-        <ButtonBig buttonUsage="positive" buttonText="비밀번호 찾기" @click="searchId"/>
+        <ButtonBig buttonUsage="positive" buttonText="비밀번호 찾기" @click="searchPassword"/>
     </div>
 </template>
 <script>
@@ -28,39 +28,59 @@ export default {
   },
   data () {
     return {
-      email: false,
-      validEmail: '',
-      id: false,
-      validId: ''
+      validEmail: false,
+      validId: false,
+      id: '',
+      email: '',
+      name: ''
     }
   },
   methods: {
-    checkEmail (validEmail) {
-      if (!this.isValidEmail(validEmail)) {
-        this.email = true
+    checkName (name) {
+      this.name = name
+    },
+    checkEmail (email) {
+      if (!this.isValidEmail(email)) {
+        this.validEmail = true
       } else {
-        this.email = false
+        this.validEmail = false
+        this.email = email
       }
     },
-    isValidEmail: function (email) {
+    isValidEmail (email) {
       const re = /^(([^<>()\\[\]\\.,;:\s@"]+(\.[^<>()\\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       return re.test(email)
     },
-    checkId (validId) {
-      if (validId.length < 4) {
-        this.id = true
+    // 4글자 이상 입력 했는지
+    checkId (id) {
+      if (id.length < 4) {
+        this.validId = true
       } else {
-        this.id = false
+        this.validId = false
+        this.id = id
+      }
+    },
+    searchPassword () {
+      if (this.validEmail) {
+        alert('이메일 형식이 맞지 않습니다')
+      } else if (this.validId) {
+        alert('아이디는 4글자 이상 입력해주세요')
+      } else if (this.name === '' || this.email === '' || this.id === '') {
+        alert('모두 입력해주세요')
+      } else {
+        alert('임시 비밀번호를 이메일로 전송했습니다')
+        const user = {
+          userName: this.name,
+          userId: this.id,
+          email: this.email
+        }
+        console.log(user)
       }
     }
   }
 }
 </script>
-<style scoped>
-* {
-    margin: 0px;
-    padding: 0px;
-}
+<style>
 .valid-email, .valid-id {
   color: red;
   font-size: 10px;

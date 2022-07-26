@@ -3,7 +3,7 @@
         <HeaderTitle title="아이디 찾기"/>
         <SearchGuide guide="회원가입시 등록한 이메일을 입력해주세요" guide2="회원님의 아이디가 해당 이메일로 전송됩니다"/>
         <div class="input-wrap">
-          <InputBox :hasLabel="true" labelName="이름"/>
+          <InputBox :hasLabel="true" labelName="이름" @inputCheck="checkName"/>
           <InputBox :hasLabel="true" labelName="이메일" @inputCheck="checkEmail"/>
           <p v-if="validEmail" class="valid-email">이메일 형식이 맞지 않습니다</p>
         </div>
@@ -27,22 +27,27 @@ export default {
   data () {
     return {
       validEmail: false,
-      email: ''
+      email: '',
+      name: ''
     }
   },
   methods: {
+    checkName (name) {
+      this.name = name
+    },
     // 이메일 유효성을 검사하고 문구를 출력 판단
     checkEmail (email) {
       if (!this.isValidEmail(email)) {
         this.validEmail = true
       } else {
         this.validEmail = false
+        this.email = email
       }
     },
     // 이메일 유효성 검사
-    isValidEmail: function (validEmail) {
+    isValidEmail (email) {
       const re = /^(([^<>()\\[\]\\.,;:\s@"]+(\.[^<>()\\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      return re.test(validEmail)
+      return re.test(email)
     },
     // 아이디 찾기 버튼 클릭 시
     searchId () {
@@ -51,6 +56,11 @@ export default {
       } else {
         // 디비에 있는 이메일인지 없는 이메일인지 확인해서 한 번 더 갈래를 나눠줘야 할 듯
         alert('회원님의 아이디를 이메일로 전송했습니다')
+        const user = {
+          userName: this.name,
+          email: this.email
+        }
+        console.log(user)
       }
     }
   }
