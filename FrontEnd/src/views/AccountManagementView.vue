@@ -1,6 +1,6 @@
 <template>
     <div class="flex-wrap">
-        <HeaderTitle title="내 정보"/>
+        <HeaderTitle title="계정 관리"/>
         <div class="input-disabled">
             <InputBox inputSelect="input-underline" :hasLabel="true" labelName="이름" validDisabled="disabled" :inputValue="name"/>
             <InputBox inputSelect="input-underline" :hasLabel="true" labelName="이메일" validDisabled="disabled" :inputValue="email"/>
