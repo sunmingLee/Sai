@@ -1,8 +1,4 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
   <router-view />
 </template>
 
@@ -13,7 +9,14 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  /* background-color: #fafafa; */
+  background-color: #fafafa;
+  margin: 0;
+  /* width: max-content; */
+  width: 360px;
+  height: 640px;
+  /* position: absolute;
+  overflow: visible; */
+  /* height: 100%; */
 }
 
 @font-face {
