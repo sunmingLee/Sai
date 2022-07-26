@@ -1,9 +1,9 @@
 <template>
   <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <!-- <router-link to="/searchId">아이디 찾기</router-link> | -->
+    <!-- <router-link to="/searchPassword">비밀번호 찾기</router-link> -->
+    <router-view />
   </nav>
-  <router-view />
 </template>
 
 <style>

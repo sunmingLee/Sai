@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>{{ title }}</h2>
+        <h2 class="title">{{ title }}</h2>
     </div>
 </template>
 <script>
@@ -11,3 +11,9 @@ export default {
   }
 }
 </script>
+<style>
+.title {
+  color: #7B371C;
+  font-size: 20px;
+}
+</style>
