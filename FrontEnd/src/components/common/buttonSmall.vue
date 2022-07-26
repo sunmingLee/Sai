@@ -26,4 +26,12 @@ export default {
   border: none;
   color: white;
 }
+.negative {
+  background-color: #C8CFCA;
+  width: 80px;
+  height: 30px;
+  border-radius: 10px;
+  border: none;
+  color: #393939;
+}
 </style>
