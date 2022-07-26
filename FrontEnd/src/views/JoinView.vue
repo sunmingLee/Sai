@@ -105,6 +105,7 @@ export default {
         this.validPassword = true
       } else {
         this.validPassword = false
+        this.password = password
       }
     },
     // 비밀번호 유효성 검사
@@ -113,8 +114,9 @@ export default {
       return re.test(password)
     },
     // 비밀번호 확인
-    checkPasswordConfirm (passwordConfirm, password) {
-      if (passwordConfirm !== password) {
+    checkPasswordConfirm (passwordConfirm) {
+      console.log(this.password)
+      if (passwordConfirm !== this.password) {
         this.validPasswordConfirm = true
         console.log('true')
       } else {
