@@ -1,0 +1,115 @@
+<template>
+  <div>
+    <div class="left">
+        <InputBox v-model="nickname" :hasLabel="true" labelName="닉네임" @inputCheck="checkNickname"></InputBox>
+        <div v-if="!validNickname" class="valid-error">닉네임을 2글자 이상으로 입력하세요.</div>
+    </div>
+    <div class="date">
+        <span>생일</span>
+        <Datepicker style="border-radius: 5px; border: 1px solid #ae5f40;" v-model="date"></Datepicker>
+    </div>
+    <div class="left">
+        <input type="radio" id="radioSolar" value="solar" v-model="radidValues">
+        <label for="radioSolar">양력</label>
+        <input type="radio" id="radioLunar" value="lunar" v-model="radidValues">
+        <label for="radioLunar">음력</label>
+    </div>
+    <div class="user-message">
+        <span>상태<br/>메세지</span>
+        <!-- <resize-textarea
+        :rows="2"
+        :cols="4"
+        :maxHeight="150"
+        v-model="textValue"></resize-textarea> -->
+        <textarea v-model="userMessage"></textarea>
+    </div>
+    <div class="button">
+        <ButtonSmall buttonUsage="information" buttonText="건너뛰기"></ButtonSmall>
+        <ButtonSmall buttonUsage="positive" buttonText="확인"></ButtonSmall>
+    </div>
+  </div>
+</template>
+
+<script>
+// import ResizeTextarea from 'resize-textarea-vue3'
+import Datepicker from 'vue3-datepicker'
+import InputBox from './common/InputBox.vue'
+import ButtonSmall from './common/ButtonSmall.vue'
+export default {
+//   components: { InputBox, Datepicker, ResizeTextarea },
+  components: { InputBox, Datepicker, ButtonSmall },
+  data () {
+    return {
+      nickname: '',
+      validNickname: false,
+      date: new Date(),
+      radidValues: '',
+      userMessage: '',
+      textValue: 'reSize'
+    }
+  },
+  methods: {
+    // 닉네임 유효성을 검사하고 문구를 출력 판단
+    checkNickname (nickname) {
+      if (this.isValidNickname(nickname)) {
+        this.validNickname = true
+      } else {
+        this.validNickname = false
+      }
+    },
+    // 이름 유효성 검사
+    isValidNickname (nickname) {
+      if (nickname.length < 2) {
+        return false
+      } else {
+        return true
+      }
+    }
+
+  }
+}
+</script>
+
+<style scoped>
+div{
+    margin-bottom: 10px;
+}
+.left{
+    text-align: left;
+    padding-left: 40px;
+}
+.date{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+/* .date-picker{
+    border-radius: 5px;
+    border: 1px solid #ae5f40;
+} */
+.user-message{
+    display: flex;
+    justify-content: space-around;
+    /* align-items: ; */
+}
+.valid-error {
+    color: red;
+    font-size: 12px;
+}
+textarea{
+    border-radius: 5px;
+    border: 1px solid #ae5f40;
+    width: 210px;
+    min-height: 80px;
+    resize: vertical;
+    /* overflow: auto; */
+}
+span{
+    color: #ae5f40
+}
+.button{
+    display: flex;
+    justify-content: space-between;
+    margin: 40px
+}
+</style>
