@@ -5,8 +5,8 @@
         <div class="input-wrap">
           <InputBox :hasLabel="true" labelName="이름"/>
           <InputBox :hasLabel="true" labelName="이메일" @inputCheck="checkEmail"/>
+          <p v-if="validEmail" class="valid-email">이메일 형식이 맞지 않습니다</p>
         </div>
-        <p v-if="validEmail" class="valid-email">이메일 형식이 맞지 않습니다</p>
         <ButtonBig buttonUsage="positive" buttonText="아이디 찾기" @click="searchId"/>
     </div>
 </template>

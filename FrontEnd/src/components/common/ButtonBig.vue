@@ -17,7 +17,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .positive {
   background-color: #7b371c;
   width: 110px;
@@ -25,5 +25,10 @@ export default {
   border-radius: 10px;
   border: none;
   color: white;
+}
+.button-wrap {
+  width: 110px;
+  height: 30px;
+  margin: 0 auto;
 }
 </style>
