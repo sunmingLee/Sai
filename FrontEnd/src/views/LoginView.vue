@@ -13,18 +13,18 @@
     </div>
     <div class="signIn">
       아직 회원이 아니신가요?
-      <ButtonSmall buttonUsage="positive" buttonText="회원가입"></ButtonSmall>
+      <Button buttonClass="small positive" buttonText="회원가입"></Button>
     </div>
   </div>
 </template>
 
 <script>
-import ButtonSmall from '@/components/common/ButtonSmall.vue'
+import Button from '@/components/common/Button.vue'
 import LoginInput from '@/components/login/LoginInput.vue'
 import LoginSocial from '@/components/login/LoginSocial.vue'
 export default {
   name: 'LoginView',
-  components: { ButtonSmall, LoginInput, LoginSocial }
+  components: { Button, LoginInput, LoginSocial }
 }
 </script>
 

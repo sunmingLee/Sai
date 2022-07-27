@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="left">
-        <InputBox v-model="nickname" :hasLabel="true" labelName="닉네임" @inputCheck="checkNickname"></InputBox>
+        <InputBox v-model="nickname" :hasLabel="true" labelName="닉네임" inputType="text" validDisabled="" :hasError="hasError" errorMessage="msg" @inputCheck="checkNickname"></InputBox>
         <div v-if="!validNickname" class="valid-error">닉네임을 2글자 이상으로 입력하세요.</div>
     </div>
     <div class="date">
@@ -24,8 +24,8 @@
         <textarea v-model="userMessage"></textarea>
     </div>
     <div class="button">
-        <ButtonSmall buttonUsage="information" buttonText="건너뛰기"></ButtonSmall>
-        <ButtonSmall buttonUsage="positive" buttonText="확인"></ButtonSmall>
+        <Button buttonClass="small information" buttonText="건너뛰기"></Button>
+        <Button buttonClass="small positive" buttonText="확인"></Button>
     </div>
   </div>
 </template>
@@ -34,10 +34,10 @@
 // import ResizeTextarea from 'resize-textarea-vue3'
 import Datepicker from 'vue3-datepicker'
 import InputBox from './common/InputBox.vue'
-import ButtonSmall from './common/ButtonSmall.vue'
+import Button from './common/Button.vue'
 export default {
 //   components: { InputBox, Datepicker, ResizeTextarea },
-  components: { InputBox, Datepicker, ButtonSmall },
+  components: { InputBox, Datepicker, Button },
   data () {
     return {
       nickname: '',
@@ -45,7 +45,8 @@ export default {
       date: new Date(),
       radidValues: '',
       userMessage: '',
-      textValue: 'reSize'
+      textValue: 'reSize',
+      hasError: true
     }
   },
   methods: {
