@@ -17,9 +17,9 @@ public class UserRepositoryTests extends SaiApplicationTests {
 	public void create() {
 		User user = new User();
 		
-		user.setUserId("testId123");
+//		user.setUserId("testId123");
 		user.setPassword("testPw123");
-		user.setUserName("Name");
+//		user.setUserName("Name");
 		
 		User newUser = userRepository.save(user);
 	}
