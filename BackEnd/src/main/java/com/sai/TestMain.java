@@ -1,38 +1,25 @@
 //package com.sai;
 //
-//import java.awt.print.Book;
-//
-//import javax.persistence.EntityManager;
-//import javax.persistence.EntityManagerFactory;
-//import javax.persistence.EntityTransaction;
-//import javax.persistence.Persistence;
+//import java.util.Random;
 //
 //public class TestMain {
 //
 //	public static void main(String[] args) {
-//		EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
-//
-//		EntityManager em = emf.createEntityManager();
-//
-//		EntityTransaction tx = em.getTransaction();
-//		tx.begin();
-//
-//		try {
-//
-//			Book book = new Book();
-//			book.setName("JPA");
-//			book.setAuthor("±è¿µÇÑ");
-//			em.persist(book);
-//
-//			tx.commit();
-//
-//		} catch (Exception e) {
-//			tx.rollback();
-//		} finally {
-//			em.close();
-//		}
-//
-//		emf.close();
+//		createRandomFamilyId();
 //	}
 //
+//	private static String createRandomFamilyId() {
+//		int leftLimit = 48; // numeral '0'
+////		int rightLimit = 90; // letter 'Z'
+//		int rightLimit = 57; // letter 'Z'
+//		int targetStringLength = 6;
+//		Random random = new Random();
+//
+//		String generatedString = random.ints(leftLimit, rightLimit + 1).filter(i -> (i <= 57 || i >= 65))
+//				.limit(targetStringLength)
+//				.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
+//
+//		System.out.println(generatedString);
+//		return generatedString;
+//	}
 //}
