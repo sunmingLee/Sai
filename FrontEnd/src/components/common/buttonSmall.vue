@@ -14,7 +14,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<!-- <style scoped>
 .positive {
   width: 80px;
   height: 30px;
@@ -31,8 +31,17 @@ export default {
   color: white;
   background-color: #A57966;
 }
-</style>
-<!-- <style scoped lang="scss">
+</style> -->
+<style scoped lang="scss">
+// @import 'sass/app.scss';
+.positive {
+  width: 80px;
+  height: 30px;
+  border-radius: 10px;
+  border: none;
+  color: white;
+  background-color: #7b371c;
+}
 button{
   width: 80px;
   height: 30px;
@@ -46,4 +55,4 @@ button{
     background-color: #A57966;
   }
 }
-</style> -->
+</style>
