@@ -1,8 +1,16 @@
 <template>
   <div>
-    <div class="left">
-        <InputBox v-model="nickname" :hasLabel="true" labelName="닉네임" inputType="text" validDisabled="" :hasError="hasError" errorMessage="msg" @inputCheck="checkNickname"></InputBox>
-        <div v-if="!validNickname" class="valid-error">닉네임을 2글자 이상으로 입력하세요.</div>
+    <div>
+      <div>
+      <InputBox v-model="nickname" :hasLabel="true" labelName="닉네임" inputType="email" validDisabled="" :hasError="hasError" errorMessage="닉네임을 2글자 이상으로 입력하세요." @inputCheck="checkNickname"></InputBox>
+      <Button class="button-wrap" buttonClass="small positive" buttonText="확인"></Button>
+      </div>
+      <div>
+      <InputBox v-model="nickname" :hasLabel="true" labelName="새로운 비밀번호" inputType="password" validDisabled="" :hasError="hasError" errorMessage="닉네임을 2글자 이상으로 입력하세요." @inputCheck="checkNickname"></InputBox>
+      </div>
+      <div>
+      <InputBox v-model="nickname" :hasLabel="true" labelName="이름" inputType="text" validDisabled="" :hasError="hasError" errorMessage="닉네임을 2글자 이상으로 입력하세요." @inputCheck="checkNickname"></InputBox>
+      </div>
     </div>
     <div class="date">
         <span>생일</span>
@@ -112,5 +120,10 @@ span{
     display: flex;
     justify-content: space-between;
     margin: 40px
+}
+.button-wrap{
+  display:inline-block;
+  vertical-align: top;
+  /* margin-left: 1%; */
 }
 </style>
