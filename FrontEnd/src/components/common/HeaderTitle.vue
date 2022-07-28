@@ -1,8 +1,8 @@
 <template>
   <div class="header">
-      <img :class="visibilityBack" src="@/assets/images/arrow-left.png" alt="arrow-left" >
+      <img :class="visibilityBack" src="@/assets/images/arrow-left-solid.svg" alt="arrow-left" >
       <h2>{{ title }}</h2>
-      <img :class="visibilityIcon" src="@/assets/images/calendar-month.png" alt="calendar">
+      <img :class="visibilityIcon" src="@/assets/images/calendar-days-solid.svg" alt="calendar">
   </div>
 </template>
 <script>
