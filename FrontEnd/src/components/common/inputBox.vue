@@ -1,4 +1,9 @@
 <template>
+  <!-- <div class="input-group">
+    <span class="input-group-text" id="addon-wrapping">{{labelName}}</span>
+    <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
+    <Button buttonClass="small information" buttonText="확인"></Button>
+  </div> -->
   <div class="form-wrap">
     <table>
       <colgroup>
@@ -7,25 +12,25 @@
       </colgroup>
       <tr>
         <td><label class="label-box" for="input-box" v-if="hasLabel">{{ labelName }}</label></td>
-        <td><input class="input-box" id="input-box" :type="inputType" :disabled="validDisabled ? '' : disabled" :value="inputValue" @keyup="inputCheck"/></td>
+        <td><input class="input-box" :type="inputType" :disabled="validDisabled === ''" :value="inputValue" @keyup="inputCheck"/></td>
       </tr>
     </table>
-    <p v-if="hasError">{{ errorMessage }}</p>
+    <!-- <p v-if="hasError && !isValid">{{ errorMessage }}</p> -->
   </div>
 </template>
 
 <script>
-
 export default {
   name: 'InputBox',
   props: {
     hasLabel: Boolean,
     labelName: String,
     inputType: String,
-    validDisabled: String,
-    inputValue: String,
-    hasError: Boolean,
-    errorMessage: String
+    validDisabled: Boolean,
+    inputValue: String
+    // hasError: Boolean,
+    // errorMessage: String,
+    // isValid: Boolean
   },
   methods: {
     // 부모 컴포넌트에게 input 값을 전송
@@ -39,7 +44,6 @@ export default {
 <style scoped>
 .input-box {
   text-align: center;
-  /* margin-left: 5%; */
   margin-bottom: 1%;
   width: 140px;
   border-radius: 5px;
