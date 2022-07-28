@@ -5,7 +5,9 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sai.dto.Mail;
 import com.sai.model.entity.User;
@@ -16,13 +18,12 @@ import net.bytebuddy.asm.Advice.Return;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserService {
 
-	@Autowired
 	private final UserRepository userRepository;
-	
-	@Autowired
 	private final MailService mailService;
+	private final PasswordEncoder passwordEncoder;
 
 	// 로그인
 	public HashMap<String, Object> login(User user) {

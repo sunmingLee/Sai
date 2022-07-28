@@ -5,6 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import lombok.Data;
 
 @Data
@@ -48,5 +50,16 @@ public class User {
 	// 프로필 메세지
 	private String user_message;
 
+	
+	// 비밀번호 암호화
+	public User hashPassword(PasswordEncoder passwordEncoder) {
+		this.password = passwordEncoder.encode(this.password);
+		return this;
+	}
+	
+	// 비밀번호 확인
+	public boolean checkPassword(String plainPassword, PasswordEncoder passwordEncoder) {
+		return passwordEncoder.matches(plainPassword, this.password);
+	}
 	
 }
