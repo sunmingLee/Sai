@@ -1,8 +1,8 @@
 <template>
   <div class="header">
-      <img :class="visibilityBack" src="@/assets/images/arrow-left-solid.svg" alt="arrow-left" >
-      <h2>{{ title }}</h2>
-      <img :class="visibilityIcon" src="@/assets/images/calendar-days-solid.svg" alt="calendar">
+      <img :class="visibilityBack" src="@/assets/images/arrow-left-solid.svg" alt="arrow-left" style="width: 4%">
+      <span class="title">{{ title }}</span>
+      <img :class="visibilityIcon" src="@/assets/images/calendar-days-solid.svg" alt="calendar" style="width: 4%">
   </div>
 </template>
 <script>
@@ -30,20 +30,24 @@ export default {
 }
 </script>
 
-<style>
-h2{
-  color: #7B371C;
-}
+<style scoped lang="scss">
 .header{
   position: sticky;
   top: 0;
   padding-left: 5px;
   padding-right: 10px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
+  margin-top: 5%;
 }
 .hidden{
-  visibility: hidden;
+  // visibility: hidden;
+  display: none;
+}
+.title {
+  color: #7B371C;
+  font-size: 20px;
+  font-weight: bold;
 }
 </style>
