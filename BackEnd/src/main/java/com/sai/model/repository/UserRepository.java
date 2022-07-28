@@ -11,10 +11,10 @@ import com.sai.model.entity.User;
 public interface UserRepository extends JpaRepository<User, String>{
 	
 	Optional<User> findByEmail(String email);
-	
-//	Optional<User> findByUser_name(String user_name);
-	
-	// findByUser_name이 왜 override 되지 않는지??
+	Optional<User> findByUserId(String userId);
+	boolean existsByUserId(String userId);
+	boolean existsByEmail(String email);
+
 	
 	
 	

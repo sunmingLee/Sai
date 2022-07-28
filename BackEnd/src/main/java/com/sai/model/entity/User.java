@@ -4,24 +4,28 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Table(name="user")
 @Entity
-public class User {
+@Builder
+public class User{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private String user_id;
+	private String userId;
 	
 	// 가족 ID
-	private String family_id;
+	private String familyId;
 	
 	// 유저 이름
-	private String user_name;
+	private String userName;
 	
 	// 유저 이메일
 	private String email;
@@ -39,17 +43,17 @@ public class User {
 	private Boolean lunar;
 	
 	// 프로필 사진 이미지 경로
-	private String user_image_path;
+	private String userImagePath;
 
 	// 프로필 사진 이미지 이름
-	private String user_image_name;
+	private String userImageName;
 	
 	// 프로필 사진 이미지 속성
-	private String user_image_type;
+	private String userImageType;
 	
 	// 프로필 메세지
-	private String user_message;
-
+	private String userMessage;
+	
 	
 	// 비밀번호 암호화
 	public User hashPassword(PasswordEncoder passwordEncoder) {
@@ -61,5 +65,11 @@ public class User {
 	public boolean checkPassword(String plainPassword, PasswordEncoder passwordEncoder) {
 		return passwordEncoder.matches(plainPassword, this.password);
 	}
+	
+	// 비밀번호 변경
+	public void updateUserPassword(String password) {
+		this.password = password;
+	}
+	
 	
 }

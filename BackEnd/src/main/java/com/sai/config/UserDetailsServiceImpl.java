@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.sai.exception.UserNotFoundException;
 import com.sai.model.entity.User;
 import com.sai.model.repository.UserRepository;
 
@@ -17,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService{
+	
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -34,7 +34,7 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 				.security
 				.core
 				.userdetails
-				.User(user.getUser_id(), user.getPassword(), grantedAuthorities);
+				.User(user.getUserId(), user.getPassword(), grantedAuthorities);
 	}
 
 }
