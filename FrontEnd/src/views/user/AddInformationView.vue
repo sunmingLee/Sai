@@ -1,7 +1,9 @@
 <template>
   <div class="container">
     <HeaderTitle title="내 정보"></HeaderTitle>
-    <img class="profile" src="@/assets/images/account-edit.png" alt="account image">
+    <img class="profile img-thumbnail" src="@/assets/images/user-solid.svg" alt="user image">
+    <!-- <label class="form-label" for="customFile">Default file input example</label> -->
+    <input type="file" class="form-control" id="customFile" />
     <AddInformation></AddInformation>
   </div>
 </template>
