@@ -11,6 +11,9 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.sai.model.entity.FamilyRegister;
+
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +21,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
 public class Family {
@@ -42,12 +45,31 @@ public class Family {
 	@Builder.Default
 	@OneToMany(mappedBy = "family", fetch = FetchType.LAZY)
 	@JsonIgnore
-	private List<User> users = new ArrayList<>();
+	private List<User> users = new ArrayList<User>();
+
+	public void updateFamily(Family modifiedFamily) {
+		this.familyId = modifiedFamily.getFamilyId();
+		this.familyName = modifiedFamily.getFamilyName();
+		this.familyImagePath = modifiedFamily.getFamilyImagePath();
+		this.familyImageName = modifiedFamily.getFamilyImageName();
+		this.familyImageType = modifiedFamily.getFamilyImageType();
+	}
+
+//	@Builder.Default
+//	@OneToMany(mappedBy = "family", fetch = FetchType.LAZY)
+//	@JsonIgnore
+//	private List<FamilyRegister> familyRegisters = new ArrayList<FamilyRegister>();
 
 	public void addUser(User user) {
 		this.users.add(user);
 		if (user.getFamily() != this)
 			user.setFamily(this);
 	}
+
+//	public void addFamilyRegister(FamilyRegister familyRegister) {
+//		this.familyRegisters.add(familyRegister);
+//		if (familyRegister.getFamily() != this)
+//			familyRegister.setFamily(this);
+//	}
 
 }
