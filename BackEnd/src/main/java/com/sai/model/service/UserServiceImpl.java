@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sai.dto.Mail;
 import com.sai.dto.UserInfoRequestDto;
-import com.sai.model.entity.User;
-import com.sai.model.repository.UserRepository;
+import com.sai.model.entity.user.User;
+import com.sai.model.repository.user.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,12 +36,6 @@ public class UserServiceImpl implements UserService{
 		return userRepository.existsByEmail(email);
 	}
 	
-	// 유저 조회
-	@Override
-	public User getUserInfoByUserId(String userId){
-		User user = userRepository.findById(userId).get();
-		return user;
-	}
 	
 	// 직접 회원 가입
 	@Override
@@ -63,6 +57,13 @@ public class UserServiceImpl implements UserService{
 		return "회원가입 성공";
 	}
 	
+	// 사용자 정보 조회
+	@Override
+	public User getUserInfoByUserId(String userId){
+		User user = userRepository.findById(userId).get();
+		return user;
+	}
+	
 	// 비밀번호 수정
 	@Override
 	public String changePassword(String userId, String password) {
@@ -71,6 +72,15 @@ public class UserServiceImpl implements UserService{
 		userRepository.save(user);
 		return "비밀번호 수정";
 	}
+	
+	// 회원 탈퇴
+	@Override
+	public String deleteUser(String userId) {
+		User user = userRepository.findById(userId).get();
+		userRepository.delete(user);
+		return "회원 탈퇴";
+	}
+	
 	
 	// 로그인
 	@Override
@@ -100,8 +110,9 @@ public class UserServiceImpl implements UserService{
 	public HashMap<String, Object> findUserId(User user) {
 		HashMap<String, Object> result = new HashMap<>();
 
-		// 유저 이름으로 옵셔널 불러옴
-		Optional<User> findUser = userRepository.findByEmail(user.getEmail());
+		// 이름으로 해당 유저 찾아오기
+//		User findUser = userRepository.findByUserName(user.getUserName()).get(0);
+		Optional<User> findUser = userRepository.findByUserName(user.getUserName());
 		
 		findUser.ifPresentOrElse(foundUser -> {
 			// 이름에 해당하는 이메일이 맞는지 확인
@@ -181,18 +192,16 @@ public class UserServiceImpl implements UserService{
 		            pwd += charSet[idx];
 		        }
 		        
-		        System.out.println(pwd);
-		        
 		        // 임시 비밀번호 저장
-		        foundUser.setPassword(pwd);
-				
+		        foundUser.updateUserPassword(pwd);
+		        userRepository.save(foundUser);
 				
 				// 메일 생성 & 전송
 				Mail mail = mailService.createMail(foundUser.getUserId(), foundUser.getEmail());
 				mailService.sendMail(mail);
 				
 				//
-				result.put("msg", "입력하신 이메일로 아이디가 전송되었습니다.");
+				result.put("msg", "입력하신 이메일로 임시 비밀번호가 전송되었습니다.");
 				result.put("status", HttpStatus.ACCEPTED);
 				
 			} else {
@@ -206,6 +215,12 @@ public class UserServiceImpl implements UserService{
 		
 		return result;
 	}
+	
+	// 소셜 로그인 예제
+	public Optional<User> getUser(String userId) {
+        return userRepository.findByUserId(userId);
+    }
+
 	
 	
 

@@ -1,5 +1,6 @@
-package com.sai.model.entity;
+package com.sai.model.entity.user;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,13 +19,15 @@ import lombok.Data;
 public class User{
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private String userId;
 	
 	// 가족 ID
+	@Column(name="family_id")
 	private String familyId;
 	
 	// 유저 이름
+	@Column(name="user_name")
 	private String userName;
 	
 	// 유저 이메일
@@ -43,16 +46,23 @@ public class User{
 	private Boolean lunar;
 	
 	// 프로필 사진 이미지 경로
+	@Column(name="user_image_path")
 	private String userImagePath;
 
 	// 프로필 사진 이미지 이름
+	@Column(name="user_image_name")
 	private String userImageName;
 	
 	// 프로필 사진 이미지 속성
+	@Column(name="user_image_type")
 	private String userImageType;
 	
 	// 프로필 메세지
+	@Column(name="user_message")
 	private String userMessage;
+	
+	// 프로바이더 타입
+	private String providerType;
 	
 	
 	// 비밀번호 암호화

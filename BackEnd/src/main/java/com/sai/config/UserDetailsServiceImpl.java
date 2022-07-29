@@ -9,8 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.sai.model.entity.User;
-import com.sai.model.repository.UserRepository;
+import com.sai.model.entity.user.User;
+import com.sai.model.repository.user.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 

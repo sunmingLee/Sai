@@ -1,4 +1,4 @@
-package com.sai.config;
+package com.sai.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,6 +10,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.sai.config.JwtTokenProvider;
+import com.sai.config.UserDetailsServiceImpl;
+
 import lombok.RequiredArgsConstructor;
 
 @EnableWebSecurity
@@ -17,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 	// JWT 관련 친구들
 	private final JwtTokenProvider jwtTokenProvider;
-	
 	
 	
 	@Bean

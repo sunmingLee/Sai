@@ -1,9 +1,11 @@
-package com.sai.controller;
+package com.sai.controller.user;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -14,9 +16,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.sai.common.ApiResponse;
+import com.sai.config.JwtTokenProvider;
 import com.sai.dto.UserInfoRequestDto;
-import com.sai.model.entity.User;
-import com.sai.model.repository.UserRepository;
+import com.sai.model.entity.user.User;
+import com.sai.model.repository.user.UserRepository;
 import com.sai.model.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +32,7 @@ public class UserController {
 
 	private final UserService userService;
 	private final UserRepository userRepository;
+	private JwtTokenProvider jwtTokenProvider;
 
 	// 아이디 중복 검사
 	@GetMapping("/duplication/id")
@@ -60,10 +65,10 @@ public class UserController {
 		return ResponseEntity.status(200).body(userService.changePassword(userId, password));
 	}
 
-	// 회원탈퇴
+	// 회원 탈퇴
 	@DeleteMapping("/{userId}")
-	public ResponseEntity<Map<String, Object>> delete(@PathVariable("userId") String userId) {
-		return null;
+	public ResponseEntity<String> deleteUser(@PathVariable String userId) {
+		return ResponseEntity.ok(userService.deleteUser(userId));
 	}
 
 	// 로그인
@@ -93,6 +98,16 @@ public class UserController {
 	}
 
 	// 소셜 로그인
-	
+
 	// 소셜 회원가입
+
+	@GetMapping("api/v1/users")
+	public ApiResponse getUser() {
+		org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder
+				.getContext().getAuthentication().getPrincipal();
+
+		Optional<User> user = userService.getUser(principal.getUsername());
+
+		return ApiResponse.success("user", user);
+	}
 }

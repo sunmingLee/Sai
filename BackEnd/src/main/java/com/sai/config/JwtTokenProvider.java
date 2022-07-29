@@ -23,17 +23,18 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
+// 토큰 생성하고 검증하는 클래스
 @Component
 public class JwtTokenProvider {
-	@Value("${jwt.token.secret-key}")
-	private String secretKey;
 	
-	@Value("${jwt.token.expire-length}")
-	private long expireTime;
+	private String secretKey = "ssafycommonprojectfamilysaihahahahahahahahaha";
+	private long expireTime = 30 * 60 * 1000L;
 	
 	@Autowired
 	private UserDetailsService userDetailsService;
 	
+	Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+
 	// 적절한 설정을 통해 토큰을 생성하여 반환
 	public String generateToken(Authentication authentication) {
 		Claims claims = Jwts.claims().setSubject(authentication.getName());
@@ -41,7 +42,6 @@ public class JwtTokenProvider {
 		Date now = new Date();
 		Date exiresIn = new Date(now.getTime()+expireTime);
 		
-		Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 		
 		return Jwts.builder()
 				.setClaims(claims)
