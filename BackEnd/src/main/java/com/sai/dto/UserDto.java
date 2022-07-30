@@ -1,36 +1,44 @@
 package com.sai.dto;
 
-import java.util.Date;
+import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-@Getter
-@NoArgsConstructor
+@Data
 public class UserDto {
 	
-	@Id
-	private String user_id;
+	// user ID
+	private String userId;
 	
-	private String family_code;
+	// 가족 ID
+	private String familyId;
 	
-	private String name;
+	// 유저 이름
+	private String userName;
 	
+	// 유저 이메일
 	private String email;
 	
+	// 패스워드
 	private String password;
 	
+	// 유저 닉네임
 	private String nickname;
 	
-	private Date birthday;
+	// 유저 생일
+	private String birthday;
 	
-	private boolean lunar;
+	// 음력 사용 여부
+	private Boolean lunar;
 	
-	private String user_image;
+	// 프로필 사진 이미지 경로
+	private String userImagePath;
+
+	// 프로필 사진 이미지 이름
+	private String userImageName;
 	
-	private String user_message;
+	// 프로필 사진 이미지 속성
+	private String userImageType;
+	
+	// 프로필 메세지
+	private String userMessage;
 	
 }

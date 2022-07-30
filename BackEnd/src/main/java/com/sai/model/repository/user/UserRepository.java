@@ -1,6 +1,5 @@
 package com.sai.model.repository.user;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,8 +15,6 @@ public interface UserRepository extends JpaRepository<User, String>{
 	Optional<User> findByUserName(String userName);
 	boolean existsByUserId(String userId);
 	boolean existsByEmail(String email);
-	
-
 	
 
 }

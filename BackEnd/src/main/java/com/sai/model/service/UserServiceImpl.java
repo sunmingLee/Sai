@@ -3,13 +3,17 @@ package com.sai.model.service;
 import java.util.HashMap;
 import java.util.Optional;
 
+import javax.servlet.http.Cookie;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sai.dto.Mail;
-import com.sai.dto.UserInfoRequestDto;
+import com.sai.dto.UserDto;
+import com.sai.jwt.JwtTokenProvider;
 import com.sai.model.entity.user.User;
 import com.sai.model.repository.user.UserRepository;
 
@@ -22,7 +26,11 @@ public class UserServiceImpl implements UserService{
 
 	private final UserRepository userRepository;
 	private final MailService mailService;
+	private final JwtTokenProvider jwtTokenProvider;
 	private final PasswordEncoder passwordEncoder;
+
+	ModelMapper modelMapper = new ModelMapper();
+
 	
 	// 아이디 중복 체크
 	@Override
@@ -39,7 +47,7 @@ public class UserServiceImpl implements UserService{
 	
 	// 직접 회원 가입
 	@Override
-	public String insertUser(UserInfoRequestDto userInfo) {
+	public String insertUser(UserDto userInfo) {
 		String userId = userInfo.getUserId();
 		String email = userInfo.getEmail();
 		String password = userInfo.getPassword();
@@ -48,20 +56,21 @@ public class UserServiceImpl implements UserService{
 		User user = User.builder()
 				.userId(userId)
 				.email(email)
-				.password(password)
+				.password(passwordEncoder.encode(password))
 				.userName(userName)
 				.build();
-		
 		userRepository.save(user);
-		
 		return "회원가입 성공";
 	}
 	
 	// 사용자 정보 조회
 	@Override
-	public User getUserInfoByUserId(String userId){
+	public UserDto getUserInfoByUserId(String userId){
+		
 		User user = userRepository.findById(userId).get();
-		return user;
+		UserDto userDto = modelMapper.map(user, UserDto.class);
+		
+		return userDto;
 	}
 	
 	// 비밀번호 수정
@@ -84,14 +93,16 @@ public class UserServiceImpl implements UserService{
 	
 	// 로그인
 	@Override
-	public HashMap<String, Object> login(User user) {
+	public String login(UserDto user) {
 		Optional<User> findUser = userRepository.findById(user.getUserId());
 		HashMap<String, Object> result = new HashMap<>();
 
 		findUser.ifPresentOrElse(loginUser -> {
-			if (loginUser.getPassword().equals(user.getPassword())) {
+			
+			if (passwordEncoder.matches(loginUser.getPassword(), user.getPassword())) {
 				result.put("msg", "로그인되었습니다.");
 				result.put("status", HttpStatus.ACCEPTED);
+				
 			} else {
 				result.put("msg", "비밀번호가 틀렸습니다.");
 				result.put("status", HttpStatus.ACCEPTED);
@@ -102,12 +113,12 @@ public class UserServiceImpl implements UserService{
 			result.put("status", HttpStatus.ACCEPTED);
 		});
 
-		return result;
+		return jwtTokenProvider.createToken(findUser.get().getUserId());
 	}
 
 	// 아이디 찾기
 	@Override
-	public HashMap<String, Object> findUserId(User user) {
+	public HashMap<String, Object> findUserId(UserDto user) {
 		HashMap<String, Object> result = new HashMap<>();
 
 		// 이름으로 해당 유저 찾아오기
@@ -118,7 +129,7 @@ public class UserServiceImpl implements UserService{
 			// 이름에 해당하는 이메일이 맞는지 확인
 			if(foundUser.getEmail().equals(user.getEmail())) {
 				// 메일 생성 & 전송
-				Mail mail = mailService.createMail(foundUser.getUserId(), foundUser.getEmail());
+				Mail mail = mailService.createMail(foundUser.getUserId(), foundUser.getEmail(), "findUserId");
 				mailService.sendMail(mail);
 				
 				//
@@ -168,7 +179,7 @@ public class UserServiceImpl implements UserService{
 	
 	// 비밀번호 찾기
 	@Override
-	public HashMap<String, Object> findUserPw(User user) {
+	public HashMap<String, Object> findUserPw(UserDto user) {
 		HashMap<String, Object> result = new HashMap<>();
 
 		// 유저 이름으로 옵셔널 불러옴
@@ -197,7 +208,7 @@ public class UserServiceImpl implements UserService{
 		        userRepository.save(foundUser);
 				
 				// 메일 생성 & 전송
-				Mail mail = mailService.createMail(foundUser.getUserId(), foundUser.getEmail());
+				Mail mail = mailService.createMail(foundUser.getUserId(), foundUser.getEmail(), "findUserPw");
 				mailService.sendMail(mail);
 				
 				//
@@ -217,9 +228,11 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	// 소셜 로그인 예제
-	public Optional<User> getUser(String userId) {
-        return userRepository.findByUserId(userId);
-    }
+//	public Optional<User> getUser(String userId) {
+//        return userRepository.findByUserId(userId);
+//    }
+
+
 
 	
 	
