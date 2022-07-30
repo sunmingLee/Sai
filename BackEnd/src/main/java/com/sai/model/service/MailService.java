@@ -5,7 +5,7 @@ import com.sai.dto.Mail;
 public interface MailService {
 	
 	// 이메일 생성
-	public Mail createMail(String tmpPassword, String memberEmail);
+	public Mail createMail(String information, String memberEmail, String reqType);
 	
 	// 이메일 전송
 	public void sendMail(Mail mail);
