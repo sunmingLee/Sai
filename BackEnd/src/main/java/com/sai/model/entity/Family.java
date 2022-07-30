@@ -48,7 +48,6 @@ public class Family {
 	private List<User> users = new ArrayList<User>();
 
 	public void updateFamily(Family modifiedFamily) {
-		this.familyId = modifiedFamily.getFamilyId();
 		this.familyName = modifiedFamily.getFamilyName();
 		this.familyImagePath = modifiedFamily.getFamilyImagePath();
 		this.familyImageName = modifiedFamily.getFamilyImageName();

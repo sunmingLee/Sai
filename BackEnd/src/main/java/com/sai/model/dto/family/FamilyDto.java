@@ -17,19 +17,19 @@ public class FamilyDto {
 	private String familyImageName;
 	private String familyImageType;
 
-	// Entity to Dto
-	public FamilyDto(Family family) {
-		this.familyId = family.getFamilyId();
-		this.familyName = family.getFamilyName();
-		this.familyImagePath = family.getFamilyImagePath();
-		this.familyImageName = family.getFamilyImageName();
-		this.familyImageType = family.getFamilyImageType();
-	}
-
-	// Dto to Entity
-	public Family toEntity() {
-		return Family.builder().familyId(familyId).familyName(familyName).familyImagePath(familyImagePath)
-				.familyImageName(familyImageName).familyImageType(familyImageType).build();
-	}
+//	// Entity to Dto
+//	public FamilyDto(Family family) {
+//		this.familyId = family.getFamilyId();
+//		this.familyName = family.getFamilyName();
+//		this.familyImagePath = family.getFamilyImagePath();
+//		this.familyImageName = family.getFamilyImageName();
+//		this.familyImageType = family.getFamilyImageType();
+//	}
+//
+//	// Dto to Entity
+//	public Family toEntity() {
+//		return Family.builder().familyId(familyId).familyName(familyName).familyImagePath(familyImagePath)
+//				.familyImageName(familyImageName).familyImageType(familyImageType).build();
+//	}
 
 }

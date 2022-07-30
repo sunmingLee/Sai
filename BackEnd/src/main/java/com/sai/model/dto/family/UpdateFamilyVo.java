@@ -14,16 +14,16 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UpdateFamilyDto {
+public class UpdateFamilyVo {
 	private FamilyDto familyDto;
 	private List<FamilyCallsignDto> familyCallsignDtos;
 
-	// Entity to Dto
-	public UpdateFamilyDto(Family family, List<FamilyCallsign> familyCallsigns) {
-		this.familyDto = new FamilyDto(family);
-		this.familyCallsignDtos = new ArrayList<>();
-		for (FamilyCallsign familyCallsign : familyCallsigns) {
-			familyCallsignDtos.add(new FamilyCallsignDto(familyCallsign));
-		}
-	}
+//	// Entity to Dto
+//	public UpdateFamilyDto(Family family, List<FamilyCallsign> familyCallsigns) {
+//		this.familyDto = new FamilyDto(family);
+//		this.familyCallsignDtos = new ArrayList<>();
+//		for (FamilyCallsign familyCallsign : familyCallsigns) {
+//			familyCallsignDtos.add(new FamilyCallsignDto(familyCallsign));
+//		}
+//	}
 }

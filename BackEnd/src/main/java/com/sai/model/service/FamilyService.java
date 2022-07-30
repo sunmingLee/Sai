@@ -3,29 +3,29 @@ package com.sai.model.service;
 import java.util.List;
 
 import com.sai.model.dto.family.FamilyCallsignDto;
-import com.sai.model.dto.family.UpdateFamilyDto;
-import com.sai.model.entity.Family;
-import com.sai.model.entity.FamilyRegister;
-import com.sai.model.entity.User;
+import com.sai.model.dto.family.FamilyDto;
+import com.sai.model.dto.family.FamilyRegisterDto;
+import com.sai.model.dto.family.UpdateFamilyVo;
+import com.sai.model.dto.family.UserDto;
 
 public interface FamilyService {
 
-	public User createFamilyId(String userId);
+	public FamilyDto createFamilyId(String userId);
 
-	public User disjoinFamily(String userId);
+	public void disjoinFamily(String userId);
 
-	public FamilyRegister applyFamily(FamilyRegister familyRegister);
+	public void applyFamily(FamilyRegisterDto familyRegister);
 
-	public FamilyRegister responseApplication(FamilyRegister familyRegister);
+	public void responseApplication(FamilyRegisterDto familyRegister);
 
-	public FamilyRegister resultApplication(String userId);
+	public FamilyRegisterDto resultApplication(String userId);
 
-	public FamilyRegister deleteApplication(String userId);
+	public void deleteApplication(String userId);
 
-	public Family searchFamily(String familyId);
+	public FamilyDto searchFamily(String familyId);
 
 	public List<FamilyCallsignDto> searchFamilyList(String userId);
 
-	public UpdateFamilyDto updateFamily(UpdateFamilyDto updateFamilyDto);
+	public UpdateFamilyVo updateFamily(UpdateFamilyVo updateFamilyVo);
 
 }
