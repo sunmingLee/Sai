@@ -17,18 +17,18 @@ public class FamilyCallsignDto {
 //	private String toUserId;
 	private String callsign;
 
-	// Entity to Dto
-	public FamilyCallsignDto(FamilyCallsign familyCallsign) {
-		this.familyCallsignId = familyCallsign.getFamilyCallsignId();
-		this.fromUser = new UserDto(familyCallsign.getFromUser());
-		this.fromUser = new UserDto(familyCallsign.getToUser());
-		this.callsign = familyCallsign.getCallsign();
-	}
-
-	// Dto to Entity
-	public FamilyCallsign toEntity() {
-		return FamilyCallsign.builder().familyCallsignId(familyCallsignId).fromUser(fromUser.toEntity())
-				.toUser(toUser.toEntity()).callsign(callsign).build();
-	}
+//	// Entity to Dto
+//	public FamilyCallsignDto(FamilyCallsign familyCallsign) {
+//		this.familyCallsignId = familyCallsign.getFamilyCallsignId();
+//		this.fromUser = new UserDto(familyCallsign.getFromUser());
+//		this.fromUser = new UserDto(familyCallsign.getToUser());
+//		this.callsign = familyCallsign.getCallsign();
+//	}
+//
+//	// Dto to Entity
+//	public FamilyCallsign toEntity() {
+//		return FamilyCallsign.builder().familyCallsignId(familyCallsignId).fromUser(fromUser.toEntity())
+//				.toUser(toUser.toEntity()).callsign(callsign).build();
+//	}
 
 }

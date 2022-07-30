@@ -17,10 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sai.model.dto.family.FamilyCallsignDto;
-import com.sai.model.dto.family.UpdateFamilyDto;
-import com.sai.model.entity.Family;
-import com.sai.model.entity.FamilyRegister;
-import com.sai.model.entity.User;
+import com.sai.model.dto.family.FamilyDto;
+import com.sai.model.dto.family.FamilyRegisterDto;
+import com.sai.model.dto.family.UpdateFamilyVo;
 import com.sai.model.service.FamilyService;
 
 import io.swagger.annotations.ApiOperation;
@@ -33,39 +32,15 @@ public class FamilyController {
 	@Autowired
 	private FamilyService familyService;
 
-//	@Autowired
-//	private FamilyRepository familyRepository;
-
-//	@PostMapping("/id")
-//	public ResponseEntity<?> saveFamily(@RequestBody Family family) {
-//		Family savedFamily = familyRepository.save(family);
-//		return ResponseEntity.ok(savedFamily);
-//	}
-//
-//	@PostMapping("/{id}")
-//	public ResponseEntity<?> saveFamily(@PathVariable String id) {
-//		Family family = Family.builder().familyId(id).build();
-//		Family savedFamily = familyRepository.save(family);
-//		return ResponseEntity.ok(savedFamily);
-//	}
-//
-//	@GetMapping()
-//	public List<Family> all() {
-//		List<Family> list = familyRepository.findAll();
-//		return list;
-//	}
-
-	// ---------------------------------------------------------------------------------------------------------------
-
 	@ApiOperation(value = "createFamilyId : 가족 아이디 생성")
 	@PostMapping("/create/{userId}")
 	public ResponseEntity<?> createFamilyId(@PathVariable String userId) throws Exception {
 
 		try {
-			User user = familyService.createFamilyId(userId);
+			FamilyDto familyDto = familyService.createFamilyId(userId);
 
-			if (user != null) {
-				return new ResponseEntity<User>(user, HttpStatus.OK);
+			if (familyDto != null) {
+				return new ResponseEntity<FamilyDto>(familyDto, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 			}
@@ -73,7 +48,6 @@ public class FamilyController {
 		} catch (Exception e) {
 			return exceptionHandling(e);
 		}
-
 	}
 
 	@ApiOperation(value = "disjoinFamily : 가족에서 나가기")
@@ -81,32 +55,21 @@ public class FamilyController {
 	public ResponseEntity<?> disjoinFamily(@PathVariable String userId) throws Exception {
 
 		try {
-			User user = familyService.disjoinFamily(userId);
-
-			if (user != null) {
-				return new ResponseEntity<User>(user, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-			}
+			familyService.disjoinFamily(userId);
+			return new ResponseEntity<Void>(HttpStatus.OK);
 
 		} catch (Exception e) {
 			return exceptionHandling(e);
 		}
-
 	}
 
 	@ApiOperation(value = "applyFamily : 가족 들어가기 신청")
 	@PostMapping("/join/apply")
-	public ResponseEntity<?> applyFamily(@RequestBody FamilyRegister familyRegister) throws Exception {
+	public ResponseEntity<?> applyFamily(@RequestBody FamilyRegisterDto familyRegisterDto) throws Exception {
 
 		try {
-			FamilyRegister familyRegister2 = familyService.applyFamily(familyRegister);
-
-			if (familyRegister2 != null) {
-				return new ResponseEntity<FamilyRegister>(familyRegister2, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-			}
+			familyService.applyFamily(familyRegisterDto);
+			return new ResponseEntity<Void>(HttpStatus.OK);
 
 		} catch (Exception e) {
 			return exceptionHandling(e);
@@ -115,16 +78,11 @@ public class FamilyController {
 
 	@ApiOperation(value = "responseApplication : 가족 신청 수락/거절")
 	@PatchMapping("/join/response")
-	public ResponseEntity<?> responseApplication(@RequestBody FamilyRegister familyRegister) throws Exception {
+	public ResponseEntity<?> responseApplication(@RequestBody FamilyRegisterDto familyRegisterDto) throws Exception {
 
 		try {
-			FamilyRegister familyRegister2 = familyService.responseApplication(familyRegister);
-
-			if (familyRegister2 != null) {
-				return new ResponseEntity<FamilyRegister>(familyRegister2, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-			}
+			familyService.responseApplication(familyRegisterDto);
+			return new ResponseEntity<Void>(HttpStatus.OK);
 
 		} catch (Exception e) {
 			return exceptionHandling(e);
@@ -136,10 +94,10 @@ public class FamilyController {
 	public ResponseEntity<?> resultApplication(@PathVariable String userId) throws Exception {
 
 		try {
-			FamilyRegister familyRegister = familyService.resultApplication(userId);
+			FamilyRegisterDto familyRegisterDto = familyService.resultApplication(userId);
 
-			if (familyRegister != null) {
-				return new ResponseEntity<FamilyRegister>(familyRegister, HttpStatus.OK);
+			if (familyRegisterDto != null) {
+				return new ResponseEntity<FamilyRegisterDto>(familyRegisterDto, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 			}
@@ -154,13 +112,8 @@ public class FamilyController {
 	public ResponseEntity<?> deleteApplication(@PathVariable String userId) throws Exception {
 
 		try {
-			FamilyRegister familyRegister = familyService.deleteApplication(userId);
-
-			if (familyRegister != null) {
-				return new ResponseEntity<FamilyRegister>(familyRegister, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-			}
+			familyService.deleteApplication(userId);
+			return new ResponseEntity<Void>(HttpStatus.OK);
 
 		} catch (Exception e) {
 			return exceptionHandling(e);
@@ -172,10 +125,10 @@ public class FamilyController {
 	public ResponseEntity<?> searchFamily(@PathVariable String familyId) throws Exception {
 
 		try {
-			Family family = familyService.searchFamily(familyId);
+			FamilyDto familyDto = familyService.searchFamily(familyId);
 
-			if (family != null) {
-				return new ResponseEntity<Family>(family, HttpStatus.OK);
+			if (familyDto != null) {
+				return new ResponseEntity<FamilyDto>(familyDto, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 			}
@@ -205,13 +158,13 @@ public class FamilyController {
 
 	@ApiOperation(value = "updateFamily : 가족 정보 + 콜사인 수정")
 	@PutMapping("/modify")
-	public ResponseEntity<?> updateFamily(@RequestBody UpdateFamilyDto updateFamilyDto) throws Exception {
+	public ResponseEntity<?> updateFamily(@RequestBody UpdateFamilyVo updateFamilyVo) throws Exception {
 
 		try {
-			UpdateFamilyDto updateFamilyDto2 = familyService.updateFamily(updateFamilyDto);
+			UpdateFamilyVo returnUpdateFamilyVo = familyService.updateFamily(updateFamilyVo);
 
-			if (updateFamilyDto2 != null) {
-				return new ResponseEntity<UpdateFamilyDto>(updateFamilyDto2, HttpStatus.OK);
+			if (returnUpdateFamilyVo != null) {
+				return new ResponseEntity<UpdateFamilyVo>(returnUpdateFamilyVo, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 			}
