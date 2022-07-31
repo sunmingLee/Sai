@@ -14,6 +14,7 @@ import com.sai.model.dto.family.FamilyCallsignDto;
 import com.sai.model.dto.family.FamilyDto;
 import com.sai.model.dto.family.FamilyRegisterDto;
 import com.sai.model.dto.family.UpdateFamilyVo;
+import com.sai.model.dto.user.UserDto;
 import com.sai.model.entity.Family;
 import com.sai.model.entity.FamilyCallsign;
 import com.sai.model.entity.FamilyRegister;
@@ -43,7 +44,7 @@ public class FamilyServiceImpl implements FamilyService {
 	ModelMapper modelMapper;
 
 	@Override
-	public FamilyDto createFamilyId(String userId) {
+	public UserDto createFamilyId(String userId) {
 		String familyId;
 		while (true) {
 			familyId = createRandomFamilyId();
@@ -62,11 +63,12 @@ public class FamilyServiceImpl implements FamilyService {
 				.build();
 		familyCallsignRepository.save(callsign);
 
-		return modelMapper.map(family, FamilyDto.class);
+		return modelMapper.map(user, UserDto.class);
+
 	}
 
 	@Override
-	public void disjoinFamily(String userId) {
+	public UserDto disjoinFamily(String userId) {
 		User user = userRepository.findById(userId).get();
 		Family family = user.getFamily();
 
@@ -80,6 +82,8 @@ public class FamilyServiceImpl implements FamilyService {
 		// 가족이 0명이면 가족 삭제
 		if (family.getUsers().size() == 0)
 			familyRepository.delete(family);
+
+		return modelMapper.map(user, UserDto.class);
 	}
 
 	@Override
@@ -90,7 +94,7 @@ public class FamilyServiceImpl implements FamilyService {
 	}
 
 	@Override
-	public void responseApplication(FamilyRegisterDto familyRegisterDto) {
+	public List<FamilyCallsignDto> responseApplication(String userId, FamilyRegisterDto familyRegisterDto) {
 		FamilyRegister findFamilyRegister = familyRegisterRepository.findById(familyRegisterDto.getFamilyRegisterId())
 				.get();
 		if (familyRegisterDto.getApproveYn()) { // 수락이면 가족에 추가, 가족 호칭 추가, 신청 레코드 삭제
@@ -129,6 +133,8 @@ public class FamilyServiceImpl implements FamilyService {
 			findFamilyRegister.updateResponse(familyRegisterDto.getApproveYn());
 			familyRegisterRepository.save(findFamilyRegister);
 		}
+
+		return searchFamilyList(userId);
 	}
 
 	@Override
@@ -163,28 +169,32 @@ public class FamilyServiceImpl implements FamilyService {
 	}
 
 	@Override
-	public UpdateFamilyVo updateFamily(UpdateFamilyVo updateFamilyDto) {
+	public UpdateFamilyVo updateFamily(UpdateFamilyVo updateFamilyVo) {
+
+		UpdateFamilyVo returnFamilyVo = new UpdateFamilyVo();
+
 		// 가족 정보 변경
-		FamilyDto familyDto = updateFamilyDto.getFamilyDto();
+		FamilyDto familyDto = updateFamilyVo.getFamilyDto();
 		Family family = familyRepository.findById(familyDto.getFamilyId()).get();
-
-		System.out.println(familyDto.getFamilyName());
 		family.updateFamily(modelMapper.map(familyDto, Family.class));
-		System.out.println(modelMapper.map(familyDto, Family.class).getFamilyName());
-
 		familyRepository.save(family);
-		System.out.println(family.getFamilyName());
+		returnFamilyVo.setFamilyDto(modelMapper.map(family, FamilyDto.class));
 
 		// 콜사인 변경
-		List<FamilyCallsignDto> familyCallsignDtos = updateFamilyDto.getFamilyCallsignDtos();
+		List<FamilyCallsignDto> returnFamilyCallsignDtos = new ArrayList<>();
+
+		List<FamilyCallsignDto> familyCallsignDtos = updateFamilyVo.getFamilyCallsignDtos();
 		for (FamilyCallsignDto familyCallsignDto : familyCallsignDtos) {
 			FamilyCallsign familyCallsign = familyCallsignRepository.findById(familyCallsignDto.getFamilyCallsignId())
 					.get();
 			familyCallsign.updateCallsign(familyCallsignDto.getCallsign());
 			familyCallsignRepository.save(familyCallsign);
+			returnFamilyCallsignDtos.add(modelMapper.map(familyCallsign, FamilyCallsignDto.class));
 		}
 
-		return updateFamilyDto;
+		returnFamilyVo.setFamilyCallsignDtos(returnFamilyCallsignDtos);
+
+		return returnFamilyVo;
 	}
 
 	private static String createRandomFamilyId() {
@@ -198,7 +208,6 @@ public class FamilyServiceImpl implements FamilyService {
 				.limit(targetStringLength)
 				.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
 
-		System.out.println(generatedString);
 		return generatedString;
 	}
 }

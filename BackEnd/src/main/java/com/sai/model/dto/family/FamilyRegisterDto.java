@@ -1,7 +1,6 @@
 package com.sai.model.dto.family;
 
-import com.sai.model.entity.FamilyCallsign;
-import com.sai.model.entity.FamilyRegister;
+import com.sai.model.dto.user.UserDto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,8 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FamilyRegisterDto {
 	private Long familyRegisterId;
-	private FamilyDto family;
-	private UserDto user;
+	private String familyId;
+	private String userId;
 	private Boolean approveYn;
 
 //	// Entity to Dto

@@ -1,6 +1,4 @@
-package com.sai.model.dto.family;
-
-import com.sai.model.entity.User;
+package com.sai.model.dto.user;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,9 +9,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserDto {
 	private String userId;
-	private FamilyDto family;
+//	private FamilyDto family;
+	private String familyId;
 	private String userName;
-	
+
 //	// Entity to Dto
 //	public UserDto(User user) {
 //		this.userId = user.getUserId();

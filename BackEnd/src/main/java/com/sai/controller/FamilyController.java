@@ -20,6 +20,7 @@ import com.sai.model.dto.family.FamilyCallsignDto;
 import com.sai.model.dto.family.FamilyDto;
 import com.sai.model.dto.family.FamilyRegisterDto;
 import com.sai.model.dto.family.UpdateFamilyVo;
+import com.sai.model.dto.user.UserDto;
 import com.sai.model.service.FamilyService;
 
 import io.swagger.annotations.ApiOperation;
@@ -37,10 +38,10 @@ public class FamilyController {
 	public ResponseEntity<?> createFamilyId(@PathVariable String userId) throws Exception {
 
 		try {
-			FamilyDto familyDto = familyService.createFamilyId(userId);
+			UserDto userDto = familyService.createFamilyId(userId);
 
-			if (familyDto != null) {
-				return new ResponseEntity<FamilyDto>(familyDto, HttpStatus.OK);
+			if (userDto != null) {
+				return new ResponseEntity<UserDto>(userDto, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 			}
@@ -55,8 +56,13 @@ public class FamilyController {
 	public ResponseEntity<?> disjoinFamily(@PathVariable String userId) throws Exception {
 
 		try {
-			familyService.disjoinFamily(userId);
-			return new ResponseEntity<Void>(HttpStatus.OK);
+			UserDto userDto = familyService.disjoinFamily(userId);
+
+			if (userDto != null) {
+				return new ResponseEntity<UserDto>(userDto, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+			}
 
 		} catch (Exception e) {
 			return exceptionHandling(e);
@@ -77,12 +83,18 @@ public class FamilyController {
 	}
 
 	@ApiOperation(value = "responseApplication : 가족 신청 수락/거절")
-	@PatchMapping("/join/response")
-	public ResponseEntity<?> responseApplication(@RequestBody FamilyRegisterDto familyRegisterDto) throws Exception {
+	@PatchMapping("/join/response/{userId}")
+	public ResponseEntity<?> responseApplication(@PathVariable String userId,
+			@RequestBody FamilyRegisterDto familyRegisterDto) throws Exception {
 
 		try {
-			familyService.responseApplication(familyRegisterDto);
-			return new ResponseEntity<Void>(HttpStatus.OK);
+			List<FamilyCallsignDto> familyCallsignDtos = familyService.responseApplication(userId, familyRegisterDto);
+
+			if (familyCallsignDtos != null && familyCallsignDtos.size() > 0) {
+				return new ResponseEntity<List<FamilyCallsignDto>>(familyCallsignDtos, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+			}
 
 		} catch (Exception e) {
 			return exceptionHandling(e);

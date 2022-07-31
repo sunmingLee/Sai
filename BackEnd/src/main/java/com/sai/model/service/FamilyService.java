@@ -6,17 +6,17 @@ import com.sai.model.dto.family.FamilyCallsignDto;
 import com.sai.model.dto.family.FamilyDto;
 import com.sai.model.dto.family.FamilyRegisterDto;
 import com.sai.model.dto.family.UpdateFamilyVo;
-import com.sai.model.dto.family.UserDto;
+import com.sai.model.dto.user.UserDto;
 
 public interface FamilyService {
 
-	public FamilyDto createFamilyId(String userId);
+	public UserDto createFamilyId(String userId);
 
-	public void disjoinFamily(String userId);
+	public UserDto disjoinFamily(String userId);
 
 	public void applyFamily(FamilyRegisterDto familyRegister);
 
-	public void responseApplication(FamilyRegisterDto familyRegister);
+	public List<FamilyCallsignDto> responseApplication(String userId, FamilyRegisterDto familyRegister);
 
 	public FamilyRegisterDto resultApplication(String userId);
 
