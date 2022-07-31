@@ -10,9 +10,20 @@ public class AppConfig {
 	@Bean
 	public ModelMapper modelMapper() {
 		ModelMapper modelMapper = new ModelMapper();
-		modelMapper.getConfiguration().setFieldAccessLevel(AccessLevel.PRIVATE).setFieldMatchingEnabled(true)	// setter없이 사용하기 위한 설정
-				.setSkipNullEnabled(true);	// null 오류 방지용 설정
+		modelMapper.getConfiguration().setFieldMatchingEnabled(true) // null 에러 방지
+				.setSkipNullEnabled(true).setFieldAccessLevel(AccessLevel.PRIVATE) // setter없이 사용하기 위한 설정
+//				.setMatchingStrategy(MatchingStrategies.STRICT)
+		;
+//		modelMapper.addMappings(userMap);
+
 		return modelMapper;
 	}
 
+//	PropertyMap<User, UserDto> userMap = new PropertyMap<User, UserDto>() { // 커스터마이징
+//
+//		@Override
+//		protected void configure() {
+//			map().setFamilyId(source.getFamily().getFamilyId());
+//		}
+//	};
 }

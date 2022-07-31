@@ -1,7 +1,5 @@
 package com.sai.model.dto.family;
 
-import com.sai.model.entity.Family;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
