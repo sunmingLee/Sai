@@ -1,7 +1,6 @@
 package com.sai.model.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -9,10 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -37,6 +34,34 @@ public class User {
 
 	@Column(name = "user_name")
 	private String userName;
+
+	// 유저 이메일
+	private String email;
+
+	// 패스워드
+	private String password;
+
+	// 유저 닉네임
+	private String nickname;
+
+	// 유저 생일
+	private LocalDate birthday;
+
+	// 음력 사용 여부
+	private Boolean lunar;
+
+	// 프로필 사진 이미지 경로
+	private String user_image_path;
+
+	// 프로필 사진 이미지 이름
+	private String user_image_name;
+
+	// 프로필 사진 이미지 속성
+	private String user_image_type;
+
+	// 프로필 메세지
+	@Lob
+	private String user_message;
 
 //	@Builder.Default
 //	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
@@ -74,5 +99,9 @@ public class User {
 //			familyCallsign.setFromUser(this);
 //
 //	}
+
+	public void updateUserPassword(String password) {
+		this.password = password;
+	}
 
 }
