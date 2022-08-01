@@ -8,7 +8,7 @@
       <br>
       <InputBox v-model="id" :hasLabel="true" labelName="아이디" @inputCheck="checkId"></InputBox>
       <p v-if="validId" class="valid-error">아이디는 4자 이상으로 입력하세요.</p>
-      <Button buttonText="중복확인" buttonClass="small information"></Button>
+      <Button buttonText="중복확인" buttonClass="small information" @click="checkDupilicate"></Button>
       <br>
       <InputBox v-model="email" :hasLabel="true" labelName="이메일" @inputCheck="checkEmail"></InputBox>
       <p v-if="validEmail" class="valid-error">이메일 형식으로 입력하세요.</p>
@@ -125,6 +125,9 @@ export default {
         this.validPasswordConfirm = false
         console.log('false')
       }
+    },
+    checkDuplicate() {
+      alert('사용가능합니다!')
     },
     onJoin () {
       if (this.checked === true) {
