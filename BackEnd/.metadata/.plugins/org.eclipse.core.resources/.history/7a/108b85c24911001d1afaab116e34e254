@@ -1,0 +1,5 @@
+package com.sai.model.entity;
+
+public class Board {
+
+}
