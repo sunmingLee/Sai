@@ -1,6 +1,7 @@
 package com.sai.model.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -38,14 +39,17 @@ public class Board {
 	@JoinColumn(name = "user_id")
 	private User user;
 
+	@Column(name = "board_reg_datetime")
+	private LocalDateTime boardRegDatetime;
+
 	@Column(name = "board_content")
 	private String boardContent;
 
-	@Column(name = "board_media_yn", columnDefinition = "TINYINT(1)")
-	private Boolean boardMediaYn;
+	@Column(name = "board_like_cnt")
+	private int boardLikeCnt;
 
-	@Column(name = "poll_yn", columnDefinition = "TINYINT(1)")
-	private Boolean pollYn;
+	@Column(name = "board_reply_cnt")
+	private int boardReplyCnt;
 
 	@Column(name = "board_date")
 	private LocalDate boardDate;
@@ -53,7 +57,13 @@ public class Board {
 	@Column(name = "board_location")
 	private String boardLocation;
 
-	@Column(name = "board_people_yn", columnDefinition = "TINYINT(1)")
-	private Boolean boardPeopleYn;
+	@Column(name = "board_tagged_yn", columnDefinition = "TINYINT(1)")
+	private Boolean boardTaggedYn;
+
+	@Column(name = "board_media_yn", columnDefinition = "TINYINT(1)")
+	private Boolean boardMediaYn;
+
+	@Column(name = "poll_yn", columnDefinition = "TINYINT(1)")
+	private Boolean pollYn;
 
 }
