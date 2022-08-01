@@ -4,14 +4,14 @@
         <SearchGuide guide="회원가입시 등록한 이메일을 입력해주세요" guide2="회원님의 아이디가 해당 이메일로 전송됩니다"/>
         <InputBox :hasLabel="true" labelName="이메일" @inputCheck="emailCheck"/>
         <p v-if="email" class="valid-email">이메일 형식이 맞지 않습니다</p>
-        <ButtonBig buttonUsage="positive" buttonText="아이디 찾기" @click="searchId"/>
+        <Button buttonUsage="positive" buttonText="아이디 찾기" @click="searchId"/>
     </div>
 </template>
 <script>
 import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import SearchGuide from '@/components/SearchGuide.vue'
 import InputBox from '@/components/common/InputBox.vue'
-import ButtonBig from '@/components/common/ButtonBig.vue'
+import Button from '@/components/common/Button.vue'
 
 export default {
   name: 'SearchIdView',
@@ -19,7 +19,7 @@ export default {
     HeaderTitle,
     SearchGuide,
     InputBox,
-    ButtonBig
+    Button
   },
   data () {
     return {

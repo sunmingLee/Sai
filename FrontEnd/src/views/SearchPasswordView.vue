@@ -6,14 +6,14 @@
         <p v-if="id" class="valid-id">아이디는 2글자 이상 입력해주세요</p>
         <InputBox :hasLabel="true" labelName="이메일" @inputCheck="emailCheck"/>
         <p v-if="email" class="valid-email">이메일 형식이 아닙니다</p>
-        <ButtonBig buttonUsage="positive" buttonText="비밀번호 찾기" @click="searchId"/>
+        <Button buttonUsage="positive" buttonText="비밀번호 찾기" @click="searchId"></Button>
     </div>
 </template>
 <script>
 import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import SearchGuide from '@/components/SearchGuide.vue'
 import InputBox from '@/components/common/InputBox.vue'
-import ButtonBig from '@/components/common/ButtonBig.vue'
+import Button from '@/components/common/Button.vue'
 
 export default {
   name: 'SearchIdView',
@@ -21,7 +21,7 @@ export default {
     HeaderTitle,
     SearchGuide,
     InputBox,
-    ButtonBig
+    Button
   },
   data () {
     return {
