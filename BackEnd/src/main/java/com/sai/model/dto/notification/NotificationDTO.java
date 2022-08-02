@@ -18,6 +18,8 @@ public class NotificationDTO {
 	
 	private String notiType;
 	
+	private Long notiContentId;
+	
 	private LocalDateTime notiDateTime;
 	
 	private Boolean notiReadYn;

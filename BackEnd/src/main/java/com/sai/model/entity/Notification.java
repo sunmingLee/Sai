@@ -48,4 +48,10 @@ public class Notification {
 	@Column(name = "noti_read_yn")
 	private Boolean notiReadYn;
 	
+	@Column(name = "noti_content_id")
+	private Long notiContentId;
+	
+	public void readNoti() {
+		this.notiReadYn = true;
+	}
 }

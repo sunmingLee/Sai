@@ -11,4 +11,6 @@ import com.sai.model.entity.User;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long>{
 	public List<Notification> findNotificationsByToUser(User user);
+	public Notification findNotificationdByNotiId(Long notiId);
+	public void deleteAllByToUser(User user);
 }
