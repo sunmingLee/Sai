@@ -4,7 +4,7 @@
         <div class="input-wrap">
             <InputBox inputSelect="input-box" :hasLabel="true" labelName="비밀번호" @inputCheck="checkPassword"/>
         </div>
-        <Button buttonUsage="small positive" buttonText="확인" @click="confirmPassword"/>
+        <Button buttonClass="small positive" buttonText="확인" @click="confirmPassword"/>
     </div>
 </template>
 <script>
