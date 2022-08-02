@@ -87,12 +87,22 @@ export default {
   display: flex;
 }
 #carouselExampleIndicators{
+  // max-width: ;
   width: 60%;
   top: 10%;
   left: 20%;
 }
+.carousel-control{
+  &-prev, &-next{
+    top: 50%;
+  }
+}
 .carousel-control-next-icon{
-  /* background-image: url('@/assets/images/angle-right-solid.svg'); */
+  background-image: url('@/assets/images/angle-right-solid.svg');
+}
+.carousel-control-prev-icon{
+  top: 50%;
+  background-image: url('@/assets/images/angle-left-solid.svg');
 }
 .tag-wrap{
   position: relative;
