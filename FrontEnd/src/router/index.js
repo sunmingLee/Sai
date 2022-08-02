@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import FamilyCodeView from '../views/FamilyCodeView.vue'
+import ApplyWaitView from '../views/ApplyWaitView.vue'
 
 const routes = [
   {
@@ -21,6 +22,11 @@ const routes = [
     name: 'familyCode',
     component: FamilyCodeView
   },
+  {
+    path: '/applywait',
+    name: 'applywait',
+    component: ApplyWaitView
+  }
 ]
 
 const router = createRouter({
