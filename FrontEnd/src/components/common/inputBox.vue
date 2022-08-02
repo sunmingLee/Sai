@@ -17,7 +17,7 @@
 export default {
   name: 'InputBox',
   props: {
-    hasLabel: Boolean,
+    hasLabel: String,
     labelName: String,
     inputType: String,
     validDisabled: Boolean,
