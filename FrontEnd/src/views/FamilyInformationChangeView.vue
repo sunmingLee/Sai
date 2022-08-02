@@ -2,10 +2,8 @@
   <div class="family-info">
     <HeaderTitle title="가족정보수정"></HeaderTitle>
     <InputBox></InputBox>
-    <Button buttonText="가족 초대하기" buttonClass="big information"></Button>
-    <div class="p-script">
-      <p>우리 가족의 애칭을 정해주세요</p>
-    </div>
+    <Button class="invitebtn" buttonText="가족 초대하기" buttonClass="big information" @click="goInvite"></Button>
+    <h6>우리 가족의 애칭을 정해주세요</h6>
     <div>
       <p>{{userName1}} 님은</p>
       <InputBox :hasLabel="true" labelName="나의"></InputBox>
@@ -41,6 +39,9 @@ export default {
     }
   },
   methods: {
+    goInvite () {
+      this.$router.push('familyInvite')
+    },
     cancle () {
       alert('취소되었습니다.')
     },
@@ -55,14 +56,17 @@ export default {
 }
 </script>
 <style>
-  .p-script{
-    justify-content: center;
+  .invitebtn{
+    display: flex;
+    justify-content: flex-end
+
   }
   .btns{
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
   }
-  p {
-    margin: 0;
+  h6 {
+    display: flex;
+    justify-content: center;
   }
 </style>
