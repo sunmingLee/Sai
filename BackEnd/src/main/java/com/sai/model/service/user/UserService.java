@@ -1,4 +1,4 @@
-package com.sai.model.service;
+package com.sai.model.service.user;
 
 import java.util.HashMap;
 

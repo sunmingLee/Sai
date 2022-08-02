@@ -1,17 +1,26 @@
+
 package com.sai.model.entity.user;
 
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.sai.model.audit.DateAudit;
+import com.sai.model.entity.family.Family;
+import com.sai.model.entity.role.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,21 +33,17 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements UserDetails{
-	
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class User extends DateAudit{
 
 	@Id
 	@Column(name = "user_id")
 	private String userId;
 	
 	// 가족 ID
-	@Column(name="family_id")
-	private String familyId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinTable(name="family",
+	joinColumns = @JoinColumn(name="family_id"))
+	private Family familyId;
 	
 	// 유저 이름
 	@Column(name="user_name")
@@ -58,6 +63,19 @@ public class User implements UserDetails{
 	
 	// 음력 사용 여부
 	private Boolean lunar;
+	
+	// roles(for poll)
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name="user_roles",
+		joinColumns = @JoinColumn(name="user_id"),
+		inverseJoinColumns = @JoinColumn(name="role_id"))
+	private Set<Role> roles = new HashSet<>();
+	
+	
+	// role
+	@Enumerated(EnumType.STRING)
+	private UserRole role;
+	
 	
 	// 프로필 사진 이미지 경로
 	@Column(name="user_image_path")
@@ -95,41 +113,17 @@ public class User implements UserDetails{
 		this.password = password;
 	}
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
+	// 이름, 프로필 변경
+	public User update(String name, String picture) {
+		this.userName = name;
+		this.userImagePath = picture;
+		
+		return this;
 	}
-
-	@Override
-	public String getUsername() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	
+	 public String getRoleKey(){
+	        return this.role.getKey();
+	    }
 
 	
 }

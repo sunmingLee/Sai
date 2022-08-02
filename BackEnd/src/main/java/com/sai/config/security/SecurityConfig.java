@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -11,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.sai.jwt.JwtAuthenticationEntryPoint;
 import com.sai.jwt.JwtAuthenticationFilter;
 import com.sai.jwt.JwtTokenProvider;
 
@@ -18,10 +20,15 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(
+		securedEnabled = true,
+		jsr250Enabled = true,
+		prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
 	// JWT 관련 친구들
 	private final JwtTokenProvider jwtTokenProvider;
+	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	
 	
 	// pw 암호화를 위한 BCrypt 해시 설정
@@ -69,7 +76,18 @@ public class SecurityConfig {
 		
 		http
 			.authorizeRequests()
-			.antMatchers("/", "/api/user/join", "/api/user/login").permitAll() // 특정 URL을 설정하며, permitAll은 해당 URL의 접근을 인증없이 허용한다는 의미
+			.antMatchers("/", "/favicon.ico",
+                    "/**/*.png",
+                    "/**/*.gif",
+                    "/**/*.svg",
+                    "/**/*.jpg",
+                    "/**/*.html",
+                    "/**/*.css",
+                    "/**/*.js" ).permitAll() // 특정 URL을 설정하며, permitAll은 해당 URL의 접근을 인증없이 허용한다는 의미
+			.antMatchers("/api/user/join", "/api/user/login").permitAll()
+			.antMatchers(
+                       "/v3/api-docs",
+                       "/swagger*/**").permitAll()
 			.anyRequest().authenticated();
 		
 		http

@@ -5,7 +5,6 @@ import java.util.Map;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sai.dto.UserDto;
 import com.sai.jwt.JwtTokenProvider;
-import com.sai.model.service.UserService;
+import com.sai.model.service.user.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -73,60 +72,59 @@ public class UserController {
 	public ResponseEntity<String> deleteUser(@PathVariable String userId) {
 		return ResponseEntity.ok(userService.deleteUser(userId));
 	}
-	
 
 	// 로그인
 	@PostMapping("/login")
 	public ResponseEntity<String> login(UserDto user, HttpServletResponse response) throws Exception {
-		
-		
-		
-//		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword());
-//		
-//		 Authentication authentication = authenticationManagerBuilder.getObject()
-//			        .authenticate(authenticationToken);
-//		 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-		
-//		String token = jwtTokenProvider.createToken(user.getUserId());
-//        response.setHeader("X-AUTH-TOKEN", token);
-//
-//        Cookie cookie = new Cookie("X-AUTH-TOKEN", token);
-//        cookie.setPath("/");
-//        cookie.setHttpOnly(true);
-//        cookie.setSecure(true);
-//        response.addCookie(cookie);
-		
+
+		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+				user.getUserId(), user.getPassword());
+
+		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+		SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+		String token = jwtTokenProvider.createToken(user.getUserId());
+		response.setHeader("X-AUTH-TOKEN", token);
+
+		Cookie cookie = new Cookie("X-AUTH-TOKEN", token);
+		cookie.setPath("/");
+		cookie.setHttpOnly(true);
+		cookie.setSecure(true);
+		response.addCookie(cookie);
 
 		return ResponseEntity.ok(userService.login(user));
 
 	}
-	
+
 	// 로그아웃
 	@PostMapping("/logout")
 	public void logout(HttpServletResponse response) {
-	     Cookie cookie = new Cookie("X-AUTH-TOKEN", null);
-	        cookie.setHttpOnly(true);
-	        cookie.setSecure(false);
-	        cookie.setMaxAge(0);
-	        cookie.setPath("/");
-	        response.addCookie(cookie);
+		Cookie cookie = new Cookie("X-AUTH-TOKEN", null);
+		cookie.setHttpOnly(true);
+		cookie.setSecure(false);
+		cookie.setMaxAge(0);
+		cookie.setPath("/");
+		response.addCookie(cookie);
 	}
 
 	// 아이디 찾기
 	@GetMapping("/user/findId")
 	public ResponseEntity<Map<String, Object>> findUserId(UserDto user) throws Exception {
-		System.out.println(user);
 
-		return new ResponseEntity<Map<String, Object>>(userService.findUserId(user),
-				(HttpStatus) userService.findUserId(user).get("status"));
+		// 이부분 수정해야 함. findUserId 두 번 호출해서 메일이 두번 보내짐
+		
+		return ResponseEntity.ok(userService.findUserId(user));
+//		return new ResponseEntity<Map<String, Object>>(userService.findUserId(user),
+//				(HttpStatus) userService.findUserId(user).get("status"));
 	}
 
 	// 비밀번호 찾기
 	@GetMapping("/user/findPw")
 	public ResponseEntity<Map<String, Object>> findUserPw(UserDto user) throws Exception {
 
-		return new ResponseEntity<Map<String, Object>>(userService.findUserPw(user),
-				(HttpStatus) userService.findUserPw(user).get("status"));
+		return ResponseEntity.ok(userService.findUserPw(user));
+//		return new ResponseEntity<Map<String, Object>>(userService.findUserPw(user),
+//				(HttpStatus) userService.findUserPw(user).get("status"));
 	}
 
 	// 소셜 로그인

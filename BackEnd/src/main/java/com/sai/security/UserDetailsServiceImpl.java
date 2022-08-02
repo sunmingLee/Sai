@@ -1,4 +1,4 @@
-package com.sai.model.service;
+package com.sai.security;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.sai.model.entity.user.User;
 import com.sai.model.repository.user.UserRepository;
@@ -22,6 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 	private final UserRepository userRepository;
 	
 	@Override
+	@Transactional
 	public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
 		
 		User user = userRepository.findById(userId)
@@ -29,12 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 		
 		Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
 		
-		return new org
-				.springframework
-				.security
-				.core
-				.userdetails
-				.User(user.getUserId(), user.getPassword(), grantedAuthorities);
+		return UserPrincipal.create(user);
 	}
 
 }

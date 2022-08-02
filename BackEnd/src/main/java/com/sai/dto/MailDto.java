@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Mail {
+public class MailDto {
 	// 받는 메일 주소
 	private String toAddress;
 	

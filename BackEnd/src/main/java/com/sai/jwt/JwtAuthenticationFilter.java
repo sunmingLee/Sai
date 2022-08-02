@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class JwtAuthenticationFilter extends OncePerRequestFilter{
 	
 	private final JwtTokenProvider jwtTokenProvider;
+//	private final UserDetailsService userDetailsService;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -34,6 +37,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 	        }
 
 	        filterChain.doFilter(request, response);
-	    }		
+	    }
+	
+	private String getJwtFromReque(HttpServletRequest request) {
+		String bearerToken = request.getHeader("Authorization");
+		if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+			return bearerToken.substring(7, bearerToken.length());
+		}
+		return null;
+	}
 	
 }
