@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="family-info">
     <HeaderTitle title="가족정보수정"></HeaderTitle>
   </div>
 </template>

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import SearchIdView from '@/views/SearchIdView.vue'
 import SearchPasswordView from '@/views/SearchPasswordView.vue'
 import JoinView from '@/views/JoinView.vue'
+import FamilyInformationChangeView from '@/views/FamilyInformationChangeView.vue'
 const routes = [
 
   {
@@ -18,6 +19,11 @@ const routes = [
     path: '/join',
     name: 'join',
     component: JoinView
+  },
+  {
+    path: '/familyInformationChange',
+    name: 'familyInformationChange',
+    component: FamilyInformationChangeView
   }
 ]
 

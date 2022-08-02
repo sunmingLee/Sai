@@ -1,5 +1,5 @@
 <template>
-  <div class="join-wrap">
+  <div>
     <HeaderTitle class="header" title="회원가입"/>
     <br>
     <form id="join-form" @submit.prevent="onJoin">
