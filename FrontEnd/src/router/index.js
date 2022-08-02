@@ -3,6 +3,8 @@ import SearchIdView from '@/views/SearchIdView.vue'
 import SearchPasswordView from '@/views/SearchPasswordView.vue'
 import JoinView from '@/views/JoinView.vue'
 import FamilyInformationChangeView from '@/views/FamilyInformationChangeView.vue'
+import FamilyInviteView from '@/views/FamilyInviteView.vue'
+
 const routes = [
 
   {
@@ -24,6 +26,11 @@ const routes = [
     path: '/familyInformationChange',
     name: 'familyInformationChange',
     component: FamilyInformationChangeView
+  },
+  {
+    path: '/familyInvite',
+    name: 'familyInvite',
+    component: FamilyInviteView
   }
 ]
 

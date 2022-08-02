@@ -42,8 +42,7 @@ export default {
   margin-top: 5%;
 }
 .hidden{
-  // visibility: hidden;
-  display: none;
+  visibility: hidden;
 }
 .title {
   color: #7B371C;
