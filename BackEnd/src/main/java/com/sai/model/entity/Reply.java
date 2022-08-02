@@ -39,7 +39,7 @@ public class Reply {
 	private LocalDateTime replyRegDateTime;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_user_id")
+	@JoinColumn(name = "reply_user_id")
 	private User user;
 
 	@ManyToOne
