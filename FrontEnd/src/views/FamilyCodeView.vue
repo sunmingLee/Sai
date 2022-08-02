@@ -3,9 +3,8 @@
     <HeaderTitle title="가족 코드 입력"></HeaderTitle>
     <p>가족 코드를 입력해주세요.</p>
     <div class="input-wrap">
-        <!-- <InputBox inputType="text"></InputBox> -->
-        <input class="input-box" type="text"/>
-        <Button buttonClass="small positive" buttonText="확인"></Button>
+      <input v-model="familyId" class="input-box" type="text"/>
+      <Button buttonClass="small positive" buttonText="확인" @click="sendFamilyId"></Button>
     </div>
     <div class="border-bottom"></div>
     <span>사이를 이용하는 첫 가족이신가요?<br/>코드를 만든 후 가족들을 불러보세요!</span>
@@ -15,10 +14,24 @@
 
 <script>
 import HeaderTitle from '@/components/common/HeaderTitle.vue'
-import InputBox from '@/components/common/InputBox.vue'
+// import InputBox from '@/components/common/InputBox.vue'
 import Button from '@/components/common/Button.vue'
 export default {
-  components: { HeaderTitle, InputBox, Button }
+  components: { HeaderTitle, Button },
+  data () {
+    return {
+      familyId: ''
+    }
+  },
+  methods: {
+    sendFamilyId () {
+      const userInfo = {
+        familyId: this.familyId,
+        userId: localStorage.getItem('userId')
+      }
+      this.$store.dispatch('applyFamily', userInfo)
+    }
+  }
 }
 </script>
 
