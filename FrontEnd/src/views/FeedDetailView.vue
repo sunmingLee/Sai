@@ -58,6 +58,7 @@
     <!-- 댓글 작성칸 -->
     <div class="reply-write-wrap">
       <input class="reply" type="text" placeholder="누군가를 부르고싶다면 @ 를 입력해보세요">
+      <Button style="display: inline-block;" buttonClass="small positive" buttonText="등록"></Button>
     </div>
   </div>
 </template>
@@ -67,7 +68,7 @@ import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import FeedUser from '@/components/FeedUser.vue'
 import Button from '@/components/common/Button.vue'
 export default {
-  components: { HeaderTitle, FeedUser, Button},
+  components: { HeaderTitle, FeedUser, Button },
   data () {
     return {
     }
@@ -118,12 +119,14 @@ export default {
   }
 }
 .reply-write-wrap{
-  position: absolute;
-  left: 10%;
-  bottom: 5%;
+  position: relative;
+  top: 50%;
+  // left: 10%;
+  // bottom: 5%;
   .reply{
+    display: inline-block;
     text-align: center;
-    // margin-bottom: 1%;
+    margin-right: 5px;
     width: 80%;
     border-radius: 5px;
     border: 1px solid #ae5f40;
