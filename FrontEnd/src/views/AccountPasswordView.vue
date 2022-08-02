@@ -4,20 +4,20 @@
         <div class="input-wrap">
             <InputBox inputSelect="input-box" :hasLabel="true" labelName="비밀번호" @inputCheck="checkPassword"/>
         </div>
-        <ButtonSmall buttonUsage="positive" buttonText="확인" @click="confirmPassword"/>
+        <Button buttonUsage="small positive" buttonText="확인" @click="confirmPassword"/>
     </div>
 </template>
 <script>
 import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import InputBox from '@/components/common/InputBox.vue'
-import ButtonSmall from '@/components/common/ButtonSmall.vue'
+import Button from '@/components/common/Button.vue'
 
 export default {
   name: 'AccountPasswordView',
   components: {
     HeaderTitle,
     InputBox,
-    ButtonSmall
+    Button
   },
   data () {
     return {

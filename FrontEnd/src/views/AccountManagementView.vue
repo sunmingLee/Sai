@@ -1,38 +1,51 @@
 <template>
-    <div class="flex-wrap">
+    <div class="account-wrap">
         <HeaderTitle title="계정 관리"/>
-        <div class="input-disabled">
-            <InputBox inputSelect="input-underline" :hasLabel="true" labelName="이름" validDisabled="disabled" :inputValue="name"/>
-            <InputBox inputSelect="input-underline" :hasLabel="true" labelName="이메일" validDisabled="disabled" :inputValue="email"/>
-        </div>
-        <div calss="input-wrap">
-            <div class="password">
-                <p>비밀번호 변경</p>
-                <InputBox inputSelect="input-box" :hasLabel="true" labelName="비밀번호" @inputCheck="checkPassword"/>
-                <p v-if="validPassword" class="valid-error">비밀번호는 영문,숫자,특수문자를 포함하여 8자 이상으로 입력하세요.</p>
-                <InputBox inputSelect="input-box" :hasLabel="true" labelName="비밀번호 확인" @inputCheck="checkPasswordConfirm"/>
-                <p v-if="validPasswordConfirm" class="valid-error">비밀번호가 일치하지 않습니다.</p>
-                <ButtonSmall buttonUsage="positive" buttonText="수정" @click="updatePassword"/>
+        <div class="flex">
+          <div class="input-disabled">
+            <div class="flex">
+              <InputBox inputSelect="input-underline" hasLabel=true labelName="이름" validDisabled="disabled" :inputValue="name"/>
             </div>
+            <div class="flex">
+              <InputBox inputSelect="input-underline" hasLabel=true labelName="이메일" validDisabled="disabled" :inputValue="email"/>
+            </div>
+          </div>
+        </div>
+        <div class="flex">
+          <div calss="input-wrap">
+            <p>비밀번호 변경</p>
+              <div class="password-wrap">
+                <InputBox inputSelect="input-box" hasLabel=true labelName="비밀번호" @inputCheck="checkPassword"/>
+              </div>
+              <div class="pwcheck-wrap">
+                <InputBox inputSelect="input-box" hasLabel=true labelName="비밀번호 확인" @inputCheck="checkPasswordConfirm"/>
+                <p v-if="validPasswordConfirm" class="valid-error">비밀번호가 일치하지 않습니다.</p>
+              </div>
+              <div class="flex">
+                <Button buttonClass="small positive" buttonText="수정" @click="updatePassword"/>
+              </div>
+          </div>
         </div>
         <div class="withdrawal">
             <p>회원탈퇴하기</p>
-            <InputBox inputSelect="input-box" :hasLabel="true" labelName="현재 비밀번호" @inputCheck="checkPassword"/>
-            <ButtonSmall buttonUsage="negative" buttonText="회원 탈퇴" @click="withdrawalMember"/>
+            <InputBox inputSelect="input-box" hasLabel="true" labelName="현재 비밀번호" @inputCheck="checkPassword"/>
+            <Button buttonClass="small negative" buttonText="회원탈퇴" @click="withdrawalMember"/>
         </div>
     </div>
 </template>
 <script>
 import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import InputBox from '@/components/common/InputBox.vue'
-import ButtonSmall from '@/components/common/ButtonSmall.vue'
+import Button from '@/components/common/Button.vue'
+
+import { mapState } from "vuex"
 
 export default {
   name: 'AccountManagementView',
   components: {
     HeaderTitle,
     InputBox,
-    ButtonSmall
+    Button
   },
   data () {
     return {
@@ -41,17 +54,18 @@ export default {
       email: 'test@naver.com',
       validPassword: false,
       validPasswordConfirm: false,
-      password: ''
+      passwordCurrent: '',
+      passwordUpdate: ''
     }
   },
   methods: {
     // 비밀번호 유효성 검사 실행
     checkPassword (password) {
-      if (!this.isValidPassword(password)) {
-        this.validPassword = true
-      } else {
-        this.validPassword = false
-        this.password = password
+      this.passwordCurrent = password
+      if(this.passwordUpdate !== '') {
+        if(this.passwordUpdate === this.passwordCurrent) {
+          this.validPasswordConfirm = false
+        }
       }
     },
     // 비밀번호 유효성 검사
@@ -61,25 +75,53 @@ export default {
     },
     // 비밀번호 확인
     checkPasswordConfirm (password) {
-      if (this.password !== password) {
+      if (this.passwordCurrent !== password) {
         this.validPasswordConfirm = true
+        this.passwordUpdate = password
       } else {
         this.validPasswordConfirm = false
+        this.passwordUpdate = password
       }
     },
     // 비밀번호 변경 버튼 클릭
     updatePassword () {
-      alert('비밀번호가 변경되었습니다.')
-      const user = {
-        userId: 'test01',
-        passsword: this.password
+      if(this.passwordCurrent === this.passwordUpdate) {
+        const user = {
+          password: this.passwordUpdate,
+          id: this.userId
+        }
+        console.log(user)
+        this.$store.dispatch('updatePassword', user)
       }
-      console.log(user)
+      
     },
     // 회원탈퇴
     withdrawalMember () {
       // 모달창
     }
+  },
+  computed: {
+    ...mapState(["userId"])
   }
 }
 </script>
+<style lang="scss" scoped>
+.account-wrap {
+  width: 900px;
+
+  .flex{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+
+    .input-wrap{
+      text-align: left;
+      margin-bottom: 100px;
+
+      .name-wrap, .email-wrap {
+        margin: 10px 0 10px 0;
+      }
+    }
+  }
+}
+</style>

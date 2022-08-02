@@ -7,7 +7,7 @@
       </colgroup>
       <tr>
         <td><label class="label-box" for="input-box" v-if="hasLabel">{{ labelName }}</label></td>
-        <td><input class="input-box" :type="inputType" :disabled="validDisabled === ''" :value="inputValue" @keyup="inputCheck"/></td>
+        <td><input class="input-box" :type="inputType" :disabled="validDisabled === 'disabled'" :value="inputValue" @keyup="inputCheck"/></td>
       </tr>
     </table>
   </div>
@@ -20,7 +20,7 @@ export default {
     hasLabel: String,
     labelName: String,
     inputType: String,
-    validDisabled: Boolean,
+    validDisabled: String,
     inputValue: String
   },
   methods: {

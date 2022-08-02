@@ -1,12 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-<<<<<<< HEAD
 import AccountManagementView from '@/views/AccountManagementView.vue'
 import AccountPasswordView from '@/views/AccountPasswordView.vue'
-=======
 import SearchIdView from '@/views/SearchIdView.vue'
 import SearchPasswordView from '@/views/SearchPasswordView.vue'
->>>>>>> fb13be29169e3c2e65dbbe91d635a40d6bc20805
 
 const routes = [
   {
@@ -23,7 +20,6 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   },
   {
-<<<<<<< HEAD
     path: '/account',
     name: 'account',
     component: AccountManagementView
@@ -32,7 +28,8 @@ const routes = [
     path: '/accountCheck',
     name: 'accountCheck',
     component: AccountPasswordView
-=======
+  },
+  {
     path: '/searchId',
     name: 'searchId',
     component: SearchIdView
@@ -41,7 +38,6 @@ const routes = [
     path: '/searchPassword',
     name: 'searchPassword',
     component: SearchPasswordView
->>>>>>> fb13be29169e3c2e65dbbe91d635a40d6bc20805
   }
 ]
 

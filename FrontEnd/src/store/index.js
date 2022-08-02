@@ -1,11 +1,12 @@
 import router from '@/router'
 import axios from 'axios'
-import Vue from 'vue'
 import Vuex from 'vuex'
 
 export default new Vuex.Store({
   state: {
-    msg: ''
+    userId: 'tnqls',
+    userName: 'subin',
+    email: '5515983@naver.com'
   },
   getters: {
   },
@@ -61,6 +62,27 @@ export default new Vuex.Store({
             }
         })
         .catch((err)=> {
+            console.log(err)
+        })
+    },
+    //비밀번호 변경
+    updatePassword({commit}, userInfo) {
+        const api_url= `http://localhost:8080/api/user/profile/${userInfo.id}`
+        const params = {
+            userId: userInfo.id,
+            password: userInfo.password
+        }
+        // const password = userInfo.password
+        axios({
+            url: api_url,
+            method: 'PATCH',
+            params
+        })
+        .then((res) => {
+            alert('비밀번호가 변경되었습니다.')
+            console.log(res)
+        })
+        .catch((err) => {
             console.log(err)
         })
     }
