@@ -1,7 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import FamilyInviteView from '@/views/FamilyInviteView.vue'
+import SearchIdView from '@/views/SearchIdView.vue'
+import SearchPasswordView from '@/views/SearchPasswordView.vue'
 
 const routes = [
+  {
+    path: '/searchId',
+    name: 'searchId',
+    component: SearchIdView
+  },
+  {
+    path: '/searchPassword',
+    name: 'searchPassword',
+    component: SearchPasswordView
+  },
   {
     path: '/familyInvite',
     name: 'familyInvite',
