@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <HeaderTitle title="회원가입"/>
+  <div class="join-wrap">
+    <HeaderTitle class="header" title="회원가입"/>
     <br>
     <form id="join-form" @submit.prevent="onJoin">
       <InputBox v-model="name" :hasLabel="true" labelName="이름" @inputCheck="checkName"></InputBox>
