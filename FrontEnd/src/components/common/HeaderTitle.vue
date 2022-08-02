@@ -1,19 +1,58 @@
 <template>
-    <div>
-        <h2 class="title">{{ title }}</h2>
-    </div>
+  <div class="header">
+      <img :class="data.visibilityBack" src="@/assets/images/arrow-left-solid.svg" alt="arrow-left" style="width: 20px">
+      <span class="title">{{ title }}</span>
+      <img :class="data.visibilityIcon" src="@/assets/images/calendar-days-solid.svg" alt="calendar" style="width: 20px">
+  </div>
 </template>
 <script>
+import {reactive} from 'vue';
+
 export default {
   name: 'HeaderTitle',
   props: {
-    title: String
+    title: String,
+    hasBack: String,
+    hasIcon: String
+  },
+  setup(props) {
+    const data = reactive({
+      visibilityBack: '',
+      visibilityIcon: ''
+    })
+    
+    if(!props.hasBack) {
+      data.visibilityBack = 'hidden'
+    }
+    if(!props.hasIcon) {
+      data.visibilityIcon = 'hidden'
+    }
+    
+    return {
+      data
+    }
   }
 }
+
 </script>
-<style>
+
+<style scoped lang="scss">
+.header{
+  position: sticky;
+  top: 0;
+  padding-left: 5px;
+  padding-right: 10px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 5%;
+}
+.hidden{
+  visibility: hidden;
+}
 .title {
   color: #7B371C;
   font-size: 20px;
+  font-weight: bold;
 }
 </style>

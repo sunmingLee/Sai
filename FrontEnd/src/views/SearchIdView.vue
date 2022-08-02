@@ -1,20 +1,30 @@
 <template>
-    <div class="flex-box">
-        <HeaderTitle title="아이디 찾기"/>
-        <SearchGuide guide="회원가입시 등록한 이메일을 입력해주세요" guide2="회원님의 아이디가 해당 이메일로 전송됩니다"/>
-        <div class="input-wrap">
-          <InputBox :hasLabel="true" labelName="이름" @inputCheck="checkName"/>
-          <InputBox :hasLabel="true" labelName="이메일" @inputCheck="checkEmail"/>
-          <p v-if="validEmail" class="valid-email">이메일 형식이 맞지 않습니다</p>
+    <div class="searchId-wrap">
+        <HeaderTitle hasBack=true title="아이디 찾기"/>
+        <div class="flex">
+          <SearchGuide guide="회원가입시 등록한 이메일을 입력해주세요" guide2="회원님의 아이디가 해당 이메일로 전송됩니다"/>
         </div>
-        <ButtonBig buttonUsage="positive" buttonText="아이디 찾기" @click="searchId"/>
+        <div class="flex">
+          <div class="input-wrap">
+            <div class="name-wrap">
+              <InputBox hasLabel="true" labelName="이름" @inputCheck="checkName"/>
+            </div>
+            <div class="email-wrap">
+              <InputBox hasLabel="true" labelName="이메일" @inputCheck="checkEmail"/>
+              <p v-if="validEmail" class="valid-email">이메일 형식이 맞지 않습니다</p>
+            </div>
+          </div>
+        </div>
+        <div class="flex">
+          <Button buttonClass="big positive" buttonText="아이디 찾기" @click="searchId"/>
+        </div>
     </div>
 </template>
 <script>
 import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import SearchGuide from '@/components/SearchGuide.vue'
 import InputBox from '@/components/common/InputBox.vue'
-import ButtonBig from '@/components/common/ButtonBig.vue'
+import Button from '@/components/common/Button.vue'
 
 export default {
   name: 'SearchIdView',
@@ -22,13 +32,13 @@ export default {
     HeaderTitle,
     SearchGuide,
     InputBox,
-    ButtonBig
+    Button
   },
   data () {
     return {
       validEmail: false,
       email: '',
-      name: ''
+      name: '',
     }
   },
   methods: {
@@ -51,39 +61,50 @@ export default {
     },
     // 아이디 찾기 버튼 클릭 시
     searchId () {
+      const userInfo = {
+        userName: this.name,
+        email: this.email
+      }
       if (this.validEmail) {
-        alert('이메일 형식이 맞지 않습니다')
-      } else {
-        // 디비에 있는 이메일인지 없는 이메일인지 확인해서 한 번 더 갈래를 나눠줘야 할 듯
-        alert('회원님의 아이디를 이메일로 전송했습니다')
-        const user = {
-          userName: this.name,
-          email: this.email
-        }
-        console.log(user)
+        alert('이메일 형식이 맞지 않습니다.')
+      } 
+      else if(this.name === '') {
+        alert('이름을 입력해주세요.')
+      }
+      else {
+        this.$store.dispatch("findId", userInfo)
+      }
+    },
+    
+  },
+}
+</script>
+<style lang="scss" scoped>
+p {
+  margin: 0;
+}
+.searchId-wrap {
+  width: 900px;
+
+  .flex{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+
+    .input-wrap{
+      text-align: left;
+      margin-bottom: 100px;
+
+      .name-wrap, .email-wrap {
+        margin: 10px 0 10px 0;
       }
     }
   }
 }
-</script>
-<style scoped>
-* {
-    margin: 0px;
-    padding: 0px;
-}
-body {
-    background-color: #FAFAFA;
-}
 /* 이메일 유효성 검사 문구 */
 .valid-email {
     color: red;
-    font-size: 10px;
+    font-size: 12px;
 }
-.flex-box {
-  text-align: center;
-}
-.input-wrap{
-  margin-top: 100px;
-  margin-bottom: 100px;
-}
+
 </style>

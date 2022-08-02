@@ -1,22 +1,34 @@
 <template>
-    <div class="flex-box">
-        <HeaderTitle title="비밀번호 찾기"/>
-        <SearchGuide guide="회원가입시 등록한 아이디와 이메일을 입력해주세요" guide2="임시 비밀번호가 해당 이메일로 전송됩니다"/>
-        <div class="input-wrap">
-          <InputBox :hasLabel="true" labelName="이름" @inputCheck="checkName"/>
-          <InputBox :hasLabel="true" labelName="아이디" @inputCheck="checkId"/>
-          <p v-if="validId" class="valid-id">아이디는 4글자 이상 입력해주세요</p>
-          <InputBox :hasLabel="true" labelName="이메일" @inputCheck="checkEmail"/>
-          <p v-if="validEmail" class="valid-email">이메일 형식이 맞지 않습니다</p>
+    <div class="searchPassword-wrap">
+        <HeaderTitle hasBack=true title="비밀번호 찾기"/>
+        <div class="flex">
+          <SearchGuide guide="회원가입시 등록한 아이디와 이메일을 입력해주세요" guide2="임시 비밀번호가 해당 이메일로 전송됩니다"/>
         </div>
-        <ButtonBig buttonUsage="positive" buttonText="비밀번호 찾기" @click="searchPassword"/>
+        <div class="flex">
+          <div class="input-wrap">
+            <div class="name-wrap">
+              <InputBox :hasLabel="true" labelName="이름" @inputCheck="checkName"/>
+            </div>
+            <div class="id-wrap">
+              <InputBox :hasLabel="true" labelName="아이디" @inputCheck="checkId"/>
+              <p v-if="validId" class="valid-id">아이디는 4글자 이상 입력해주세요</p>
+            </div>
+            <div class="email-wrap">
+              <InputBox :hasLabel="true" labelName="이메일" @inputCheck="checkEmail"/>
+            </div>
+            <p v-if="validEmail" class="valid-email">이메일 형식이 맞지 않습니다</p>
+          </div>
+        </div>
+        <div class="flex">
+          <Button buttonClass="big positive" buttonText="비밀번호 찾기" @click="searchPassword"/>
+        </div>
     </div>
 </template>
 <script>
 import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import SearchGuide from '@/components/SearchGuide.vue'
 import InputBox from '@/components/common/InputBox.vue'
-import ButtonBig from '@/components/common/ButtonBig.vue'
+import Button from '@/components/common/Button.vue'
 
 export default {
   name: 'SearchIdView',
@@ -24,7 +36,7 @@ export default {
     HeaderTitle,
     SearchGuide,
     InputBox,
-    ButtonBig
+    Button
   },
   data () {
     return {
@@ -61,35 +73,48 @@ export default {
       }
     },
     searchPassword () {
+      const userInfo = {
+        userName: this.name,
+        userId: this.id,
+        email: this.email
+      }
       if (this.validEmail) {
         alert('이메일 형식이 맞지 않습니다')
       } else if (this.validId) {
         alert('아이디는 4글자 이상 입력해주세요')
-      } else if (this.name === '' || this.email === '' || this.id === '') {
-        alert('모두 입력해주세요')
+      } else if (this.name === '') {
+        alert('이름을 입력해주세요')
+        
       } else {
-        alert('임시 비밀번호를 이메일로 전송했습니다')
-        const user = {
-          userName: this.name,
-          userId: this.id,
-          email: this.email
-        }
-        console.log(user)
+        this.$store.dispatch("findPassword", userInfo)
+        console.log(userInfo)
       }
     }
   }
 }
 </script>
-<style>
+<style lang="scss" scoped>
+p {
+  margin: 0;
+}
+.searchPassword-wrap {
+  width: 900px;
+  .flex{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    .input-wrap{
+      text-align: left;
+      margin-bottom: 100px;
+    }
+    .name-wrap, .email-wrap, .id-wrap {
+        margin: 10px 0 10px 0;
+     }
+  }
+}
 .valid-email, .valid-id {
   color: red;
-  font-size: 10px;
+  font-size: 12px;
 }
-.flex-box {
-  text-align: center;
-}
-.input-wrap{
-  margin-top: 100px;
-  margin-bottom: 100px;
-}
+
 </style>
