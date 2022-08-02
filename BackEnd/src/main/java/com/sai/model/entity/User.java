@@ -41,9 +41,6 @@ public class User {
 	// 패스워드
 	private String password;
 
-	// 유저 닉네임
-	private String nickname;
-
 	// 유저 생일
 	private LocalDate birthday;
 
