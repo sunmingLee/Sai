@@ -1,8 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import FeedView from '@/views/FeedView.vue'
 import FeedCreateView from '@/views/FeedCreateView.vue'
-import FeedCreateAdditionalView from '@/views/FeedCreateAdditionalView.vue'
-import FeedCreatePollView from '@/views/FeedCreatePollView.vue'
 
 const routes = [
   {
@@ -14,18 +12,6 @@ const routes = [
     path: '/feedCreate',
     name: 'feedCreate',
     component: FeedCreateView,
-    children: [
-      {
-        path: '/feedCreateAdditional',
-        name: 'feedCreateAdditional',
-        component: FeedCreateAdditionalView
-      },
-      {
-        path: '/feedCreatePoll',
-        name: 'feedCreatePoll',
-        component: FeedCreatePollView
-      }
-    ]
   }
 ]
 
