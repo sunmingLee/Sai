@@ -6,7 +6,7 @@
         </div>
         <div class="flex">
             <div class="code-wrap">
-                <p id="family-code" class="family-code">{{familyCode}}</p>
+                <p id="family-code" class="family-code">{{familyId}}</p>
             </div>
         </div>
         <div class="flex">
@@ -48,7 +48,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['familyCode'])
+    ...mapState(['familyId'])
   }
 }
 </script>
