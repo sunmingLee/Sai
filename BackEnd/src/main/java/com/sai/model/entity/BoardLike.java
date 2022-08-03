@@ -27,13 +27,14 @@ public class BoardLike {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "board_like_id")
+	@Column(name = "board_like_id", updatable = false, insertable = false)
 	private Long BoardLikeId;
 
-	@Column(name = "board_id")
-	private Long boardId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "board_id")
+	private Board board;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 

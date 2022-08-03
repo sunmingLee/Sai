@@ -1,4 +1,4 @@
-package com.sai.model.dto.feed;
+package com.sai.model.dto.boardTagged;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,8 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class BoardTaggedDto {
-	private String boardTaggedId;
-	private String boardId;
+public class InputBoardTaggedRequestDto {
 	private String userId;
 }

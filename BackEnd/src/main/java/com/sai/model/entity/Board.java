@@ -3,9 +3,9 @@ package com.sai.model.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,12 +13,18 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.sai.model.dto.board.UpdateBoardRequestDto;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,18 +34,19 @@ public class Board {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "board_id")
+	@Column(name = "board_id", updatable = false, insertable = false)
 	private Long boardId;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "family_id")
 	private Family family;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@Column(name = "board_reg_datetime")
+	@CreatedDate
+	@Column(name = "board_reg_datetime", updatable = false)
 	private LocalDateTime boardRegDatetime;
 
 	@Column(name = "board_content")
@@ -65,5 +72,30 @@ public class Board {
 
 	@Column(name = "poll_yn", columnDefinition = "TINYINT(1)")
 	private Boolean pollYn;
+
+//	public void setBoardId(Long boardId) {
+//		this.boardId = boardId;
+//	}
+
+//	public void setFamily(String familyId) {
+//		
+//	}
+
+	public void upBoardLike() {
+		this.boardLikeCnt++;
+	}
+
+	public void downBoardLike() {
+		this.boardLikeCnt--;
+	}
+
+	public void updateBoard(UpdateBoardRequestDto updateboarddtoBoardRequestDto) {
+		this.boardContent = updateboarddtoBoardRequestDto.getBoardContent();
+		this.boardDate = updateboarddtoBoardRequestDto.getBoardDate();
+		this.boardLocation = updateboarddtoBoardRequestDto.getBoardLocation();
+		this.boardTaggedYn = updateboarddtoBoardRequestDto.getBoardTaggedYn();
+		this.boardMediaYn = updateboarddtoBoardRequestDto.getBoardMediaYn();
+		this.pollYn = updateboarddtoBoardRequestDto.getPollYn();
+	}
 
 }

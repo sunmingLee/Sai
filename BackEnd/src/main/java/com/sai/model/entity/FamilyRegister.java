@@ -29,7 +29,7 @@ public class FamilyRegister {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "family_register_id")
+	@Column(name = "family_register_id", updatable = false, insertable = false)
 	private Long familyRegisterId;
 
 //	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

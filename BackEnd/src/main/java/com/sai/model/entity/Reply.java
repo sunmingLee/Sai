@@ -1,5 +1,7 @@
 package com.sai.model.entity;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,37 +10,53 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
-import lombok.AccessLevel;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
-@Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@ToString
 @Entity
-@Table(name = "board_tagged")
-public class BoardTagged {
+public class Reply {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "board_tagged_id", updatable = false, insertable = false)
-	private Long boardTaggedId;
+	@Column(name = "reply_id", updatable = false, insertable = false)
+	private Long replyId;
+
+	@Column(name = "reply_content")
+	private String replyContent;
+
+	@Column(name = "reply_reg_datetime")
+	private LocalDateTime replyRegDateTime;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_user_id")
+	private User user;
+
+	@ManyToOne
 	@JoinColumn(name = "board_id")
+	@JsonIgnore
 	private Board board;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private User user;
+	public void update(String content) {
+		this.replyContent = content;
+	}
 
 	public void setBoard(Board board) {
 		this.board = board;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }

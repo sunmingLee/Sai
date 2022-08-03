@@ -1,4 +1,4 @@
-package com.sai.model.dto.feed;
+package com.sai.model.dto.boardLike;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class BoardLikeDto {
-	private String boardLikeId;
-	private String boardId;
+	private Long boardLikeId;
+	private Long boardId;
 	private String userId;
 }

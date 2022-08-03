@@ -2,9 +2,12 @@ package com.sai.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AccessLevel;
@@ -23,11 +26,12 @@ public class BoardMedia {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "board_media_id")
+	@Column(name = "board_media_id", updatable = false, insertable = false)
 	private Long boardMediaId;
 
-	@Column(name = "board_id")
-	private Long boardId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "board_id")
+	private Board board;
 
 	@Column(name = "board_media_path")
 	private String boardMediaPath;
@@ -37,5 +41,9 @@ public class BoardMedia {
 
 	@Column(name = "board_media_type")
 	private String boardMediaType;
+
+	public void setBoard(Board board) {
+		this.board = board;
+	}
 
 }

@@ -26,7 +26,7 @@ public class FamilyCallsign {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "family_callsign_id")
+	@Column(name = "family_callsign_id", updatable = false, insertable = false)
 	private Long familyCallsignId;
 
 //	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
