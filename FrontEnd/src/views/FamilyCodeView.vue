@@ -8,7 +8,7 @@
     </div>
     <div class="border-bottom"></div>
     <span>사이를 이용하는 첫 가족이신가요?<br/>코드를 만든 후 가족들을 불러보세요!</span>
-    <Button style="margin-top: 10%;" buttonClass="big information" buttonText="가족코드 만들기"></Button>
+    <Button style="margin-top: 10%;" buttonClass="big information" buttonText="가족코드 만들기" @click="createFamilyId"></Button>
   </div>
 </template>
 
@@ -30,6 +30,9 @@ export default {
         userId: localStorage.getItem('userId')
       }
       this.$store.dispatch('applyFamily', userInfo)
+    },
+    createFamilyId () {
+      this.$store.dispatch('createFamilyId', localStorage.getItem('userId'))
     }
   }
 }

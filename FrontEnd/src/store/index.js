@@ -6,12 +6,15 @@ import Vuex from 'vuex'
 
 export default new Vuex.Store({
   state: {
-    msg: ''
+    msg: '',
+    familyId: ''
   },
   getters: {
   },
   mutations: {
-
+    SET_FAMILY_ID: (state, familyId) => {
+      state.familyId = familyId
+    }
   },
   actions: {
     // 가족 들어가기 신청
@@ -42,6 +45,27 @@ export default new Vuex.Store({
         .catch((err) => {
           console.log(err)
           alert('잘못된 코드입니다')
+        })
+    },
+    // 가족 아이디 생성
+    createFamilyId ({ commit }, userInfo) {
+      console.log(userInfo)
+      const api_url = 'http://localhost:8080/family/create/'
+      axios({
+        url: api_url + userInfo,
+        method: 'POST'
+      })
+        .then((res) => {
+          console.log(res)
+          if (res.status === 200) {
+            commit('SET_FAMILY_ID', res.data.familyId)
+            router.push({ name: 'applywait' })
+          } else {
+            console.log(res)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
         })
     }
   },
