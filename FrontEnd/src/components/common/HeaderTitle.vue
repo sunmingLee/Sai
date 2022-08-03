@@ -1,6 +1,6 @@
 <template>
   <div class="header">
-      <img :class="visibilityBack" src="@/assets/images/arrow-left-solid.svg" alt="arrow-left" style="width: 4%">
+      <img :class="visibilityBack" src="@/assets/images/arrow-left-solid.svg" alt="arrow-left" style="width: 4%" @click="goBack">
       <span class="title">{{ title }}</span>
       <img :class="visibilityIcon" src="@/assets/images/calendar-days-solid.svg" alt="calendar" style="width: 4%">
   </div>
@@ -25,6 +25,11 @@ export default {
     }
     if (!this.hasIcon) {
       this.visibilityIcon = 'hidden'
+    }
+  },
+  methods: {
+    goBack () {
+      this.$router.go(-1)
     }
   }
 }
