@@ -1,6 +1,7 @@
 <template>
   <div class="family-info">
     <HeaderTitle title="가족정보수정"></HeaderTitle>
+    <img src="src\assets\images\familyimg.png" alt="familyimg" class="rounded-circle">
     <InputBox></InputBox>
     <Button class="invitebtn" buttonText="가족 초대하기" buttonClass="big information" @click="goInvite"></Button>
     <h6>우리 가족의 애칭을 정해주세요</h6>
@@ -35,7 +36,10 @@ export default {
       familyName: '',
       userName1: '엄마',
       userName2: '아빠',
-      userName3: '수빈'
+      userName3: '수빈',
+      callsign1: '',
+      callsign2: '',
+      callsign3: ''
     }
   },
   methods: {
@@ -45,11 +49,11 @@ export default {
     cancle () {
       alert('취소되었습니다.')
     },
-    save (familyName, userName1, userName2, userName3) {
+    save (familyName, callsign1, callsign2, callsign3) {
       familyName = this.familyName
-      userName1 = this.userName1
-      userName2 = this.userName2
-      userName3 = this.userName3
+      callsign1 = this.callsign1
+      callsign2 = this.callsign2
+      callsign3 = this.callsign3
       alert('저장되었습니다.')
     }
   }
