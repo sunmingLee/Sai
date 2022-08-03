@@ -1,12 +1,11 @@
 /* eslint-disable camelcase */
 import router from '@/router'
 import axios from 'axios'
-import Vue from 'vue'
+
 import Vuex from 'vuex'
 
 export default new Vuex.Store({
   state: {
-    msg: '',
     familyId: ''
   },
   getters: {

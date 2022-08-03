@@ -38,7 +38,7 @@ export default {
     return {
       validEmail: false,
       email: '',
-      name: '',
+      name: ''
     }
   },
   methods: {
@@ -67,16 +67,13 @@ export default {
       }
       if (this.validEmail) {
         alert('이메일 형식이 맞지 않습니다.')
-      } 
-      else if(this.name === '') {
+      } else if (this.name === '') {
         alert('이름을 입력해주세요.')
+      } else {
+        this.$store.dispatch('findId', userInfo)
       }
-      else {
-        this.$store.dispatch("findId", userInfo)
-      }
-    },
-    
-  },
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>

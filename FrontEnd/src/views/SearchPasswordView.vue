@@ -15,8 +15,8 @@
             </div>
             <div class="email-wrap">
               <InputBox :hasLabel="true" labelName="이메일" @inputCheck="checkEmail"/>
+              <p v-if="validEmail" class="valid-email">이메일 형식이 맞지 않습니다</p>
             </div>
-            <p v-if="validEmail" class="valid-email">이메일 형식이 맞지 않습니다</p>
           </div>
         </div>
         <div class="flex">
@@ -84,7 +84,6 @@ export default {
         alert('아이디는 4글자 이상 입력해주세요')
       } else if (this.name === '') {
         alert('이름을 입력해주세요')
-        
       } else {
         this.$store.dispatch("findPassword", userInfo)
         console.log(userInfo)
