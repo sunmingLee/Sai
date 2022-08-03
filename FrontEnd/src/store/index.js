@@ -49,7 +49,6 @@ export default new Vuex.Store({
     },
     // 가족 아이디 생성
     createFamilyId ({ commit }, userInfo) {
-      console.log(userInfo)
       const api_url = 'http://localhost:8080/family/create/'
       axios({
         url: api_url + userInfo,
@@ -59,9 +58,58 @@ export default new Vuex.Store({
           console.log(res)
           if (res.status === 200) {
             commit('SET_FAMILY_ID', res.data.familyId)
-            router.push({ name: 'applywait' })
+            router.push({ name: 'familyInvite' })
           } else {
             console.log(res)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 아이디 찾기
+    findId ({ commit }, userInfo) {
+      const api_url = 'http://localhost:8080/api/user/findId'
+      const params = {
+        userName: userInfo.userName,
+        email: userInfo.email
+      }
+      axios({
+        url: api_url,
+        method: 'GET',
+        params
+      })
+        .then((res) => {
+          if (res.data.msg.indexOf('입력하신 이메일로 아이디가 전송되었습니다.') != -1) {
+            alert(res.data.msg)
+            router.push({ name: 'home' })
+          } else {
+            alert(res.data.msg)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 비밀번호 찾기
+    findPassword ({ commit }, userInfo) {
+      const api_url = 'http://localhost:8080/api/user/findPw'
+      const params = {
+        userName: userInfo.userName,
+        userId: userInfo.userId,
+        email: userInfo.email
+      }
+      axios({
+        url: api_url,
+        method: 'GET',
+        params
+      })
+        .then((res) => {
+          if (res.data.msg.indexOf('입력하신 이메일로 임시 비밀번호가 전송되었습니다.') != -1) {
+            alert(res.data.msg)
+            router.push({ name: 'home' })
+          } else {
+            alert(res.data.msg)
           }
         })
         .catch((err) => {

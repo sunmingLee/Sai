@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import FamilyCodeView from '../views/FamilyCodeView.vue'
 import ApplyWaitView from '../views/ApplyWaitView.vue'
+import SearchIdView from '@/views/SearchIdView.vue'
+import SearchPasswordView from '@/views/SearchPasswordView.vue'
 
 const routes = [
   {
@@ -26,6 +28,16 @@ const routes = [
     path: '/applywait',
     name: 'applywait',
     component: ApplyWaitView
+  },
+  {
+    path: '/searchId',
+    name: 'searchId',
+    component: SearchIdView
+  },
+  {
+    path: '/searchPassword',
+    name: 'searchPassword',
+    component: SearchPasswordView
   }
 ]
 
