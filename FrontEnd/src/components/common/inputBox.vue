@@ -1,9 +1,4 @@
 <template>
-  <!-- <div class="input-group">
-    <span class="input-group-text" id="addon-wrapping">{{labelName}}</span>
-    <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
-    <Button buttonClass="small information" buttonText="확인"></Button>
-  </div> -->
   <div class="form-wrap">
     <table>
       <colgroup>
@@ -15,22 +10,39 @@
         <td><input class="input-box" :type="inputType" :disabled="validDisabled === ''" :value="inputValue" @keyup="inputCheck"/></td>
       </tr>
     </table>
-    <!-- <p v-if="hasError && !isValid">{{ errorMessage }}</p> -->
   </div>
 </template>
 
 <script>
+// import {emit} from 'vue'
+// export default {
+//   name: 'InputBox',
+//   props: {
+//     hasLabel: String,
+//     labelName: String,
+//     inputType: String,
+//     validDisabled: Boolean,
+//     inputValue: String
+//   },
+//   setup(props, context) {
+//     const isInputValue = ref(props.inputValue)
+//     const inputCheck = () => {
+//       context.emit('inputCheck', isInputValue)
+//     }
+//     return {
+//       isInputValue,
+//       inputCheck
+//     }
+//   }
+// }
 export default {
   name: 'InputBox',
   props: {
-    hasLabel: Boolean,
+    hasLabel: String,
     labelName: String,
     inputType: String,
     validDisabled: Boolean,
     inputValue: String
-    // hasError: Boolean,
-    // errorMessage: String,
-    // isValid: Boolean
   },
   methods: {
     // 부모 컴포넌트에게 input 값을 전송
