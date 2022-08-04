@@ -21,7 +21,7 @@ import lombok.Data;
 public class Choice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long ChoiceId;
 
     @NotBlank
     @Size(max = 40)
@@ -44,11 +44,11 @@ public class Choice {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Choice choice = (Choice) o;
-        return Objects.equals(id, choice.id);
+        return Objects.equals(ChoiceId, choice.ChoiceId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(ChoiceId);
     }
 }

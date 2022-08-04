@@ -104,15 +104,23 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	// 로그인 인증 후 가족 정보 찾기
+	// 로그인 인증 후 토큰 보내기 -> 토큰 쪼갠 후 유저 아이디 받아오기 -> 유저 검증 -> 유저 정보 중 가족 아이디 찾기
+		// 가족 아이디 있다면 가족 아이디 & 가족 신청 여부는 true 반환 -> 피드 페이지
+		// 가족 아이디 없다면 유저 아이디로 가족 신청 테이블 조회
+			// 가족 신청이 없다면 가족 아이디는 null & 가족 신청 여부는 null 반환 -> 가족 신청 페이지
+			// 가족 신청이 있다면
+				// 가족 수락이 안된 경우 가족 아이디는 null & 가족 신청 여부는 true 반환 -> 가족 신청 후 대기 페이지
 	public InfoUserResponseDto loginUserInfo(LoginUserRequestDto loginUserRequestDto) {
 		InfoUserResponseDto infoUserResponseDto = new InfoUserResponseDto();
 		infoUserResponseDto.setUserId(loginUserRequestDto.getUserId());
 		
 		User loginUser = userRepository.findByUserId(loginUserRequestDto.getUserId())
-				.orElseThrow(() -> new ResourceNotFoundException("User", "username", loginUserRequestDto.getUserId()));
+				.orElseThrow(() -> new ResourceNotFoundException("User", "userId", loginUserRequestDto.getUserId()));
 				
 		if(loginUser.getFamilyId() == null) {
-			FamilyRegister familyRegister = familyRegisterRepository.findOneByUserUserId(loginUserRequestDto.getUserId());
+			FamilyRegister familyRegister = familyRegisterRepository.findOneByUserUserId(loginUserRequestDto.getUserId())
+					.orElseThrow(() -> new ResourceNotFoundException("FamilyRegister", "familyRegister", loginUserRequestDto.getUserId()));
+					
 			// 
 			if(familyRegister == null) {
 				return infoUserResponseDto;

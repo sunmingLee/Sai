@@ -1,4 +1,4 @@
-package com.sai.model.entity.role;
+package com.sai.model.entity.user;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -16,12 +16,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="roles")
+@Table(name = "roles")
 public class Role {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
 	@Enumerated(EnumType.STRING)
 	private RoleName name;
 
-
+	public Role(RoleName name) {
+        this.name = name;
+    }
+	
 }

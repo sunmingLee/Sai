@@ -21,6 +21,7 @@ import org.hibernate.annotations.FetchMode;
 import com.sai.model.entity.audit.UserDateAudit;
 
 import lombok.Data;
+import lombok.Getter;
 
 @Data
 @Entity

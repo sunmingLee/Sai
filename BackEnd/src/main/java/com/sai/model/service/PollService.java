@@ -2,20 +2,14 @@ package com.sai.model.service;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.sai.controller.poll.AppConstants;
 import com.sai.controller.poll.ModelMapper;
 import com.sai.model.entity.poll.Choice;
 import com.sai.model.entity.poll.ChoiceVoteCount;
@@ -25,7 +19,6 @@ import com.sai.model.entity.user.User;
 import com.sai.model.repository.poll.PollRepository;
 import com.sai.model.repository.poll.VoteRepository;
 import com.sai.model.repository.user.UserRepository;
-import com.sai.poll.PagedResponse;
 import com.sai.poll.PollRequest;
 import com.sai.poll.PollResponse;
 import com.sai.poll.VoteRequest;
@@ -43,232 +36,164 @@ public class PollService {
 	private final VoteRepository voteRepository;
 	private final UserRepository userRepository;
 
-	public PagedResponse<PollResponse> getAllPolls(UserPrincipal currentUser, int page, int size) {
-        validatePageNumberAndSize(page, size);
+	// 투표 만들기
+	public Poll createPoll(PollRequest pollRequest) {
+		Poll poll = new Poll();
+		poll.setPollTitle(pollRequest.getQuestion());
 
-        // Retrieve Polls
-        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
-        Page<Poll> polls = pollRepository.findAll(pageable);
+		pollRequest.getChoices().forEach(choiceRequest -> {
+			poll.addChoice(new Choice(choiceRequest.getText()));
+		});
 
-        if(polls.getNumberOfElements() == 0) {
-            return new PagedResponse<>(Collections.emptyList(), polls.getNumber(),
-                    polls.getSize(), polls.getTotalElements(), polls.getTotalPages(), polls.isLast());
-        }
+		Instant now = Instant.now();
+		Instant expirationDateTime = now.plus(Duration.ofDays(pollRequest.getPollLength().getDays()))
+				.plus(Duration.ofHours(pollRequest.getPollLength().getHours()));
 
-        // Map Polls to PollResponses containing vote counts and poll creator details
-        List<Long> pollIds = polls.map(Poll::getPollId).getContent();
-        Map<Long, Long> choiceVoteCountMap = getChoiceVoteCountMap(pollIds);
-        Map<Long, Long> pollUserVoteMap = getPollUserVoteMap(currentUser, pollIds);
-        Map<String, User> creatorMap = getPollCreatorMap(polls.getContent());
+		poll.setExpirationDateTime(expirationDateTime);
 
-        List<PollResponse> pollResponses = polls.map(poll -> {
-            return ModelMapper.mapPollToPollResponse(poll,
-                    choiceVoteCountMap,
-                    creatorMap.get(poll.getCreatedBy()),
-                    pollUserVoteMap == null ? null : pollUserVoteMap.getOrDefault(poll.getPollId(), null));
-        }).getContent();
+		return pollRepository.save(poll);
+	}
 
-        return new PagedResponse<>(pollResponses, polls.getNumber(),
-                polls.getSize(), polls.getTotalElements(), polls.getTotalPages(), polls.isLast());
-    }
+	// 투표 삭제하기
+	public void deletePoll(Long pollId) {
+		pollRepository.deleteById(pollId);
+	};
 
-    public PagedResponse<PollResponse> getPollsCreatedBy(String userId, UserPrincipal currentUser, int page, int size) {
-        validatePageNumberAndSize(page, size);
+	// 투표 조회하기
+	public PollResponse getPollById(Long pollId, UserPrincipal currentUser) {
+		Poll poll = pollRepository.findById(pollId)
+				.orElseThrow(() -> new ResourceNotFoundException("Poll", "id", pollId));
 
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "username", userId));
+		// Retrieve Vote Counts of every choice belonging to the current poll
+		List<ChoiceVoteCount> votes = voteRepository.countByPollIdGroupByChoiceId(pollId);
 
-        // Retrieve all polls created by the given username
-        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
-        Page<Poll> polls = pollRepository.findByCreatedBy(user.getUserId(), pageable);
+		Map<Long, Long> choiceVotesMap = votes.stream()
+				.collect(Collectors.toMap(ChoiceVoteCount::getChoiceId, ChoiceVoteCount::getVoteCount));
 
-        if (polls.getNumberOfElements() == 0) {
-            return new PagedResponse<>(Collections.emptyList(), polls.getNumber(),
-                    polls.getSize(), polls.getTotalElements(), polls.getTotalPages(), polls.isLast());
-        }
+		// Retrieve poll creator details
+		User creator = userRepository.findById(poll.getCreatedBy())
+				.orElseThrow(() -> new ResourceNotFoundException("User", "id", poll.getCreatedBy()));
 
-        // Map Polls to PollResponses containing vote counts and poll creator details
-        List<Long> pollIds = polls.map(Poll::getPollId).getContent();
-        Map<Long, Long> choiceVoteCountMap = getChoiceVoteCountMap(pollIds);
-        Map<Long, Long> pollUserVoteMap = getPollUserVoteMap(currentUser, pollIds);
+		// Retrieve vote done by logged in user
+		Vote userVote = null;
+		if (currentUser != null) {
+			userVote = voteRepository.findByUserIdAndPollId(currentUser.getUserId(), pollId);
+		}
 
-        List<PollResponse> pollResponses = polls.map(poll -> {
-            return ModelMapper.mapPollToPollResponse(poll,
-                    choiceVoteCountMap,
-                    user,
-                    pollUserVoteMap == null ? null : pollUserVoteMap.getOrDefault(poll.getPollId(), null));
-        }).getContent();
+		return ModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator,
+				userVote != null ? userVote.getChoice().getChoiceId() : null);
+	}
 
-        return new PagedResponse<>(pollResponses, polls.getNumber(),
-                polls.getSize(), polls.getTotalElements(), polls.getTotalPages(), polls.isLast());
-    }
+	// 선택하고 업데이트 하기 혹은 취소하기
+	public PollResponse castVoteAndGetUpdatedPoll(Long pollId, VoteRequest voteRequest, UserPrincipal currentUser) {
+		Poll poll = pollRepository.findById(pollId)
+				.orElseThrow(() -> new ResourceNotFoundException("Poll", "id", pollId));
 
-    public PagedResponse<PollResponse> getPollsVotedBy(String username, UserPrincipal currentUser, int page, int size) {
-        validatePageNumberAndSize(page, size);
+		if (poll.getExpirationDateTime().isBefore(Instant.now())) {
+			throw new BadRequestException("Sorry! This Poll has already expired");
+		}
 
-        User user = userRepository.findByUserName(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
+		User user = userRepository.findByUserId(currentUser.getUserId()).get();
 
-        // Retrieve all pollIds in which the given username has voted
-        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
-        Page<Long> userVotedPollIds = voteRepository.findVotedPollIdsByUserId(user.getUserId(), pageable);
+		// user와 poll 이용해서 vote가 있는지 확인
 
-        if (userVotedPollIds.getNumberOfElements() == 0) {
-            return new PagedResponse<>(Collections.emptyList(), userVotedPollIds.getNumber(),
-                    userVotedPollIds.getSize(), userVotedPollIds.getTotalElements(),
-                    userVotedPollIds.getTotalPages(), userVotedPollIds.isLast());
-        }
+		if (voteRepository.findByUserIdAndPollId(user.getUserId(), pollId) == null) {
 
-        // Retrieve all poll details from the voted pollIds.
-        List<Long> pollIds = userVotedPollIds.getContent();
+			Choice selectedChoice = poll.getChoices().stream()
+					.filter(choice -> choice.getChoiceId().equals(voteRequest.getChoiceId())).findFirst()
+					.orElseThrow(() -> new ResourceNotFoundException("Choice", "id", voteRequest.getChoiceId()));
 
-//        Sort sort = new Sort(Sort.Direction.DESC, "createdAt");
-        List<Poll> polls = pollRepository.findByPollIdIn(pollIds, Sort.by(Sort.Direction.DESC, "createdAt"));
+			Vote vote = new Vote();
+			vote.setPoll(poll);
+			vote.setUser(user);
+			vote.setChoice(selectedChoice);
 
-        // Map Polls to PollResponses containing vote counts and poll creator details
-        Map<Long, Long> choiceVoteCountMap = getChoiceVoteCountMap(pollIds);
-        Map<Long, Long> pollUserVoteMap = getPollUserVoteMap(currentUser, pollIds);
-        Map<String, User> creatorMap = getPollCreatorMap(polls);
+			try {
+				vote = voteRepository.save(vote);
+			} catch (DataIntegrityViolationException ex) {
+				throw new BadRequestException("Sorry! You have already cast your vote in this poll");
+			}
+			
+			// -- Vote Saved, Return the updated Poll Response now --
 
-        List<PollResponse> pollResponses = polls.stream().map(poll -> {
-            return ModelMapper.mapPollToPollResponse(poll,
-                    choiceVoteCountMap,
-                    creatorMap.get(poll.getCreatedBy()),
-                    pollUserVoteMap == null ? null : pollUserVoteMap.getOrDefault(poll.getPollId(), null));
-        }).collect(Collectors.toList());
+			// Retrieve Vote Counts of every choice belonging to the current poll
+			List<ChoiceVoteCount> votes = voteRepository.countByPollIdGroupByChoiceId(pollId);
 
-        return new PagedResponse<>(pollResponses, userVotedPollIds.getNumber(), userVotedPollIds.getSize(), userVotedPollIds.getTotalElements(), userVotedPollIds.getTotalPages(), userVotedPollIds.isLast());
-    }
+			Map<Long, Long> choiceVotesMap = votes.stream()
+					.collect(Collectors.toMap(ChoiceVoteCount::getChoiceId, ChoiceVoteCount::getVoteCount));
 
+			// Retrieve poll creator details
+			User creator = userRepository.findById(poll.getCreatedBy())
+					.orElseThrow(() -> new ResourceNotFoundException("User", "id", poll.getCreatedBy()));
 
-    public Poll createPoll(PollRequest pollRequest) {
-        Poll poll = new Poll();
-        poll.setPollTitle(pollRequest.getQuestion());
+			return ModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator, vote.getChoice().getChoiceId());
+			
+			
+		} else {
+			Vote vote = voteRepository.findByUserIdAndPollId(user.getUserId(), pollId);
+			voteRepository.deleteById(vote.getPollResultId());
+			
+			// -- Vote Saved, Return the updated Poll Response now --
 
-        pollRequest.getChoices().forEach(choiceRequest -> {
-            poll.addChoice(new Choice(choiceRequest.getText()));
-        });
+			// Retrieve Vote Counts of every choice belonging to the current poll
+			List<ChoiceVoteCount> votes = voteRepository.countByPollIdGroupByChoiceId(pollId);
 
-        Instant now = Instant.now();
-        Instant expirationDateTime = now.plus(Duration.ofDays(pollRequest.getPollLength().getDays()))
-                .plus(Duration.ofHours(pollRequest.getPollLength().getHours()));
+			Map<Long, Long> choiceVotesMap = votes.stream()
+					.collect(Collectors.toMap(ChoiceVoteCount::getChoiceId, ChoiceVoteCount::getVoteCount));
 
-        poll.setExpirationDateTime(expirationDateTime);
+			// Retrieve poll creator details
+			User creator = userRepository.findById(poll.getCreatedBy())
+					.orElseThrow(() -> new ResourceNotFoundException("User", "id", poll.getCreatedBy()));
 
-        return pollRepository.save(poll);
-    }
+			return ModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator, vote.getChoice().getChoiceId());
+		}
 
-    public PollResponse getPollById(Long pollId, UserPrincipal currentUser) {
-        Poll poll = pollRepository.findById(pollId).orElseThrow(
-                () -> new ResourceNotFoundException("Poll", "id", pollId));
+//		// -- Vote Saved, Return the updated Poll Response now --
+//
+//		// Retrieve Vote Counts of every choice belonging to the current poll
+//		List<ChoiceVoteCount> votes = voteRepository.countByPollIdGroupByChoiceId(pollId);
+//
+//		Map<Long, Long> choiceVotesMap = votes.stream()
+//				.collect(Collectors.toMap(ChoiceVoteCount::getChoiceId, ChoiceVoteCount::getVoteCount));
+//
+//		// Retrieve poll creator details
+//		User creator = userRepository.findById(poll.getCreatedBy())
+//				.orElseThrow(() -> new ResourceNotFoundException("User", "id", poll.getCreatedBy()));
+//
+//		return ModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator, vote.getChoice().getChoiceId());
+	}
 
-        // Retrieve Vote Counts of every choice belonging to the current poll
-        List<ChoiceVoteCount> votes = voteRepository.countByPollIdGroupByChoiceId(pollId);
+	private Map<Long, Long> getChoiceVoteCountMap(List<Long> pollIds) {
+		// Retrieve Vote Counts of every Choice belonging to the given pollIds
+		List<ChoiceVoteCount> votes = voteRepository.countByPollIdInGroupByChoiceId(pollIds);
 
-        Map<Long, Long> choiceVotesMap = votes.stream()
-                .collect(Collectors.toMap(ChoiceVoteCount::getChoiceId, ChoiceVoteCount::getVoteCount));
+		Map<Long, Long> choiceVotesMap = votes.stream()
+				.collect(Collectors.toMap(ChoiceVoteCount::getChoiceId, ChoiceVoteCount::getVoteCount));
 
-        // Retrieve poll creator details
-        User creator = userRepository.findById(poll.getCreatedBy())
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", poll.getCreatedBy()));
+		return choiceVotesMap;
+	}
 
-        // Retrieve vote done by logged in user
-        Vote userVote = null;
-        if(currentUser != null) {
-            userVote = voteRepository.findByUserIdAndPollId(currentUser.getUserId(), pollId);
-        }
+	private Map<Long, Long> getPollUserVoteMap(UserPrincipal currentUser, List<Long> pollIds) {
+		// Retrieve Votes done by the logged in user to the given pollIds
+		Map<Long, Long> pollUserVoteMap = null;
+		if (currentUser != null) {
+			List<Vote> userVotes = voteRepository.findByUserIdAndPollIdIn(currentUser.getUserId(), pollIds);
 
-        return ModelMapper.mapPollToPollResponse(poll, choiceVotesMap,
-                creator, userVote != null ? userVote.getChoice().getId(): null);
-    }
+			pollUserVoteMap = userVotes.stream().collect(
+					Collectors.toMap(vote -> vote.getPoll().getPollId(), vote -> vote.getChoice().getChoiceId()));
+		}
+		return pollUserVoteMap;
+	}
 
-    public PollResponse castVoteAndGetUpdatedPoll(Long pollId, VoteRequest voteRequest, UserPrincipal currentUser) {
-        Poll poll = pollRepository.findById(pollId)
-                .orElseThrow(() -> new ResourceNotFoundException("Poll", "id", pollId));
+	Map<String, User> getPollCreatorMap(List<Poll> polls) {
+		// Get Poll Creator details of the given list of polls
+		List<String> creatorIds = polls.stream().map(Poll::getCreatedBy).distinct().collect(Collectors.toList());
 
-        if(poll.getExpirationDateTime().isBefore(Instant.now())) {
-            throw new BadRequestException("Sorry! This Poll has already expired");
-        }
+		List<User> creators = userRepository.findByUserIdIn(creatorIds);
+		Map<String, User> creatorMap = creators.stream()
+				.collect(Collectors.toMap(User::getUserId, Function.identity()));
 
-        User user = userRepository.findByUserId(currentUser.getUserId()).get();
-
-        Choice selectedChoice = poll.getChoices().stream()
-                .filter(choice -> choice.getId().equals(voteRequest.getChoiceId()))
-                .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("Choice", "id", voteRequest.getChoiceId()));
-
-        Vote vote = new Vote();
-        vote.setPoll(poll);
-        vote.setUser(user);
-        vote.setChoice(selectedChoice);
-
-        try {
-            vote = voteRepository.save(vote);
-        } catch (DataIntegrityViolationException ex) {
-            throw new BadRequestException("Sorry! You have already cast your vote in this poll");
-        }
-
-        //-- Vote Saved, Return the updated Poll Response now --
-
-        // Retrieve Vote Counts of every choice belonging to the current poll
-        List<ChoiceVoteCount> votes = voteRepository.countByPollIdGroupByChoiceId(pollId);
-
-        Map<Long, Long> choiceVotesMap = votes.stream()
-                .collect(Collectors.toMap(ChoiceVoteCount::getChoiceId, ChoiceVoteCount::getVoteCount));
-
-        // Retrieve poll creator details
-        User creator = userRepository.findById(poll.getCreatedBy())
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", poll.getCreatedBy()));
-
-        return ModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator, vote.getChoice().getId());
-    }
-
-
-    private void validatePageNumberAndSize(int page, int size) {
-        if(page < 0) {
-            throw new BadRequestException("Page number cannot be less than zero.");
-        }
-
-        if(size > AppConstants.MAX_PAGE_SIZE) {
-            throw new BadRequestException("Page size must not be greater than " + AppConstants.MAX_PAGE_SIZE);
-        }
-    }
-
-    private Map<Long, Long> getChoiceVoteCountMap(List<Long> pollIds) {
-        // Retrieve Vote Counts of every Choice belonging to the given pollIds
-        List<ChoiceVoteCount> votes = voteRepository.countByPollIdInGroupByChoiceId(pollIds);
-
-        Map<Long, Long> choiceVotesMap = votes.stream()
-                .collect(Collectors.toMap(ChoiceVoteCount::getChoiceId, ChoiceVoteCount::getVoteCount));
-
-        return choiceVotesMap;
-    }
-
-    private Map<Long, Long> getPollUserVoteMap(UserPrincipal currentUser, List<Long> pollIds) {
-        // Retrieve Votes done by the logged in user to the given pollIds
-        Map<Long, Long> pollUserVoteMap = null;
-        if(currentUser != null) {
-            List<Vote> userVotes = voteRepository.findByUserIdAndPollIdIn(currentUser.getUserId(), pollIds);
-
-            pollUserVoteMap = userVotes.stream()
-                    .collect(Collectors.toMap(vote -> vote.getPoll().getPollId(), vote -> vote.getChoice().getId()));
-        }
-        return pollUserVoteMap;
-    }
-
-    Map<String, User> getPollCreatorMap(List<Poll> polls) {
-        // Get Poll Creator details of the given list of polls
-        List<String> creatorIds = polls.stream()
-                .map(Poll::getCreatedBy)
-                .distinct()
-                .collect(Collectors.toList());
-
-        List<User> creators = userRepository.findByUserIdIn(creatorIds);
-        Map<String, User> creatorMap = creators.stream()
-                .collect(Collectors.toMap(User::getUserId, Function.identity()));
-
-        return creatorMap;
-    }
-
+		return creatorMap;
+	}
 
 }

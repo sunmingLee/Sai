@@ -20,7 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.sai.model.audit.DateAudit;
 import com.sai.model.entity.family.Family;
-import com.sai.model.entity.role.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
