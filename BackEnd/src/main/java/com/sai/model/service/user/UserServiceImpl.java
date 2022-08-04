@@ -10,11 +10,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sai.dto.MailDto;
-import com.sai.dto.UserDto;
+import com.sai.dto.user.InfoUserResponseDto;
 import com.sai.dto.user.LoginUserRequestDto;
 import com.sai.dto.user.LoginUserResponseDto;
+import com.sai.dto.user.UserDto;
 import com.sai.jwt.JwtTokenProvider;
+import com.sai.model.entity.family.FamilyRegister;
 import com.sai.model.entity.user.User;
+import com.sai.model.repository.family.FamilyRegisterRepository;
 import com.sai.model.repository.user.UserRepository;
 import com.sai.model.service.MailService;
 import com.sai.poll.exception.ResourceNotFoundException;
@@ -27,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
+	private final FamilyRegisterRepository familyRegisterRepository;
 	private final MailService mailService;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final PasswordEncoder passwordEncoder;
@@ -97,6 +101,33 @@ public class UserServiceImpl implements UserService {
 			throw new IllegalArgumentException("잘못된 비밀번호입니다.");
 		}
 		return jwtTokenProvider.createToken(user.getUserId());
+	}
+	
+	// 로그인 인증 후 가족 정보 찾기
+	public InfoUserResponseDto loginUserInfo(LoginUserRequestDto loginUserRequestDto) {
+		InfoUserResponseDto infoUserResponseDto = new InfoUserResponseDto();
+		infoUserResponseDto.setUserId(loginUserRequestDto.getUserId());
+		
+		User loginUser = userRepository.findByUserId(loginUserRequestDto.getUserId())
+				.orElseThrow(() -> new ResourceNotFoundException("User", "username", loginUserRequestDto.getUserId()));
+				
+		if(loginUser.getFamilyId() == null) {
+			FamilyRegister familyRegister = familyRegisterRepository.findOneByUserUserId(loginUserRequestDto.getUserId());
+			
+			if(familyRegister == null) {
+				return infoUserResponseDto;
+			}
+			if(!familyRegister.getApproveYn()) {
+				infoUserResponseDto.setFamilyReg(false);
+			} else if (familyRegister.getApproveYn()) {
+				infoUserResponseDto.setFamilyReg(true);
+			}
+			
+		} else {
+			infoUserResponseDto.setFamilyId(loginUser.getFamilyId().getFamilyId());
+		}
+		
+		return infoUserResponseDto;
 	}
 
 	// 아이디 찾기

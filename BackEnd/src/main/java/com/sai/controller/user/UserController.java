@@ -21,11 +21,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sai.dto.UserDto;
+import com.sai.dto.user.InfoUserResponseDto;
 import com.sai.dto.user.LoginUserRequestDto;
 import com.sai.dto.user.LoginUserResponseDto;
+import com.sai.dto.user.UserDto;
 import com.sai.jwt.JwtTokenProvider;
-import com.sai.model.service.user.UserService;
+import com.sai.model.service.user.UserServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,7 +35,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserController {
 
-	private final UserService userService;
+	private final UserServiceImpl userService;
 	private final OAuth2UserService oAuth2UserService;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -53,7 +54,7 @@ public class UserController {
 
 	// 직접 회원가입
 	@PostMapping("/join")
-	public ResponseEntity<String> join(UserDto userInfo) {
+	public ResponseEntity<String> join(@RequestBody UserDto userInfo) {
 		return ResponseEntity.status(200).body(userService.insertUser(userInfo));
 	}
 
@@ -78,7 +79,7 @@ public class UserController {
 
 	// 로그인
 	@PostMapping("/login")
-	public ResponseEntity<LoginUserResponseDto> login(LoginUserRequestDto user, HttpServletResponse response) throws Exception {
+	public ResponseEntity<LoginUserResponseDto> login(@RequestBody LoginUserRequestDto user, HttpServletResponse response) throws Exception {
 		
 		LoginUserResponseDto loginUserResponseDto = new LoginUserResponseDto();
 		try {
@@ -111,6 +112,17 @@ public class UserController {
 		
 	}
 	
+	// 로그인 후 회원정보 요청
+	@PostMapping("/login/info")
+	public ResponseEntity<InfoUserResponseDto> loginUserInfo(@RequestBody LoginUserRequestDto loginUserRequestDto){
+		try {
+			return ResponseEntity.ok(userService.loginUserInfo(loginUserRequestDto));
+		} catch (Exception e) {
+			return ResponseEntity.status(400).body(userService.loginUserInfo(loginUserRequestDto));
+		}
+	};
+	
+	
 	// 로그아웃
 	@PostMapping("/logout")
 	public void logout(HttpServletResponse response) {
@@ -124,7 +136,7 @@ public class UserController {
 
 	// 아이디 찾기
 	@GetMapping("/findId")
-	public ResponseEntity<Map<String, Object>> findUserId(UserDto user) throws Exception {
+	public ResponseEntity<Map<String, Object>> findUserId(@RequestParam UserDto user) throws Exception {
 
 		// 이부분 수정해야 함. findUserId 두 번 호출해서 메일이 두번 보내짐
 
@@ -135,7 +147,7 @@ public class UserController {
 
 	// 비밀번호 찾기
 	@GetMapping("/findPw")
-	public ResponseEntity<Map<String, Object>> findUserPw(UserDto user) throws Exception {
+	public ResponseEntity<Map<String, Object>> findUserPw(@RequestParam UserDto user) throws Exception {
 
 		return ResponseEntity.ok(userService.findUserPw(user));
 //		return new ResponseEntity<Map<String, Object>>(userService.findUserPw(user),

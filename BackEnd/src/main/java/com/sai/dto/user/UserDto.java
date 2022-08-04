@@ -1,4 +1,4 @@
-package com.sai.dto;
+package com.sai.dto.user;
 
 import lombok.Data;
 
@@ -19,9 +19,6 @@ public class UserDto {
 
 	// 패스워드
 	private String password;
-
-	// 유저 닉네임
-	private String nickname;
 
 	// 유저 생일
 	private String birthday;
