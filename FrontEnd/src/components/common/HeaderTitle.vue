@@ -6,7 +6,7 @@
   </div>
 </template>
 <script>
-import {reactive} from 'vue';
+import { reactive } from 'vue'
 
 export default {
   name: 'HeaderTitle',
@@ -15,19 +15,19 @@ export default {
     hasBack: String,
     hasIcon: String
   },
-  setup(props) {
+  setup (props) {
     const data = reactive({
       visibilityBack: '',
       visibilityIcon: ''
     })
-    
-    if(!props.hasBack) {
+
+    if (!props.hasBack) {
       data.visibilityBack = 'hidden'
     }
-    if(!props.hasIcon) {
+    if (!props.hasIcon) {
       data.visibilityIcon = 'hidden'
     }
-    
+
     return {
       data
     }
@@ -40,10 +40,10 @@ export default {
 .header{
   position: sticky;
   top: 0;
-  padding-left: 5px;
-  padding-right: 10px;
+  padding-left: 5%;
+  padding-right: 5%;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   margin-top: 5%;
 }
