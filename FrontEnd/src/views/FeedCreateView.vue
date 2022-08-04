@@ -27,7 +27,7 @@
             <div class="record-flex">
               <div class="record-date">
                 <p>언제?</p>
-                <img :class="visibilityIcon" src="@/assets/images/calendar-days-solid.svg" alt="calendar" style="width: 30px" data-bs-toggle="modal" data-bs-target="#withdraw">
+                <img :class="visibilityIcon" src="@/assets/images/calendar-check.svg" alt="calendar" style="width: 30px" data-bs-toggle="modal" data-bs-target="#withdraw">
               </div>
               <!-- 날짜 모달창 -->
               <div class="modal fade" id="withdraw" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -48,11 +48,11 @@
               </div>
               <div class="record-location">
                 <p>어디서?</p>
-                <img :class="visibilityIcon" src="@/assets/images/calendar-days-solid.svg" alt="calendar" style="width: 30px" @click="showApi">
+                <img :class="visibilityBack" src="@/assets/images/geo-alt.svg" alt="location" style="width: 30px" @click="showApi">
               </div>
               <div class="record-person">
                 <p>누구랑?</p>
-                <img :class="visibilityIcon" src="@/assets/images/calendar-days-solid.svg" alt="calendar" style="width: 30px">
+                <img :class="visibilityIcon" src="@/assets/images/person-circle.svg" alt="calendar" style="width: 30px">
               </div>
             </div>
           </div>
@@ -191,15 +191,12 @@ export default {
                 ? ", " + data.buildingName
                 : data.buildingName;
           }
-         
           if (extraRoadAddr !== "") {
             extraRoadAddr = " (" + extraRoadAddr + ")";
           }
-          
           if (fullRoadAddr !== "") {
             fullRoadAddr += extraRoadAddr;
           }
-
           this.boardLocation = fullRoadAddr;
         },
       }).open();
