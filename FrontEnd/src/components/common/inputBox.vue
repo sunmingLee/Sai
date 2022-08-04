@@ -14,10 +14,31 @@
 </template>
 
 <script>
+// import {emit} from 'vue'
+// export default {
+//   name: 'InputBox',
+//   props: {
+//     hasLabel: String,
+//     labelName: String,
+//     inputType: String,
+//     validDisabled: Boolean,
+//     inputValue: String
+//   },
+//   setup(props, context) {
+//     const isInputValue = ref(props.inputValue)
+//     const inputCheck = () => {
+//       context.emit('inputCheck', isInputValue)
+//     }
+//     return {
+//       isInputValue,
+//       inputCheck
+//     }
+//   }
+// }
 export default {
   name: 'InputBox',
   props: {
-    hasLabel: Boolean,
+    hasLabel: String,
     labelName: String,
     inputType: String,
     validDisabled: Boolean,
