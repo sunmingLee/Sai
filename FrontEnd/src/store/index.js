@@ -6,10 +6,12 @@ const api_url = `http://localhost:8080/api`
 
 export default createStore({
   state: {
+    isChecked: true
   },
   getters: {
   },
   mutations: {
+    SET_CHECKED: (state) => (state.isChecked = false) 
   },
   actions: {
     // 중복체크
@@ -25,16 +27,16 @@ export default createStore({
       }).then(res => {
         if (res.data === true) {
           alert('중복된 아이디입니다!')
+          commit('SET_CHECKED')
         } else {
-          console.log(res)
           alert('사용가능한 아이디입니다!')
         }
+        //409를 받으면 실행되는 코드
       }).catch((res) => {
         console.log(res)
       })
     },
     checkDupilicateEmail ({ commit }, email) {
-      console.log(email)
       const params = {
         email: email
       }
@@ -44,29 +46,24 @@ export default createStore({
         params
       }).then(res => {
         if (res.data === true) {
-          console.log(res)
           alert('중복된 이메일입니다!')
+          commit('SET_CHECKED')
         } else {
           alert('사용가능한 이메일입니다!')
-          this.emailPass = true
         }
       }).catch((res) => {
-        console.log(res)
       })
     },
     join ({ commit }, userJoin) {
-      const params = {
-        userInfo: userJoin
-      }
-      axios({
-        method: 'post',
-        url: api_url + '/user/join',
-        data: JSON.stringify(params),
-        headers: {
-          'Content-Type': 'application/json'
-        }
+      axios.post(api_url + `/user/join`, userJoin, {
       }).then(res => {
-        console.log(res)
+        if (this.state.isChecked === true) {
+          alert('회원가입 성공')
+        }
+      }).catch((res) => {
+        alert('아이디중복 또는 이메일중복을 확인해주세요.')
+        this.state.isChecked = true
+        // 가족정보로..
       })
     }
   },

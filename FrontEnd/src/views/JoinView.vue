@@ -2,7 +2,7 @@
   <div class="join-wrap">
     <HeaderTitle class="header" title="회원가입"/>
     <br>
-    <form id="join-form" @submit.prevent="onJoin">
+    <form id="join-form">
       <div class="input-wrap">
         <InputBox :hasLabel="true" labelName="이름" @inputCheck="checkName"></InputBox>
         <p v-if="validName" class="valid-error">이름을 2자 이상으로 입력하세요.</p>
@@ -11,13 +11,13 @@
       <div class="input-wrap">
         <InputBox :hasLabel="true" labelName="아이디" @inputCheck="checkId"></InputBox>
         <p v-if="validId" class="valid-error">아이디는 4자 이상 16자 이하로 입력하세요.</p>
-        <Button buttonText="중복확인" buttonClass="small information" @click="checkDupilicateId"></Button>
+        <Button buttonText="중복확인" buttonClass="small information" @click.prevent="checkDupilicateId"></Button>
         <br>
       </div>
       <div class="input-wrap">
         <InputBox :hasLabel="true" labelName="이메일" @inputCheck="checkEmail"></InputBox>
       <p v-if="validEmail" class="valid-error">이메일 형식으로 입력하세요.</p>
-      <Button buttonText="중복확인" buttonClass="small information" @click="checkDupilicateEmail"></Button>
+      <Button buttonText="중복확인" buttonClass="small information" @click.prevent="checkDupilicateEmail"></Button>
       <br>
       </div>
       <div class="input-wrap">
@@ -38,7 +38,7 @@
       <br>
       <div>
         <Button type="submit" buttonText="회원가입" buttonClass="small disabled" v-if="checked === false"></Button>
-        <Button type="submit" buttonText="회원가입" buttonClass="small positive" v-else @click="onJoin"></Button>
+        <Button type="submit" buttonText="회원가입" buttonClass="small positive" v-else @click.prevent="onJoin"></Button>
       </div>
     </form>
   </div>
