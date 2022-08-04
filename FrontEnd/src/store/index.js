@@ -6,7 +6,9 @@ import Vuex from 'vuex'
 
 export default new Vuex.Store({
   state: {
-    familyId: ''
+    familyId: 234567,
+    userId: 'tnqls',
+    callsign: ["소독용", "에탄올", "스타벅스", "아이패드"]
   },
   getters: {
   },
