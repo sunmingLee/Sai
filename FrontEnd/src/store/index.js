@@ -41,11 +41,7 @@ export default createStore({
       axios({
         method: 'get',
         url: api_url + `/user/duplication/email`,
-        params,
-        //data: JSON.stringify(params),
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        params
       }).then(res => {
         if (res.data === true) {
           console.log(res)
@@ -64,10 +60,13 @@ export default createStore({
       }
       axios({
         method: 'post',
-        url: api_url + '/join',
-        params
+        url: api_url + '/user/join',
+        data: JSON.stringify(params),
+        headers: {
+          'Content-Type': 'application/json'
+        }
       }).then(res => {
-
+        console.log(res)
       })
     }
   },

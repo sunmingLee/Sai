@@ -60,35 +60,28 @@ export default {
     return {
       userJoin: {
         userName: '',
-        id: '',
+        userId: '',
         email: '',
         password: ''
       },
       passwordConfirm: '',
       checked: false,
-      validName: false,
-      validId: false,
-      validEmail: false,
-      validPassword: false,
-      validPasswordConfirm: false,
-      joinPass: {
-        namePass: false,
-        idPass: false,
-        emialPass: false,
-        pwPass: false,
-        pw2Pass: false
-      }
+      validName: true,
+      validId: true,
+      validEmail: true,
+      validPassword: true,
+      validPasswordConfirm: true,
+      isSubmit: false
     }
   },
   methods: {
     // 이름 유효성을 검사하고 문구를 출력 판단
     checkName (userName) {
-      if (!this.isValidName(userName)) {
+      if (this.userJoin.userName.length >= 0 && !this.isValidName(userName)) {
         this.validName = true
       } else {
         this.validName = false
-        this.namePass = true
-        console.log(this.namePass)
+        this.userJoin.userName = userName
       }
     },
     // 이름 유효성 검사sdf
@@ -97,22 +90,22 @@ export default {
       return re.test(userName)
     },
     // 아이디 유효성을 검사하고 문구를 출력 판단
-    checkId (id) {
-      if (!this.isValidId(id)) {
+    checkId (userId) {
+      if (this.userJoin.userId.length >= 0 && !this.isValidId(userId)) {
         this.validId = true
       } else {
         this.validId = false
-        this.userJoin.id = id
+        this.userJoin.userId = userId
       }
     },
     // 아이디 유효성 검사
-    isValidId (id) {
+    isValidId (userId) {
       const re = /^[A-Za-z0-9]{4,16}$/
-      return re.test(id)
+      return re.test(userId)
     },
     // 이메일 유효성을 검사하고 문구를 출력 판단
     checkEmail (email) {
-      if (!this.isValidEmail(email)) {
+      if (this.userJoin.email.length >= 0 && !this.isValidEmail(email)) {
         this.validEmail = true
       } else {
         this.validEmail = false
@@ -126,11 +119,11 @@ export default {
     },
     // 비밀번호 유효성을 검사하고 문구를 출력 판단
     checkPassword (password) {
-      if (!this.isValidPassword(password)) {
+      if (this.userJoin.password.length >= 0 && !this.isValidPassword(password)) {
         this.validPassword = true
       } else {
         this.validPassword = false
-        this.password = password
+        this.userJoin.password = password
       }
     },
     // 비밀번호 유효성 검사
@@ -140,8 +133,7 @@ export default {
     },
     // 비밀번호 확인
     checkPasswordConfirm (passwordConfirm) {
-      console.log(this.password)
-      if (passwordConfirm !== this.password) {
+      if (passwordConfirm !== this.userJoin.password) {
         this.validPasswordConfirm = true
       } else {
         this.validPasswordConfirm = false
@@ -153,7 +145,7 @@ export default {
       // 유효성 검사 통과된 아이디면
       // 유효성 검사 통과가 안된 아이디이면 store못가게
       if (!this.validId) {
-        this.$store.dispatch('checkDupilicateId', this.userJoin.id)
+        this.$store.dispatch('checkDupilicateId', this.userJoin.userId)
       } else {
         alert('아이디는 4자 이상 16자 이하로 입력하세요.')
       }
@@ -167,19 +159,15 @@ export default {
     },
     onJoin () {
       if (this.checked === true) {
-        // 이름, 아이디, 이메일, 비밀번호, 비밀번호 확인 모두 작성되고
-        // 유효성 검사 모두 통과되고
-        if (this.validName && this.validId && this.validEmail && this.validPassword && this.validPasswordConfirm) {
-          console.log('1233')
+        if (!this.validName && !this.validId && !this.validEmail && !this.validPassword && !this.validPasswordConfirm) {
+          this.$store.dispatch('join', this.userJoin)
         } else {
-          console.log('name', this.isvalidName)
-          console.log('id', this.isvalidId)
-          console.log('email', this.isvalidEmail)
-          console.log('pw', this.isvalidPassword)
-          console.log('pw2', this.isvalidPasswordConfirm)
+          alert('땡!')
         }
-        // 중복확인 모두 통과되면
+      // 이름, 아이디, 이메일, 비밀번호, 비밀번호 확인 모두 작성되고
+      // 유효성 검사 모두 통과되고
       }
+    // 중복확인 모두 통과되면
     }
   }
 }
