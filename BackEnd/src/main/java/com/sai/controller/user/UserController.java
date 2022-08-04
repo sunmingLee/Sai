@@ -48,7 +48,7 @@ public class UserController {
 	// 이메일 중복 검사
 	@GetMapping("/duplication/email")
 	public ResponseEntity<Boolean> checkUserEmailDuplicate(@RequestParam String email) {
-		return ResponseEntity.ok(userService.checkUserIdDuplicate(email));
+		return ResponseEntity.ok(userService.checkUserEmailDuplicate(email));
 	}
 
 	// 직접 회원가입
