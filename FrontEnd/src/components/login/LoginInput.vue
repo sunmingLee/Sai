@@ -40,7 +40,6 @@ export default {
       this.user.password = password
     },
     async onLogin () {
-      // console.log(this.user)
       this.$store.dispatch('login', this.user)
       // await this.userConfirm(this.user)
       // const token = sessionStorage.getItem('access-token')

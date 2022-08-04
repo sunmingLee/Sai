@@ -16,7 +16,6 @@ export default {
     }
   },
   created () {
-    console.log(this.buttonType)
     switch (this.buttonType) {
       case 'kakao':
         this.socialName = require('@/assets/images/kakao_login_medium_wide.png')
