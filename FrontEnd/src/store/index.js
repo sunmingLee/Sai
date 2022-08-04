@@ -4,6 +4,7 @@
 // import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import router from '@/router/index.js'
 
 import userStore from './userStore.js'
 
@@ -17,22 +18,39 @@ const store = new Vuex.Store({
   actions: {
     login ({ commit }, user) {
       const api_url = 'http://localhost:8080/api/user/login'
-      const params = {
+      const data = {
         userId: user.userId,
         password: user.password
       }
-      axios({
-        url: api_url,
-        method: 'POST',
-        params
+      axios.post(api_url, data, {
       })
         .then((res) => {
           console.log(res)
-          // if (res.data.msg.indexOf('입력하신 이메일로 아이디가 전송되었습니다.') != -1) {
-          //   alert(res.data.msg)
-          //   router.push({ name: 'home' })
-          // } else {
-          //   alert(res.data.msg)
+          // console.log(res.headers)
+          if (res.status === 200) {
+            // const jwtToken = res.headers['Set-Cookie']
+            // console.log(jwtToken)
+            localStorage.setItem('userId', data.userId)
+            this.dispatch('getUserInfo', localStorage.getItem('userId'))
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+          alert('아이디와 비밀번호를 다시한번 확인해주세요.')
+        })
+    },
+    getUserInfo ({ commit }, userId) {
+      const api_url = 'http://localhost:8080/api/user/'
+      axios.get(api_url + userId)
+        .then((res) => {
+          console.log(res)
+          // familyId가 있는 경우, 메인으로 이동
+          if (res.status === 200) {
+            router.push({ name: 'about' })
+          }
+          // familyId가 없는 경우
+          // else {
+
           // }
         })
         .catch((err) => {
