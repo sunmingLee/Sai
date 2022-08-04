@@ -28,7 +28,7 @@ public class User {
 	@Column(name = "user_id")
 	private String userId;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "family_id")
 	private Family family;
 
