@@ -1,9 +1,5 @@
 package com.sai.model.entity;
 
-<<<<<<< HEAD
-import javax.persistence.CascadeType;
-=======
->>>>>>> BE-Feed-Board
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,17 +8,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-<<<<<<< HEAD
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-=======
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
->>>>>>> BE-Feed-Board
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AccessLevel;

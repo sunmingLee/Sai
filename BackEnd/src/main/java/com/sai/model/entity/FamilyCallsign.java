@@ -1,9 +1,5 @@
 package com.sai.model.entity;
 
-<<<<<<< HEAD
-import javax.persistence.CascadeType;
-=======
->>>>>>> BE-Feed-Board
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;

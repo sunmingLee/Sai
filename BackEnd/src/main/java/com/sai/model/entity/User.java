@@ -1,20 +1,14 @@
 package com.sai.model.entity;
 
-<<<<<<< HEAD
 import java.time.LocalDate;
 
-=======
->>>>>>> BE-Feed-Board
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-<<<<<<< HEAD
 import javax.persistence.Lob;
-=======
->>>>>>> BE-Feed-Board
 import javax.persistence.ManyToOne;
 
 import lombok.AccessLevel;
@@ -106,11 +100,8 @@ public class User {
 //
 //	}
 
-<<<<<<< HEAD
 	public void updateUserPassword(String password) {
 		this.password = password;
 	}
 
-=======
->>>>>>> BE-Feed-Board
 }
