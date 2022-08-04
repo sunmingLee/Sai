@@ -83,6 +83,7 @@ public class MemoController {
 		}
 	}
 	
+	// 메모 삭제
 	@DeleteMapping(value = "/{memoId}")
 	public ResponseEntity<?> deleteMemo(@PathVariable Long memoId){
 		try {
