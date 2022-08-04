@@ -20,7 +20,7 @@ public class BackEndApplication {
 	void init() {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 	}
-	
+
 	public static void main(String[] args) throws Exception {
 		SpringApplication.run(BackEndApplication.class, args);
 	}

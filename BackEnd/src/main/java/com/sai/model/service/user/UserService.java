@@ -3,9 +3,11 @@ package com.sai.model.service.user;
 import java.util.HashMap;
 
 import com.sai.dto.UserDto;
+import com.sai.dto.user.LoginUserRequestDto;
+import com.sai.dto.user.LoginUserResponseDto;
 
 public interface UserService {
-	
+
 	// 아이디 중복 체크
 	public boolean checkUserIdDuplicate(String userId);
 	// 이메일 중복 체크
@@ -19,7 +21,7 @@ public interface UserService {
 	// 회원 탈퇴
 	public String deleteUser(String userId);
 	// 로그인
-	public String login(UserDto user);
+	public String login(LoginUserRequestDto user);
 	// 아이디 찾기
 	public HashMap<String, Object> findUserId(UserDto user);
 	// 비밀번호 찾기

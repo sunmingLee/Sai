@@ -10,7 +10,7 @@ import com.sai.model.entity.user.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String>{
-	
+
 	Optional<User> findByEmail(String email);
 	Optional<User> findByUserIdOrEmail(String userId, String email);
 	List<User> findByUserIdIn(List<String> userId);
@@ -18,6 +18,6 @@ public interface UserRepository extends JpaRepository<User, String>{
 	Optional<User> findByUserName(String userName);
 	boolean existsByUserId(String userId);
 	boolean existsByEmail(String email);
-	
+
 
 }

@@ -14,14 +14,14 @@ import com.sai.model.entity.poll.Poll;
 @Repository
 public interface PollRepository extends JpaRepository<Poll, Long>{
 	Optional<Poll> findByPollId(Long pollId);
-	
+
 	Page<Poll> findByCreatedBy(String userId, Pageable pageable);
-	
+
 	long countByCreatedBy(String userId);
-	
+
 	List<Poll> findByPollIdIn(List<Long> pollIds);
-	
+
 	List<Poll> findByPollIdIn(List<Long> pollIds, Sort sort);
-	
+
 
 }

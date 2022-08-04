@@ -38,11 +38,11 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class PollService {
-	
+
 	private final PollRepository pollRepository;
 	private final VoteRepository voteRepository;
 	private final UserRepository userRepository;
-	
+
 	public PagedResponse<PollResponse> getAllPolls(UserPrincipal currentUser, int page, int size) {
         validatePageNumberAndSize(page, size);
 
@@ -269,6 +269,6 @@ public class PollService {
 
         return creatorMap;
     }
-	
+
 
 }

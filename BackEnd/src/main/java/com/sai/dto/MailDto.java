@@ -12,14 +12,14 @@ import lombok.NoArgsConstructor;
 public class MailDto {
 	// 받는 메일 주소
 	private String toAddress;
-	
+
 	// 이메일 제목
 	private String title;
 
 	//이메일 내용
 	private String message;
-	
+
 	// 보내는 이메일 주소
 	private String fromAddress;
-	
+
 }

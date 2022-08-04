@@ -9,8 +9,8 @@ public class SecurityController {
 
 	@GetMapping("/all")
 	public void member() {
-		
-		
+
+
 	}
-	
+
 }

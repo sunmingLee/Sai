@@ -38,45 +38,45 @@ public class User extends DateAudit{
 	@Id
 	@Column(name = "user_id")
 	private String userId;
-	
+
 	// 가족 ID
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinTable(name="family",
 	joinColumns = @JoinColumn(name="family_id"))
 	private Family familyId;
-	
+
 	// 유저 이름
 	@Column(name="user_name")
 	private String userName;
-	
+
 	// 유저 이메일
 	private String email;
-	
+
 	// 패스워드
 	private String password;
-	
+
 	// 유저 닉네임
 	private String nickname;
-	
+
 	// 유저 생일
 	private String birthday;
-	
+
 	// 음력 사용 여부
 	private Boolean lunar;
-	
+
 	// roles(for poll)
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name="user_roles",
 		joinColumns = @JoinColumn(name="user_id"),
 		inverseJoinColumns = @JoinColumn(name="role_id"))
 	private Set<Role> roles = new HashSet<>();
-	
-	
+
+
 	// role
 	@Enumerated(EnumType.STRING)
 	private UserRole role;
-	
-	
+
+
 	// 프로필 사진 이미지 경로
 	@Column(name="user_image_path")
 	private String userImagePath;
@@ -84,30 +84,30 @@ public class User extends DateAudit{
 	// 프로필 사진 이미지 이름
 	@Column(name="user_image_name")
 	private String userImageName;
-	
+
 	// 프로필 사진 이미지 속성
 	@Column(name="user_image_type")
 	private String userImageType;
-	
+
 	// 프로필 메세지
 	@Column(name="user_message")
 	private String userMessage;
-	
+
 	// 프로바이더 타입
 //	private String providerType;
-	
-	
+
+
 	// 비밀번호 암호화
 	public User hashPassword(PasswordEncoder passwordEncoder) {
 		this.password = passwordEncoder.encode(this.password);
 		return this;
 	}
-	
+
 	// 비밀번호 확인
 	public boolean checkPassword(String plainPassword, PasswordEncoder passwordEncoder) {
 		return passwordEncoder.matches(plainPassword, this.password);
 	}
-	
+
 	// 비밀번호 변경
 	public void updateUserPassword(String password) {
 		this.password = password;
@@ -117,13 +117,13 @@ public class User extends DateAudit{
 	public User update(String name, String picture) {
 		this.userName = name;
 		this.userImagePath = picture;
-		
+
 		return this;
 	}
-	
+
 	 public String getRoleKey(){
 	        return this.role.getKey();
 	    }
 
-	
+
 }
