@@ -5,7 +5,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sai.dto.MailDto;
+import com.sai.model.dto.MailDto;
 
 import lombok.RequiredArgsConstructor;
 

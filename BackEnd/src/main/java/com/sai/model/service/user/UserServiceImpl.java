@@ -9,18 +9,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sai.dto.MailDto;
-import com.sai.dto.user.InfoUserResponseDto;
-import com.sai.dto.user.LoginUserRequestDto;
-import com.sai.dto.user.LoginUserResponseDto;
-import com.sai.dto.user.UserDto;
+import com.sai.exception.poll.ResourceNotFoundException;
 import com.sai.jwt.JwtTokenProvider;
+import com.sai.model.dto.MailDto;
+import com.sai.model.dto.user.InfoUserResponseDto;
+import com.sai.model.dto.user.LoginUserRequestDto;
+import com.sai.model.dto.user.LoginUserResponseDto;
+import com.sai.model.dto.user.UserDto;
 import com.sai.model.entity.family.FamilyRegister;
 import com.sai.model.entity.user.User;
 import com.sai.model.repository.family.FamilyRegisterRepository;
 import com.sai.model.repository.user.UserRepository;
 import com.sai.model.service.MailService;
-import com.sai.poll.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 

@@ -13,7 +13,7 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import com.sai.dto.OAuthAttributes;
+import com.sai.model.dto.OAuthAttributes;
 import com.sai.model.entity.user.SessionUser;
 import com.sai.model.entity.user.User;
 import com.sai.model.repository.user.UserRepository;

@@ -2,9 +2,9 @@ package com.sai.model.service.user;
 
 import java.util.HashMap;
 
-import com.sai.dto.user.LoginUserRequestDto;
-import com.sai.dto.user.LoginUserResponseDto;
-import com.sai.dto.user.UserDto;
+import com.sai.model.dto.user.LoginUserRequestDto;
+import com.sai.model.dto.user.LoginUserResponseDto;
+import com.sai.model.dto.user.UserDto;
 
 public interface UserService {
 

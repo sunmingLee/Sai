@@ -10,7 +10,11 @@ import java.util.stream.Collectors;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import com.sai.controller.poll.ModelMapper;
+import com.sai.exception.poll.BadRequestException;
+import com.sai.exception.poll.ResourceNotFoundException;
+import com.sai.model.dto.poll.PollRequest;
+import com.sai.model.dto.poll.PollResponse;
+import com.sai.model.dto.poll.VoteRequest;
 import com.sai.model.entity.poll.Choice;
 import com.sai.model.entity.poll.ChoiceVoteCount;
 import com.sai.model.entity.poll.Poll;
@@ -19,12 +23,8 @@ import com.sai.model.entity.user.User;
 import com.sai.model.repository.poll.PollRepository;
 import com.sai.model.repository.poll.VoteRepository;
 import com.sai.model.repository.user.UserRepository;
-import com.sai.poll.PollRequest;
-import com.sai.poll.PollResponse;
-import com.sai.poll.VoteRequest;
-import com.sai.poll.exception.BadRequestException;
-import com.sai.poll.exception.ResourceNotFoundException;
 import com.sai.security.UserPrincipal;
+import com.sai.util.PollModelMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -80,7 +80,7 @@ public class PollService {
 			userVote = voteRepository.findByUserIdAndPollId(currentUser.getUserId(), pollId);
 		}
 
-		return ModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator,
+		return PollModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator,
 				userVote != null ? userVote.getChoice().getChoiceId() : null);
 	}
 
@@ -126,7 +126,7 @@ public class PollService {
 			User creator = userRepository.findById(poll.getCreatedBy())
 					.orElseThrow(() -> new ResourceNotFoundException("User", "id", poll.getCreatedBy()));
 
-			return ModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator, vote.getChoice().getChoiceId());
+			return PollModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator, vote.getChoice().getChoiceId());
 			
 			
 		} else {
@@ -145,7 +145,7 @@ public class PollService {
 			User creator = userRepository.findById(poll.getCreatedBy())
 					.orElseThrow(() -> new ResourceNotFoundException("User", "id", poll.getCreatedBy()));
 
-			return ModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator, vote.getChoice().getChoiceId());
+			return PollModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator, vote.getChoice().getChoiceId());
 		}
 
 //		// -- Vote Saved, Return the updated Poll Response now --

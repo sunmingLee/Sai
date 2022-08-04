@@ -1,6 +1,6 @@
 package com.sai.model.service;
 
-import com.sai.dto.MailDto;
+import com.sai.model.dto.MailDto;
 
 public interface MailService {
 
