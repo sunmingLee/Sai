@@ -1,22 +1,30 @@
 package com.sai.model.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.sai.model.dto.CreateBoardRequestDto;
-import com.sai.model.dto.ModifyBoardRequestDto;
-import com.sai.model.dto.board.UpdateBoardRequestDto;
+import com.sai.model.dto.ReadBoardResponseDto;
+import com.sai.model.dto.ReadFeedResponseDto;
+import com.sai.model.dto.UpdateBoardRequestDto;
+import com.sai.model.dto.board.ModifyBoardRequestDto;
+import com.sai.model.dto.board.ViewBoardResponseDto;
 import com.sai.model.dto.boardMedia.InputBoardMediaRequestDto;
+import com.sai.model.dto.boardMedia.ViewBoardMediaResponseDto;
 import com.sai.model.dto.boardTagged.InputBoardTaggedRequestDto;
+import com.sai.model.dto.boardTagged.ViewBoardTaggedResponseDto;
 import com.sai.model.entity.Board;
 import com.sai.model.entity.BoardLike;
 import com.sai.model.entity.BoardMedia;
 import com.sai.model.entity.BoardTagged;
+import com.sai.model.entity.Family;
 import com.sai.model.entity.User;
 import com.sai.model.repository.BoardLikeRepository;
 import com.sai.model.repository.BoardMediaRepository;
@@ -45,19 +53,84 @@ public class FeedServiceImpl implements FeedService {
 	ModelMapper modelMapper;
 
 	@Override
-	public void readAllBoard(String familyId, String userId) {
-		// TODO Auto-generated method stub
-//		return null;
+	public List<ReadFeedResponseDto> readAllBoard(String familyId, String userId, Pageable pageable) {
+		List<ReadFeedResponseDto> readFeedResponseDtos = new ArrayList<>();
+		Family family = familyRepository.findById(familyId).get();
+		User user = userRepository.findById(userId).get();
+
+		List<Board> boards = boardRepository.findByFamily(family, pageable);
+		for (Board board : boards) {
+			ReadFeedResponseDto readFeedResponseDto = new ReadFeedResponseDto();
+
+			// 게시글 DTO 세팅
+			readFeedResponseDto.setViewBoardResponseDto(modelMapper.map(board, ViewBoardResponseDto.class));
+
+			// 투표 관련 DTO 세팅
+			if (board.getPollYn()) {
+
+			}
+
+			// 게시글 미디어 DTO 세팅
+			else if (board.getBoardMediaYn()) {
+				List<ViewBoardMediaResponseDto> viewBoardMediaResponseDtos = new ArrayList<>();
+				List<BoardMedia> boardMedias = boardMediaRepository.findByBoard(board);
+				for (BoardMedia boardMedia : boardMedias) {
+					viewBoardMediaResponseDtos.add(modelMapper.map(boardMedia, ViewBoardMediaResponseDto.class));
+				}
+				readFeedResponseDto.setViewBoardMediaResponseDto(viewBoardMediaResponseDtos);
+			}
+
+			// 좋아요 여부 세팅
+			BoardLike boardLike = boardLikeRepository.findOneByBoardAndUser(board, user);
+			if (boardLike == null)
+				readFeedResponseDto.setBoardLiked(false);
+			else
+				readFeedResponseDto.setBoardLiked(true);
+
+			// 댓글 DTO 1개 세팅
+
+			// List add
+			readFeedResponseDtos.add(readFeedResponseDto);
+		}
+
+		return readFeedResponseDtos;
 	}
 
 	@Override
-	public void readOneBoard(Long boardId, String userId) {
-//		BoardOutputDto boardOutputDto = new BoardOutputDto();
-//
-//		Board board = boardRepository.findById(boardId).get();
-//		boardOutputDto.setBoardDto(modelMapper.map(board, BoardDto.class));
-//
-//		return boardOutputDto;
+	public ReadBoardResponseDto readOneBoard(Long boardId, String userId) {
+		ReadBoardResponseDto readBoardResponseDto = new ReadBoardResponseDto();
+
+		// 게시글 DTO 세팅
+		Board board = boardRepository.findById(boardId).get();
+		readBoardResponseDto.setViewBoardResponseDto(modelMapper.map(board, ViewBoardResponseDto.class));
+
+		// 게시글 미디어 DTO 세팅
+		List<ViewBoardMediaResponseDto> viewBoardMediaResponseDtos = new ArrayList<>();
+		List<BoardMedia> boardMedias = boardMediaRepository.findByBoard(board);
+		for (BoardMedia boardMedia : boardMedias) {
+			viewBoardMediaResponseDtos.add(modelMapper.map(boardMedia, ViewBoardMediaResponseDto.class));
+		}
+		readBoardResponseDto.setViewBoardMediaResponseDto(viewBoardMediaResponseDtos);
+
+		// 투표 관련 DTO 세팅
+
+		// 태그 DTO 세팅
+		List<ViewBoardTaggedResponseDto> viewBoardTaggedResponseDtos = new ArrayList<>();
+		List<BoardTagged> boardTaggeds = boardTaggedRepository.findByBoard(board);
+		for (BoardTagged boardTagged : boardTaggeds) {
+			viewBoardTaggedResponseDtos.add(modelMapper.map(boardTagged, ViewBoardTaggedResponseDto.class));
+		}
+		readBoardResponseDto.setViewBoardTaggedResponseDto(viewBoardTaggedResponseDtos);
+
+		// 좋아요 여부 세팅
+		User user = userRepository.findById(userId).get();
+		BoardLike boardLike = boardLikeRepository.findOneByBoardAndUser(board, user);
+		if (boardLike == null)
+			readBoardResponseDto.setBoardLiked(false);
+		else
+			readBoardResponseDto.setBoardLiked(true);
+
+		return readBoardResponseDto;
 	}
 
 	@Override
@@ -103,18 +176,18 @@ public class FeedServiceImpl implements FeedService {
 	}
 
 	@Override
-	public void updateBoard(ModifyBoardRequestDto modifyBoardRequestDto) {
+	public void updateBoard(UpdateBoardRequestDto updateBoardRequestDto) {
 
-		UpdateBoardRequestDto updateBoardRequestDto = modifyBoardRequestDto.getUpdateBoardRequestDto();
-		Board board = boardRepository.findById(updateBoardRequestDto.getBoardId()).get();
+		ModifyBoardRequestDto modifyBoardRequestDto = updateBoardRequestDto.getModifyBoardRequestDto();
+		Board board = boardRepository.findById(modifyBoardRequestDto.getBoardId()).get();
 
 		// 게시글 수정
-		if (modifyBoardRequestDto.isBoardModified()) {
-			board.updateBoard(updateBoardRequestDto);
+		if (updateBoardRequestDto.isBoardModified()) {
+			board.updateBoard(modifyBoardRequestDto);
 			boardRepository.save(board);
 		}
 
-		List<Long> deleteBoardMediaIds = modifyBoardRequestDto.getDeleteBoardMediaIds();
+		List<Long> deleteBoardMediaIds = updateBoardRequestDto.getDeleteBoardMediaIds();
 
 		// 미디어 삭제
 		if (deleteBoardMediaIds != null) {
@@ -126,15 +199,15 @@ public class FeedServiceImpl implements FeedService {
 		}
 
 		// 투표 삭제 후 재생성
-		if (modifyBoardRequestDto.isPollModified()) {
+		if (updateBoardRequestDto.isPollModified()) {
 			// logic
 		}
 
 		// 태그 삭제 후 재생성
-		if (modifyBoardRequestDto.isBoardTaggedModified()) {
+		if (updateBoardRequestDto.isBoardTaggedModified()) {
 			boardTaggedRepository.deleteByBoard(board);
 
-			List<InputBoardTaggedRequestDto> inputBoardTaggedRequestDtos = modifyBoardRequestDto
+			List<InputBoardTaggedRequestDto> inputBoardTaggedRequestDtos = updateBoardRequestDto
 					.getInputBoardTaggedRequestDtos();
 
 			if (inputBoardTaggedRequestDtos != null)

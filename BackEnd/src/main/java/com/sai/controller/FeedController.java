@@ -1,6 +1,11 @@
 package com.sai.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sai.model.dto.CreateBoardRequestDto;
-import com.sai.model.dto.ModifyBoardRequestDto;
+import com.sai.model.dto.ReadBoardResponseDto;
+import com.sai.model.dto.ReadFeedResponseDto;
+import com.sai.model.dto.UpdateBoardRequestDto;
 import com.sai.model.service.FeedService;
 
 import io.swagger.annotations.ApiOperation;
@@ -29,40 +36,40 @@ public class FeedController {
 
 	@ApiOperation(value = "readAllBoard : 피드 조회")
 	@GetMapping("/{familyId}/{userId}")
-	public ResponseEntity<?> readAllBoard(@PathVariable String familyId, @PathVariable String userId) throws Exception {
+	public ResponseEntity<?> readAllBoard(@PathVariable String familyId, @PathVariable String userId,
+			@PageableDefault(size = 3, sort = "boardRegDatetime", direction = Direction.DESC) Pageable pageable)
+			throws Exception {
 
-//		try {
-//			UserDto userDto = feedService.createFamilyId(userId);
-//
-//			if (userDto != null) {
-//				return new ResponseEntity<UserDto>(userDto, HttpStatus.OK);
-//			} else {
-//				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-//			}
-//
-//		} catch (Exception e) {
-//			return exceptionHandling(e);
-//		}
-		return null;
+		try {
+			List<ReadFeedResponseDto> readFeedResponseDtos = feedService.readAllBoard(familyId, userId, pageable);
+
+			if (readFeedResponseDtos != null) {
+				return new ResponseEntity<List<ReadFeedResponseDto>>(readFeedResponseDtos, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+			}
+
+		} catch (Exception e) {
+			return exceptionHandling(e);
+		}
 	}
 
 	@ApiOperation(value = "readOneBoard : 글 상세조회")
 	@GetMapping("/board/{boardId}/{userId}")
 	public ResponseEntity<?> readOneBoard(@PathVariable Long boardId, @PathVariable String userId) throws Exception {
 
-//		try {
-//			BoardOutputDto boardOutputDto = feedService.readOneBoard(boardId, userId);
-//
-//			if (boardOutputDto != null) {
-//				return new ResponseEntity<BoardOutputDto>(boardOutputDto, HttpStatus.OK);
-//			} else {
-//				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-//			}
-//
-//		} catch (Exception e) {
-//			return exceptionHandling(e);
-//		}
-		return null;
+		try {
+			ReadBoardResponseDto readBoardResponseDto = feedService.readOneBoard(boardId, userId);
+
+			if (readBoardResponseDto != null) {
+				return new ResponseEntity<ReadBoardResponseDto>(readBoardResponseDto, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+			}
+
+		} catch (Exception e) {
+			return exceptionHandling(e);
+		}
 	}
 
 	@ApiOperation(value = "writeBoard : 글 작성하기")
@@ -80,10 +87,10 @@ public class FeedController {
 
 	@ApiOperation(value = "updateBoard : 글 수정하기")
 	@PutMapping("/board")
-	public ResponseEntity<?> updateBoard(@RequestBody ModifyBoardRequestDto modifyBoardRequestDto) throws Exception {
+	public ResponseEntity<?> updateBoard(@RequestBody UpdateBoardRequestDto updateBoardRequestDto) throws Exception {
 
 		try {
-			feedService.updateBoard(modifyBoardRequestDto);
+			feedService.updateBoard(updateBoardRequestDto);
 			return new ResponseEntity<Void>(HttpStatus.OK);
 
 		} catch (Exception e) {

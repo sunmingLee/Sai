@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UpdateBoardRequestDto {
+public class ModifyBoardRequestDto {
 
 	private Long boardId;
 	private String boardContent;

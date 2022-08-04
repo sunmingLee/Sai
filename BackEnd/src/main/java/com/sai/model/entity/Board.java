@@ -16,7 +16,7 @@ import javax.persistence.ManyToOne;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.sai.model.dto.board.UpdateBoardRequestDto;
+import com.sai.model.dto.board.ModifyBoardRequestDto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -89,13 +89,13 @@ public class Board {
 		this.boardLikeCnt--;
 	}
 
-	public void updateBoard(UpdateBoardRequestDto updateboarddtoBoardRequestDto) {
-		this.boardContent = updateboarddtoBoardRequestDto.getBoardContent();
-		this.boardDate = updateboarddtoBoardRequestDto.getBoardDate();
-		this.boardLocation = updateboarddtoBoardRequestDto.getBoardLocation();
-		this.boardTaggedYn = updateboarddtoBoardRequestDto.getBoardTaggedYn();
-		this.boardMediaYn = updateboarddtoBoardRequestDto.getBoardMediaYn();
-		this.pollYn = updateboarddtoBoardRequestDto.getPollYn();
+	public void updateBoard(ModifyBoardRequestDto modifyBoardRequestDto) {
+		this.boardContent = modifyBoardRequestDto.getBoardContent();
+		this.boardDate = modifyBoardRequestDto.getBoardDate();
+		this.boardLocation = modifyBoardRequestDto.getBoardLocation();
+		this.boardTaggedYn = modifyBoardRequestDto.getBoardTaggedYn();
+		this.boardMediaYn = modifyBoardRequestDto.getBoardMediaYn();
+		this.pollYn = modifyBoardRequestDto.getPollYn();
 	}
 
 }

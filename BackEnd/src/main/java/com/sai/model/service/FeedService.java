@@ -1,19 +1,24 @@
 package com.sai.model.service;
 
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
+
 import com.sai.model.dto.CreateBoardRequestDto;
-import com.sai.model.dto.ModifyBoardRequestDto;
+import com.sai.model.dto.ReadBoardResponseDto;
+import com.sai.model.dto.ReadFeedResponseDto;
+import com.sai.model.dto.UpdateBoardRequestDto;
 
 public interface FeedService {
 
 	// 반환값 수정 필요
-	public void readAllBoard(String familyId, String userId);
+	public List<ReadFeedResponseDto> readAllBoard(String familyId, String userId, Pageable pageable);
 
-	// 반환값 수정 필요
-	public void readOneBoard(Long boardId, String userId);
+	public ReadBoardResponseDto readOneBoard(Long boardId, String userId);
 
 	public void writeBoard(CreateBoardRequestDto createBoardRequestDto);
 
-	public void updateBoard(ModifyBoardRequestDto modifyBoardRequestDto);
+	public void updateBoard(UpdateBoardRequestDto updateBoardRequestDto);
 
 	public void deleteBoard(Long boardId);
 

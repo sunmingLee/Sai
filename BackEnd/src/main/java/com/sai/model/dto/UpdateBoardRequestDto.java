@@ -2,8 +2,7 @@ package com.sai.model.dto;
 
 import java.util.List;
 
-import com.sai.model.dto.board.UpdateBoardRequestDto;
-import com.sai.model.dto.boardMedia.InputBoardMediaRequestDto;
+import com.sai.model.dto.board.ModifyBoardRequestDto;
 import com.sai.model.dto.boardTagged.InputBoardTaggedRequestDto;
 import com.sai.model.dto.poll.InputPollRequestDto;
 
@@ -14,8 +13,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ModifyBoardRequestDto {
-	private UpdateBoardRequestDto updateBoardRequestDto;
+public class UpdateBoardRequestDto {
+	private ModifyBoardRequestDto modifyBoardRequestDto;
 	private List<Long> deleteBoardMediaIds;
 	private InputPollRequestDto inputPollRequestDto;
 	private List<InputBoardTaggedRequestDto> inputBoardTaggedRequestDtos;
