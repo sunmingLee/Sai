@@ -1,8 +1,8 @@
 <template>
   <div>
     <InputBox :hasLabel="true" labelName="ID" inputType="text" @inputCheck="putId"></InputBox>
-    <InputBox :hasLabel="true" labelName="PW" @inputCheck="putPassword"></InputBox>
-    <div align="right" style="margin-right: 70px">
+    <InputBox :hasLabel="true" labelName="PW" @inputCheck="putPassword" @keyup.enter="onLogin"></InputBox>
+    <div>
       <Button buttonClass="small positive" buttonText="LOGIN" @click="onLogin"></Button>
     </div>
   </div>
