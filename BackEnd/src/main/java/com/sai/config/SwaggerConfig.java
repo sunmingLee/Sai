@@ -32,7 +32,7 @@ public class SwaggerConfig {
 				.title("제목 작성")
 				.description("설명 작성")
 				.license("라이센스 작성")
-				.licenseUrl("라이센스 URL 작성")
+				.licenseUrl("http://localhost:8080/swagger-ui.html")
 				.version("버전 작성")
 				.build();
 	}
