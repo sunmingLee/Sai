@@ -6,13 +6,17 @@ import Vuex from 'vuex'
 
 export default new Vuex.Store({
   state: {
-    familyId: ''
+    familyId: '',
+    notificationList: []
   },
   getters: {
   },
   mutations: {
     SET_FAMILY_ID: (state, familyId) => {
       state.familyId = familyId
+    },
+    SET_NOTIFICATION_LIST: (state, notificationList) => {
+      state.notificationList = notificationList
     }
   },
   actions: {
@@ -107,6 +111,37 @@ export default new Vuex.Store({
           if (res.data.msg.indexOf('입력하신 이메일로 임시 비밀번호가 전송되었습니다.') != -1) {
             alert(res.data.msg)
             router.push({ name: 'home' })
+          } else {
+            alert(res.data.msg)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 알림 확인 처리
+    readNotification ({ commit }, userId) {
+      const api_url = 'http://localhost:8080/notification/'
+      axios.put(api_url + userId)
+        .then((res) => {
+          if (res.status === 200) {
+            console.log(res)
+          } else {
+            alert(res.data.msg)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 알림 리스트 조회
+    listNotification ({ commit }, userId) {
+      const api_url = 'http://localhost:8080/notification/'
+      axios.get(api_url + userId)
+        .then((res) => {
+          if (res.status === 200) {
+            console.log(res.data.notiList)
+            commit('SET_NOTIFICATION_LIST', res.data.notiList)
           } else {
             alert(res.data.msg)
           }

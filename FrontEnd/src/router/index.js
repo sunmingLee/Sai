@@ -4,8 +4,15 @@ import FamilyCodeView from '../views/FamilyCodeView.vue'
 import ApplyWaitView from '../views/ApplyWaitView.vue'
 import SearchIdView from '@/views/SearchIdView.vue'
 import SearchPasswordView from '@/views/SearchPasswordView.vue'
+import NotificationView from '@/views/NotificationView.vue'
 
 const routes = [
+  // {
+  //   path: '/',
+  //   name: 'home',
+  //   redirect: '/login',
+  //   component: LoginView
+  // },
   {
     path: '/familyCode',
     name: 'familyCode',
@@ -30,6 +37,11 @@ const routes = [
     path: '/familyInvite',
     name: 'familyInvite',
     component: FamilyInviteView
+  },
+  {
+    path: '/notification',
+    name: 'notification',
+    component: NotificationView
   }
 ]
 
