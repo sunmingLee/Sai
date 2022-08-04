@@ -5,9 +5,6 @@ import lombok.Data;
 @Data
 public class InfoUserResponseDto {
 
-	// 유저 이름
-	private String userName;
-	
 	// user ID
 	private String userId;
 

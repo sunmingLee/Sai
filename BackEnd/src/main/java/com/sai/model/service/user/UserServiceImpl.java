@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService {
 				
 		if(loginUser.getFamilyId() == null) {
 			FamilyRegister familyRegister = familyRegisterRepository.findOneByUserUserId(loginUserRequestDto.getUserId());
-			
+			// 
 			if(familyRegister == null) {
 				return infoUserResponseDto;
 			}
