@@ -24,7 +24,6 @@
           <div class="record-wrap" v-if="toggle">
             <p>기록하고 싶은 시간, 장소, 사람이 있나요?</p>
             <p>{{date}}</p>
-            <p>{{boardDate}}</p>
             <button class="delete-date" @click="deleteDate" v-if="date !== ''">삭제</button>
             <p>{{boardLocation}}</p>
             <button class="delete-date" @click="deleteLocation" v-if="boardLocation !== ''">삭제</button>
@@ -38,7 +37,8 @@
                   <div class="modal-content">
                     <p class="modal-title">날짜 선택</p>
                     <div class="modal-date">
-                      <Datepicker placeholder="날짜를 선택해주세요." v-model="boardDate"/>
+                      <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" :minDate="new Date()" v-model="boardDate" :format="format"/>
+                      <!-- <Datepicker v-model="date" :minDate="new Date()" placeholder="날짜를 선택해주세요." v-model="boardDate"></Datepicker> -->
                     </div>
                     <div class="btn-wrap">
                       <button class="date-cancle" @click="dateCancle">취소</button>
@@ -89,11 +89,12 @@
             <button @click="addPollItem">항목 추가</button>
             <p>마감시간 설정</p>
             <input type="checkbox" class="poll-time" @click="pollTimeCheck">
-            <Datepicker minDate={moment().toDate()} placeholder="날짜를 선택해주세요." v-model="pollDatePicker" class="datepicker" :disabled="pollDateDisabled"/>
+            <!-- <Datepicker :minDate="new Date()" placeholder="날짜를 선택해주세요." v-model="pollDatePicker" class="datepicker" :disabled="pollDateDisabled"/> -->
           </div>
         </div>
         <button @click="check" style="color: red">테스트 확인</button>
         <button @click="boardCreate" style="color: blue">작성</button>
+        
     </div>
 </template>
 <script>
@@ -101,7 +102,8 @@ import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import InputBox from '@/components/common/InputBox.vue'
 import Button from '@/components/common/Button.vue'
 
-import Datepicker from 'vue3-datepicker'
+import Datepicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 import { mapState } from 'vuex'
 
 export default {
@@ -134,21 +136,28 @@ export default {
       pollDateDisabled: true, //투표 마감 날짜 지정 여부..
       pollEndDate: '', //투표 마감 날짜
       mediaList: [
-        // { boardMediaPath: '',
-        //   boardMediaName: '',
-        //   boardMediaType: ''
-        // },
+        { boardMediaPath: 'as',
+          boardMediaName: 'qw',
+          boardMediaType: 'df'
+        },
       ],
       personList: [
 
       ],
       personList: [
 
-      ]
+      ],
+      disabledDates :'',
+      preventDisableDateSelection: true,
+      format: ''
     }
   },
   mounted() {
-    
+    if(this.boardDate !== '') {
+      const year = this.boardDate.getFullYear()
+      console.log(year)
+      this.format = `Selected date is ${year}`
+    }
   },
   computed: {
     ...mapState(["familyId", "userId", "callsign"])
@@ -166,7 +175,7 @@ export default {
       }
     },
     check() {
-      console.log(this.mediaList.length)
+      // console.log(this.)
       
     },
     //투표 항목 추가하기
@@ -265,8 +274,7 @@ export default {
     //게시글 작성
     boardCreate() {
       //미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
-      //여부를 체크
-      if(this.mediaList.length === 0 && this.boardContent === '') {
+      if(this.mediaList.length === 0 && this.boardContent === '' && this.pollYn === 0) {
         alert('글이나 사진을 등록해야 작성이 가능합니다.')
       }
       else {
@@ -309,6 +317,10 @@ export default {
             const hours = currentTime.getHours();
             const minutes = currentTime.getMinutes();
             const seconds = currentTime.getSeconds();
+            //시간
+            console.log(hours)
+            console.log(minutes)
+            console.log(seconds)
             
             const setPollDate = new Date(this.pollDatePicker)
             const year = setPollDate.getFullYear()
@@ -401,7 +413,8 @@ export default {
       border-radius: 10px;
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
       .modal-date, .person-date {
-        margin: 20px 0 35px 0;
+        margin: 20px auto 35px auto;
+        width: 250px;
       }
       .modal-title, .person-title {
         font-weight: bold;
