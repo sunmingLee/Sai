@@ -1,4 +1,4 @@
-package com.sai.model.entity.user;
+package com.sai.model.entity;
 
 public enum RoleName {
 	ROLE_USER,

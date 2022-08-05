@@ -6,16 +6,11 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
-@EnableJpaAuditing
 @SpringBootApplication
-@EntityScan(basePackageClasses = {
-		BackEndApplication.class,
-		Jsr310JpaConverters.class
-})
+@EntityScan(basePackageClasses = { BackEndApplication.class, Jsr310JpaConverters.class })
 public class BackEndApplication {
 
 	@PostConstruct

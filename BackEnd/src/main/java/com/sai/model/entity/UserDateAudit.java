@@ -1,4 +1,4 @@
-package com.sai.model.entity.audit;
+package com.sai.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;

@@ -1,4 +1,4 @@
-package com.sai.model.entity.user;
+package com.sai.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

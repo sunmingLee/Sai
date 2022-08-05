@@ -36,9 +36,9 @@ public class ReplyDto {
 		this.replyContent = reply.getReplyContent();
 		this.replyRegDateTime = reply.getReplyRegDateTime();
 		this.userId = user.getUserId();
-		this.userImagePath = user.getUser_image_path();
-		this.userImageName = user.getUser_image_name();
-		this.userImageType = user.getUser_image_type();
+		this.userImagePath = user.getUserImagePath();
+		this.userImageName = user.getUserImageName();
+		this.userImageType = user.getUserImageType();
 		this.boardId = board.getBoardId();
 	}
 

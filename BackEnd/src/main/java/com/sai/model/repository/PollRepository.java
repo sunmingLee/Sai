@@ -1,4 +1,4 @@
-package com.sai.model.repository.poll;
+package com.sai.model.repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,7 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.sai.model.entity.poll.Poll;
+import com.sai.model.entity.Poll;
 
 @Repository
 public interface PollRepository extends JpaRepository<Poll, Long>{

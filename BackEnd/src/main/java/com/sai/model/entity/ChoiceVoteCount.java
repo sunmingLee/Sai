@@ -1,4 +1,4 @@
-package com.sai.model.entity.poll;
+package com.sai.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

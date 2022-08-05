@@ -1,4 +1,4 @@
-package com.sai.model.entity.poll;
+package com.sai.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,18 +12,12 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import com.sai.model.audit.DateAudit;
-import com.sai.model.entity.user.User;
 
 import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "poll_result", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {
-                "poll_id",
-                "user_id"
-        })
-})
+@Table(name = "poll_result", uniqueConstraints = { @UniqueConstraint(columnNames = { "poll_id", "user_id" }) })
 public class Vote extends DateAudit {
 
 	@Id

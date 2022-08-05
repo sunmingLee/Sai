@@ -1,4 +1,4 @@
-package com.sai.model.entity.poll;
+package com.sai.model.entity;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -17,8 +17,6 @@ import javax.persistence.Table;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-
-import com.sai.model.entity.audit.UserDateAudit;
 
 import lombok.Data;
 import lombok.Getter;
