@@ -7,6 +7,6 @@ import com.sai.model.entity.Family;
 import com.sai.model.entity.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, String> {
+public interface UserRepository {
 	public Family findFamilyByUserId(String userId);
 }

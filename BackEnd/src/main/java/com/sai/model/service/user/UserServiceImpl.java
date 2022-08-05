@@ -14,7 +14,6 @@ import com.sai.jwt.JwtTokenProvider;
 import com.sai.model.dto.MailDto;
 import com.sai.model.dto.user.InfoUserResponseDto;
 import com.sai.model.dto.user.LoginUserRequestDto;
-import com.sai.model.dto.user.LoginUserResponseDto;
 import com.sai.model.dto.user.UserDto;
 import com.sai.model.entity.family.FamilyRegister;
 import com.sai.model.entity.user.User;

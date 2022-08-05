@@ -8,12 +8,12 @@ import javax.persistence.Table;
 import lombok.Data;
 
 @Data
-@Entity
-@Table(name="family")
+//@Entity
+//@Table(name="family")
 public class Family {
 
-	@Id
-	@Column(name="family_id")
+//	@Id
+//	@Column(name="family_id")
 	private String familyId;
 
 

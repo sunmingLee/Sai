@@ -24,26 +24,26 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Entity
-@Table(name = "family_register")
+//@Entity
+//@Table(name = "family_register")
 public class FamilyRegister {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "family_register_id")
+//	@Id
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	@Column(name = "family_register_id")
 	private Long familyRegisterId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "family_id")
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "family_id")
+//	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private Family family;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+//	@OneToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "user_id")
+//	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private User user;
 
-	@Column(name = "approve_yn", columnDefinition = "TINYINT(1)")
+//	@Column(name = "approve_yn", columnDefinition = "TINYINT(1)")
 	private Boolean approveYn;
 
 
