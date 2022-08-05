@@ -14,7 +14,7 @@
     </div>
     <div class="date">
         <span>생일</span>
-        <Datepicker v-model="date" :enableTimePicker="false" :maxDate="new Date()"></Datepicker>
+        <Datepicker v-model="date" format='yyyy / MM / dd' :enableTimePicker="false" :maxDate="new Date()"></Datepicker>
     </div>
     <div class="left">
         <input type="radio" id="radioSolar" value="solar" v-model="radidValues">
@@ -54,11 +54,7 @@ export default {
       userMessage: '',
       textValue: 'reSize',
       hasError: true,
-      date: new Date(),
-      disabledDates: {
-        to: new Date(Date.now() - 8640000) // Disable all dates up to specific date
-        // from: new Date(2016, 0, 26), // Disable all dates after specific date
-      }
+      date: new Date()
     }
   },
   methods: {
