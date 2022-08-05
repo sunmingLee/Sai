@@ -125,7 +125,7 @@ export default new Vuex.Store({
       axios.put(api_url + userId)
         .then((res) => {
           if (res.status === 200) {
-            console.log(res)
+            // console.log(res)
           } else {
             alert(res.data.msg)
           }
@@ -135,12 +135,18 @@ export default new Vuex.Store({
         })
     },
     // 알림 리스트 조회
-    listNotification ({ commit }, userId) {
+    listNotification ({ commit }, pageInfo) {
       const api_url = 'http://localhost:8080/notification/'
-      axios.get(api_url + userId)
+      const params = {
+        page: pageInfo.currentPage,
+        size: pageInfo.perPage
+      }
+      // console.log(params)
+      axios.get(api_url + localStorage.getItem('userId'), { params })
         .then((res) => {
+          // console.log(res)
           if (res.status === 200) {
-            console.log(res.data.notiList)
+            // console.log(res.data.notiList)
             commit('SET_NOTIFICATION_LIST', res.data.notiList)
           } else {
             alert(res.data.msg)
