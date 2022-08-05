@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 import com.sai.model.dto.poll.ChoiceResponse;
 import com.sai.model.dto.poll.PollResponse;
 import com.sai.model.dto.poll.UserSummary;
-import com.sai.model.entity.poll.Poll;
-import com.sai.model.entity.user.User;
+import com.sai.model.entity.Poll;
+import com.sai.model.entity.User;
 
 public class PollModelMapper {
 	public static PollResponse mapPollToPollResponse(Poll poll, Map<Long, Long> choiceVotesMap, User creator,

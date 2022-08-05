@@ -10,8 +10,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sai.model.dto.notification.CreateNotificationRequestDTO;
-import com.sai.model.dto.notification.NotificationDTO;
+import com.sai.model.dto.notification.CreateNotificationRequestDto;
+import com.sai.model.dto.notification.NotificationDto;
 import com.sai.model.entity.Notification;
 import com.sai.model.entity.User;
 import com.sai.model.repository.NotificationRepository;
@@ -33,12 +33,12 @@ public class NotificationServiceImpl implements NotificationService {
 
 	// userId를 활용해서, Noti를 쫙 불러모아서, 노티를 DTO에 담아서 반환
 	@Override
-	public List<NotificationDTO> getNotiList(String userId) { 
+	public List<NotificationDto> getNotiList(String userId) { 
 		List<Notification> list = notificationRepository.findNotificationsByToUser(userRepository.findById(userId).get());
-		List<NotificationDTO> resultList = new ArrayList<NotificationDTO>();
+		List<NotificationDto> resultList = new ArrayList<NotificationDto>();
 		for(Notification noti : list) {
 			// noti to notiDTO
-			NotificationDTO item = modelMapper.map(noti, NotificationDTO.class);
+			NotificationDto item = modelMapper.map(noti, NotificationDto.class);
 			resultList.add(item);
 		}
 		return resultList;
@@ -56,7 +56,7 @@ public class NotificationServiceImpl implements NotificationService {
 
 
 	@Override
-	public String createNoti(CreateNotificationRequestDTO createNotiRequestDTO) {
+	public String createNoti(CreateNotificationRequestDto createNotiRequestDTO) {
 		User toUser = userRepository.findById(createNotiRequestDTO.getNotiToUserId()).get();
 		User fromUser = userRepository.findById(createNotiRequestDTO.getNotiFromUserId()).get();
 		

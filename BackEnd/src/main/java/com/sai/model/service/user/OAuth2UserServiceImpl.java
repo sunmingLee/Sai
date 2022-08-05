@@ -14,9 +14,9 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import com.sai.model.dto.OAuthAttributes;
-import com.sai.model.entity.user.SessionUser;
-import com.sai.model.entity.user.User;
-import com.sai.model.repository.user.UserRepository;
+import com.sai.model.entity.SessionUser;
+import com.sai.model.entity.User;
+import com.sai.model.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 

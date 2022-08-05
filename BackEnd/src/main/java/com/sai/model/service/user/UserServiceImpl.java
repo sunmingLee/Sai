@@ -15,10 +15,10 @@ import com.sai.model.dto.MailDto;
 import com.sai.model.dto.user.InfoUserResponseDto;
 import com.sai.model.dto.user.LoginUserRequestDto;
 import com.sai.model.dto.user.UserDto;
-import com.sai.model.entity.family.FamilyRegister;
-import com.sai.model.entity.user.User;
-import com.sai.model.repository.family.FamilyRegisterRepository;
-import com.sai.model.repository.user.UserRepository;
+import com.sai.model.entity.FamilyRegister;
+import com.sai.model.entity.User;
+import com.sai.model.repository.FamilyRegisterRepository;
+import com.sai.model.repository.UserRepository;
 import com.sai.model.service.MailService;
 
 import lombok.RequiredArgsConstructor;
@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
 		User loginUser = userRepository.findByUserId(loginUserRequestDto.getUserId())
 				.orElseThrow(() -> new ResourceNotFoundException("User", "userId", loginUserRequestDto.getUserId()));
 				
-		if(loginUser.getFamilyId() == null) {
+		if(loginUser.getFamily() == null) {
 			FamilyRegister familyRegister = familyRegisterRepository.findOneByUserUserId(loginUserRequestDto.getUserId())
 					.orElseThrow(() -> new ResourceNotFoundException("FamilyRegister", "familyRegister", loginUserRequestDto.getUserId()));
 					
@@ -131,7 +131,7 @@ public class UserServiceImpl implements UserService {
 			}
 			
 		} else {
-			infoUserResponseDto.setFamilyId(loginUser.getFamilyId().getFamilyId());
+			infoUserResponseDto.setFamilyId(loginUser.getFamily().getFamilyId());
 		}
 		
 		return infoUserResponseDto;

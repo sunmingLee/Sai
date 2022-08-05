@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,13 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sai.model.dto.notification.CreateNotificationRequestDTO;
-import com.sai.model.dto.notification.GetNotificationResponseDTO;
-import com.sai.model.dto.notification.NotificationDTO;
+import com.sai.model.dto.notification.CreateNotificationRequestDto;
+import com.sai.model.dto.notification.GetNotificationResponseDto;
+import com.sai.model.dto.notification.NotificationDto;
 import com.sai.model.service.NotificationService;
 
 @RestController
 @RequestMapping(value = "/notification")
+@CrossOrigin("*")
 public class NotificationController {
 	
 	@Autowired
@@ -31,10 +33,10 @@ public class NotificationController {
 	// 유저 아이디를 보내면, 알림 리스트를 반환
 	@GetMapping("/{userId}")
 	public ResponseEntity<?> getNoti(@PathVariable String userId) {
-		List<NotificationDTO> list = notificationService.getNotiList(userId);
-		GetNotificationResponseDTO notiResponse = new GetNotificationResponseDTO();
+		List<NotificationDto> list = notificationService.getNotiList(userId);
+		GetNotificationResponseDto notiResponse = new GetNotificationResponseDto();
 		notiResponse.setNotiList(list);
-		return new ResponseEntity<GetNotificationResponseDTO>(notiResponse, HttpStatus.OK);
+		return new ResponseEntity<GetNotificationResponseDto>(notiResponse, HttpStatus.OK);
 	}
 
 	// 알림 확인
@@ -45,7 +47,7 @@ public class NotificationController {
 
 	// 알림 생성
 	@PostMapping
-	public ResponseEntity<?> createNoti(@RequestBody CreateNotificationRequestDTO createNotiRequestDTO) {
+	public ResponseEntity<?> createNoti(@RequestBody CreateNotificationRequestDto createNotiRequestDTO) {
 		ResponseEntity<String> response;
 		try {
 			String message = notificationService.createNoti(createNotiRequestDTO);

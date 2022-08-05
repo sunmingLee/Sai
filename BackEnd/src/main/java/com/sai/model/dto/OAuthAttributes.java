@@ -2,7 +2,7 @@ package com.sai.model.dto;
 
 import java.util.Map;
 
-import com.sai.model.entity.user.User;
+import com.sai.model.entity.User;
 
 import lombok.Builder;
 import lombok.Getter;

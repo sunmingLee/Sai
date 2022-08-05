@@ -17,25 +17,24 @@ import com.sai.security.UserPrincipal;
 public class AuditingConfig {
 
 	@Bean
-    public AuditorAware<String> auditorProvider() {
-        return new SpringSecurityAuditAwareImpl();
-    }
+	public AuditorAware<String> auditorProvider() {
+		return new SpringSecurityAuditAwareImpl();
+	}
 }
 
 class SpringSecurityAuditAwareImpl implements AuditorAware<String> {
 
-    @Override
-    public Optional<String> getCurrentAuditor() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	@Override
+	public Optional<String> getCurrentAuditor() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null ||
-                !authentication.isAuthenticated() ||
-                authentication instanceof AnonymousAuthenticationToken) {
-            return Optional.empty();
-        }
+		if (authentication == null || !authentication.isAuthenticated()
+				|| authentication instanceof AnonymousAuthenticationToken) {
+			return Optional.empty();
+		}
 
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-        return Optional.ofNullable(userPrincipal.getUserId());
-    }
+		return Optional.ofNullable(userPrincipal.getUserId());
+	}
 }
