@@ -4,7 +4,7 @@
     <div class="bottom-border"></div>
     <!-- 알림 목록 -->
     <ul class="list-group list-group-flush" v-if="notificationList.length">
-        <li class="list-group-item" v-for="(noti, index) in notificationList" :key="index"><button type="button" class="btn-close" aria-label="Close"></button> {{ noti.notiType }} {{ noti.notiContent}} {{noti.notiDateTime}}</li>
+        <li class="list-group-item" v-for="(noti, index) in notificationList" :key="index" @change="getNotiList"><button type="button" class="btn-close" aria-label="Close" @click="deleteNoti(noti.notiId)"></button> <span style="font-weight: bold;">{{ noti.notiType }}</span> {{noti.fromUser.userId}}님이 {{ noti.notiContent}} {{noti.notiDateTime}}</li>
     </ul>
     <ul class="list-group list-group-flush" v-else>
         <li class="list-group-item">알림이 존재하지 않습니다.</li>
@@ -25,7 +25,7 @@
         </ul>
     </nav>
     <div class="button-wrap">
-        <Button v-if="notificationList.length" buttonClass="big positive" buttonText="알림함 비우기"></Button>
+        <Button v-if="notificationList.length" buttonClass="big positive" buttonText="알림함 비우기" @click="deleteAllNotifacation"></Button>
         <Button v-else buttonClass="big disable" buttonText="알림함 비우기"></Button>
     </div>
   </div>
@@ -50,6 +50,12 @@ export default {
     ...mapState(['notificationList'])
   },
   methods: {
+    deleteNoti (notiId) {
+      this.$store.dispatch('deleteNotification', notiId)
+    },
+    deleteAllNotifacation () {
+      this.$store.dispatch('deleteAllNotification')
+    }
   }
 }
 </script>

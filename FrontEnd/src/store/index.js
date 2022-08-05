@@ -149,6 +149,40 @@ export default new Vuex.Store({
         .catch((err) => {
           console.log(err)
         })
+    },
+    // 알림 삭제
+    deleteNotification ({ commit }, notiId) {
+      const api_url = 'http://localhost:8080/notification/'
+      axios.delete(api_url + notiId, { data: localStorage.userId })
+        .then((res) => {
+          // console.log(res)
+          if (res.status === 200) {
+            // 새로고침
+            router.go()
+          } else {
+            alert(res.data.msg)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 알림 전체 삭제
+    deleteAllNotification ({ commit }) {
+      const api_url = 'http://localhost:8080/notification/'
+      axios.delete(api_url, { data: localStorage.userId })
+        .then((res) => {
+          // console.log(res)
+          if (res.status === 200) {
+            // 새로고침
+            router.go()
+          } else {
+            alert(res.data.msg)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     }
   },
   modules: {
