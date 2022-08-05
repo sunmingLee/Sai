@@ -13,7 +13,9 @@ public interface FamilyCallsignRepository extends JpaRepository<FamilyCallsign, 
 
 	List<FamilyCallsign> findByFromUser(User user);
 
-	List<FamilyCallsign> removeByFromUser(User user);
+//	List<FamilyCallsign> removeByFromUser(User user);
+	void deleteByFromUser(User user);
 
-	List<FamilyCallsign> removeByToUser(User user);
+//	List<FamilyCallsign> removeByToUser(User user);
+	void deleteByToUser(User user);
 }

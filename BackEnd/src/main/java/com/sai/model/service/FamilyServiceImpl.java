@@ -73,8 +73,8 @@ public class FamilyServiceImpl implements FamilyService {
 		Family family = user.getFamily();
 
 		// 콜사인 삭제
-		familyCallsignRepository.removeByFromUser(user);
-		familyCallsignRepository.removeByToUser(user);
+		familyCallsignRepository.deleteByFromUser(user);
+		familyCallsignRepository.deleteByToUser(user);
 
 		user.setFamily(null);
 		userRepository.save(user);
