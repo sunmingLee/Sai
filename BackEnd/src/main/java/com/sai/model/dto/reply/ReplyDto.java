@@ -10,7 +10,7 @@ import com.sai.model.entity.User;
 import lombok.Data;
 
 @Data
-public class ReplyDTO {
+public class ReplyDto {
 	private Long replyId;
 
 	private String replyContent;
@@ -19,19 +19,19 @@ public class ReplyDTO {
 
 	private String userId;
 
-	// 프로필 사진 이미지 경로
+	// �봽濡쒗븘 �궗吏� �씠誘몄� 寃쎈줈
 	private String userImagePath;
 
-	// 프로필 사진 이미지 이름
+	// �봽濡쒗븘 �궗吏� �씠誘몄� �씠由�
 	private String userImageName;
 
-	// 프로필 사진 이미지 속성
+	// �봽濡쒗븘 �궗吏� �씠誘몄� �냽�꽦
 	private String userImageType;
 
 	private Long boardId;
 
 	// Entity to DTO
-	public ReplyDTO(Reply reply, User user, Board board) {
+	public ReplyDto(Reply reply, User user, Board board) {
 		this.replyId = reply.getReplyId();
 		this.replyContent = reply.getReplyContent();
 		this.replyRegDateTime = reply.getReplyRegDateTime();

@@ -10,10 +10,10 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sai.model.dto.reply.CreateReplyRequestDTO;
-import com.sai.model.dto.reply.GetReplyResponseDTO;
-import com.sai.model.dto.reply.ReplyDTO;
-import com.sai.model.dto.reply.UpdateReplyRequestDTO;
+import com.sai.model.dto.reply.CreateReplyRequestDto;
+import com.sai.model.dto.reply.GetReplyResponseDto;
+import com.sai.model.dto.reply.ReplyDto;
+import com.sai.model.dto.reply.UpdateReplyRequestDto;
 import com.sai.model.entity.Board;
 import com.sai.model.entity.Reply;
 import com.sai.model.entity.User;
@@ -34,7 +34,7 @@ public class ReplyServiceImpl implements ReplyService {
 	UserRepository userRepository;
 
 	@Override
-	public String createReply(Long boardId, CreateReplyRequestDTO createReplyRequestDTO) {
+	public String createReply(Long boardId, CreateReplyRequestDto createReplyRequestDTO) {
 //		Optional<Board> boardItem = boardRepository.findById(id);
 //		reply.setBoard(boardItem.get());
 //
@@ -53,13 +53,13 @@ public class ReplyServiceImpl implements ReplyService {
 	}
 
 	@Override
-	public GetReplyResponseDTO getReply(Long id) {
-		GetReplyResponseDTO result = new GetReplyResponseDTO();
+	public GetReplyResponseDto getReply(Long id) {
+		GetReplyResponseDto result = new GetReplyResponseDto();
 		List<Reply> dbResult = replyRepository.findRepliesByBoard(boardRepository.findById(id).get());
-		List<ReplyDTO> list = new ArrayList<ReplyDTO>();
+		List<ReplyDto> list = new ArrayList<ReplyDto>();
 		// for문 돌려서 Reply -> ReplyDTO 변환시킨 후 list에 삽입
 		for (Reply reply : dbResult) {
-			ReplyDTO item = new ReplyDTO(reply, userRepository.findById(reply.getUser().getUserId()).get(),
+			ReplyDto item = new ReplyDto(reply, userRepository.findById(reply.getUser().getUserId()).get(),
 					boardRepository.findById(reply.getBoard().getBoardId()).get());
 			list.add(item);
 		}
@@ -81,7 +81,7 @@ public class ReplyServiceImpl implements ReplyService {
 	}
 
 	@Override
-	public void updateReply(UpdateReplyRequestDTO updateReplyRequestDTO) {
+	public void updateReply(UpdateReplyRequestDto updateReplyRequestDTO) {
 		Reply reply = replyRepository.findById(updateReplyRequestDTO.getReplyId()).get();
 		reply.update(updateReplyRequestDTO.getReplyContent());
 	}

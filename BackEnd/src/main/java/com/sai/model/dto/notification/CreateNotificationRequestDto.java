@@ -3,7 +3,7 @@ package com.sai.model.dto.notification;
 import lombok.Data;
 
 @Data
-public class CreateNotificationRequestDTO {
+public class CreateNotificationRequestDto {
 	private String notiToUserId;
 	
 	private String notiFromUserId;

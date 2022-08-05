@@ -5,6 +5,6 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class GetReplyResponseDTO {
-	private List<ReplyDTO> replyList;
+public class GetReplyResponseDto {
+	private List<ReplyDto> replyList;
 }

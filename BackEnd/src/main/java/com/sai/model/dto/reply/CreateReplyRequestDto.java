@@ -3,8 +3,8 @@ package com.sai.model.dto.reply;
 import lombok.Data;
 
 @Data
-public class DeleteReplyRequestDTO {
-	private Long replyId;
-
+public class CreateReplyRequestDto {
 	private String userId;
+	
+	private String replyContent;
 }

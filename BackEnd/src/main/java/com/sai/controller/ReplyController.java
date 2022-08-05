@@ -3,6 +3,7 @@ package com.sai.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,14 +13,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sai.model.dto.reply.CreateReplyRequestDTO;
-import com.sai.model.dto.reply.DeleteReplyRequestDTO;
-import com.sai.model.dto.reply.GetReplyResponseDTO;
-import com.sai.model.dto.reply.UpdateReplyRequestDTO;
+import com.sai.model.dto.reply.CreateReplyRequestDto;
+import com.sai.model.dto.reply.DeleteReplyRequestDto;
+import com.sai.model.dto.reply.GetReplyResponseDto;
+import com.sai.model.dto.reply.UpdateReplyRequestDto;
 import com.sai.model.service.ReplyService;
 
 @RestController
 @RequestMapping(value = "/feed")
+@CrossOrigin("*")
 public class ReplyController {
 
 	@Autowired
@@ -36,7 +38,7 @@ public class ReplyController {
 
 	@PostMapping("{id}/reply")
 	public ResponseEntity<?> createReply(@PathVariable Long id,
-			@RequestBody CreateReplyRequestDTO createReplyRequestDTO) {
+			@RequestBody CreateReplyRequestDto createReplyRequestDTO) {
 		ResponseEntity<String> response;
 
 		String resultMessage = replyService.createReply(id, createReplyRequestDTO);
@@ -53,8 +55,8 @@ public class ReplyController {
 	@GetMapping("/{id}/reply")
 	public ResponseEntity<?> getReply(@PathVariable Long id) throws Exception {
 		try {
-			GetReplyResponseDTO response = replyService.getReply(id);
-			return new ResponseEntity<GetReplyResponseDTO>(response, HttpStatus.ACCEPTED);
+			GetReplyResponseDto response = replyService.getReply(id);
+			return new ResponseEntity<GetReplyResponseDto>(response, HttpStatus.ACCEPTED);
 		} catch (Exception e) {
 			return exceptionHandling(e);
 		} finally {
@@ -65,7 +67,7 @@ public class ReplyController {
 	// 댓글 삭제 api
 	@DeleteMapping("{id}/reply")
 	public ResponseEntity<String> deleteReply(@PathVariable Long id,
-			@RequestBody DeleteReplyRequestDTO deleteReplyRequestDTO) throws Exception {
+			@RequestBody DeleteReplyRequestDto deleteReplyRequestDTO) throws Exception {
 		try {
 			// 요청한 유저 id와 댓글 작성자의 아이디 일치 여부 검사
 			if (replyService.getUserIdByReplyId(deleteReplyRequestDTO.getReplyId())
@@ -84,7 +86,7 @@ public class ReplyController {
 	// 댓글 수정 api
 	@PutMapping("{id}/reply")
 	public ResponseEntity<String> updateReply(@PathVariable Long id,
-			@RequestBody UpdateReplyRequestDTO updateReplyRequestDTO) throws Exception {
+			@RequestBody UpdateReplyRequestDto updateReplyRequestDTO) throws Exception {
 		try {
 			// 요청한 유저 id와 댓글 작성자의 아이디 일치 여부 검사
 			if (replyService.getUserIdByReplyId(updateReplyRequestDTO.getReplyId())

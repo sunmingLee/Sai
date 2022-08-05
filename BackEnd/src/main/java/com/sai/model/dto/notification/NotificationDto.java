@@ -7,7 +7,7 @@ import com.sai.model.dto.user.UserInfoDTO;
 import lombok.Data;
 
 @Data
-public class NotificationDTO {
+public class NotificationDto {
 	private Long notiId;
 	
 	private UserInfoDTO toUser;

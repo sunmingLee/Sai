@@ -5,6 +5,6 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class GetNotificationResponseDTO {
-	private List<NotificationDTO> notiList;
+public class GetNotificationResponseDto {
+	private List<NotificationDto> notiList;
 }

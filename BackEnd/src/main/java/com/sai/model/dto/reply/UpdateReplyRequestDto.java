@@ -11,7 +11,7 @@ import lombok.Data;
  */
 
 @Data
-public class UpdateReplyRequestDTO {
+public class UpdateReplyRequestDto {
 	private String userId;
 
 	private Long replyId;
