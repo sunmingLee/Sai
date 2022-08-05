@@ -13,6 +13,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.sai.model.dto.plan.UpdatePlanRequestDto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString
 public class MainPlan {
 
 	@Id
@@ -48,4 +61,18 @@ public class MainPlan {
 	
 	@Column(name = "routine_end_date")
 	private LocalDate routineEndDate;
+	
+	// 업데이트
+	public void update(UpdatePlanRequestDto updatePlanRequestDto) {
+		this.planType = updatePlanRequestDto.getPlanType();
+		this.planTitle = updatePlanRequestDto.getPlanTitle();
+		this.mainPlanStartDatetime = updatePlanRequestDto.getMainPlanStartDatetime();
+		this.mainPlanEndDatetime = updatePlanRequestDto.getMainPlanEndDatetime();
+		this.planNotiDatetime = updatePlanRequestDto.getPlanNotiDatetime();
+		this.planRoutineDay = updatePlanRequestDto.getPlanRoutineDay();
+		this.routineEndDate = updatePlanRequestDto.getRoutineEndDate();
+		
+	}
+	
+	
 }
