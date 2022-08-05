@@ -3,6 +3,7 @@ package com.sai.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sai.model.dto.notification.CreateNotificationRequestDto;
@@ -32,8 +32,8 @@ public class NotificationController {
 	// 알림 리스트 조회
 	// 유저 아이디를 보내면, 알림 리스트를 반환
 	@GetMapping("/{userId}")
-	public ResponseEntity<?> getNoti(@PathVariable String userId) {
-		List<NotificationDto> list = notificationService.getNotiList(userId);
+	public ResponseEntity<?> getNoti(@PathVariable String userId, Pageable pageable) {
+		List<NotificationDto> list = notificationService.getNotiList(userId, pageable);
 		GetNotificationResponseDto notiResponse = new GetNotificationResponseDto();
 		notiResponse.setNotiList(list);
 		return new ResponseEntity<GetNotificationResponseDto>(notiResponse, HttpStatus.OK);

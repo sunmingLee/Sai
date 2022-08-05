@@ -145,7 +145,7 @@ public class UserServiceImpl implements UserService {
 		// 이름으로 해당 유저 찾아오기
 		Optional<User> findUser = userRepository.findByUserName(user.getUserName());
 
-		findUser.ifPresentOrElse(foundUser -> {
+		findUser.ifPresent(foundUser -> {
 			// 이름에 해당하는 이메일이 맞는지 확인
 			if (foundUser.getEmail().equals(user.getEmail())) {
 
@@ -162,9 +162,6 @@ public class UserServiceImpl implements UserService {
 				result.put("status", HttpStatus.ACCEPTED);
 			}
 			// 이름이 틀린 경우
-		}, () -> {
-			result.put("msg", "입력하신 정보가 일치하지 않습니다.");
-			result.put("status", HttpStatus.ACCEPTED);
 		});
 
 		return result;
@@ -178,7 +175,7 @@ public class UserServiceImpl implements UserService {
 		// 유저 이름으로 옵셔널 불러옴
 		Optional<User> findUser = userRepository.findByUserName(user.getUserName());
 
-		findUser.ifPresentOrElse(foundUser -> {
+		findUser.ifPresent(foundUser -> {
 			// 이름에 해당하는 이메일이 맞는지 확인
 			if (foundUser.getEmail().equals(user.getEmail())) {
 
@@ -222,9 +219,6 @@ public class UserServiceImpl implements UserService {
 				result.put("msg", "입력하신 정보가 일치하지 않습니다.");
 				result.put("status", HttpStatus.ACCEPTED);
 			}
-		}, () -> {
-			result.put("msg", "입력하신 정보가 일치하지 않습니다.");
-			result.put("status", HttpStatus.ACCEPTED);
 		});
 
 		return result;

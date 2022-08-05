@@ -19,9 +19,10 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import lombok.Data;
-import lombok.Getter;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 @Entity
 @Table(name = "poll")
 public class Poll extends UserDateAudit {

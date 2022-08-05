@@ -1,6 +1,7 @@
 package com.sai.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -53,9 +54,9 @@ public class ReplyController {
 
 	// 댓글 조회 api
 	@GetMapping("/{id}/reply")
-	public ResponseEntity<?> getReply(@PathVariable Long id) throws Exception {
+	public ResponseEntity<?> getReply(@PathVariable Long id, Pageable pageable) throws Exception {
 		try {
-			GetReplyResponseDto response = replyService.getReply(id);
+			GetReplyResponseDto response = replyService.getReply(id, pageable);
 			return new ResponseEntity<GetReplyResponseDto>(response, HttpStatus.ACCEPTED);
 		} catch (Exception e) {
 			return exceptionHandling(e);
