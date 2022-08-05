@@ -14,7 +14,7 @@
     </div>
     <div class="date">
         <span>생일</span>
-        <Datepicker style="border-radius: 5px; border: 1px solid #ae5f40;" v-model="date"></Datepicker>
+        <Datepicker v-model="date" :enableTimePicker="false" :maxDate="new Date()"></Datepicker>
     </div>
     <div class="left">
         <input type="radio" id="radioSolar" value="solar" v-model="radidValues">
@@ -40,7 +40,7 @@
 
 <script>
 // import ResizeTextarea from 'resize-textarea-vue3'
-import Datepicker from 'vue3-datepicker'
+import Datepicker from '@vuepic/vue-datepicker'
 import InputBox from './common/InputBox.vue'
 import Button from './common/Button.vue'
 export default {
@@ -50,11 +50,15 @@ export default {
     return {
       nickname: '',
       validNickname: false,
-      date: new Date(),
       radidValues: '',
       userMessage: '',
       textValue: 'reSize',
-      hasError: true
+      hasError: true,
+      date: new Date(),
+      disabledDates: {
+        to: new Date(Date.now() - 8640000) // Disable all dates up to specific date
+        // from: new Date(2016, 0, 26), // Disable all dates after specific date
+      }
     }
   },
   methods: {
