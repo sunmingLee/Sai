@@ -1,29 +1,41 @@
 package com.sai.model.dto.user;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 public class UserDto {
+
+	// user ID
 	private String userId;
-//	private FamilyDto family;
+
+	// 가족 ID
 	private String familyId;
+
+	// 유저 이름
 	private String userName;
 
-//	// Entity to Dto
-//	public UserDto(User user) {
-//		this.userId = user.getUserId();
-//		if (user.getFamily() != null)
-//			this.family = new FamilyDto(user.getFamily());
-//		this.userName = user.getUserName();
-//		this.nickname = user.getNickname();
-//	}
-//
-//	// Dto to Entity
-//	public User toEntity() {
-//		return User.builder().userId(userId).family(family.toEntity()).userName(userName).nickname(nickname).build();
-//	}
+	// 유저 이메일
+	private String email;
+
+	// 패스워드
+	private String password;
+
+	// 유저 생일
+	private String birthday;
+
+	// 음력 사용 여부
+	private Boolean lunar;
+
+	// 프로필 사진 이미지 경로
+	private String userImagePath;
+
+	// 프로필 사진 이미지 이름
+	private String userImageName;
+
+	// 프로필 사진 이미지 속성
+	private String userImageType;
+
+	// 프로필 메세지
+	private String userMessage;
+
 }
