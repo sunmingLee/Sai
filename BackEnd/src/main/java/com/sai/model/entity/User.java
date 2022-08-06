@@ -32,7 +32,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class User extends DateAudit {
+//public class User extends DateAudit {
+	public class User {
 
 	@Id
 	@Column(name = "user_id")
@@ -52,9 +53,6 @@ public class User extends DateAudit {
 
 	// 패스워드
 	private String password;
-
-	// 유저 닉네임
-	private String nickname;
 
 	// 유저 생일
 	private String birthday;

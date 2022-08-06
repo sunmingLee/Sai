@@ -42,7 +42,7 @@ public class OAuth2UserServiceImpl implements OAuth2UserService<OAuth2UserReques
 	      OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 	      User user = saveOrUpdate(attributes);
 	      
-	      // 세션에 사용자 정보 저장
+	      // 세션에 사용자 정보 저장 
 	      httpSession.setAttribute("user", new SessionUser(user)); // SessionUser (직렬화된 dto 클래스 사용)
 
 		return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority(user.getRoleKey())),

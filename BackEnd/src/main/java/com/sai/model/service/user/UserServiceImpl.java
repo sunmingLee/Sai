@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
 	public String login(LoginUserRequestDto user) {
 //		LoginUserResponseDto loginUserResponseDto = new LoginUserResponseDto();
 		User loginUser = userRepository.findByUserId(user.getUserId())
-				.orElseThrow(() -> new ResourceNotFoundException("User", "username", user.getUserId()));
+				.orElseThrow(() -> new ResourceNotFoundException("User", "userId", user.getUserId()));
 		if (!passwordEncoder.matches(user.getPassword(), loginUser.getPassword())) {
 //			loginUserResponseDto.setJWT(jwtTokenProvider.createToken(loginUser.getUserId()));
 			throw new IllegalArgumentException("잘못된 비밀번호입니다.");

@@ -101,7 +101,7 @@ public class UserController {
 	}
 
 	// 소셜 로그인 요청
-	@PostMapping("/logid/naver")
+	@PostMapping("login/ouath2/naver")
 	public ResponseEntity<OAuth2User> naverAuthRequest(@RequestBody OAuth2UserRequest userRequest) {
 		LoginUserResponseDto loginUserResponseDto = new LoginUserResponseDto();
 		

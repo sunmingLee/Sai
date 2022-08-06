@@ -26,7 +26,7 @@ public class OAuthAttributes {
 
 	 public static OAuthAttributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes){
 	        // 여기서 네이버와 카카오 등 구분 (ofNaver, ofKakao)
-	        return ofNaver("id", attributes);
+	        return ofNaver(userNameAttributeName, attributes);
 	    }
 
 	 private static OAuthAttributes ofNaver(String userNameAttributeName, Map<String, Object> attributes) {
@@ -44,6 +44,7 @@ public class OAuthAttributes {
 
 	  public User toEntity(){
 	        return User.builder()
+	        		.userId(nameAttributeKey)
 	                .userName(name)
 	                .email(email)
 	                .userImagePath(picture)
