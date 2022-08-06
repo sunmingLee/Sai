@@ -4,6 +4,7 @@ import FamilyCodeView from '../views/FamilyCodeView.vue'
 import ApplyWaitView from '../views/ApplyWaitView.vue'
 import SearchIdView from '@/views/SearchIdView.vue'
 import SearchPasswordView from '@/views/SearchPasswordView.vue'
+import AlbumView from '@/views/AlbumView.vue'
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path: '/familyInvite',
     name: 'familyInvite',
     component: FamilyInviteView
+  },
+  {
+    path: '/album',
+    name: 'album',
+    component: AlbumView
   }
 ]
 
