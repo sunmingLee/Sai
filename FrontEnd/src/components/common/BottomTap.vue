@@ -28,16 +28,16 @@ export default {
   },
   methods: {
     moveFeed () {
-      this.$router.push('feed')
+      this.$router.push({ name: 'feed' })
     },
     moveRefridge () {
-      this.$router.push('refridge')
+      this.$router.push({ name: 'refridge' })
     },
     moveAlbum () {
-      this.$router.push('album')
+      this.$router.push({ name: 'album' })
     },
     moveCalendar () {
-      this.$router.push('calendar')
+      this.$router.push({ name: 'calendar' })
     }
   }
 }
