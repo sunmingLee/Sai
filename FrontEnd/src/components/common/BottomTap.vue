@@ -53,6 +53,7 @@ export default {
     left: 0;
     bottom: 0;
     width: -webkit-fill-available;
+    height: 50px;
     justify-content: space-around;
     --bs-nav-link-color: #7B371C;
     --bs-nav-link-hover-color: #7B371C;
@@ -61,6 +62,7 @@ export default {
     background-color: #7B371C;
   }
   button{
-    height: 40px;
+    height: 50px;
+    font-weight: bold;
   }
 </style>
