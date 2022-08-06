@@ -1,9 +1,6 @@
 
 package com.sai.model.entity;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,14 +8,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import com.sai.model.audit.DateAudit;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -61,11 +54,12 @@ import lombok.NoArgsConstructor;
 	private Boolean lunar;
 
 	// roles(for poll)
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-	private final Set<Role> roles = new HashSet<>();
+//	@ManyToMany(fetch = FetchType.LAZY)
+//	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+//	private final Set<Role> roles = new HashSet<>();
 
 	// role
+	@Column(name = "role")
 	@Enumerated(EnumType.STRING)
 	private UserRole role;
 

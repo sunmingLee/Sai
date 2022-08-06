@@ -31,7 +31,7 @@ public class Poll extends UserDateAudit {
 	@Column(name = "poll_id")
 	private Long pollId;
 
-	private long boardId;
+	private Long boardId;
 
 	private String pollTitle; // questions
 
@@ -51,4 +51,5 @@ public class Poll extends UserDateAudit {
 		choices.remove(choice);
 		choice.setPoll(null);
 	}
+	
 }
