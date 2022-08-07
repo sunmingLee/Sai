@@ -71,7 +71,6 @@ export default {
         ...mapState(boardStore, ["feedList"]),
         ...mapState(userStore, ["userId", "userName"]),
         ...mapState(familyStore, ["familyCallsignList", "familyId"])
-        
     },
     methods: {
         ...mapActions(boardStore, ['feedAllList']),

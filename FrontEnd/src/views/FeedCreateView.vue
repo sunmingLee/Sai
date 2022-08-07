@@ -57,8 +57,8 @@
                   <div class="person-content">
                     <p class="person-title">사람 선택</p>
                     <div class="person-date">
-                      <div v-for="(family, index) in callsign" :key="index">
-                        <label for="callsign-select">{{family}}</label>
+                      <div v-for="(callsign, index) in familyCallsignList" :key="index">
+                        <label for="callsign-select">{{callsign.callsign}}</label>
                         <input type="checkbox" name="callsign" :value="family" class="callsign-select">
                       </div>
                     </div>
@@ -98,7 +98,7 @@
           </div>
         </div>
         <button @click="check" style="color: red">테스트 확인</button>
-        <button @click="boardCreate" style="color: blue">작성</button>
+        <button @click="feedCreate" style="color: blue">작성</button>
     </div>
 </template>
 <script>
@@ -108,7 +108,11 @@ import Button from '@/components/common/Button.vue'
 
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+
+const boardStore = 'boardStore'
+const userStore = 'userStore'
+const familyStore = 'familyStore'
           
 export default {
   name: 'FeedCreateView',
@@ -152,19 +156,19 @@ export default {
       format: ''
     }
   },
-  mounted() {
-    // console.log(Object.key(this.pollOptions[0]))
-    // const size = document.getElementById("size")
-
-    // window.onresize = function(event) {
-    //   const innerWidth = window.innerWidth
-    //   size.textContent = innerWidth
-    // }
+  created() {
+    const info = this.userId
+    this.callsignList(info)
+    console.log(this.familyCallsignList)
   },
   computed: {
-    ...mapState(["familyId", "userId", "callsign"])
+    ...mapState(boardStore, ["feedList"]),
+    ...mapState(userStore, ["userId", "userName"]),
+    ...mapState(familyStore, ["familyCallsignList", "familyId"])
   },
   methods: {
+    ...mapActions(boardStore, ['boardCreate']),
+    ...mapActions(familyStore, ['callsignList']),
     //추가기록과 투표만들기 토글
     record() {
       if(!this.toggle) {
@@ -295,7 +299,7 @@ export default {
       this.boardLocation = ''
     },
     //게시글 작성
-    boardCreate() {
+    feedCreate() {
       //미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
       if(this.mediaList.length === 0 && this.boardContent === '' && this.pollYn === 0) {
         alert('글이나 사진을 등록해야 작성이 가능합니다.')
@@ -380,15 +384,15 @@ export default {
           Object.assign(boardInfo, pollList)
         }
         const fId = {
-          familyId : this.$store.state.familyId
+          familyId : this.familyId
         }
         const uId = {
-          userId: this.$store.state.userId
+          userId: this.userId
         }
         Object.assign(boardInfo, peopleList)
         Object.assign(boardInfo, fId)
         Object.assign(boardInfo, uId)
-        this.$store.dispatch('boardCreate', boardInfo)
+        this.boardCreate(boardInfo)
       }
     }
   }

@@ -16,9 +16,8 @@ const boardStore = {
     },
     actions: {
     //게시글 작성
-    boardCreate(context, boardInfo) {
-        const familyId = context.state.familyId
-        const userId = context.state.userId
+    boardCreate({commit}, boardInfo) {
+        console.log("작성")
         console.log(boardInfo)
         const api_url = 'http://localhost:8080/feed/board'
         axios({

@@ -17,6 +17,7 @@ const userStore = {
         // 아이디 찾기
     findId ({ commit }, userInfo) {
         const api_url = 'http://localhost:8080/api/user/findId'
+        console.log(userInfo.userName)
         const params = {
           userName: userInfo.userName,
           email: userInfo.email

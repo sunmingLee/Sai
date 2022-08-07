@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import FeedView from '@/views/FeedView.vue'
 import FeedCreateView from '@/views/FeedCreateView.vue'
-// import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 import AddInformationView from '../views/user/AddInformationView.vue'
 import FamilyInviteView from '@/views/FamilyInviteView.vue'
@@ -16,12 +15,6 @@ import AlbumPicture from '@/components/album/AlbumPicture.vue'
 import AlbumPictureDetail from '@/components/album/AlbumPictureDetail.vue'
 
 const routes = [
-  // {
-  //   path: '/',
-  //   name: 'home',
-  //   redirect: '/login',
-  //   component: LoginView
-  // },
   {
     path: '/login',
     name: 'login',
@@ -38,7 +31,6 @@ const routes = [
     component: FeedView
   },
   {
-    // path: '/feedCreate',
     path: '/feedCreate',
     name: 'feedCreate',
     component: FeedCreateView,

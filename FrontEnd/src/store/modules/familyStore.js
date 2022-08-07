@@ -72,7 +72,7 @@ const familyStore = {
       },
       //가족 콜사인 리스트
     callsignList({commit}, info) {
-        const userId = info.userId
+        const userId = info
         const api_url = 'http://localhost:8080/family/list/' + userId
         axios({
           url: api_url,
