@@ -8,14 +8,17 @@
     </div>
     <div class="border-bottom"></div>
     <span>사이를 이용하는 첫 가족이신가요?<br/>코드를 만든 후 가족들을 불러보세요!</span>
-    <Button style="margin-top: 10%;" buttonClass="big information" buttonText="가족코드 만들기" @click="createFamilyId"></Button>
+    <Button style="margin-top: 10%;" buttonClass="big information" buttonText="가족코드 만들기" @click="makeFamilyId"></Button>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import HeaderTitle from '@/components/common/HeaderTitle.vue'
-// import InputBox from '@/components/common/InputBox.vue'
 import Button from '@/components/common/Button.vue'
+
+const familyStore = 'familyStore'
+
 export default {
   components: { HeaderTitle, Button },
   data () {
@@ -24,15 +27,16 @@ export default {
     }
   },
   methods: {
+    ...mapActions(familyStore, ['applyFamily', 'createFamilyId']),
     sendFamilyId () {
       const userInfo = {
         familyId: this.familyId,
         userId: localStorage.getItem('userId')
       }
-      this.$store.dispatch('applyFamily', userInfo)
+      this.applyFamily(userInfo)
     },
-    createFamilyId () {
-      this.$store.dispatch('createFamilyId', localStorage.getItem('userId'))
+    makeFamilyId () {
+      this.createFamilyId(localStorage.getItem('userId'))
     }
   }
 }

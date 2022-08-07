@@ -1,17 +1,32 @@
+<!-- eslint-disable camelcase -->
 <template>
   <div>
-    <ButtonSocial buttonType="kakao"></ButtonSocial>
-    <ButtonSocial buttonType="naver"></ButtonSocial>
-    <ButtonSocial buttonType="google"></ButtonSocial>
+    <!-- <ButtonSocial buttonType="kakao"></ButtonSocial> -->
+    <div id="naver_id_login"></div>
+    <!-- <ButtonSocial buttonType="google"></ButtonSocial> -->
   </div>
 </template>
 
 <script>
 import ButtonSocial from '@/components/common/ButtonSocial.vue'
+import router from '@/router'
 
 export default {
   name: 'LoginSocial',
-  components: { ButtonSocial }
+  components: { ButtonSocial },
+  mounted () {
+    const naver_id_login = new window.naver_id_login('MJAAQaHVeXbDGpCLDONE', 'http://localhost:8081/login')
+    const state = naver_id_login.getUniqState()
+    naver_id_login.setButton('green', 3, 40) // 버튼 설정
+    naver_id_login.setState(state)
+    // naver_id_login.setPopup() // popup 설정을 위한 코드
+    naver_id_login.init_naver_id_login()
+  },
+  methods: {
+    moveNaver () {
+      router.push({ name: 'naver' })
+    }
+  }
 }
 </script>
 
