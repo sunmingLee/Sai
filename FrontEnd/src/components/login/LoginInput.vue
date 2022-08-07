@@ -40,12 +40,12 @@ export default {
       this.user.password = password
     },
     async onLogin () {
-      this.login(this.user)
+      await this.login(this.user)
       // await this.userConfirm(this.user)
       // const token = sessionStorage.getItem('access-token')
       if (this.isLogin) {
         // console.log('isLogin')
-        this.getUserInfo(localStorage.getItem('userId'))
+        await this.getUserInfo(localStorage.getItem('userId'))
         // this.notifyVue(1, '<span> <b>로그인 완료</b> </span>')
         // this.$router.push({ name: 'about' })
       }
