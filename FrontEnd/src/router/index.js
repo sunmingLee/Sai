@@ -5,6 +5,10 @@ import ApplyWaitView from '../views/ApplyWaitView.vue'
 import SearchIdView from '@/views/SearchIdView.vue'
 import SearchPasswordView from '@/views/SearchPasswordView.vue'
 import NotificationView from '@/views/NotificationView.vue'
+import AlbumView from '@/views/AlbumView.vue'
+import AlbumFolder from '@/components/album/AlbumFolder.vue'
+import AlbumPicture from '@/components/album/AlbumPicture.vue'
+import AlbumPictureDetail from '@/components/album/AlbumPictureDetail.vue'
 
 const routes = [
   // {
@@ -42,6 +46,30 @@ const routes = [
     path: '/notification',
     name: 'notification',
     component: NotificationView
+  },
+  {
+    path: '/album',
+    name: 'album',
+    component: AlbumView,
+    redirect: '/album/folder',
+    children: [
+      {
+        path: 'folder',
+        name: 'folder',
+        component: AlbumFolder
+      },
+      {
+        path: 'picture',
+        name: 'picture',
+        component: AlbumPicture,
+        props: true
+      },
+      {
+        path: 'pictureDetail',
+        name: 'pictureDetail',
+        component: AlbumPictureDetail
+      }
+    ]
   }
 ]
 
