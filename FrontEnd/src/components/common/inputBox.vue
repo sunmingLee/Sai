@@ -7,7 +7,7 @@
       </colgroup>
       <tr>
         <td><label class="label-box" for="input-box" v-if="hasLabel">{{ labelName }}</label></td>
-        <td><input class="input-box" :type="inputType" :disabled="validDisabled === ''" :value="inputValue" @keyup="inputCheck"/></td>
+        <td><input class="input-box" :type="inputType" :disabled="validDisabled === ''"  :placeholder="placeholder" :value="inputValue" @keyup="inputCheck"/></td>
       </tr>
     </table>
   </div>
@@ -42,7 +42,8 @@ export default {
     labelName: String,
     inputType: String,
     validDisabled: Boolean,
-    inputValue: String
+    inputValue: String,
+    placeholder: String
   },
   methods: {
     // 부모 컴포넌트에게 input 값을 전송

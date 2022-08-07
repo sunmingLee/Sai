@@ -1,7 +1,9 @@
+/* eslint-disable camelcase */
 import Vuex from 'vuex'
 
-import userStore from './modules/userStore.js'
 import familyStore from './modules/familyStore.js'
+import userStore from './modules/userStore.js'
+import boardStore from './modules/boardStore.js'
 
 const store = new Vuex.Store({
   state: {
@@ -13,8 +15,9 @@ const store = new Vuex.Store({
   actions: {
   },
   modules: {
+    familyStore,
     userStore,
-    familyStore
-  }
+    boardStore
+  },
 })
 export default store

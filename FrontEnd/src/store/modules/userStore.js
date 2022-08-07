@@ -1,36 +1,35 @@
 // import jwtDecode from 'jwt-decode'
 // import { login, findById, updateUser } from '@/api/user.js'
 
-
 /* eslint-disable camelcase */
 import axios from 'axios'
 import router from '@/router/index.js'
 
 const userStore = {
-  namespaced: true,
-  state: {
-    isLogin: false,
-    isLoginError: false,
-    userInfo: null
-  },
-  getters: {
-    checkUserInfo: function (state) {
-      return state.userInfo
-    }
-  },
-  mutations: {
-    SET_IS_LOGIN: (state, isLogin) => {
-      state.isLogin = isLogin
+    namespaced: true,
+    state: {
+      isLogin: false,
+      isLoginError: false,
+      userInfo: null
     },
-    SET_IS_LOGIN_ERROR: (state, isLoginError) => {
-      state.isLoginError = isLoginError
+    getters: {
+      checkUserInfo: function (state) {
+        return state.userInfo
+      }
     },
-    SET_USER_INFO: (state, userInfo) => {
-      state.isLogin = true
-      state.userInfo = userInfo
-    }
-  },
-  actions: {
+    mutations: {
+      SET_IS_LOGIN: (state, isLogin) => {
+        state.isLogin = isLogin
+      },
+      SET_IS_LOGIN_ERROR: (state, isLoginError) => {
+        state.isLoginError = isLoginError
+      },
+      SET_USER_INFO: (state, userInfo) => {
+        state.isLogin = true
+        state.userInfo = userInfo
+      }
+    },
+    actions: {
     // 로그인
     login ({ commit }, user) {
       const api_url = 'http://localhost:8080/api/user/login'
@@ -75,58 +74,58 @@ const userStore = {
         .catch((err) => {
           console.log(err)
         })
-    },
+    },  
     // 아이디 찾기
     findId ({ commit }, userInfo) {
-      const api_url = 'http://localhost:8080/api/user/findId'
-      const params = {
-        userName: userInfo.userName,
-        email: userInfo.email
-      }
-      axios({
-        url: api_url,
-        method: 'GET',
-        params
-      })
-        .then((res) => {
-          if (res.data.msg.indexOf('입력하신 이메일로 아이디가 전송되었습니다.') !== -1) {
-            alert(res.data.msg)
-            router.push({ name: 'login' })
-          } else {
-            alert(res.data.msg)
-          }
+        const api_url = 'http://localhost:8080/api/user/findId'
+        console.log(userInfo.userName)
+        const params = {
+          userName: userInfo.userName,
+          email: userInfo.email
+        }
+        axios({
+          url: api_url,
+          method: 'GET',
+          params
         })
-        .catch((err) => {
-          console.log(err)
+          .then((res) => {
+            if (res.data.msg.indexOf('입력하신 이메일로 아이디가 전송되었습니다.') != -1) {
+              alert(res.data.msg)
+              router.push({ name: 'home' })
+            } else {
+              alert(res.data.msg)
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      },
+      // 비밀번호 찾기
+      findPassword ({ commit }, userInfo) {
+        const api_url = 'http://localhost:8080/api/user/findPw'
+        const params = {
+          userName: userInfo.userName,
+          userId: userInfo.userId,
+          email: userInfo.email
+        }
+        axios({
+          url: api_url,
+          method: 'GET',
+          params
         })
-    },
-    // 비밀번호 찾기
-    findPassword ({ commit }, userInfo) {
-      const api_url = 'http://localhost:8080/api/user/findPw'
-      const params = {
-        userName: userInfo.userName,
-        userId: userInfo.userId,
-        email: userInfo.email
-      }
-      axios({
-        url: api_url,
-        method: 'GET',
-        params
-      })
-        .then((res) => {
-          if (res.data.msg.indexOf('입력하신 이메일로 임시 비밀번호가 전송되었습니다.') !== -1) {
-            alert(res.data.msg)
-            router.push({ name: 'login' })
-          } else {
-            alert(res.data.msg)
-          }
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    }
-
-    // async userConfirm ({ commit }, user) {
+          .then((res) => {
+            if (res.data.msg.indexOf('입력하신 이메일로 임시 비밀번호가 전송되었습니다.') != -1) {
+              alert(res.data.msg)
+              router.push({ name: 'home' })
+            } else {
+              alert(res.data.msg)
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      },
+      // async userConfirm ({ commit }, user) {
     //   console.log(user)
     //   await login(
     //     user,
@@ -182,7 +181,10 @@ const userStore = {
     //     }
     //   )
     // }
-  }
+    },
+    modules: {
+        
+    }
 }
 
 export default userStore

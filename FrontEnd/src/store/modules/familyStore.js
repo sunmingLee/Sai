@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import axios from 'axios'
 import router from '@/router/index.js'
 
@@ -6,13 +5,19 @@ const familyStore = {
   namespaced: true,
   state: {
     familyId: '',
+    familyCallsignList: [],
+    familyInfo: [],
     notificationList: []
   },
   getters: {
+    
   },
   mutations: {
     SET_FAMILY_ID: (state, familyId) => {
       state.familyId = familyId
+    },
+    CALLSIGN_LIST(state, callsign) {
+      state.familyCallsignList = callsign
     },
     SET_NOTIFICATION_LIST: (state, notificationList) => {
       state.notificationList = notificationList
@@ -48,8 +53,8 @@ const familyStore = {
           console.log(err)
           alert('잘못된 코드입니다')
         })
-    },
-    // 가족 아이디 생성
+      },
+      // 가족 아이디 생성
     createFamilyId ({ commit }, userInfo) {
       const api_url = 'http://localhost:8080/family/create/'
       axios({
@@ -68,8 +73,24 @@ const familyStore = {
         .catch((err) => {
           console.log(err)
         })
+      },
+  //가족 콜사인 리스트
+    callsignList({commit}, info) {
+      const userId = info
+      const api_url = 'http://localhost:8080/family/list/' + userId
+      axios({
+        url: api_url,
+        method: 'GET'
+      })
+      .then((res) => {
+        commit('CALLSIGN_LIST', res.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     }
+  },
+  modules: {
   }
 }
-
 export default familyStore
