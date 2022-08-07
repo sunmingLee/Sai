@@ -29,9 +29,9 @@ export default {
 </script>
 
 <style>
-/* .container{
-  background-color: #FAFAFA;
-} */
+.container{
+  text-align: center;
+}
 
 a {
   /* font-family: Elice; */
