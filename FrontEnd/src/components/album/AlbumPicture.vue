@@ -4,7 +4,7 @@
     <div class="button-wrap"><Button buttonClass="small information" buttonText="사진 삭제"></Button></div>
     <div class="container text-center">
         <div class="row" v-for="(item, index) in pictures" :key="index" >
-            <div class="col">
+            <div class="col" @click="seePicture">
             {{ item.ImagePath }}
             </div>
             <div class="col">
@@ -57,6 +57,11 @@ export default {
         { ImagePath: 'column' },
         { ImagePath: 'column' }
       ]
+    }
+  },
+  methods: {
+    seePicture () {
+      this.$router.push({ name: 'pictureDetail' })
     }
   }
 }
