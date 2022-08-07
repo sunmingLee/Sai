@@ -43,7 +43,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   .nav {
     /* display: flex;
     flex-direction: row;
@@ -57,6 +57,10 @@ export default {
     justify-content: space-around;
     --bs-nav-link-color: #7B371C;
     --bs-nav-link-hover-color: #7B371C;
+    background-color: white;
+    &-item{
+      // border: 1px solid #7B371C;
+    }
   }
   .nav-link.active{
     background-color: #7B371C;
