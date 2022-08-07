@@ -9,6 +9,7 @@
                             <span v-if="feed.viewBoardResponseDto.userId === callsign.toUserId">
                                 {{callsign.callsign}}
                             </span>
+                            <span v-else>{{feed.userName}}</span>
                         </div>
                         <span>{{feed.viewBoardResponseDto.boardRegDatetime.substring(0,10)}}</span>
                     </div>
@@ -26,7 +27,8 @@
                     </div>
                     <div class="content-cnt">
                         {{feed.boardLiked}}
-                        <img :src="liked" alt="arrow-left" style="width: 20px" @click="likeButton" class="like-icon">
+                        <img v-if="feed.boardLiked" :src="like" @click="unlikeButton" class="like-icon">
+                        <img v-else :src="unlike" @click="likeButton">
                     </div>
                     <div class="content-reply">
                         
@@ -55,19 +57,10 @@ export default {
         this.$store.dispatch('feedAllList', info)
         //가족 콜사인 조회
         this.$store.dispatch('callsignList', info)
-        console.log(this.$store.state.feedAllList.data)
+        console.log(this.$store.state.feedAllList.boardLiked)
     },
     mounted() {
-        console.log("몇일까요")
-        for(let i = 0; i < this.$store.state.feedAllList.length; i++) {
-            console.log(this.$store.state.feedAllList[i].boardLiked)
-            if(this.$store.state.feedAllList[i].boardLiked) {
-                this.liked = require('@/assets/images/heart-fill.svg')
-            }
-            else {
-                this.liked = require('@/assets/images/heart.svg')
-            }
-        }
+        console.log("뭔데")
     },
     computed: {
         ...mapState(["feedAllList", "userId", "callsign", "familyCallsignList"])
@@ -79,22 +72,31 @@ export default {
                 userId: this.$store.state.userId,
                 familyId: this.$store.state.familyId
             }
+            const icon = document.querySelector('.like-icon')
+            console.log(icon)
+            this.unlike = require('@/assets/images/heart-fill.svg')
             if(this.$store.state.feedAllList.boardLiked) {
                 console.log('좋아요')
-                this.liked = require('@/assets/images/heart-fill.svg')
-                console.log(document.querySelector('.like-icon'))
+                
+                // console.log(document.querySelector('.like-icon'))
                 // this.$store.dispatch('likeClick', info)
             }
             else {
                 console.log('좋아요 취소')
-                this.liked = require('@/assets/images/heart.svg')
+                this.unlike = require('@/assets/images/heart.svg')
                 // this.$store.dispatch('unlikeClick', info)
             }
+        },
+        //좋아요 취소
+        unlikeButton() {
+
         }
     },
     data() {
         return {
-            liked: ''
+            test: '',
+            like: require('@/assets/images/heart-fill.svg'),
+            unlike: require('@/assets/images/heart.svg')
         }        
     }
 }
