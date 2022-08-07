@@ -6,16 +6,10 @@ import FamilyCodeView from '../views/FamilyCodeView.vue'
 import ApplyWaitView from '../views/ApplyWaitView.vue'
 import SearchIdView from '@/views/SearchIdView.vue'
 import SearchPasswordView from '@/views/SearchPasswordView.vue'
-import test from '@/views/test.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'test',
-    component: test
-  },
-  {
-    path: '/feed',
     name: 'feed',
     component: FeedView
   },

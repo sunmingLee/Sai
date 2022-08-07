@@ -23,22 +23,18 @@
           <!-- 추가 기록 -->
           <div class="record-wrap" v-if="toggle">
             <p>기록하고 싶은 시간, 장소, 사람이 있나요?</p>
-            <p>{{date}}</p>
-            <button class="delete-date" @click="deleteDate" v-if="date !== ''">삭제</button>
-            <p>{{boardLocation}}</p>
-            <button class="delete-date" @click="deleteLocation" v-if="boardLocation !== ''">삭제</button>
             <div class="record-flex">
               <div class="record-date">
                 <p>언제?</p>
                 <img :class="visibilityIcon" src="@/assets/images/calendar-check.svg" alt="calendar" style="width: 30px" @click="showDate">
               </div>
-              <div class="modal hidden">
+              <!-- 날짜 모달창 -->
+              <div class="modal hidden" id="size">
                 <div class="modal-overlay">
                   <div class="modal-content">
                     <p class="modal-title">날짜 선택</p>
                     <div class="modal-date">
-                      <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" :minDate="new Date()" v-model="boardDate" :format="format"/>
-                      <!-- <Datepicker v-model="date" :minDate="new Date()" placeholder="날짜를 선택해주세요." v-model="boardDate"></Datepicker> -->
+                      <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" :enableTimePicker="false" :minDate="new Date()" v-model="boardDate"/>
                     </div>
                     <div class="btn-wrap">
                       <button class="date-cancle" @click="dateCancle">취소</button>
@@ -53,15 +49,18 @@
               </div>
               <div class="record-person">
                 <p>누구랑?</p>
-                <img :class="visibilityIcon" src="@/assets/images/person-circle.svg" alt="calendar" style="width: 30px">
+                <img :class="visibilityIcon" src="@/assets/images/person-circle.svg" alt="calendar" style="width: 30px" @click="showFamily">
               </div>
               <!-- 사람 선택 모달창 -->
               <div class="person hidden">
                 <div class="person-overlay">
                   <div class="person-content">
-                    <p class="person-title">날짜 선택</p>
+                    <p class="person-title">사람 선택</p>
                     <div class="person-date">
-
+                      <div v-for="(family, index) in callsign" :key="index">
+                        <label for="callsign-select">{{family}}</label>
+                        <input type="checkbox" name="callsign" :value="family" class="callsign-select">
+                      </div>
                     </div>
                     <div class="btn-wrap">
                       <button class="date-cancle" @click="personCancle">취소</button>
@@ -70,6 +69,12 @@
                   </div>
                 </div>
               </div>
+            </div>
+            <div>
+              <p v-if="date !== ''">시간 : {{date}}</p>
+              <button class="delete-date" @click="deleteDate" v-if="date !== ''">삭제</button>
+              <p>위치 : {{boardLocation}}</p>
+              <button class="delete-date" @click="deleteLocation" v-if="boardLocation !== ''">삭제</button>
             </div>
           </div>
           <!-- 투표 만들기 -->
@@ -89,12 +94,11 @@
             <button @click="addPollItem">항목 추가</button>
             <p>마감시간 설정</p>
             <input type="checkbox" class="poll-time" @click="pollTimeCheck">
-            <!-- <Datepicker :minDate="new Date()" placeholder="날짜를 선택해주세요." v-model="pollDatePicker" class="datepicker" :disabled="pollDateDisabled"/> -->
+            <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" :minDate="new Date()" v-model="pollDatePicker" :disabled="pollDateDisabled"/>
           </div>
         </div>
         <button @click="check" style="color: red">테스트 확인</button>
         <button @click="boardCreate" style="color: blue">작성</button>
-        
     </div>
 </template>
 <script>
@@ -105,7 +109,7 @@ import Button from '@/components/common/Button.vue'
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import { mapState } from 'vuex'
-
+          
 export default {
   name: 'FeedCreateView',
   components: {
@@ -135,16 +139,12 @@ export default {
       pollDatePicker: '', //투표 마감 날짜로 선택한 날(보내는 데이터 값은 아님)
       pollDateDisabled: true, //투표 마감 날짜 지정 여부..
       pollEndDate: '', //투표 마감 날짜
+      //미디어 리스트
       mediaList: [
-        { boardMediaPath: 'as',
-          boardMediaName: 'qw',
-          boardMediaType: 'df'
-        },
+        
       ],
-      personList: [
-
-      ],
-      personList: [
+      //태그 리스트
+      peopleList: [
 
       ],
       disabledDates :'',
@@ -153,11 +153,13 @@ export default {
     }
   },
   mounted() {
-    if(this.boardDate !== '') {
-      const year = this.boardDate.getFullYear()
-      console.log(year)
-      this.format = `Selected date is ${year}`
-    }
+    // console.log(Object.key(this.pollOptions[0]))
+    // const size = document.getElementById("size")
+
+    // window.onresize = function(event) {
+    //   const innerWidth = window.innerWidth
+    //   size.textContent = innerWidth
+    // }
   },
   computed: {
     ...mapState(["familyId", "userId", "callsign"])
@@ -203,6 +205,11 @@ export default {
       const modal = document.querySelector('.modal')
       modal.classList.remove('hidden')
     },
+    //누구랑?
+    showFamily() {
+      const modal = document.querySelector('.person')
+      modal.classList.remove('hidden')
+    },
     //날짜 선택 모달창에서 확인 버튼 클릭
     dateConfirm() {
       const modal = document.querySelector('.modal')
@@ -216,31 +223,47 @@ export default {
       this.date = `${year}-${month}-${day}`
       //모달창 숨기기
       modal.classList.add('hidden')
-      console.log(this.boardDate)
     },
     //날짜 선택 모달창에서 취소 버튼 클릭
     dateCancle() {
       const modal = document.querySelector('.modal')
       this.boardDate = ''
       modal.classList.add('hidden')
-      console.log(this.boardDate)
     },
     //날짜 삭제
     deleteDate() {
       this.date = ''
       this.boardDate = ''
     },
-    //사람 선택
+    //사람 태그 확인 
     personConfirm() {
-      
+      const test = document.getElementsByName('callsign')
+      for(let i = 0; i < test.length; i++) {
+        //체크 했을 때
+        if(test[i].checked) {
+          if(this.peopleList.indexOf(test[i].value) < 0) {
+            this.peopleList.push(Object(test[i].value))
+          }
+        }
+        else {
+          //체크 해제의 경우
+          if(this.peopleList.indexOf(test[i].value) > -1) {
+            const index = this.peopleList.indexOf(test[i].value)
+            this.peopleList.splice(index, 1)
+          }
+        }
+      }
+      //확인 버튼을 클릭했을 경우 모달창을 끈다
+      const modal = document.querySelector('.person')
+      modal.classList.add('hidden')
     },
     //사람 취소
     personCancle() {
-
+      const modal = document.querySelector('.person')
+      modal.classList.add('hidden')
     },
     //위치 선택
     showApi() {
-      console.log("주소")
       new window.daum.Postcode({
         oncomplete: (data) => {
           
@@ -286,9 +309,17 @@ export default {
         if(this.pollTitle !== '' && this.pollOptions[0].pollOption !== '' && this.pollOptions[1].pollOption) {
           this.pollYn = 1
         }
+        const peopleList = {}
         //추가 정보에서 사람 태그 여부
-        if(this.personList.length !== 0) {
+        if(this.peopleList.length !== 0) {
           this.boardPeopleYn = 1
+          for(let i = 0; i < this.peopleList.length; i++) {
+            const peopleKey = 'userId' + (i+1)
+            const people = {
+              [peopleKey] : this.peopleList[i]
+            }
+            Object.assign(peopleList, people)
+          }
         }
         const boardInfo = {
           boardContent: this.boardContent,
@@ -300,41 +331,64 @@ export default {
           boardPeopleYn: this.boardPeopleYn,
         }
         //미디어 파일이 있을 경우
-        if(this.boardMediaYn === 1) {
-          const boardMediaInfo = this.mediaList
-        }
+        const boardMediaInfo = this.mediaList
+        
+        //투표가 있을 경우
         if(this.pollYn === 1) {
+          let setPollDate = new Date()
           //투표 마감 시간 설정 안 했을 때
           if(this.pollDateDisabled) {
             //따로 마감 시간을 설정하지 않으면 현재 시간에서 3일 뒤에 끝나도록 설정
-            let setPollDate = new Date()
             setPollDate = setPollDate.setDate(setPollDate.getDate() + 3)
-            let pollEndDate = new Date(setPollDate).toISOString()
-            console.log(pollEndDate)
           }
-          else {
-            const currentTime = new Date()
-            const hours = currentTime.getHours();
-            const minutes = currentTime.getMinutes();
-            const seconds = currentTime.getSeconds();
-            //시간
-            console.log(hours)
-            console.log(minutes)
-            console.log(seconds)
-            
-            const setPollDate = new Date(this.pollDatePicker)
-            const year = setPollDate.getFullYear()
-            let month = setPollDate.getMonth()
-            let date = setPollDate.getDate()
-            
-            let pollEndDate = new Date(year, month, date, hours, minutes, seconds)
-            let test = year + '-' + (month+1) + '-' + date + ' ' + hours + ':' + minutes + ':' + seconds
-            this.pollEndDate = pollEndDate.toISOString()
-            console.log(pollEndDate)
+          const year = new Date(setPollDate).getFullYear()
+          let month = new Date(setPollDate).getMonth() + 1
+          if(month < 10) {
+            month = '0' + month
           }
-          console.log("하하")
+          let date = new Date(setPollDate).getDate()
+          if(date < 10) {
+            date = '0' + date
+          }
+          let hours = new Date(setPollDate).getHours()
+          if(hours < 10) {
+            hours = '0' + hours
+          }
+          let minutes = new Date(setPollDate).getMinutes()
+          if(minutes < 10) {
+            minutes = '0' + minutes
+          }
+          let seconds = new Date(setPollDate).getSeconds()
+          if(seconds < 10) {
+            seconds = '0' + seconds
+          }
+          // console.log(setPollDate.toISOString())
+          this.pollEndDate = year + '-' + month + '-' + date + 'T' + hours + ':' + minutes + ':' + seconds
         }
-        console.log(boardInfo)
+        const pollList = {
+          pollTitle : this.pollTitle,
+          pollEndDate : this.pollEndDate
+        }
+        for(let i = 0; i < this.pollOptions.length; i++) {
+          const key = 'pollOption' + (i+1)
+          const value = {
+            [key] : this.pollOptions[i].pollOption
+          }
+          Object.assign(pollList, value)
+        }
+        if(pollList.pollTitle !== '') {
+          Object.assign(boardInfo, pollList)
+        }
+        const fId = {
+          familyId : this.$store.state.familyId
+        }
+        const uId = {
+          userId: this.$store.state.userId
+        }
+        Object.assign(boardInfo, peopleList)
+        Object.assign(boardInfo, fId)
+        Object.assign(boardInfo, uId)
+        this.$store.dispatch('boardCreate', boardInfo)
       }
     }
   }
@@ -417,6 +471,64 @@ export default {
         width: 250px;
       }
       .modal-title, .person-title {
+        font-weight: bold;
+        font-size: 18px;
+        text-align: left;
+        padding: 15px;
+      }
+      .btn-wrap {
+        display: flex;
+        justify-content: space-evenly;
+        .date-confirm {
+          width: 80px;
+          color: white;
+          background-color: #7b371c;
+          text-decoration: none;
+        }
+        .date-cancle {
+          width: 80px;
+          background-color: #C6BFBF;
+          color: black;
+          text-decoration: none;
+        }
+      }
+    }
+  }
+}
+.person {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  &.hidden {
+    display: none
+  }
+  .person-overlay {
+    background-color: rgba(0, 0, 0, 0.6);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    .person-content {
+      margin: 0 auto;
+      top: 40%;
+      background-color: white;
+      // padding: 50px 100px;
+      text-align: center;
+      position: relative;
+      width: 17%;
+      height: 200px;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+      .person-date {
+        margin: 20px auto 35px auto;
+        width: 250px;
+      }
+      .person-title {
         font-weight: bold;
         font-size: 18px;
         text-align: left;

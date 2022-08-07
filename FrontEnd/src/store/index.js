@@ -6,15 +6,22 @@ import Vuex from 'vuex'
 
 export default new Vuex.Store({
   state: {
-    familyId: 234567,
-    userId: 'tnqls',
-    callsign: ["소독용", "에탄올", "스타벅스", "아이패드"]
+    familyId: 123456,
+    userId: 'cjftn',
+    familyCallsignList: [],
+    feedAllList: []
   },
   getters: {
   },
   mutations: {
     SET_FAMILY_ID: (state, familyId) => {
       state.familyId = familyId
+    },
+    FEED_All_LIST(state, feed) {
+      state.feedAllList = feed
+    },
+    CALLSIGN_LIST(state, callsign) {
+      state.familyCallsignList = callsign
     }
   },
   actions: {
@@ -116,6 +123,68 @@ export default new Vuex.Store({
         .catch((err) => {
           console.log(err)
         })
+    },
+    boardCreate(context, boardInfo) {
+      const familyId = context.state.familyId
+      const userId = context.state.userId
+      console.log(boardInfo)
+      const api_url = 'http://localhost:8080/feed/board'
+      axios({
+        url: api_url,
+        method: 'POST',
+        // params
+        data: JSON.stringify(boardInfo),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => {
+          // console.log(res)
+          if (res.status === 200) {
+            alert('작성이 완료되었습니다')
+            router.push({ name: 'feed' })
+          } 
+          else {
+            alert("안됐지롱")
+            console.log(res)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+          alert('잘못된 코드입니다')
+        })
+    },
+    //피드 조회
+    feedAllList({commit}, info) {
+      const familyId = info.familyId
+      const userId = info.userId
+      const api_url = 'http://localhost:8080/feed/' + familyId + '/' + userId
+
+      axios({
+        url: api_url,
+        method: 'GET'
+      })
+      .then((res) => {
+        commit('FEED_All_LIST', res.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    },
+    callsignList({commit}, info) {
+      const userId = info.userId
+      const api_url = 'http://localhost:8080/family/list/' + userId
+      axios({
+        url: api_url,
+        method: 'GET'
+      })
+      .then((res) => {
+        commit('CALLSIGN_LIST', res.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+
     }
   },
   modules: {
