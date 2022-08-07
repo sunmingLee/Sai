@@ -1,12 +1,12 @@
 <template>
   <div class="header">
-      <img :class="data.visibilityBack" src="@/assets/images/arrow-left-solid.svg" alt="arrow-left" style="width: 20px">
+      <img :class="data.visibilityBack" src="@/assets/images/arrow-left-solid.svg" alt="arrow-left" style="width: 20px" @click="goBack">
       <span class="title">{{ title }}</span>
       <img :class="data.visibilityIcon" src="@/assets/images/calendar-days-solid.svg" alt="calendar" style="width: 20px">
   </div>
 </template>
 <script>
-import {reactive} from 'vue';
+import { reactive } from 'vue'
 
 export default {
   name: 'HeaderTitle',
@@ -15,21 +15,27 @@ export default {
     hasBack: String,
     hasIcon: String
   },
-  setup(props) {
+  setup (props) {
     const data = reactive({
       visibilityBack: '',
       visibilityIcon: ''
     })
-    
-    if(!props.hasBack) {
+
+    if (!props.hasBack) {
       data.visibilityBack = 'hidden'
     }
-    if(!props.hasIcon) {
+    if (!props.hasIcon) {
       data.visibilityIcon = 'hidden'
     }
-    
+
     return {
       data
+    }
+  },
+  methods: {
+    // 이전 페이지로 이동
+    goBack () {
+      this.$router.go(-1)
     }
   }
 }
@@ -40,10 +46,10 @@ export default {
 .header{
   position: sticky;
   top: 0;
-  padding-left: 5px;
-  padding-right: 10px;
+  padding-left: 5%;
+  padding-right: 5%;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   margin-top: 5%;
 }

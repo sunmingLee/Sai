@@ -15,8 +15,8 @@
             </div>
             <div class="email-wrap">
               <InputBox :hasLabel="true" labelName="이메일" @inputCheck="checkEmail"/>
+              <p v-if="validEmail" class="valid-email">이메일 형식이 맞지 않습니다</p>
             </div>
-            <p v-if="validEmail" class="valid-email">이메일 형식이 맞지 않습니다</p>
           </div>
         </div>
         <div class="flex">
@@ -29,6 +29,9 @@ import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import SearchGuide from '@/components/SearchGuide.vue'
 import InputBox from '@/components/common/InputBox.vue'
 import Button from '@/components/common/Button.vue'
+
+import { mapActions } from 'vuex'
+const userStore = 'userStore'
 
 export default {
   name: 'SearchIdView',
@@ -48,6 +51,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(userStore, ['findPassword']),
     checkName (name) {
       this.name = name
     },
@@ -84,10 +88,8 @@ export default {
         alert('아이디는 4글자 이상 입력해주세요')
       } else if (this.name === '') {
         alert('이름을 입력해주세요')
-        
       } else {
-        this.$store.dispatch("findPassword", userInfo)
-        console.log(userInfo)
+        this.findPassword(userInfo)
       }
     }
   }

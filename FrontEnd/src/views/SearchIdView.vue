@@ -26,6 +26,9 @@ import SearchGuide from '@/components/SearchGuide.vue'
 import InputBox from '@/components/common/InputBox.vue'
 import Button from '@/components/common/Button.vue'
 
+import { mapActions } from 'vuex'
+const userStore = 'userStore'
+
 export default {
   name: 'SearchIdView',
   components: {
@@ -38,10 +41,11 @@ export default {
     return {
       validEmail: false,
       email: '',
-      name: '',
+      name: ''
     }
   },
   methods: {
+    ...mapActions(userStore, ['findId', 'findPassword']),
     checkName (name) {
       this.name = name
     },
@@ -67,16 +71,13 @@ export default {
       }
       if (this.validEmail) {
         alert('이메일 형식이 맞지 않습니다.')
-      } 
-      else if(this.name === '') {
+      } else if (this.name === '') {
         alert('이름을 입력해주세요.')
+      } else {
+        this.findId(userInfo)
       }
-      else {
-        this.$store.dispatch("findId", userInfo)
-      }
-    },
-    
-  },
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>

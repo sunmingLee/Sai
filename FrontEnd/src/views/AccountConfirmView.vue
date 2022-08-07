@@ -12,8 +12,11 @@ import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import InputBox from '@/components/common/InputBox.vue'
 import Button from '@/components/common/Button.vue'
 
+import { mapActions } from 'vuex'
+const userStore = 'userStore'
+
 export default {
-  name: 'AccountPasswordView',
+  name: 'AccountConfirmView',
   components: {
     HeaderTitle,
     InputBox,
@@ -22,20 +25,23 @@ export default {
   data () {
     return {
       password: '',
-      userId: 'test01'
     }
   },
+  computed: {
+    ...mapState(userStore, ['userInfo'])
+  },
   methods: {
+    ...mapActions(userStore, ['checkPassword']),
     checkPassword (password) {
       this.password = password
     },
     // 비밀번호 확인 버튼 클릭
     confirmPassword () {
       const user = {
-        userId: this.userId,
+        userId: this.userInfo.userId,
         password: this.password
       }
-      console.log(user)
+      this.checkPassword(user)
       // DB에서 데이터 확인 후 오는 결과에 따라 IF/ELSE
     }
   }

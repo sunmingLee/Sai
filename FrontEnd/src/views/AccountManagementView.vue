@@ -22,7 +22,7 @@
               <p v-if="validPasswordConfirm" class="valid-error">비밀번호가 일치하지 않습니다.</p>
             </div>
             <div class="flex">
-              <Button buttonClass="small positive" buttonText="수정" @click="updatePassword"/>
+              <Button buttonClass="small positive" buttonText="수정" @click="changePassword"/>
             </div>
           </div>
         </div>
@@ -43,7 +43,7 @@
               </div>
               <div class="modal-footer">
                 <Button buttonClass="small positive" buttonText= "취소" class="btn" data-bs-dismiss="modal"></Button>
-                <Button buttonClass="small negative" buttonText="회원탈퇴" class="btn" @click="withdrawalMember" data-bs-dismiss="modal"></Button>
+                <Button buttonClass="small negative" buttonText="회원탈퇴" class="btn" @click="withdrawal" data-bs-dismiss="modal"></Button>
               </div>
             </div>
           </div>
@@ -55,7 +55,7 @@ import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import InputBox from '@/components/common/InputBox.vue'
 import Button from '@/components/common/Button.vue'
 
-import { mapState } from "vuex"
+import { mapState, mapActions } from "vuex"
 
 export default {
   name: 'AccountManagementView',
@@ -76,6 +76,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(userStore, ['withdrawalMember', 'updatePassword']),
     // 비밀번호 유효성 검사 실행
     checkPassword (password) {
       this.passwordCurrent = password
@@ -101,26 +102,23 @@ export default {
       }
     },
     // 비밀번호 변경 버튼 클릭
-    updatePassword () {
+    changePassword () {
       if(this.passwordCurrent === this.passwordUpdate) {
         const user = {
           password: this.passwordUpdate,
-          id: this.userId
+          id: this.userInfo.userId
         }
-        this.$store.dispatch('updatePassword', user)
+        this.updatePassword(user)
       }
       
     },
     // 회원탈퇴
-    withdrawalMember () {
-      const user = {
-        id: this.userId
-      }
-      this.$store.dispatch('withdrawalMember', user)
+    withdrawal () {
+      this.withdrawalMember(this.userInfo.userId)
     }
   },
   computed: {
-    ...mapState(["userId"])
+    ...mapState(["userInfo"])
   }
 }
 </script>

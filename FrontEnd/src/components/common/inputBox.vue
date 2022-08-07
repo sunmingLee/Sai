@@ -21,7 +21,8 @@ export default {
     labelName: String,
     inputType: String,
     validDisabled: String,
-    inputValue: String
+    inputValue: String,
+    placeholder: String
   },
   methods: {
     // 부모 컴포넌트에게 input 값을 전송
