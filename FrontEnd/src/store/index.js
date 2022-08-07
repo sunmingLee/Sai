@@ -13,14 +13,11 @@ const store = new Vuex.Store({
   mutations: {
   },
   actions: {
-    
-  },
-  actions: {
   },
   modules: {
     familyStore,
     userStore,
     boardStore
-  }
+  },
 })
 export default store

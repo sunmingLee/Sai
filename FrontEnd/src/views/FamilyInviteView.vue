@@ -23,7 +23,7 @@ import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import GuideMessage from '@/components/GuideMessage.vue'
 
 import { mapState } from 'vuex'
-
+const familyStore = 'familyStore'
 export default {
   name: 'FamilyInviteView',
   components: {
@@ -44,11 +44,11 @@ export default {
       sel.removeRange(range)
     },
     goMain () {
-      this.$router.push({name: 'searchId'})
+      this.$router.push({ name: 'feed' })
     }
   },
   computed: {
-    ...mapState(['familyId'])
+    ...mapState(familyStore, ['familyId'])
   }
 }
 </script>
