@@ -1,10 +1,11 @@
 import axios from 'axios'
 import router from '@/router/index.js'
 
-const familyStore = {
+const userStore = {
     namespaced: true,
     state: {
-
+      userId: 'cjftn',
+      userName: '이철수'
     },
     getters: {
         
@@ -66,5 +67,5 @@ const familyStore = {
     modules: {
         
     }
-
 }
+export default userStore

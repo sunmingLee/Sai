@@ -2,14 +2,16 @@
     <div>
         <FeedHeader />
         <div class="feed-wrap">
-            <div v-if="feedAllList.length">
-                <div v-for="(feed, index) in feedAllList" :key="index" class="feed-div">
+            <div v-if="feedList.length">
+                <div v-for="(feed, index) in feedList" :key="index" class="feed-div">
                     <div class="content-header">
                         <div v-for="(callsign, index) in familyCallsignList" :key="index" class="famliy-callsign">
-                            <span v-if="feed.viewBoardResponseDto.userId === callsign.toUserId">
-                                {{callsign.callsign}}
-                            </span>
-                            <span v-else>{{feed.userName}}</span>
+                            <div v-if="feed.viewBoardResponseDto.userId === callsign.fromUserId">
+                                <span>{{this.userName}}</span>
+                            </div>
+                            <div v-else>
+                                <span>{{callsign.callsign}}</span>
+                            </div>
                         </div>
                         <span>{{feed.viewBoardResponseDto.boardRegDatetime.substring(0,10)}}</span>
                     </div>
@@ -26,7 +28,6 @@
                         </div>
                     </div>
                     <div class="content-cnt">
-                        {{feed.boardLiked}}
                         <img v-if="feed.boardLiked" :src="like" @click="unlikeButton" class="like-icon">
                         <img v-else :src="unlike" @click="likeButton">
                     </div>
@@ -38,11 +39,18 @@
             <div v-else>
                 <h3>등록된 게시글이 없습니다</h3>
             </div>
+            <div>
+                <button @click="goBoardCreate" style="color: red">글 작성</button>
+            </div>
         </div>
     </div>
 </template>
 <script>
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
+
+const boardStore = 'boardStore'
+const userStore = 'userStore'
+const familyStore = 'familyStore'
 
 export default {
     name: 'Feed',
@@ -51,21 +59,23 @@ export default {
     created() {
         //피드 조회
         const info = {
-            userId: this.$store.state.userId,
-            familyId: this.$store.state.familyId
+            userId: this.userId,
+            familyId: this.familyId
         }
-        this.$store.dispatch('feedAllList', info)
-        //가족 콜사인 조회
-        this.$store.dispatch('callsignList', info)
-        console.log(this.$store.state.feedAllList.boardLiked)
+        this.feedAllList(info)
+        this.callsignList(info)
     },
     mounted() {
-        console.log("뭔데")
     },
     computed: {
-        ...mapState(["feedAllList", "userId", "callsign", "familyCallsignList"])
+        ...mapState(boardStore, ["feedList"]),
+        ...mapState(userStore, ["userId", "userName"]),
+        ...mapState(familyStore, ["familyCallsignList", "familyId"])
+        
     },
     methods: {
+        ...mapActions(boardStore, ['feedAllList']),
+        ...mapActions(familyStore, ['callsignList']),
         //좋아요 버튼 클릭
         likeButton() {
             const info = {
@@ -90,6 +100,9 @@ export default {
         //좋아요 취소
         unlikeButton() {
 
+        },
+        goBoardCreate() {
+            this.$router.push({ name: "feedCreate" });
         }
     },
     data() {

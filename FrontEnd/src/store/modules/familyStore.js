@@ -4,6 +4,7 @@ import router from '@/router/index.js'
 const familyStore = {
     namespaced: true,
     state: {
+        familyId: 123456,
         familyCallsignList: [],
         familyInfo: []
     },
@@ -88,5 +89,5 @@ const familyStore = {
     modules: {
         
     }
-
 }
+export default familyStore

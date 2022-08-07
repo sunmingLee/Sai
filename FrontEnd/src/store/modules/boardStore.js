@@ -1,17 +1,17 @@
 import axios from 'axios'
 import router from '@/router/index.js'
 
-const familyStore = {
+const boardStore = {
     namespaced: true,
     state: {
-        feedAllList: []
+        feedList: []
     },
     getters: {
         
     },
     mutations: {
         FEED_All_LIST(state, feed) {
-            state.feedAllList = feed
+            state.feedList = feed
         },
     },
     actions: {
@@ -67,6 +67,5 @@ const familyStore = {
     modules: {
         
     }
-
 }
-
+export default boardStore
