@@ -6,6 +6,7 @@ import SearchIdView from '@/views/SearchIdView.vue'
 import SearchPasswordView from '@/views/SearchPasswordView.vue'
 import AlbumView from '@/views/AlbumView.vue'
 import AlbumFolder from '@/components/album/AlbumFolder.vue'
+import AlbumPicture from '@/components/album/AlbumPicture.vue'
 
 const routes = [
   {
@@ -43,6 +44,12 @@ const routes = [
         path: 'folder',
         name: 'folder',
         component: AlbumFolder
+      },
+      {
+        path: 'picture',
+        name: 'picture',
+        component: AlbumPicture,
+        props: true
       }
     ]
   }

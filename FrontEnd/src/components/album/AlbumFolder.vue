@@ -2,7 +2,7 @@
   <div>
     <HeaderTitle title="앨범"></HeaderTitle>
     <ul class="list-group list-group-flush">
-        <li class="list-group-item"><img src="@/assets/images/여행1.jpg" class="img-fluid" alt="..."><div class="folder-name">NYC</div></li>
+        <li class="list-group-item" @click="seeFolder"><img src="@/assets/images/여행1.jpg" class="img-fluid" alt="..."><div ref="folderName" class="folder-name">NYC</div></li>
         <li class="list-group-item"><img src="@/assets/images/여행2.jpg" class="img-fluid" alt="..."><div class="folder-name">제주도</div></li>
         <li class="list-group-item"><img src="@/assets/images/여행3.jpg" class="img-fluid" alt="..."><div class="folder-name">일본</div></li>
         <li class="list-group-item"><img src="@/assets/images/여행1.jpg" class="img-fluid" alt="..."><div class="folder-name">NYC</div></li>
@@ -45,7 +45,13 @@
 <script>
 import HeaderTitle from '../common/HeaderTitle.vue'
 export default {
-  components: { HeaderTitle }
+  components: { HeaderTitle },
+  methods: {
+    seeFolder () {
+    //   console.log(this.$refs.folderName.innerText)
+      this.$router.push({ name: 'picture', params: { folderName: this.$refs.folderName.innerText } })
+    }
+  }
 }
 </script>
 
