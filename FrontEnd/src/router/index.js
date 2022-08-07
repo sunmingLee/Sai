@@ -1,4 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
+// import HomeView from '../views/HomeView.vue'
+import LoginView from '../views/LoginView.vue'
+import AddInformationView from '../views/user/AddInformationView.vue'
 import FamilyInviteView from '@/views/FamilyInviteView.vue'
 import FamilyCodeView from '../views/FamilyCodeView.vue'
 import ApplyWaitView from '../views/ApplyWaitView.vue'
@@ -17,6 +20,16 @@ const routes = [
   //   redirect: '/login',
   //   component: LoginView
   // },
+  {
+    path: '/login',
+    name: 'login',
+    component: LoginView
+  },
+  {
+    path: '/user/addinformation',
+    name: 'addinformation',
+    component: AddInformationView
+  },
   {
     path: '/familyCode',
     name: 'familyCode',
