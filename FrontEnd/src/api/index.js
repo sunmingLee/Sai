@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { API_BASE_URL } from '@/config'
-import userStore from '@/store/userStore'
+import userStore from '@/store/modules/userStore'
 import router from '@/router'
 
 // axios 객체 생성

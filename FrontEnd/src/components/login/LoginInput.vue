@@ -32,7 +32,7 @@ export default {
     ...mapState(userStore, ['isLogin', 'isLoginError'])
   },
   methods: {
-    ...mapActions(userStore, ['userConfirm', 'getUserInfo']),
+    ...mapActions(userStore, ['login', 'getUserInfo']),
     putId (userId) {
       this.user.userId = userId
     },
@@ -40,14 +40,15 @@ export default {
       this.user.password = password
     },
     async onLogin () {
-      this.$store.dispatch('login', this.user)
+      this.login(this.user)
       // await this.userConfirm(this.user)
       // const token = sessionStorage.getItem('access-token')
-      // if (this.isLogin) {
-      //   await this.getUserInfo(token)
-      //   // this.notifyVue(1, '<span> <b>로그인 완료</b> </span>')
-      //   this.$router.push({ name: 'about' })
-      // }
+      if (this.isLogin) {
+        // console.log('isLogin')
+        this.getUserInfo(localStorage.getItem('userId'))
+        // this.notifyVue(1, '<span> <b>로그인 완료</b> </span>')
+        // this.$router.push({ name: 'about' })
+      }
     }
 
   }
