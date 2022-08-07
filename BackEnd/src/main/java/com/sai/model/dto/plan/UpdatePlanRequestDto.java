@@ -15,7 +15,9 @@ private Long mainPlanId;
 	
 	private Family family;
 	
-	private List<User> users;
+	private User user;
+	
+	private Boolean allDayYn;
 	
 	private String planType;
 	
@@ -30,4 +32,6 @@ private Long mainPlanId;
 	private int planRoutineDay;
 	
 	private LocalDate routineEndDate;
+	
+	private Boolean planTaggedYn;
 }

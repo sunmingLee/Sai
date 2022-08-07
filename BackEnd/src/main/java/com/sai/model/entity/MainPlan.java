@@ -5,11 +5,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -26,6 +28,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
+@Entity
 public class MainPlan {
 
 	@Id
@@ -37,9 +40,12 @@ public class MainPlan {
 	@JoinColumn(name = "family_id")
 	private Family family;
 	
-	@OneToMany
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
-	private List<User> users;
+	private User user;
+	
+	@Column(name="all_day_yn", columnDefinition = "TINYINT(1)")
+	private boolean allDayYn;
 	
 	@Column(name = "plan_type")
 	private String planType;
@@ -62,8 +68,12 @@ public class MainPlan {
 	@Column(name = "routine_end_date")
 	private LocalDate routineEndDate;
 	
+	@Column(name = "plan_tagged_yn", columnDefinition = "TINYINT(1)")
+	private Boolean planTaggedYn;
+	
 	// 업데이트
 	public void update(UpdatePlanRequestDto updatePlanRequestDto) {
+		this.allDayYn = updatePlanRequestDto.getAllDayYn();
 		this.planType = updatePlanRequestDto.getPlanType();
 		this.planTitle = updatePlanRequestDto.getPlanTitle();
 		this.mainPlanStartDatetime = updatePlanRequestDto.getMainPlanStartDatetime();
@@ -71,6 +81,7 @@ public class MainPlan {
 		this.planNotiDatetime = updatePlanRequestDto.getPlanNotiDatetime();
 		this.planRoutineDay = updatePlanRequestDto.getPlanRoutineDay();
 		this.routineEndDate = updatePlanRequestDto.getRoutineEndDate();
+		this.planTaggedYn = updatePlanRequestDto.getPlanTaggedYn();
 		
 	}
 	
