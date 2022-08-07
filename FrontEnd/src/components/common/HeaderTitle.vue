@@ -6,7 +6,7 @@
   </div>
 </template>
 <script>
-import {reactive} from 'vue';
+import { reactive } from 'vue'
 
 export default {
   name: 'HeaderTitle',
@@ -15,19 +15,19 @@ export default {
     hasBack: String,
     hasIcon: String
   },
-  setup(props) {
+  setup (props) {
     const data = reactive({
       visibilityBack: '',
       visibilityIcon: ''
     })
-    
-    if(!props.hasBack) {
+
+    if (!props.hasBack) {
       data.visibilityBack = 'hidden'
     }
-    if(!props.hasIcon) {
+    if (!props.hasIcon) {
       data.visibilityIcon = 'hidden'
     }
-    
+
     return {
       data
     }
