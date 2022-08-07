@@ -1,19 +1,22 @@
 /* eslint-disable camelcase */
 import router from '@/router'
 import axios from 'axios'
-import Vue from 'vue'
+
 import Vuex from 'vuex'
 
 export default new Vuex.Store({
   state: {
-    msg: '',
-    familyId: ''
+    familyId: '',
+    notificationList: []
   },
   getters: {
   },
   mutations: {
     SET_FAMILY_ID: (state, familyId) => {
       state.familyId = familyId
+    },
+    SET_NOTIFICATION_LIST: (state, notificationList) => {
+      state.notificationList = notificationList
     }
   },
   actions: {
@@ -108,6 +111,77 @@ export default new Vuex.Store({
           if (res.data.msg.indexOf('입력하신 이메일로 임시 비밀번호가 전송되었습니다.') != -1) {
             alert(res.data.msg)
             router.push({ name: 'home' })
+          } else {
+            alert(res.data.msg)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 알림 확인 처리
+    readNotification ({ commit }, userId) {
+      const api_url = 'http://localhost:8080/notification/'
+      axios.put(api_url + userId)
+        .then((res) => {
+          if (res.status === 200) {
+            // console.log(res)
+          } else {
+            alert(res.data.msg)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 알림 리스트 조회
+    listNotification ({ commit }, pageInfo) {
+      const api_url = 'http://localhost:8080/notification/'
+      const params = {
+        page: pageInfo.currentPage,
+        size: pageInfo.perPage
+      }
+      // console.log(params)
+      axios.get(api_url + localStorage.getItem('userId'), { params })
+        .then((res) => {
+          // console.log(res)
+          if (res.status === 200) {
+            // console.log(res.data.notiList)
+            commit('SET_NOTIFICATION_LIST', res.data.notiList)
+          } else {
+            alert(res.data.msg)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 알림 삭제
+    deleteNotification ({ commit }, notiId) {
+      const api_url = 'http://localhost:8080/notification/'
+      axios.delete(api_url + notiId, { data: localStorage.userId })
+        .then((res) => {
+          // console.log(res)
+          if (res.status === 200) {
+            // 새로고침
+            router.go()
+          } else {
+            alert(res.data.msg)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 알림 전체 삭제
+    deleteAllNotification ({ commit }) {
+      const api_url = 'http://localhost:8080/notification/'
+      axios.delete(api_url, { data: localStorage.userId })
+        .then((res) => {
+          // console.log(res)
+          if (res.status === 200) {
+            // 새로고침
+            router.go()
           } else {
             alert(res.data.msg)
           }
