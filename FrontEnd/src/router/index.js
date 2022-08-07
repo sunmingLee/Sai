@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import AccountConfirmView from '@/views/AccountConfirmView.vue'
+import AccountManagementView from '@/views/AccountManagementView.vue'
 import FeedView from '@/views/FeedView.vue'
 import FeedCreateView from '@/views/FeedCreateView.vue'
 import LoginView from '../views/LoginView.vue'
@@ -44,6 +46,16 @@ const routes = [
     path: '/applywait',
     name: 'applywait',
     component: ApplyWaitView
+  },
+  {
+    path: '/account',
+    name: 'account',
+    component: AccountManagementView
+  },
+  {
+    path: '/accountConfirm',
+    name: 'accountConfirm',
+    component: AccountConfirmView
   },
   {
     path: '/searchId',

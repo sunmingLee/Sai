@@ -10,7 +10,14 @@ const userStore = {
     state: {
       isLogin: false,
       isLoginError: false,
-      userInfo: null
+      // userInfo: null
+      userInfo: {
+        userId: 'cjftn',
+        familyId: 123456,
+        userName: '이철수',
+        email: 'cjftn@naver.com',
+        password: 'asdf@1234'
+      }
     },
     getters: {
       checkUserInfo: function (state) {
@@ -30,53 +37,53 @@ const userStore = {
       }
     },
     actions: {
-    // 로그인
-    login ({ commit }, user) {
-      const api_url = 'http://localhost:8080/api/user/login'
-      const data = {
-        userId: user.userId,
-        password: user.password
-      }
-      axios.post(api_url, data, {
-      })
-        .then((res) => {
-          console.log(res)
-          // console.log(res.headers)
-          if (res.status === 200) {
-            // const jwtToken = res.headers['Set-Cookie']
-            // console.log(jwtToken)
-            localStorage.setItem('userId', data.userId)
-            commit('SET_IS_LOGIN', true)
-            commit('SET_IS_LOGIN_ERROR', false)
-          }
+      // 로그인
+      login ({ commit }, user) {
+        const api_url = 'http://localhost:8080/api/user/login'
+        const data = {
+          userId: user.userId,
+          password: user.password
+        }
+        axios.post(api_url, data, {
         })
-        .catch((err) => {
-          console.log(err)
-          alert('아이디와 비밀번호를 다시한번 확인해주세요.')
-        })
-    },
-    // 사용자 정보 조회 (나중에 로그인 후 회원정보 요청 으로 변경)
-    getUserInfo ({ commit }, userId) {
-      const api_url = 'http://localhost:8080/api/user/'
-      axios.get(api_url + userId)
-        .then((res) => {
-          console.log(res)
-          // familyId가 있는 경우, 메인으로 이동
-          if (res.status === 200 & res.data.familyId != null) {
-            router.push({ name: 'feed' })
-          }
-          // familyId가 없는 경우
-          else{
-            // if (res.data.)
-            router.push({ name: 'familyCode' })
-          }
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    },  
-    // 아이디 찾기
-    findId ({ commit }, userInfo) {
+          .then((res) => {
+            console.log(res)
+            // console.log(res.headers)
+            if (res.status === 200) {
+              // const jwtToken = res.headers['Set-Cookie']
+              // console.log(jwtToken)
+              localStorage.setItem('userId', data.userId)
+              commit('SET_IS_LOGIN', true)
+              commit('SET_IS_LOGIN_ERROR', false)
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+            alert('아이디와 비밀번호를 다시한번 확인해주세요.')
+          })
+      },
+      // 사용자 정보 조회 (나중에 로그인 후 회원정보 요청 으로 변경)
+      getUserInfo ({ commit }, userId) {
+        const api_url = 'http://localhost:8080/api/user/'
+        axios.get(api_url + userId)
+          .then((res) => {
+            console.log(res)
+            // familyId가 있는 경우, 메인으로 이동
+            if (res.status === 200 & res.data.familyId != null) {
+              router.push({ name: 'feed' })
+            }
+            // familyId가 없는 경우
+            else{
+              // if (res.data.)
+              router.push({ name: 'familyCode' })
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      },  
+      // 아이디 찾기
+      findId ({ commit }, userInfo) {
         const api_url = 'http://localhost:8080/api/user/findId'
         console.log(userInfo.userName)
         const params = {
@@ -125,6 +132,45 @@ const userStore = {
             console.log(err)
           })
       },
+      //비밀번호 확인
+      checkPassword({commit}, userInfo) {
+      },
+      //비밀번호 변경
+      updatePassword({commit}, userInfo) {
+        const api_url= `http://localhost:8080/api/user/profile/${userInfo.id}`
+        const params = {
+            userId: userInfo.id,
+            password: userInfo.password
+        }
+        // const password = userInfo.password
+        axios({
+            url: api_url,
+            method: 'PATCH',
+            params
+        })
+        .then((res) => {
+            alert('비밀번호가 변경되었습니다.')
+            console.log(res)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+      },
+      //회원 탈퇴
+      withdrawalMember({commit}, userId) {
+          const api_url = `http://localhost:8080/api/user/${userId.id}`
+          axios({
+              url: api_url,
+              method: 'DELETE',
+          })
+          .then((res) => {
+              alert('회원 탈퇴가 되었습니다. 그동안 이용해주셔서 감사합니다.')
+              router.push({name : 'home'})
+          })
+          .catch((err) => {
+              console.log(err)
+          })
+      }
       // async userConfirm ({ commit }, user) {
     //   console.log(user)
     //   await login(
