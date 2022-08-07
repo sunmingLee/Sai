@@ -13,7 +13,7 @@
     </div>
     <div class="signIn">
       아직 회원이 아니신가요?
-      <Button buttonClass="small information" buttonText="회원가입"></Button>
+      <Button buttonClass="small positive" buttonText="회원가입"></Button>
     </div>
   </div>
 </template>

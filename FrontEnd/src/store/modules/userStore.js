@@ -30,6 +30,7 @@ const userStore = {
     }
   },
   actions: {
+    // 로그인
     login ({ commit }, user) {
       const api_url = 'http://localhost:8080/api/user/login'
       const data = {
@@ -54,6 +55,7 @@ const userStore = {
           alert('아이디와 비밀번호를 다시한번 확인해주세요.')
         })
     },
+    // 사용자 정보 조회
     getUserInfo ({ commit }, userId) {
       const api_url = 'http://localhost:8080/api/user/'
       axios.get(api_url + userId)
@@ -67,6 +69,55 @@ const userStore = {
           // else {
 
           // }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 아이디 찾기
+    findId ({ commit }, userInfo) {
+      const api_url = 'http://localhost:8080/api/user/findId'
+      const params = {
+        userName: userInfo.userName,
+        email: userInfo.email
+      }
+      axios({
+        url: api_url,
+        method: 'GET',
+        params
+      })
+        .then((res) => {
+          if (res.data.msg.indexOf('입력하신 이메일로 아이디가 전송되었습니다.') !== -1) {
+            alert(res.data.msg)
+            router.push({ name: 'login' })
+          } else {
+            alert(res.data.msg)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 비밀번호 찾기
+    findPassword ({ commit }, userInfo) {
+      const api_url = 'http://localhost:8080/api/user/findPw'
+      const params = {
+        userName: userInfo.userName,
+        userId: userInfo.userId,
+        email: userInfo.email
+      }
+      axios({
+        url: api_url,
+        method: 'GET',
+        params
+      })
+        .then((res) => {
+          if (res.data.msg.indexOf('입력하신 이메일로 임시 비밀번호가 전송되었습니다.') !== -1) {
+            alert(res.data.msg)
+            router.push({ name: 'login' })
+          } else {
+            alert(res.data.msg)
+          }
         })
         .catch((err) => {
           console.log(err)

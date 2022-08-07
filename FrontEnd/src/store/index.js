@@ -1,9 +1,7 @@
-// import { createStore } from 'vuex'
-// import createPersistedState from "vuex-persistedstate";
-// import Vue from 'vue'
 import Vuex from 'vuex'
 
 import userStore from './modules/userStore.js'
+import familyStore from './modules/familyStore.js'
 
 const store = new Vuex.Store({
   state: {
@@ -15,7 +13,8 @@ const store = new Vuex.Store({
   actions: {
   },
   modules: {
-    userStore
+    userStore,
+    familyStore
   }
 })
 export default store
