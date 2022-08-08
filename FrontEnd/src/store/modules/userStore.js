@@ -65,7 +65,7 @@ const userStore = {
     },
     // 사용자 정보 조회 (나중에 로그인 후 회원정보 요청 으로 변경)
     getUserInfo ({ commit }, userId) {
-      axios.get(api_url + userId)
+      axios.get(api_url + `/${userId}`)
         .then((res) => {
           console.log(res)
           // familyId가 있는 경우, 메인으로 이동
