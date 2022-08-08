@@ -2,7 +2,7 @@
     <div class="flex-wrap">
         <HeaderTitle title="계정 관리"/>
         <div class="input-wrap">
-            <InputBox inputSelect="input-box" :hasLabel="true" labelName="비밀번호" @inputCheck="checkPassword"/>
+            <InputBox inputSelect="input-box" :hasLabel="true" labelName="비밀번호" inputType="password" @inputCheck="checkPassword"/>
         </div>
         <Button buttonClass="small positive" buttonText="확인" @click="confirmPassword"/>
     </div>

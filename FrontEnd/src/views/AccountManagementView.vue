@@ -15,10 +15,10 @@
           <div calss="input-wrap">
             <p class="password-title">비밀번호 변경</p>
             <div class="password-wrap">
-              <InputBox inputSelect="input-box" hasLabel=true labelName="비밀번호" @inputCheck="checkPassword"/>
+              <InputBox inputSelect="input-box" hasLabel=true labelName="비밀번호" inputType="password" @inputCheck="checkPassword"/>
             </div>
             <div class="pwcheck-wrap">
-              <InputBox inputSelect="input-box" hasLabel=true labelName="비밀번호 확인" @inputCheck="checkPasswordConfirm"/>
+              <InputBox inputSelect="input-box" hasLabel=true labelName="비밀번호 확인" inputType="password" @inputCheck="checkPasswordConfirm"/>
               <p v-if="validPasswordConfirm" class="valid-error">비밀번호가 일치하지 않습니다.</p>
             </div>
             <div class="flex">
