@@ -3,7 +3,7 @@
     <HeaderTitle hasBack="true"></HeaderTitle>
     <!-- 글 작성자 & 버튼 -->
     <div class="feed-head-wrap">
-      <FeedUser nickName="이선민"></FeedUser>
+      <FeedUser :name="this.userId"></FeedUser>
       <Button buttonClass="small information" buttonText="수정"></Button>
       <span style="width: 5px"></span>
       <Button style="margin-right:5%" buttonClass="small information" buttonText="삭제"></Button>
@@ -54,7 +54,16 @@
     </div>
     <div style="border-bottom: 1px solid black; margin:10px; position: relative; top: 25%;"></div>
     <!-- 댓글 목록 -->
-    <div class="reply-wrap"></div>
+    <table class="reply-wrap" v-if="replyList.length">
+    <colgroup>
+      <col width=40%>
+      <col width=50%>
+    </colgroup>
+      <tr v-for="(reply, index) in replyList" :key="index">
+          <td><span style="font-weight: bold;">{{ reply.userId }}</span></td>
+          <td>{{ reply.replyContent }}</td>
+      </tr>
+    </table>
     <!-- 댓글 작성칸 -->
     <div class="reply-write-wrap">
       <input class="reply" type="text" placeholder="누군가를 부르고싶다면 @ 를 입력해보세요">
@@ -67,11 +76,31 @@
 import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import FeedUser from '@/components/FeedUser.vue'
 import Button from '@/components/common/Button.vue'
+
+import { mapState, mapActions } from 'vuex'
+const boardStore = 'boardStore'
+const familyStore = 'familyStore'
+
 export default {
   components: { HeaderTitle, FeedUser, Button },
   data () {
     return {
+      boardId: '',
+      userId: ''
     }
+  },
+  created () {
+    // console.log(this.$route.params.boardId)
+    // console.log(localStorage.getItem('boardId'))
+    this.userId = localStorage.getItem('userId')
+    this.getReplyList(localStorage.getItem('boardId'))
+  },
+  computed: {
+    ...mapState(boardStore, ['replyList']),
+    ...mapState(familyStore, ['familyCallsignList'])
+  },
+  methods: {
+    ...mapActions(boardStore, ['getReplyList'])
   }
 }
 </script>
@@ -128,9 +157,20 @@ export default {
     margin-right: 3px;
   }
 }
+.reply-wrap{
+  position: relative;
+  top: 24%;
+  .list-group-item{
+    background-color: #fafafa;
+    text-align: left;
+    span{
+      margin-right: 5%;
+    }
+  }
+}
 .reply-write-wrap{
   position: relative;
-  top: 50%;
+  top: 28%;
   // left: 10%;
   // bottom: 5%;
   .reply{

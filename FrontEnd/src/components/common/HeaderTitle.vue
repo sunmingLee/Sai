@@ -5,6 +5,7 @@
       <img :class="data.visibilityIcon" src="@/assets/images/calendar-days-solid.svg" alt="calendar" style="width: 20px">
   </div>
 </template>
+
 <script>
 import { reactive } from 'vue'
 
@@ -38,7 +39,7 @@ export default {
       this.$router.go(-1)
     }
   }
-
+}
 </script>
 
 <style scoped lang="scss">

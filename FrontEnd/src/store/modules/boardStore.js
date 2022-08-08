@@ -7,7 +7,8 @@ const api_url = 'http://localhost:8080/feed'
 const boardStore = {
   namespaced: true,
   state: {
-    feedList: []
+    feedList: [],
+    replyList: []
   },
   getters: {
 
@@ -15,6 +16,9 @@ const boardStore = {
   mutations: {
     FEED_All_LIST (state, feed) {
       state.feedList = feed
+    },
+    SET_REPLY_LIST (state, replyList) {
+      state.replyList = replyList
     }
   },
   actions: {
@@ -57,6 +61,20 @@ const boardStore = {
       })
         .then((res) => {
           commit('FEED_All_LIST', res.data)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 댓글 조회
+    getReplyList ({ commit }, boardId) {
+      axios({
+        url: api_url + `/${boardId}` + '/reply',
+        method: 'GET'
+      })
+        .then((res) => {
+          // console.log(res)
+          commit('SET_REPLY_LIST', res.data.replyList)
         })
         .catch((err) => {
           console.log(err)
