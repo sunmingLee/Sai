@@ -1,8 +1,8 @@
 <template>
   <div class="header">
-      <img :class="data.visibilityBack" src="@/assets/images/arrow-left-solid.svg" alt="arrow-left" style="width: 7%">
+      <img :class="data.visibilityBack" src="@/assets/images/arrow-left-solid.svg" alt="arrow-left" style="width: 20px" @click="goBack">
       <span class="title">{{ title }}</span>
-      <img :class="data.visibilityIcon" src="@/assets/images/calendar-days-solid.svg" alt="calendar" style="width: 7%">
+      <img :class="data.visibilityIcon" src="@/assets/images/calendar-days-solid.svg" alt="calendar" style="width: 20px">
   </div>
 </template>
 <script>
@@ -12,16 +12,14 @@ export default {
   name: 'HeaderTitle',
   props: {
     title: String,
-    hasBack: Boolean,
-    hasIcon: Boolean
+    hasBack: String,
+    hasIcon: String
   },
   setup (props) {
     const data = reactive({
       visibilityBack: '',
       visibilityIcon: ''
     })
-
-    console.log(data)
 
     if (!props.hasBack) {
       data.visibilityBack = 'hidden'
@@ -33,8 +31,14 @@ export default {
     return {
       data
     }
+  },
+  methods: {
+    // 이전 페이지로 이동
+    goBack () {
+      this.$router.go(-1)
+    }
   }
-}
+
 </script>
 
 <style scoped lang="scss">
@@ -51,7 +55,6 @@ export default {
 }
 .hidden{
   visibility: hidden;
-  // display: none;
 }
 .title {
   color: #7B371C;
