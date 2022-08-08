@@ -1,14 +1,20 @@
 package com.sai.model.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sai.model.dto.CreateBoardRequestDto;
 import com.sai.model.dto.ReadBoardResponseDto;
@@ -16,7 +22,6 @@ import com.sai.model.dto.ReadFeedResponseDto;
 import com.sai.model.dto.UpdateBoardRequestDto;
 import com.sai.model.dto.board.ModifyBoardRequestDto;
 import com.sai.model.dto.board.ViewBoardResponseDto;
-import com.sai.model.dto.boardMedia.InputBoardMediaRequestDto;
 import com.sai.model.dto.boardMedia.ViewBoardMediaResponseDto;
 import com.sai.model.dto.boardTagged.InputBoardTaggedRequestDto;
 import com.sai.model.dto.boardTagged.ViewBoardTaggedResponseDto;
@@ -36,6 +41,9 @@ import com.sai.model.repository.UserRepository;
 @Service
 @Transactional
 public class FeedServiceImpl implements FeedService {
+
+	@Value("${spring.servlet.multipart.location}")
+	private String uploadPath;
 
 	@Autowired
 	UserRepository userRepository;
@@ -134,23 +142,36 @@ public class FeedServiceImpl implements FeedService {
 	}
 
 	@Override
-	public void writeBoard(CreateBoardRequestDto createBoardRequestDto) {
+	public void writeBoard(CreateBoardRequestDto createBoardRequestDto, List<MultipartFile> files) {
 		Board board = modelMapper.map(createBoardRequestDto.getInputBoardRequestDto(), Board.class);
 		boardRepository.save(board);
 
 		if (board.getBoardMediaYn()) {
-			// media save logic
-			List<InputBoardMediaRequestDto> inputBoardMediaRequestDtos = createBoardRequestDto
-					.getInputBoardMediaRequestDtos();
 
-			for (InputBoardMediaRequestDto inputBoardMediaRequestDto : inputBoardMediaRequestDtos) {
+			// 가족아이디로 폴더만들기
+			String folderPath = makeFolder(board.getFamily().getFamilyId());
 
-				BoardMedia boardMedia = modelMapper.map(inputBoardMediaRequestDto, BoardMedia.class);
-				boardMedia.setBoard(board);
+			for (MultipartFile file : files) {
+				if (file.isEmpty())
+					continue;
 
+				String fileType = file.getContentType();
+				String OriginalName = file.getOriginalFilename();
+				String fileName = OriginalName.substring(OriginalName.lastIndexOf('\\') + 1);
+				String saveName = UUID.randomUUID().toString() + "_" + fileName;
+				String savePath = uploadPath + File.separator + folderPath + File.separator + saveName;
+				try {
+					file.transferTo(Paths.get(savePath));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				BoardMedia boardMedia = BoardMedia.builder().board(board).boardMediaPath(savePath)
+						.boardMediaOriginalName(OriginalName).boardMediaSaveName(saveName).boardMediaType(fileType)
+						.build();
 				boardMediaRepository.save(boardMedia);
-			}
 
+			}
 		}
 
 		if (board.getPollYn()) {
@@ -192,8 +213,9 @@ public class FeedServiceImpl implements FeedService {
 		// 미디어 삭제
 		if (deleteBoardMediaIds != null) {
 			for (Long deleteBoardMediaId : deleteBoardMediaIds) {
-				System.out.println(deleteBoardMediaId);
+//				System.out.println(deleteBoardMediaId);
 				BoardMedia boardMedia = boardMediaRepository.findById(deleteBoardMediaId).get();
+				boardMedia.delete();
 				boardMediaRepository.delete(boardMedia);
 			}
 		}
@@ -223,6 +245,11 @@ public class FeedServiceImpl implements FeedService {
 	@Override
 	public void deleteBoard(Long boardId) {
 		Board board = boardRepository.findById(boardId).get();
+		List<BoardMedia> boardMedias = boardMediaRepository.findByBoard(board);
+		for (BoardMedia boardMedia : boardMedias) {
+			boardMedia.delete();
+		}
+
 		boardRepository.delete(board);
 	}
 
@@ -247,5 +274,13 @@ public class FeedServiceImpl implements FeedService {
 
 		boardRepository.save(board);
 		boardLikeRepository.delete(boardLike);
+	}
+
+	private String makeFolder(String familyId) {
+		File uploadPathFolder = new File(uploadPath, familyId);
+		if (!uploadPathFolder.exists())
+			uploadPathFolder.mkdirs();
+
+		return familyId;
 	}
 }

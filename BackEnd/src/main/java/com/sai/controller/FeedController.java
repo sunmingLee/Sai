@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sai.model.dto.CreateBoardRequestDto;
 import com.sai.model.dto.ReadBoardResponseDto;
@@ -74,10 +77,15 @@ public class FeedController {
 
 	@ApiOperation(value = "writeBoard : 글 작성하기")
 	@PostMapping("/board")
-	public ResponseEntity<?> writeBoard(@RequestBody CreateBoardRequestDto createBoardRequestDto) throws Exception {
+	public ResponseEntity<?> writeBoard(
+//			@RequestBody CreateBoardRequestDto createBoardRequestDto
+			@RequestPart CreateBoardRequestDto createBoardRequestDto
+			,@RequestPart(name = "files", required = false) List<MultipartFile> files
+//			,@RequestParam(name = "files", required = false) List<MultipartFile> files
+	) throws Exception {
 
 		try {
-			feedService.writeBoard(createBoardRequestDto);
+			feedService.writeBoard(createBoardRequestDto, files);
 			return new ResponseEntity<Void>(HttpStatus.OK);
 
 		} catch (Exception e) {

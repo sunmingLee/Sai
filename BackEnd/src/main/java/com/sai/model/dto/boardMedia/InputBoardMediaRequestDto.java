@@ -9,6 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class InputBoardMediaRequestDto {
 	private String boardMediaPath;
-	private String boardMediaName;
+	private String boardMediaOriginalName;
+	private String boardMediaSaveName;
 	private String boardMediaType;
 }

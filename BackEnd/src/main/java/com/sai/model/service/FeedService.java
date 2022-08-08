@@ -3,6 +3,7 @@ package com.sai.model.service;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sai.model.dto.CreateBoardRequestDto;
 import com.sai.model.dto.ReadBoardResponseDto;
@@ -11,12 +12,11 @@ import com.sai.model.dto.UpdateBoardRequestDto;
 
 public interface FeedService {
 
-	// 반환값 수정 필요
 	public List<ReadFeedResponseDto> readAllBoard(String familyId, String userId, Pageable pageable);
 
 	public ReadBoardResponseDto readOneBoard(Long boardId, String userId);
 
-	public void writeBoard(CreateBoardRequestDto createBoardRequestDto);
+	public void writeBoard(CreateBoardRequestDto createBoardRequestDto, List<MultipartFile> files);
 
 	public void updateBoard(UpdateBoardRequestDto updateBoardRequestDto);
 
