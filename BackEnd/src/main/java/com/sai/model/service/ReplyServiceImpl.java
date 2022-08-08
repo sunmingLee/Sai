@@ -53,9 +53,11 @@ public class ReplyServiceImpl implements ReplyService {
 				.replyRegDateTime(LocalDateTime.now()).build();
 		replyRepository.save(reply);
 		
+		// 댓글 작성 후 게시글의 댓글 수 up
+		board.upBoardReply();
+		boardRepository.save(board);
+		
 		// 댓글 작성 후 알림 발송
-		// 게시글 주인에게 댓글 작성자가 보낸다.
-		// 타입은 댓글이다.
 		
 		CreateNotificationRequestDto cnrd = 
 				CreateNotificationRequestDto.builder()
@@ -96,6 +98,9 @@ public class ReplyServiceImpl implements ReplyService {
 
 	@Override
 	public void deleteReplyByReplyId(Long replyId) {
+		Board board = replyRepository.findById(replyId).get().getBoard();
+		board.downBoardReply();
+		boardRepository.save(board);
 		replyRepository.deleteById(replyId);
 	}
 
