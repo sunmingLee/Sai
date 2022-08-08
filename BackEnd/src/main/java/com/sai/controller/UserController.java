@@ -138,7 +138,7 @@ public class UserController {
 
 	// 아이디 찾기
 	@GetMapping("/findId")
-	public ResponseEntity<Map<String, Object>> findUserId(@RequestParam UserDto user) throws Exception {
+	public ResponseEntity<Map<String, Object>> findUserId(UserDto user) throws Exception {
 
 		// 이부분 수정해야 함. findUserId 두 번 호출해서 메일이 두번 보내짐
 
