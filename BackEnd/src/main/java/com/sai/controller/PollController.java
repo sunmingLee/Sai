@@ -2,6 +2,7 @@ package com.sai.controller;
 
 import java.net.URI;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/poll")
 @RequiredArgsConstructor
+@Transactional
 public class PollController {
 
 	private final PollRepository pollRepository;
@@ -40,7 +42,7 @@ public class PollController {
 	private final UserRepository userRepository;
 	private final PollService pollService;
 
-	// 투표 만들기 -> 투표 만료시간 설정 방식 논의
+	// 투표 만들기 
 	@PostMapping
 	public ResponseEntity<?> createPoll(@Valid @RequestBody PollRequest pollRequest) {
 		Poll poll = pollService.createPoll(pollRequest);
