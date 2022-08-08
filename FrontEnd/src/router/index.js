@@ -16,6 +16,7 @@ import AlbumFolder from '@/components/album/AlbumFolder.vue'
 import AlbumPicture from '@/components/album/AlbumPicture.vue'
 import AlbumPictureDetail from '@/components/album/AlbumPictureDetail.vue'
 import JoinView from '@/views/JoinView.vue'
+import ApplyDeclineView from '@/views/ApplyDeclineView.vue'
 
 import store from '@/store/index.js'
 
@@ -75,6 +76,11 @@ const routes = [
     path: '/applywait',
     name: 'applywait',
     component: ApplyWaitView
+  },
+  {
+    path: '/applyDecline',
+    name: 'applyDecline',
+    component: ApplyDeclineView
   },
   {
     path: '/account',
