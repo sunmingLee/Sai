@@ -17,6 +17,7 @@ import com.sai.model.dto.user.LoginUserRequestDto;
 import com.sai.model.dto.user.UserDto;
 import com.sai.model.entity.FamilyRegister;
 import com.sai.model.entity.User;
+import com.sai.model.entity.UserRole;
 import com.sai.model.repository.FamilyRegisterRepository;
 import com.sai.model.repository.UserRepository;
 import com.sai.model.service.MailService;
@@ -55,8 +56,9 @@ public class UserServiceImpl implements UserService {
 		String email = userInfo.getEmail();
 		String password = userInfo.getPassword();
 		String userName = userInfo.getUserName();
+		String role = userInfo.getRole();
 
-		User user = User.builder().userId(userId).email(email).password(passwordEncoder.encode(password))
+		User user = User.builder().userId(userId).email(email).password(passwordEncoder.encode(password)).role(UserRole.USER)
 				.userName(userName).build();
 		userRepository.save(user);
 		return "회원가입 성공";
@@ -72,6 +74,17 @@ public class UserServiceImpl implements UserService {
 		return userDto;
 	}
 
+	// 개인정보 조회 전 유저 검증
+	public void verifyUser(String userId, String password) {
+		User loginUser = userRepository.findByUserId(userId)
+				.orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
+		if (!passwordEncoder.matches(password, loginUser.getPassword())) {
+//			loginUserResponseDto.setJWT(jwtTokenProvider.createToken(loginUser.getUserId()));
+			throw new IllegalArgumentException("잘못된 비밀번호입니다.");
+		}
+	}
+	
+	
 	// 비밀번호 수정
 	@Override
 	public String changePassword(String userId, String password) {
