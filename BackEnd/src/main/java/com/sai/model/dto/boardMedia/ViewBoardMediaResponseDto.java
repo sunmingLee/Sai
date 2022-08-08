@@ -10,6 +10,7 @@ import lombok.Setter;
 public class ViewBoardMediaResponseDto {
 	private Long boardMediaId;
 	private String boardMediaPath;
-	private String boardMediaName;
+	private String boardMediaOriginalName;
+	private String boardMediaSaveName;
 	private String boardMediaType;
 }

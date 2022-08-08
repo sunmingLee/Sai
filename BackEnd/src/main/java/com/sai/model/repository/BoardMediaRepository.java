@@ -9,5 +9,4 @@ import com.sai.model.entity.BoardMedia;
 
 public interface BoardMediaRepository extends JpaRepository<BoardMedia, Long> {
 	List<BoardMedia> findByBoard(Board board);
-
 }

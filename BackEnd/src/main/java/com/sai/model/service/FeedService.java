@@ -3,6 +3,7 @@ package com.sai.model.service;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sai.model.dto.CreateBoardRequestDto;
 import com.sai.model.dto.ReadBoardResponseDto;
@@ -17,7 +18,7 @@ public interface FeedService {
 
 	public ReadBoardResponseDto readOneBoard(Long boardId, String userId, UserPrincipal currUser);
 
-	public void writeBoard(CreateBoardRequestDto createBoardRequestDto);
+	public void writeBoard(CreateBoardRequestDto createBoardRequestDto, List<MultipartFile> files);
 
 	public void updateBoard(UpdateBoardRequestDto updateBoardRequestDto);
 

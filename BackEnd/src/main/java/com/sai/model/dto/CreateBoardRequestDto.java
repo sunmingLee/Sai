@@ -2,6 +2,8 @@ package com.sai.model.dto;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.sai.model.dto.board.InputBoardRequestDto;
 import com.sai.model.dto.boardMedia.InputBoardMediaRequestDto;
 import com.sai.model.dto.boardTagged.InputBoardTaggedRequestDto;
