@@ -2,6 +2,7 @@ package com.sai.model.service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -45,11 +46,11 @@ public class PollService {
 			poll.addChoice(new Choice(choiceRequest.getText()));
 		});
 
-		Instant now = Instant.now();
-		Instant expirationDateTime = now.plus(Duration.ofDays(pollRequest.getPollLength().getDays()))
-				.plus(Duration.ofHours(pollRequest.getPollLength().getHours()));
+//		Instant now = Instant.now();
+//		Instant expirationDateTime = now.plus(Duration.ofDays(pollRequest.getPollLength().getDays()))
+//				.plus(Duration.ofHours(pollRequest.getPollLength().getHours()));
 
-		poll.setExpirationDateTime(expirationDateTime);
+		poll.setExpirationDateTime(pollRequest.getExpirationDateTime());
 
 		return pollRepository.save(poll);
 	}
@@ -89,7 +90,7 @@ public class PollService {
 		Poll poll = pollRepository.findById(pollId)
 				.orElseThrow(() -> new ResourceNotFoundException("Poll", "id", pollId));
 
-		if (poll.getExpirationDateTime().isBefore(Instant.now())) {
+		if (poll.getExpirationDateTime().isBefore(LocalDateTime.now())) {
 			throw new BadRequestException("Sorry! This Poll has already expired");
 		}
 

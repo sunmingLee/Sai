@@ -3,6 +3,7 @@ package com.sai.model.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -41,7 +42,7 @@ public class Family {
 	private String familyImageType;
 
 	@Builder.Default
-	@OneToMany(mappedBy = "family", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "family", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<User> users = new ArrayList<User>();
 

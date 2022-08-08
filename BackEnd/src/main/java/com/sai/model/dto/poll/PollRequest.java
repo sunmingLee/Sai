@@ -1,5 +1,6 @@
 package com.sai.model.dto.poll;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -25,5 +26,5 @@ public class PollRequest {
 
     @NotNull
     @Valid
-    private PollLength pollLength;
+    private LocalDateTime expirationDateTime;
 }

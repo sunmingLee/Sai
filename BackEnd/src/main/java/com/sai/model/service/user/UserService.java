@@ -5,6 +5,7 @@ import java.util.HashMap;
 import com.sai.model.dto.user.LoginUserRequestDto;
 import com.sai.model.dto.user.LoginUserResponseDto;
 import com.sai.model.dto.user.UserDto;
+import com.sai.security.UserPrincipal;
 
 public interface UserService {
 
@@ -16,6 +17,8 @@ public interface UserService {
 	public String insertUser(UserDto userInfo);
 	// 사용자 정보 조회
 	public UserDto getUserInfoByUserId(String userId);
+	// 사용자 비밀번호 검증
+	public void verifyUser(String userId, String password);
 	// 비밀번호 수정
 	public String changePassword(String userId, String password);
 	// 회원 탈퇴
