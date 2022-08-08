@@ -323,8 +323,7 @@ public class FeedServiceImpl implements FeedService {
 											.notiType(NotiType.LIKE)
 											.build();
 		notiService.createNoti(cnrd);
-		
-
+	
 		boardLikeRepository.save(BoardLike.builder().board(board).user(user).build());
 		boardRepository.save(board);
 	}
