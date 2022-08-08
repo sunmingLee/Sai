@@ -11,6 +11,7 @@ public interface FamilyRegisterRepository extends JpaRepository<FamilyRegister, 
 
 	FamilyRegister findOneByUser(User user);
 
-	Optional<FamilyRegister> findOneByUserUserId(String userId);
+	FamilyRegister findOneByUserUserId(String userId);
+//	Optional<FamilyRegister> findOneByUserUserId(String userId);
 
 }

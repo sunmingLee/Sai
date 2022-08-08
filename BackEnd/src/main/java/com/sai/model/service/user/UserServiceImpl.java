@@ -130,7 +130,7 @@ public class UserServiceImpl implements UserService {
 				.orElseThrow(() -> new ResourceNotFoundException("User", loginUserRequestDto.getUserId(), loginUserRequestDto.getUserId()));
 				
 		if(loginUser.getFamily() == null) {
-			FamilyRegister familyRegister = familyRegisterRepository.findOneByUserUserId(loginUserRequestDto.getUserId()).get();
+			FamilyRegister familyRegister = familyRegisterRepository.findOneByUserUserId(loginUserRequestDto.getUserId());
 //					.orElse();
 //					.orElseThrow(() -> new ResourceNotFoundException("FamilyRegister", "familyRegister", loginUserRequestDto.getUserId()));
 					
@@ -138,14 +138,15 @@ public class UserServiceImpl implements UserService {
 			if(familyRegister == null) {
 				return infoUserResponseDto; // user name 제외하고 모두 null로 리턴
 			}
-			// 가족 신청한 경우
-			if(!familyRegister.getApproveYn()) { // 수락 거절된 경우
+			else if (familyRegister.getApproveYn() == null) { // 아직 대기중인 경우
 				infoUserResponseDto.setFamilyRegYN(true);
-				infoUserResponseDto.setApprovedYN(false);  
-			} else if (familyRegister.getApproveYn() == null) { // 아직 대기중인 경우 
-				infoUserResponseDto.setFamilyRegYN(true); 
 				infoUserResponseDto.setFamilyRegYN(false);
 			}
+			// 가족 신청한 경우
+			else if (!familyRegister.getApproveYn()) { // 수락 거절된 경우
+				infoUserResponseDto.setFamilyRegYN(true);
+				infoUserResponseDto.setApprovedYN(false);
+			} 
 			
 		} else {
 			infoUserResponseDto.setFamilyId(loginUser.getFamily().getFamilyId());
