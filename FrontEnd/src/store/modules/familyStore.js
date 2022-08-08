@@ -20,9 +20,6 @@ const familyStore = {
     },
     CALLSIGN_LIST (state, callsign) {
       state.familyCallsignList = callsign
-    },
-    SET_NOTIFICATION_LIST: (state, notificationList) => {
-      state.notificationList = notificationList
     }
   },
   actions: {

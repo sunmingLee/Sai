@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 import familyStore from './modules/familyStore.js'
 import userStore from './modules/userStore.js'
 import boardStore from './modules/boardStore.js'
+import notificationStore from './modules/notificationStore.js'
 
 const store = new Vuex.Store({
   state: {
@@ -17,7 +18,8 @@ const store = new Vuex.Store({
   modules: {
     familyStore,
     userStore,
-    boardStore
+    boardStore,
+    notificationStore
   }
 })
 export default store
