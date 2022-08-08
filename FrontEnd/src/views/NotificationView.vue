@@ -3,7 +3,7 @@
       <HeaderTitle hasBack="true" title="알림함"></HeaderTitle>
     <div class="bottom-border"></div>
     <div class="button-wrap">
-        <Button v-if="notificationList.length" buttonClass="big positive" buttonText="알림함 비우기" @click="deleteAllNotifacation"></Button>
+        <Button v-if="notificationList.length" buttonClass="big positive" buttonText="알림함 비우기" @click="deleteAllNoti"></Button>
         <Button v-else buttonClass="big disable" buttonText="알림함 비우기"></Button>
     </div>
     <!-- 알림 목록 -->
@@ -38,7 +38,8 @@
 import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import Button from '@/components/common/Button.vue'
 
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+const notificationStore = 'notificationStore'
 export default {
   components: { HeaderTitle, Button },
   data () {
@@ -51,45 +52,47 @@ export default {
     }
   },
   created () {
-    this.$store.dispatch('readNotification', localStorage.getItem('userId'))
-    this.$store.dispatch('listNotification', this.pageInfo)
+    // this.$store.dispatch('notificationStore/readNotification', localStorage.getItem('userId'))
+    this.readNotification(localStorage.getItem('userId'))
+    this.listNotification(this.pageInfo)
   },
   computed: {
-    ...mapState(['notificationList'])
+    ...mapState(notificationStore, ['notificationList'])
   },
   methods: {
+    ...mapActions(notificationStore, ['deleteNoti', 'deleteAllNotifacation', 'listNotification', 'readNotification', 'listNotification']),
     // 알림 하나 삭제
     deleteNoti (notiId) {
-      this.$store.dispatch('deleteNotification', notiId)
+      this.deleteNotification(notiId)
     },
     // 알림 전체 삭제
-    deleteAllNotifacation () {
-      this.$store.dispatch('deleteAllNotification')
+    deleteAllNoti () {
+      this.deleteAllNotification()
     },
     // 이전 알림 목록 받아오기
     previousList () {
       this.pageInfo.currentPage -= 1
-      this.$store.dispatch('listNotification', this.pageInfo)
+      this.listNotification(this.pageInfo)
     },
     // 이후 목록 받아오기
     nextList () {
       this.pageInfo.currentPage += 1
-      this.$store.dispatch('listNotification', this.pageInfo)
+      this.listNotification(this.pageInfo)
     },
     focus1 () {
       //   console.log(this.$refs.pageNum.innerHTML)
       this.pageInfo.currentPage = 0
-      this.$store.dispatch('listNotification', this.pageInfo)
+      this.listNotification(this.pageInfo)
     },
     focus2 () {
       //   console.log(this.$refs.pageNum.innerHTML)
       this.pageInfo.currentPage = 1
-      this.$store.dispatch('listNotification', this.pageInfo)
+      this.listNotification(this.pageInfo)
     },
     focus3 () {
       //   console.log(this.$refs.pageNum.innerHTML)
       this.pageInfo.currentPage = 2
-      this.$store.dispatch('listNotification', this.pageInfo)
+      this.listNotification(this.pageInfo)
     }
   }
 }

@@ -2,10 +2,6 @@
   <div>
     <div>
       <div>
-      <InputBox v-model="nickname" :hasLabel="true" labelName="닉네임" inputType="email" validDisabled="" :hasError="hasError" errorMessage="닉네임을 2글자 이상으로 입력하세요." @inputCheck="checkNickname"></InputBox>
-      <Button class="button-wrap" buttonClass="small positive" buttonText="확인"></Button>
-      </div>
-      <div>
       <InputBox v-model="nickname" :hasLabel="true" labelName="새로운 비밀번호" inputType="password" validDisabled="" :hasError="hasError" errorMessage="닉네임을 2글자 이상으로 입력하세요." @inputCheck="checkNickname"></InputBox>
       </div>
       <div>
