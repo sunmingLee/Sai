@@ -1,19 +1,26 @@
 <template>
   <div class="apply-wait-wrap">
+    <div class="family-id-wrap">신청한 가족 코드<br/>{{ familyId }}</div>
     <span>결과를 기다리는 중이에요<br/><br/>
     가족들에게 어서<br/>수락해달라고 말해보세요!</span>
-    <Button class="btn-back" buttonClass="small information" buttonText="돌아가기" @click="goBack"></Button>
+    <Button class="btn-back" buttonClass="big negative" buttonText="신청 취소하기" @click="goFamilyCode"></Button>
 </div>
 </template>
 
 <script>
 import Button from '@/components/common/Button.vue'
+import { mapActions, mapState } from 'vuex'
+const familyStore = 'familyStore'
 export default {
   components: { Button },
   methods: {
-    goBack () {
-      this.$router.push({ name: 'login' })
+    ...mapActions(familyStore, ['deleteFamilyApply']),
+    goFamilyCode () {
+      this.deleteFamilyApply(localStorage.getItem('userId'))
     }
+  },
+  computed: {
+    ...mapState(familyStore, ['familyId'])
   }
 }
 </script>
@@ -22,10 +29,19 @@ export default {
 .apply-wait-wrap{
     width: 100vh
 }
+.family-id-wrap{
+    display: block;
+    position: relative;
+    top: 20%;
+    color: #7B371C;
+    text-align: center;
+    font-size: 40px;
+    font-weight: bold;
+}
 span{
     display: block;
     position: relative;
-    top: 40%;
+    top: 30%;
     color: #7B371C;
     text-align: center;
     font-size: 20px;
@@ -34,6 +50,6 @@ span{
 .btn-back{
     text-align: center;
     position: relative;
-    top: 50%;
+    top: 40%;
 }
 </style>
