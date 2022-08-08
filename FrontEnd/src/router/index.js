@@ -17,7 +17,35 @@ import AlbumPicture from '@/components/album/AlbumPicture.vue'
 import AlbumPictureDetail from '@/components/album/AlbumPictureDetail.vue'
 import JoinView from '@/views/JoinView.vue'
 
+import store from '@/store/index.js'
+
+// https://router.vuejs.org/kr/guide/advanced/navigation-guards.html
+const onlyAuthUser = async (to, from, next) => {
+  // console.log(store);
+  const checkUserInfo = store.getters['userStore/checkUserInfo']
+  const getUserInfo = store._actions['userStore/getUserInfo']
+  const token = sessionStorage.getItem('access-token')
+  if (checkUserInfo == null && token) {
+    await getUserInfo(token)
+  }
+  if (checkUserInfo === null) {
+    alert('로그인이 필요한 페이지입니다..')
+    next({ name: 'login' })
+    // router.push({ name: "signIn" });
+  } else {
+    // console.log("로그인 했다.");
+    next()
+  }
+}
+
 const routes = [
+  {
+    path: '/',
+    name: 'home',
+    // redirect: '/login',
+    beforeEnter: onlyAuthUser,
+    component: LoginView
+  },
   {
     path: '/login',
     name: 'login',
@@ -36,7 +64,7 @@ const routes = [
   {
     path: '/feedCreate',
     name: 'feedCreate',
-    component: FeedCreateView,
+    component: FeedCreateView
   },
   {
     path: '/familyCode',
