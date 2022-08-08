@@ -1,7 +1,11 @@
 package com.sai.model.dto.notification;
 
+import com.sai.model.entity.NotiType;
+
+import lombok.Builder;
 import lombok.Data;
 
+@Builder
 @Data
 public class CreateNotificationRequestDto {
 	private String notiToUserId;
@@ -10,7 +14,7 @@ public class CreateNotificationRequestDto {
 	
 	private String notiContent;
 	
-	private String notiType;
+	private NotiType notiType;
 	
 	private Long notiContentId;
 }

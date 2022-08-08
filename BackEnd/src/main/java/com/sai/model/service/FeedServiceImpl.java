@@ -25,17 +25,20 @@ import com.sai.model.dto.board.ViewBoardResponseDto;
 import com.sai.model.dto.boardMedia.ViewBoardMediaResponseDto;
 import com.sai.model.dto.boardTagged.InputBoardTaggedRequestDto;
 import com.sai.model.dto.boardTagged.ViewBoardTaggedResponseDto;
+import com.sai.model.dto.reply.ReplyDto;
 import com.sai.model.entity.Board;
 import com.sai.model.entity.BoardLike;
 import com.sai.model.entity.BoardMedia;
 import com.sai.model.entity.BoardTagged;
 import com.sai.model.entity.Family;
+import com.sai.model.entity.Reply;
 import com.sai.model.entity.User;
 import com.sai.model.repository.BoardLikeRepository;
 import com.sai.model.repository.BoardMediaRepository;
 import com.sai.model.repository.BoardRepository;
 import com.sai.model.repository.BoardTaggedRepository;
 import com.sai.model.repository.FamilyRepository;
+import com.sai.model.repository.ReplyRepository;
 import com.sai.model.repository.UserRepository;
 
 @Service
@@ -49,6 +52,8 @@ public class FeedServiceImpl implements FeedService {
 	UserRepository userRepository;
 	@Autowired
 	FamilyRepository familyRepository;
+	@Autowired
+	ReplyRepository replyRepository;
 	@Autowired
 	BoardRepository boardRepository;
 	@Autowired
@@ -96,6 +101,9 @@ public class FeedServiceImpl implements FeedService {
 				readFeedResponseDto.setBoardLiked(true);
 
 			// 댓글 DTO 1개 세팅
+			Reply reply = replyRepository.findFirstByBoard(boardRepository.findById(board.getBoardId()).get()).get();
+			ReplyDto replyDto = modelMapper.map(reply, ReplyDto.class);
+			readFeedResponseDto.setReplyDto(replyDto);
 
 			// List add
 			readFeedResponseDtos.add(readFeedResponseDto);
@@ -129,6 +137,15 @@ public class FeedServiceImpl implements FeedService {
 			viewBoardTaggedResponseDtos.add(modelMapper.map(boardTagged, ViewBoardTaggedResponseDto.class));
 		}
 		readBoardResponseDto.setViewBoardTaggedResponseDto(viewBoardTaggedResponseDtos);
+		
+		// 댓글 DTO 세팅
+		List<Reply> replyList = replyRepository.findRepliesByBoard(board, null);
+		List<ReplyDto> replyDtoList = new ArrayList<>();
+		for(Reply reply : replyList) {
+			ReplyDto replyDto = modelMapper.map(reply, ReplyDto.class);
+			replyDtoList.add(replyDto);
+		}
+		readBoardResponseDto.setReplies(replyDtoList);
 
 		// 좋아요 여부 세팅
 		User user = userRepository.findById(userId).get();

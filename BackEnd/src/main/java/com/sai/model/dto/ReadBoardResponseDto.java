@@ -6,6 +6,7 @@ import com.sai.model.dto.board.ViewBoardResponseDto;
 import com.sai.model.dto.boardMedia.ViewBoardMediaResponseDto;
 import com.sai.model.dto.boardTagged.ViewBoardTaggedResponseDto;
 import com.sai.model.dto.poll.ViewPollResponseDto;
+import com.sai.model.dto.reply.ReplyDto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,4 +21,5 @@ public class ReadBoardResponseDto {
 	private ViewPollResponseDto viewPollResponseDto;
 	private List<ViewBoardTaggedResponseDto> viewBoardTaggedResponseDto;
 	private boolean isBoardLiked;
+	private List<ReplyDto> replies;
 }
