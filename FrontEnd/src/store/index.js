@@ -1,6 +1,11 @@
-import { createStore } from 'vuex'
+/* eslint-disable camelcase */
+import Vuex from 'vuex'
 
-export default createStore({
+import familyStore from './modules/familyStore.js'
+import userStore from './modules/userStore.js'
+import boardStore from './modules/boardStore.js'
+
+const store = new Vuex.Store({
   state: {
   },
   getters: {
@@ -10,5 +15,9 @@ export default createStore({
   actions: {
   },
   modules: {
-  }
+    familyStore,
+    userStore,
+    boardStore
+  },
 })
+export default store
