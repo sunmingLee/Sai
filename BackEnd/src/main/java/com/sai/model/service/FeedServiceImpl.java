@@ -25,6 +25,7 @@ import com.sai.model.dto.board.ViewBoardResponseDto;
 import com.sai.model.dto.boardMedia.ViewBoardMediaResponseDto;
 import com.sai.model.dto.boardTagged.InputBoardTaggedRequestDto;
 import com.sai.model.dto.boardTagged.ViewBoardTaggedResponseDto;
+import com.sai.model.dto.notification.CreateNotificationRequestDto;
 import com.sai.model.dto.poll.PollResponse;
 import com.sai.model.dto.reply.ReplyDto;
 import com.sai.model.entity.Board;
@@ -32,6 +33,7 @@ import com.sai.model.entity.BoardLike;
 import com.sai.model.entity.BoardMedia;
 import com.sai.model.entity.BoardTagged;
 import com.sai.model.entity.Family;
+import com.sai.model.entity.NotiType;
 import com.sai.model.entity.Poll;
 import com.sai.model.entity.Reply;
 import com.sai.model.entity.User;
@@ -58,11 +60,11 @@ public class FeedServiceImpl implements FeedService {
 	@Autowired
 	FamilyRepository familyRepository;
 	@Autowired
-	ReplyRepository replyRepository;
-	@Autowired
 	BoardRepository boardRepository;
 	@Autowired
 	ReplyRepository replyRepository;
+	@Autowired
+	NotificationService notiService;
 	@Autowired
 	BoardLikeRepository boardLikeRepository;
 	@Autowired
@@ -222,7 +224,6 @@ public class FeedServiceImpl implements FeedService {
 
 		if (board.getPollYn()) {
 			pollService.createPoll(createBoardRequestDto.getPollRequest());
-
 		}
 
 		// 태그된 사람들 저장
@@ -309,8 +310,20 @@ public class FeedServiceImpl implements FeedService {
 	public void upBoardLike(Long boardId, String userId) {
 		Board board = boardRepository.findById(boardId).get();
 		User user = userRepository.findById(userId).get();
+		
+		
 
 		board.upBoardLike();
+		
+		CreateNotificationRequestDto cnrd =
+				CreateNotificationRequestDto.builder()
+											.notiToUserId(board.getUser().getUserId())
+											.notiFromUserId(userId)
+											.notiContent("좋아요를 눌렀습니다.")
+											.notiType(NotiType.LIKE)
+											.build();
+		notiService.createNoti(cnrd);
+		
 
 		boardLikeRepository.save(BoardLike.builder().board(board).user(user).build());
 		boardRepository.save(board);

@@ -25,7 +25,7 @@ import com.sai.model.service.NotificationService;
 @RequestMapping(value = "/notification")
 @CrossOrigin("*")
 public class NotificationController {
-	
+
 	@Autowired
 	NotificationService notificationService;
 
@@ -71,7 +71,7 @@ public class NotificationController {
 
 		return response;
 	}
-	
+
 	// 알림 전체 삭제
 	@DeleteMapping
 	public ResponseEntity<?> deleteEveryNoti(@RequestBody String userId) {
