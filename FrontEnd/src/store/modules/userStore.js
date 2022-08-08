@@ -1,17 +1,25 @@
 // import jwtDecode from 'jwt-decode'
 // import { login, findById, updateUser } from '@/api/user.js'
 
-
 /* eslint-disable camelcase */
 import axios from 'axios'
 import router from '@/router/index.js'
 
+const api_url = 'http://localhost:8080/api/user'
+// const api_url = 'http://i7a305.p.ssafy.io:8080/api/user'
 const userStore = {
   namespaced: true,
   state: {
     isLogin: false,
     isLoginError: false,
-    userInfo: null
+    // userInfo: null
+    userInfo: {
+      userId: 'cjftn',
+      familyId: 123456,
+      userName: '이철수',
+      email: 'cjftn@naver.com',
+      password: 'asdf@1234'
+    }
   },
   getters: {
     checkUserInfo: function (state) {
@@ -33,12 +41,11 @@ const userStore = {
   actions: {
     // 로그인
     login ({ commit }, user) {
-      const api_url = 'http://localhost:8080/api/user/login'
       const data = {
         userId: user.userId,
         password: user.password
       }
-      axios.post(api_url, data, {
+      axios.post(api_url + '/login', data, {
       })
         .then((res) => {
           console.log(res)
@@ -58,7 +65,6 @@ const userStore = {
     },
     // 사용자 정보 조회 (나중에 로그인 후 회원정보 요청 으로 변경)
     getUserInfo ({ commit }, userId) {
-      const api_url = 'http://localhost:8080/api/user/'
       axios.get(api_url + userId)
         .then((res) => {
           console.log(res)
@@ -67,7 +73,7 @@ const userStore = {
             router.push({ name: 'feed' })
           }
           // familyId가 없는 경우
-          else{
+          else {
             // if (res.data.)
             router.push({ name: 'familyCode' })
           }
@@ -78,20 +84,20 @@ const userStore = {
     },
     // 아이디 찾기
     findId ({ commit }, userInfo) {
-      const api_url = 'http://localhost:8080/api/user/findId'
+      console.log(userInfo.userName)
       const params = {
         userName: userInfo.userName,
         email: userInfo.email
       }
       axios({
-        url: api_url,
+        url: api_url + '/findId',
         method: 'GET',
         params
       })
         .then((res) => {
-          if (res.data.msg.indexOf('입력하신 이메일로 아이디가 전송되었습니다.') !== -1) {
+          if (res.data.msg.indexOf('입력하신 이메일로 아이디가 전송되었습니다.') != -1) {
             alert(res.data.msg)
-            router.push({ name: 'login' })
+            router.push({ name: 'home' })
           } else {
             alert(res.data.msg)
           }
@@ -102,21 +108,20 @@ const userStore = {
     },
     // 비밀번호 찾기
     findPassword ({ commit }, userInfo) {
-      const api_url = 'http://localhost:8080/api/user/findPw'
       const params = {
         userName: userInfo.userName,
         userId: userInfo.userId,
         email: userInfo.email
       }
       axios({
-        url: api_url,
+        url: api_url + '/findPw',
         method: 'GET',
         params
       })
         .then((res) => {
-          if (res.data.msg.indexOf('입력하신 이메일로 임시 비밀번호가 전송되었습니다.') !== -1) {
+          if (res.data.msg.indexOf('입력하신 이메일로 임시 비밀번호가 전송되었습니다.') != -1) {
             alert(res.data.msg)
-            router.push({ name: 'login' })
+            router.push({ name: 'home' })
           } else {
             alert(res.data.msg)
           }
@@ -124,8 +129,44 @@ const userStore = {
         .catch((err) => {
           console.log(err)
         })
+    },
+    // 비밀번호 확인
+    checkPassword ({ commit }, userInfo) {
+    },
+    // 비밀번호 변경
+    updatePassword ({ commit }, userInfo) {
+      const params = {
+        userId: userInfo.id,
+        password: userInfo.password
+      }
+      // const password = userInfo.password
+      axios({
+        url: api_url + `/profile/${userInfo.id}`,
+        method: 'PATCH',
+        params
+      })
+        .then((res) => {
+          alert('비밀번호가 변경되었습니다.')
+          console.log(res)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 회원 탈퇴
+    withdrawalMember ({ commit }, userId) {
+      axios({
+        url: api_url + `/${userId.id}`,
+        method: 'DELETE'
+      })
+        .then((res) => {
+          alert('회원 탈퇴가 되었습니다. 그동안 이용해주셔서 감사합니다.')
+          router.push({ name: 'home' })
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     }
-
     // async userConfirm ({ commit }, user) {
     //   console.log(user)
     //   await login(
@@ -182,6 +223,9 @@ const userStore = {
     //     }
     //   )
     // }
+  },
+  modules: {
+
   }
 }
 

@@ -2,10 +2,14 @@
 import axios from 'axios'
 import router from '@/router/index.js'
 
+const api_url = 'http://localhost:8080/family'
+// const api_url = 'http://i7a305.p.ssafy.io:8080/family'
 const familyStore = {
   namespaced: true,
   state: {
     familyId: '',
+    familyCallsignList: [],
+    familyInfo: [],
     notificationList: []
   },
   getters: {
@@ -14,6 +18,9 @@ const familyStore = {
     SET_FAMILY_ID: (state, familyId) => {
       state.familyId = familyId
     },
+    CALLSIGN_LIST (state, callsign) {
+      state.familyCallsignList = callsign
+    },
     SET_NOTIFICATION_LIST: (state, notificationList) => {
       state.notificationList = notificationList
     }
@@ -21,13 +28,12 @@ const familyStore = {
   actions: {
     // 가족 들어가기 신청
     applyFamily ({ commit }, userInfo) {
-      const api_url = 'http://localhost:8080/family/join/apply'
       const params = {
         familyId: userInfo.familyId,
         userId: userInfo.userId
       }
       axios({
-        url: api_url,
+        url: api_url + '/join/apply',
         method: 'POST',
         // params
         data: JSON.stringify(params),
@@ -51,9 +57,8 @@ const familyStore = {
     },
     // 가족 아이디 생성
     createFamilyId ({ commit }, userInfo) {
-      const api_url = 'http://localhost:8080/family/create/'
       axios({
-        url: api_url + userInfo,
+        url: api_url + '/create/' + userInfo,
         method: 'POST'
       })
         .then((res) => {
@@ -68,8 +73,23 @@ const familyStore = {
         .catch((err) => {
           console.log(err)
         })
+    },
+    // 가족 콜사인 리스트
+    callsignList ({ commit }, info) {
+      const userId = info
+      axios({
+        url: api_url + '/list/' + userId,
+        method: 'GET'
+      })
+        .then((res) => {
+          commit('CALLSIGN_LIST', res.data)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     }
+  },
+  modules: {
   }
 }
-
 export default familyStore

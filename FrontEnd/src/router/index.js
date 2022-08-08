@@ -1,5 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-// import HomeView from '../views/HomeView.vue'
+import AccountConfirmView from '@/views/AccountConfirmView.vue'
+import AccountManagementView from '@/views/AccountManagementView.vue'
+import FeedView from '@/views/FeedView.vue'
+import FeedCreateView from '@/views/FeedCreateView.vue'
 import LoginView from '../views/LoginView.vue'
 import AddInformationView from '../views/user/AddInformationView.vue'
 import FamilyInviteView from '@/views/FamilyInviteView.vue'
@@ -53,6 +56,16 @@ const routes = [
     component: AddInformationView
   },
   {
+    path: '/feed',
+    name: 'feed',
+    component: FeedView
+  },
+  {
+    path: '/feedCreate',
+    name: 'feedCreate',
+    component: FeedCreateView
+  },
+  {
     path: '/familyCode',
     name: 'familyCode',
     component: FamilyCodeView
@@ -61,6 +74,16 @@ const routes = [
     path: '/applywait',
     name: 'applywait',
     component: ApplyWaitView
+  },
+  {
+    path: '/account',
+    name: 'account',
+    component: AccountManagementView
+  },
+  {
+    path: '/accountConfirm',
+    name: 'accountConfirm',
+    component: AccountConfirmView
   },
   {
     path: '/searchId',
