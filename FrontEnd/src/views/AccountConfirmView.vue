@@ -12,7 +12,7 @@ import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import InputBox from '@/components/common/InputBox.vue'
 import Button from '@/components/common/Button.vue'
 
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 const userStore = 'userStore'
 
 export default {
@@ -24,7 +24,7 @@ export default {
   },
   data () {
     return {
-      password: '',
+      password: ''
     }
   },
   computed: {

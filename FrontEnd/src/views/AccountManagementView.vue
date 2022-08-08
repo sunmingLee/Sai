@@ -55,7 +55,8 @@ import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import InputBox from '@/components/common/InputBox.vue'
 import Button from '@/components/common/Button.vue'
 
-import { mapState, mapActions } from "vuex"
+import { mapState, mapActions } from 'vuex'
+const userStore = 'userStore'
 
 export default {
   name: 'AccountManagementView',
@@ -80,8 +81,8 @@ export default {
     // 비밀번호 유효성 검사 실행
     checkPassword (password) {
       this.passwordCurrent = password
-      if(this.passwordUpdate !== '') {
-        if(this.passwordUpdate === this.passwordCurrent) {
+      if (this.passwordUpdate !== '') {
+        if (this.passwordUpdate === this.passwordCurrent) {
           this.validPasswordConfirm = false
         }
       }
@@ -103,14 +104,13 @@ export default {
     },
     // 비밀번호 변경 버튼 클릭
     changePassword () {
-      if(this.passwordCurrent === this.passwordUpdate) {
+      if (this.passwordCurrent === this.passwordUpdate) {
         const user = {
           password: this.passwordUpdate,
           id: this.userInfo.userId
         }
         this.updatePassword(user)
       }
-      
     },
     // 회원탈퇴
     withdrawal () {
@@ -118,7 +118,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(["userInfo"])
+    ...mapState(userStore, ['userInfo'])
   }
 }
 </script>
@@ -130,7 +130,7 @@ export default {
     display: flex;
     justify-content: center;
     text-align: center;
-    
+
     & div:nth-child(0) {
       width: 300px;
     }
