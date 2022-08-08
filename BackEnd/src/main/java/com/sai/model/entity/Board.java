@@ -89,6 +89,14 @@ public class Board {
 		this.boardLikeCnt--;
 	}
 
+	public void upBoardReply() {
+		this.boardReplyCnt++;
+	}
+
+	public void downBoardReply() {
+		this.boardReplyCnt--;
+	}
+
 	public void updateBoard(ModifyBoardRequestDto modifyBoardRequestDto) {
 		this.boardContent = modifyBoardRequestDto.getBoardContent();
 		this.boardDate = modifyBoardRequestDto.getBoardDate();
