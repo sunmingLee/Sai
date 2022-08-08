@@ -7,42 +7,22 @@
       </colgroup>
       <tr>
         <td><label class="label-box" for="input-box" v-if="hasLabel">{{ labelName }}</label></td>
-        <td><input class="input-box" :type="inputType" :disabled="validDisabled === ''" :value="inputValue" @keyup="inputCheck"/></td>
+        <td><input class="input-box" :type="inputType" :disabled="validDisabled === 'disabled'" :value="inputValue" @keyup="inputCheck"/></td>
       </tr>
     </table>
   </div>
 </template>
 
 <script>
-// import {emit} from 'vue'
-// export default {
-//   name: 'InputBox',
-//   props: {
-//     hasLabel: String,
-//     labelName: String,
-//     inputType: String,
-//     validDisabled: Boolean,
-//     inputValue: String
-//   },
-//   setup(props, context) {
-//     const isInputValue = ref(props.inputValue)
-//     const inputCheck = () => {
-//       context.emit('inputCheck', isInputValue)
-//     }
-//     return {
-//       isInputValue,
-//       inputCheck
-//     }
-//   }
-// }
 export default {
   name: 'InputBox',
   props: {
     hasLabel: String,
     labelName: String,
     inputType: String,
-    validDisabled: Boolean,
-    inputValue: String
+    validDisabled: String,
+    inputValue: String,
+    placeholder: String
   },
   methods: {
     // 부모 컴포넌트에게 input 값을 전송
@@ -61,6 +41,14 @@ export default {
   border-radius: 5px;
   border: 1px solid #ae5f40;
 }
+.input-underline {
+  margin-left: 5px;
+  margin-bottom: 10px;
+  width: 190px;
+  border: none;
+  border-bottom: 1px solid #ae5f40;
+}
+
 .label-box {
   color: #AE5F40;
 }
