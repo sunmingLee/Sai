@@ -6,7 +6,7 @@
 </template>
 <script>
 export default {
-  name: 'SearchGuide',
+  name: 'GuideMessage',
   props: {
     guide: String,
     guide2: String

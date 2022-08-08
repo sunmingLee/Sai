@@ -26,5 +26,10 @@ body {
 .flex-wrap {
   display: flex;
   justify-content: center;
+<<<<<<< HEAD
+=======
+  height: 100vh;
+  overflow-y: scroll;
+>>>>>>> 7d7418f60fe6ec9d1457adec63fe2221b572dbaf
 }
 </style>

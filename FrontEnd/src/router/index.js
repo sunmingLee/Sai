@@ -1,9 +1,63 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import AccountConfirmView from '@/views/AccountConfirmView.vue'
+import AccountManagementView from '@/views/AccountManagementView.vue'
+import FeedView from '@/views/FeedView.vue'
+import FeedCreateView from '@/views/FeedCreateView.vue'
+import LoginView from '../views/LoginView.vue'
+import AddInformationView from '../views/user/AddInformationView.vue'
+import FamilyInviteView from '@/views/FamilyInviteView.vue'
+import FamilyCodeView from '../views/FamilyCodeView.vue'
+import ApplyWaitView from '../views/ApplyWaitView.vue'
 import SearchIdView from '@/views/SearchIdView.vue'
 import SearchPasswordView from '@/views/SearchPasswordView.vue'
+import NotificationView from '@/views/NotificationView.vue'
+import AlbumView from '@/views/AlbumView.vue'
+import AlbumFolder from '@/components/album/AlbumFolder.vue'
+import AlbumPicture from '@/components/album/AlbumPicture.vue'
+import AlbumPictureDetail from '@/components/album/AlbumPictureDetail.vue'
 import JoinView from '@/views/JoinView.vue'
-const routes = [
 
+const routes = [
+  {
+    path: '/login',
+    name: 'login',
+    component: LoginView
+  },
+  {
+    path: '/user/addinformation',
+    name: 'addinformation',
+    component: AddInformationView
+  },
+  {
+    path: '/feed',
+    name: 'feed',
+    component: FeedView
+  },
+  {
+    path: '/feedCreate',
+    name: 'feedCreate',
+    component: FeedCreateView,
+  },
+  {
+    path: '/familyCode',
+    name: 'familyCode',
+    component: FamilyCodeView
+  },
+  {
+    path: '/applywait',
+    name: 'applywait',
+    component: ApplyWaitView
+  },
+  {
+    path: '/account',
+    name: 'account',
+    component: AccountManagementView
+  },
+  {
+    path: '/accountConfirm',
+    name: 'accountConfirm',
+    component: AccountConfirmView
+  },
   {
     path: '/searchId',
     name: 'searchId',
@@ -13,6 +67,40 @@ const routes = [
     path: '/searchPassword',
     name: 'searchPassword',
     component: SearchPasswordView
+  },
+  {
+    path: '/familyInvite',
+    name: 'familyInvite',
+    component: FamilyInviteView
+  },
+  {
+    path: '/notification',
+    name: 'notification',
+    component: NotificationView
+  },
+  {
+    path: '/album',
+    name: 'album',
+    component: AlbumView,
+    redirect: '/album/folder',
+    children: [
+      {
+        path: 'folder',
+        name: 'folder',
+        component: AlbumFolder
+      },
+      {
+        path: 'picture',
+        name: 'picture',
+        component: AlbumPicture,
+        props: true
+      },
+      {
+        path: 'pictureDetail',
+        name: 'pictureDetail',
+        component: AlbumPictureDetail
+      }
+    ]
   },
   {
     path: '/join',
