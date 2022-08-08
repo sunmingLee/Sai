@@ -1,5 +1,5 @@
 package com.sai.model.entity;
 
 public enum NotiType {
-	FAMILYREGISTER, COMMENT, LIKE
+	FAMILYREGISTER, COMMENT, LIKE, TAGGED
 }

@@ -234,6 +234,14 @@ public class FeedServiceImpl implements FeedService {
 			for (InputBoardTaggedRequestDto inputBoardTaggedRequestDto : inputBoardTaggedRequestDtos) {
 				User user = userRepository.findById(inputBoardTaggedRequestDto.getUserId()).get();
 				BoardTagged boardTagged = BoardTagged.builder().board(board).user(user).build();
+				
+				CreateNotificationRequestDto cnrd = CreateNotificationRequestDto.builder()
+																				.notiFromUserId(board.getUser().getUserId())
+																				.notiToUserId(user.getUserId())
+																				.notiContent("님이 당신을 태그했습니다 !")
+																				.notiType(NotiType.TAGGED)
+																				.build();
+				notiService.createNoti(cnrd);
 
 //				BoardTagged boardTagged = modelMapper.map(inputBoardTaggedRequestDto, BoardTagged.class);
 //				//	 userId를 boardTaggedId에 넣으려고 해서 에러가 발생
