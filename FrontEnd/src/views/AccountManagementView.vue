@@ -56,7 +56,7 @@ import InputBox from '@/components/common/InputBox.vue'
 import Button from '@/components/common/Button.vue'
 
 import { mapState, mapActions } from "vuex"
-
+const userStore = 'userStore'
 export default {
   name: 'AccountManagementView',
   components: {
