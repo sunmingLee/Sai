@@ -25,12 +25,14 @@ import com.sai.model.dto.board.ViewBoardResponseDto;
 import com.sai.model.dto.boardMedia.ViewBoardMediaResponseDto;
 import com.sai.model.dto.boardTagged.InputBoardTaggedRequestDto;
 import com.sai.model.dto.boardTagged.ViewBoardTaggedResponseDto;
+import com.sai.model.dto.poll.PollResponse;
 import com.sai.model.dto.reply.ReplyDto;
 import com.sai.model.entity.Board;
 import com.sai.model.entity.BoardLike;
 import com.sai.model.entity.BoardMedia;
 import com.sai.model.entity.BoardTagged;
 import com.sai.model.entity.Family;
+import com.sai.model.entity.Poll;
 import com.sai.model.entity.Reply;
 import com.sai.model.entity.User;
 import com.sai.model.repository.BoardLikeRepository;
@@ -38,8 +40,11 @@ import com.sai.model.repository.BoardMediaRepository;
 import com.sai.model.repository.BoardRepository;
 import com.sai.model.repository.BoardTaggedRepository;
 import com.sai.model.repository.FamilyRepository;
+import com.sai.model.repository.PollRepository;
 import com.sai.model.repository.ReplyRepository;
 import com.sai.model.repository.UserRepository;
+import com.sai.security.CurrentUser;
+import com.sai.security.UserPrincipal;
 
 @Service
 @Transactional
@@ -57,16 +62,22 @@ public class FeedServiceImpl implements FeedService {
 	@Autowired
 	BoardRepository boardRepository;
 	@Autowired
+	ReplyRepository replyRepository;
+	@Autowired
 	BoardLikeRepository boardLikeRepository;
 	@Autowired
 	BoardTaggedRepository boardTaggedRepository;
 	@Autowired
 	BoardMediaRepository boardMediaRepository;
 	@Autowired
+	PollRepository pollRepository;
+	@Autowired
 	ModelMapper modelMapper;
+	@Autowired
+	PollService pollService;
 
 	@Override
-	public List<ReadFeedResponseDto> readAllBoard(String familyId, String userId, Pageable pageable) {
+	public List<ReadFeedResponseDto> readAllBoard(String familyId, String userId, Pageable pageable, UserPrincipal currUser) {
 		List<ReadFeedResponseDto> readFeedResponseDtos = new ArrayList<>();
 		Family family = familyRepository.findById(familyId).get();
 		User user = userRepository.findById(userId).get();
@@ -80,7 +91,14 @@ public class FeedServiceImpl implements FeedService {
 
 			// 투표 관련 DTO 세팅
 			if (board.getPollYn()) {
-
+				
+				Poll poll = pollRepository.findByBoard(board);
+				
+				PollResponse pollResponse = pollService.getPollById(poll.getPollId(), currUser);
+				readFeedResponseDto.setPollResponse(pollResponse);
+				
+//				viewPollResponseDto = modelMapper.map(poll, ViewPollResponseDto.class);
+//				readFeedResponseDto.setViewPollResponseDto(viewPollResponseDto);
 			}
 
 			// 게시글 미디어 DTO 세팅
@@ -113,7 +131,7 @@ public class FeedServiceImpl implements FeedService {
 	}
 
 	@Override
-	public ReadBoardResponseDto readOneBoard(Long boardId, String userId) {
+	public ReadBoardResponseDto readOneBoard(Long boardId, String userId, @CurrentUser UserPrincipal currUser) {
 		ReadBoardResponseDto readBoardResponseDto = new ReadBoardResponseDto();
 
 		// 게시글 DTO 세팅
@@ -129,6 +147,17 @@ public class FeedServiceImpl implements FeedService {
 		readBoardResponseDto.setViewBoardMediaResponseDto(viewBoardMediaResponseDtos);
 
 		// 투표 관련 DTO 세팅
+		if (board.getPollYn()) {
+			Poll poll = pollRepository.findByBoard(board);
+			
+			PollResponse pollResponse = pollService.getPollById(poll.getPollId(), currUser);
+			readBoardResponseDto.setPollResponse(pollResponse);
+			
+//			ViewPollResponseDto viewPollResponseDto = new ViewPollResponseDto();
+//			Poll poll = pollRepository.findbyBoardId(board.getBoardId());
+//			viewPollResponseDto = modelMapper.map(poll, ViewPollResponseDto.class);
+//			readBoardResponseDto.setViewPollResponseDto(viewPollResponseDto);
+		}
 
 		// 태그 DTO 세팅
 		List<ViewBoardTaggedResponseDto> viewBoardTaggedResponseDtos = new ArrayList<>();
@@ -192,7 +221,8 @@ public class FeedServiceImpl implements FeedService {
 		}
 
 		if (board.getPollYn()) {
-			// poll save logic
+			pollService.createPoll(createBoardRequestDto.getPollRequest());
+
 		}
 
 		// 태그된 사람들 저장
@@ -239,7 +269,12 @@ public class FeedServiceImpl implements FeedService {
 
 		// 투표 삭제 후 재생성
 		if (updateBoardRequestDto.isPollModified()) {
-			// logic
+			// 삭제
+			Poll poll = pollRepository.findByBoard(board);
+			pollRepository.delete(poll);
+
+			// 재생성
+			pollService.createPoll(updateBoardRequestDto.getPollRequest());
 		}
 
 		// 태그 삭제 후 재생성
