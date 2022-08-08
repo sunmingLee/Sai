@@ -23,6 +23,8 @@ import com.sai.model.dto.ReadBoardResponseDto;
 import com.sai.model.dto.ReadFeedResponseDto;
 import com.sai.model.dto.UpdateBoardRequestDto;
 import com.sai.model.service.FeedService;
+import com.sai.security.CurrentUser;
+import com.sai.security.UserPrincipal;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -37,11 +39,11 @@ public class FeedController {
 	@ApiOperation(value = "readAllBoard : 피드 조회")
 	@GetMapping("/{familyId}/{userId}")
 	public ResponseEntity<?> readAllBoard(@PathVariable String familyId, @PathVariable String userId,
-			@PageableDefault(size = 3, sort = "boardRegDatetime", direction = Direction.DESC) Pageable pageable)
+			@PageableDefault(size = 3, sort = "boardRegDatetime", direction = Direction.DESC) Pageable pageable, @CurrentUser UserPrincipal currUser)
 			throws Exception {
 
 		try {
-			List<ReadFeedResponseDto> readFeedResponseDtos = feedService.readAllBoard(familyId, userId, pageable);
+			List<ReadFeedResponseDto> readFeedResponseDtos = feedService.readAllBoard(familyId, userId, pageable, currUser);
 
 			if (readFeedResponseDtos != null) {
 				return new ResponseEntity<List<ReadFeedResponseDto>>(readFeedResponseDtos, HttpStatus.OK);
@@ -56,10 +58,10 @@ public class FeedController {
 
 	@ApiOperation(value = "readOneBoard : 글 상세조회")
 	@GetMapping("/board/{boardId}/{userId}")
-	public ResponseEntity<?> readOneBoard(@PathVariable Long boardId, @PathVariable String userId) throws Exception {
+	public ResponseEntity<?> readOneBoard(@PathVariable Long boardId, @PathVariable String userId, @CurrentUser UserPrincipal currUser) throws Exception {
 
 		try {
-			ReadBoardResponseDto readBoardResponseDto = feedService.readOneBoard(boardId, userId);
+			ReadBoardResponseDto readBoardResponseDto = feedService.readOneBoard(boardId, userId, currUser);
 
 			if (readBoardResponseDto != null) {
 				return new ResponseEntity<ReadBoardResponseDto>(readBoardResponseDto, HttpStatus.OK);

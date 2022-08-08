@@ -124,10 +124,11 @@ public class UserController {
 	// 로그인 후 회원정보 요청
 	@PostMapping("/login/info")
 	public ResponseEntity<InfoUserResponseDto> loginUserInfo(@RequestBody LoginUserRequestDto loginUserRequestDto){
+		
 		try {
 			return ResponseEntity.ok(userService.loginUserInfo(loginUserRequestDto));
 		} catch (Exception e) {
-			return ResponseEntity.status(400).body(userService.loginUserInfo(loginUserRequestDto));
+			return ResponseEntity.status(404).body(userService.loginUserInfo(loginUserRequestDto));
 		}
 	};
 	
