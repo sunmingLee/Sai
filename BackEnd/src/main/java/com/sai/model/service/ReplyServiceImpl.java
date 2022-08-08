@@ -8,6 +8,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.sai.model.dto.reply.CreateReplyRequestDto;
@@ -53,9 +54,9 @@ public class ReplyServiceImpl implements ReplyService {
 	}
 
 	@Override
-	public GetReplyResponseDto getReply(Long id) {
+	public GetReplyResponseDto getReply(Long id, Pageable pageable) {
 		GetReplyResponseDto result = new GetReplyResponseDto();
-		List<Reply> dbResult = replyRepository.findRepliesByBoard(boardRepository.findById(id).get());
+		List<Reply> dbResult = replyRepository.findRepliesByBoard(boardRepository.findById(id).get(), pageable);
 		List<ReplyDto> list = new ArrayList<ReplyDto>();
 		// for문 돌려서 Reply -> ReplyDTO 변환시킨 후 list에 삽입
 		for (Reply reply : dbResult) {

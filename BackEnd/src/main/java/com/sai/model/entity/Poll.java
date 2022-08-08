@@ -11,7 +11,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.BatchSize;
@@ -19,9 +21,10 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import lombok.Data;
-import lombok.Getter;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 @Entity
 @Table(name = "poll")
 public class Poll extends UserDateAudit {
@@ -30,8 +33,11 @@ public class Poll extends UserDateAudit {
 	@Column(name = "poll_id")
 	private Long pollId;
 
-	private long boardId;
+	@OneToOne
+	@JoinColumn(name = "board_id")
+	private Board board;
 
+	@Column(name = "poll_title")
 	private String pollTitle; // questions
 
 	@OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
@@ -39,6 +45,7 @@ public class Poll extends UserDateAudit {
 	@BatchSize(size = 30)
 	private List<Choice> choices = new ArrayList<>();
 
+	@Column(name = "poll_end_datetime")
 	private Instant expirationDateTime;
 
 	public void addChoice(Choice choice) {
@@ -50,4 +57,5 @@ public class Poll extends UserDateAudit {
 		choices.remove(choice);
 		choice.setPoll(null);
 	}
+	
 }
