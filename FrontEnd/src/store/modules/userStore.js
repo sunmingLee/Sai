@@ -82,6 +82,32 @@ const userStore = {
           console.log(err)
         })
     },
+    // 로그인 후 회원정보 요청(임시)
+    // getUserInfo ({ commit }, user) {
+    //   const data = {
+    //     userId: user.userId,
+    //     password: user.password
+    //   }
+    //   axios.post(api_url + '/login/info', data)
+    //     .then((res) => {
+    //       console.log(res)
+    //       // familyId가 있는 경우, 메인으로 이동
+    //       if (res.status === 200 & res.data.familyId != null) {
+    //         router.push({ name: 'feed' })
+    //       } else { // familyId가 없는 경우
+    //         if (!res.data.familyReg) { // 가족 미신청
+    //           router.push({ name: 'familyCode' })
+    //         } else if (res.data.familyReg && res.data.approveYn === null) { // 가족 신청 후 대기
+    //           router.push({ name: 'applywait' })
+    //         } else if (res.data.familyReg && !res.data.approveYn) { // 가족 신청 후 거절당함
+    //           router.push({ name: 'applyDecline' })
+    //         }
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       console.log(err)
+    //     })
+    // },
     // 아이디 찾기
     findId ({ commit }, userInfo) {
       console.log(userInfo.userName)
