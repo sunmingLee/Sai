@@ -53,10 +53,10 @@ public class Board {
 	private String boardContent;
 
 	@Column(name = "board_like_cnt")
-	private int boardLikeCnt;
+	private Integer boardLikeCnt;
 
 	@Column(name = "board_reply_cnt")
-	private int boardReplyCnt;
+	private Integer boardReplyCnt;
 
 	@Column(name = "board_date")
 	private LocalDate boardDate;

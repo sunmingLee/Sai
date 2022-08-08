@@ -58,6 +58,8 @@ public class FeedServiceImpl implements FeedService {
 	@Autowired
 	FamilyRepository familyRepository;
 	@Autowired
+	ReplyRepository replyRepository;
+	@Autowired
 	BoardRepository boardRepository;
 	@Autowired
 	ReplyRepository replyRepository;
@@ -118,8 +120,8 @@ public class FeedServiceImpl implements FeedService {
 
 			// 댓글 DTO 1개 세팅
 			Reply reply = replyRepository.findFirstByBoard(boardRepository.findById(board.getBoardId()).get()).get();
-            ReplyDto replyDto = modelMapper.map(reply, ReplyDto.class);
-            readFeedResponseDto.setReplyDto(replyDto);
+			ReplyDto replyDto = modelMapper.map(reply, ReplyDto.class);
+			readFeedResponseDto.setReplyDto(replyDto);
 
 			// List add
 			readFeedResponseDtos.add(readFeedResponseDto);
@@ -166,13 +168,13 @@ public class FeedServiceImpl implements FeedService {
 		readBoardResponseDto.setViewBoardTaggedResponseDto(viewBoardTaggedResponseDtos);
 		
 		// 댓글 DTO 세팅
-        List<Reply> replyList = replyRepository.findRepliesByBoard(board, null);
-        List<ReplyDto> replyDtoList = new ArrayList<>();
-        for(Reply reply : replyList) {
-            ReplyDto replyDto = modelMapper.map(reply, ReplyDto.class);
-            replyDtoList.add(replyDto);
-        }
-        readBoardResponseDto.setReplies(replyDtoList);
+		List<Reply> replyList = replyRepository.findRepliesByBoard(board, null);
+		List<ReplyDto> replyDtoList = new ArrayList<>();
+		for(Reply reply : replyList) {
+			ReplyDto replyDto = modelMapper.map(reply, ReplyDto.class);
+			replyDtoList.add(replyDto);
+		}
+		readBoardResponseDto.setReplies(replyDtoList);
 
 		// 좋아요 여부 세팅
 		User user = userRepository.findById(userId).get();

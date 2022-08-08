@@ -22,6 +22,7 @@ import com.sai.model.repository.UserRepository;
 @Transactional
 public class NotificationServiceImpl implements NotificationService {
 	
+	
 	@Autowired
 	UserRepository userRepository;
 	
