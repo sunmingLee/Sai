@@ -1,6 +1,6 @@
 <template>
   <div class="apply-wait-wrap">
-    <div class="family-id-wrap">신청한 가족 코드<br/>{{ familyId }}</div>
+    <div class="family-id-wrap" v-if="familyId">신청한 가족 코드<br/>{{ familyId }}</div>
     <span>결과를 기다리는 중이에요<br/><br/>
     가족들에게 어서<br/>수락해달라고 말해보세요!</span>
     <Button class="btn-back" buttonClass="big negative" buttonText="신청 취소하기" @click="goFamilyCode"></Button>
