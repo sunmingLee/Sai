@@ -29,7 +29,7 @@ import InputBox from '@/components/common/InputBox.vue'
 import Button from '@/components/common/Button.vue'
 
 export default {
-  name: 'FamilyInformationChangeView',
+  name: 'familyInfoChange',
   components: { HeaderTitle, InputBox, Button },
   data () {
     return {
@@ -48,6 +48,7 @@ export default {
     },
     cancle () {
       alert('취소되었습니다.')
+      this.$router.push('feed')
     },
     save (familyName, callsign1, callsign2, callsign3) {
       familyName = this.familyName

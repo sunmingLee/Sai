@@ -16,6 +16,7 @@ import AlbumFolder from '@/components/album/AlbumFolder.vue'
 import AlbumPicture from '@/components/album/AlbumPicture.vue'
 import AlbumPictureDetail from '@/components/album/AlbumPictureDetail.vue'
 import JoinView from '@/views/JoinView.vue'
+import FamilyInformationChangeView from '@/views/FamilyInformationChangeView.vue'
 
 import store from '@/store/index.js'
 
@@ -134,6 +135,11 @@ const routes = [
     path: '/join',
     name: 'join',
     component: JoinView
+  },
+  {
+    path: '/familyInfoChange',
+    name: 'familyInfoChange',
+    component: FamilyInformationChangeView
   }
 ]
 
