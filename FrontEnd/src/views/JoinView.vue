@@ -11,13 +11,13 @@
       <div class="input-wrap">
         <InputBox :hasLabel="true" labelName="아이디" @inputCheck="checkId"></InputBox>
         <p v-if="validId" class="valid-error">아이디는 4자 이상 16자 이하로 입력하세요.</p>
-        <Button buttonText="중복확인" buttonClass="small information" @click.prevent="checkDupilicateId"></Button>
+        <Button buttonText="중복확인" buttonClass="small information" @click.prevent="duplicateId"></Button>
         <br>
       </div>
       <div class="input-wrap">
         <InputBox :hasLabel="true" labelName="이메일" @inputCheck="checkEmail"></InputBox>
       <p v-if="validEmail" class="valid-error">이메일 형식으로 입력하세요.</p>
-      <Button buttonText="중복확인" buttonClass="small information" @click.prevent="checkDupilicateEmail"></Button>
+      <Button buttonText="중복확인" buttonClass="small information" @click.prevent="duplicateEmail"></Button>
       <br>
       </div>
       <div class="input-wrap">
@@ -48,6 +48,9 @@
 import Button from '@/components/common/Button.vue'
 import InputBox from '@/components/common/InputBox.vue'
 import HeaderTitle from '@/components/common/HeaderTitle.vue'
+import { mapState, mapActions } from 'vuex'
+//import joinStore from '@/store/modules/joinStore'
+const joinStore = 'joinStore'
 
 export default {
   name: 'JoinView',
@@ -76,6 +79,7 @@ export default {
   },
   methods: {
     // 이름 유효성을 검사하고 문구를 출력 판단
+    ...mapActions(joinStore, ['checkDuplicateId','checkDuplicateEmail','checkJoin']),
     checkName (userName) {
       if (this.userJoin.userName.length >= 0 && !this.isValidName(userName)) {
         this.validName = true
@@ -141,18 +145,20 @@ export default {
       }
     },
     // 중복검사
-    checkDupilicateId () {
+    duplicateId () {
       // 유효성 검사 통과된 아이디면
       // 유효성 검사 통과가 안된 아이디이면 store못가게
       if (!this.validId) {
-        this.$store.dispatch('checkDupilicateId', this.userJoin.userId)
+        this.checkDuplicateId(this.userJoin.userId)
+        // mapActions(joinStore, ['checkDuplicateId'])
       } else {
         alert('아이디는 4자 이상 16자 이하로 입력하세요.')
       }
     },
-    checkDupilicateEmail () {
+    duplicateEmail () {
       if (!this.validEmail) {
-        this.$store.dispatch('checkDupilicateEmail', this.userJoin.email)
+        this.checkDuplicateEmail(this.userJoin.email)
+        //this.$store.dispatch('checkDuplicateEmail', this.userJoin.email)
       } else {
         alert('이메일 형식으로 입력하세요.')
       }
@@ -160,9 +166,10 @@ export default {
     onJoin () {
       if (this.checked === true) {
         if (!this.validName && !this.validId && !this.validEmail && !this.validPassword && !this.validPasswordConfirm) {
-          this.$store.dispatch('join', this.userJoin)
+          this.checkJoin(this.userJoin)
+          //this.$store.dispatch('join', this.userJoin)
         } else {
-          alert('땡!')
+          alert('회원가입란은 다시 한번 확인해주세요.')
         }
       // 이름, 아이디, 이메일, 비밀번호, 비밀번호 확인 모두 작성되고
       // 유효성 검사 모두 통과되고
