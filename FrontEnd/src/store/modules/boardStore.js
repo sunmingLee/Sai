@@ -20,10 +20,15 @@ const boardStore = {
   actions: {
     // 게시글 작성
     boardCreate ({ commit }, boardInfo) {
-      console.log('작성')
-      console.log(boardInfo)
-      const createBoardRequestDto = boardInfo;
+      const files = boardInfo.fileList
+      const createBoardRequestDto = boardInfo.createBoardRequestDto;
       let formData = new FormData();
+      if(files !== undefined) {
+        for(let i = 0; i < files.length; i++) {
+          console.log(files[i])
+          formData.append('files', files[i])
+        }
+      }
       formData.append('createBoardRequestDto', new Blob([JSON.stringify(createBoardRequestDto)], {type: "application/json"}));
       axios({
         url: api_url + '/board',
@@ -58,14 +63,14 @@ const boardStore = {
         url: api_url + '/' + familyId + '/' + userId,
         method: 'GET'
       })
-        .then((res) => {
-          console.log("졸려")
-          commit('FEED_All_LIST', res.data)
-        })
-        .catch((err) => {
-          console.log("에러")
-          console.log(err)
-        })
+      .then((res) => {
+        console.log("졸려")
+        commit('FEED_All_LIST', res.data)
+      })
+      .catch((err) => {
+        console.log("에러")
+        console.log(err)
+      })
     }
   },
   modules: {

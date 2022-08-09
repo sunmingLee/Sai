@@ -34,6 +34,7 @@
                     <div class="content-reply">
                         
                     </div>
+                    <button @click="goDetail(feed.boardId)">상세보기</button>
                 </div>
             </div>
             <div v-else>
@@ -103,8 +104,13 @@ export default {
         unlikeButton() {
 
         },
+        //글 작성 페이지 이동
         goBoardCreate() {
             this.$router.push({ name: "feedCreate" });
+        },
+        //글 상세보기 페이지 이동
+        goDetail(boardId) {
+            
         }
     },
     data() {
