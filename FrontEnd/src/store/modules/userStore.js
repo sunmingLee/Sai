@@ -44,7 +44,7 @@ const userStore = {
   },
   actions: {
     // 로그인
-    login ({ commit, dispatch }, user) {
+    login({ commit, dispatch }, user) {
       const data = {
         userId: user.userId,
         password: user.password
@@ -69,7 +69,7 @@ const userStore = {
         })
     },
     // 로그인 후 회원정보 요청
-    getUserInfo ({ commit }, user) {
+    getUserInfo({ commit }, user) {
       const data = {
         userId: user.userId,
         password: user.password
@@ -98,7 +98,7 @@ const userStore = {
         })
     },
     // 아이디 찾기
-    findId ({ commit }, userInfo) {
+    findId({ commit }, userInfo) {
       console.log(userInfo.userName)
       const params = {
         userName: userInfo.userName,
@@ -122,7 +122,7 @@ const userStore = {
         })
     },
     // 비밀번호 찾기
-    findPassword ({ commit }, userInfo) {
+    findPassword({ commit }, userInfo) {
       const params = {
         userName: userInfo.userName,
         userId: userInfo.userId,
@@ -146,28 +146,27 @@ const userStore = {
         })
     },
     // 비밀번호 확인
-    checkPassword ({ commit }, userInfo) {
-      console.log(userInfo.password)
+    checkPassword({ commit }, userInfo) {
       const params = userInfo.password
       axios({
         url: api_url + '/verify/' + userInfo.userId,
         method: 'POST',
-        data: JSON.stringify(params),
+        data: params,
         headers: {
-          'Content-Type' : 'application/json'
+          'Content-Type': 'text/html; charset=utf-8'
         }
       })
-      .then((res) => {
-        console.log(res)
-        router.push({name : 'account'})
-      })
-      .catch((err) => {
-        alert('비밀번호가 틀렸습니다')
-        console.log(err)
-      })
+        .then((res) => {
+          console.log(res)
+          router.push({ name: 'account' })
+        })
+        .catch((err) => {
+          alert('비밀번호가 틀렸습니다')
+          console.log(err)
+        })
     },
     // 비밀번호 변경
-    updatePassword ({ commit }, userInfo) {
+    updatePassword({ commit }, userInfo) {
       const params = {
         userId: userInfo.id,
         password: userInfo.password
@@ -187,7 +186,7 @@ const userStore = {
         })
     },
     // 회원 탈퇴
-    withdrawalMember ({ commit }, userId) {
+    withdrawalMember({ commit }, userId) {
       axios({
         url: api_url + `/${userId.id}`,
         method: 'DELETE'
