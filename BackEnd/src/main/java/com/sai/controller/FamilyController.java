@@ -14,13 +14,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.sai.model.dto.family.AnswerFamilyRegisterRequestDto;
 import com.sai.model.dto.family.FamilyCallsignDto;
 import com.sai.model.dto.family.FamilyDto;
 import com.sai.model.dto.family.FamilyRegisterDto;
-import com.sai.model.dto.family.UpdateFamilyVo;
-import com.sai.model.dto.user.UserDto;
+import com.sai.model.dto.family.InsertFamilyRegisterRequestDto;
+import com.sai.model.dto.family.ReturnFamilyIdDto;
+import com.sai.model.dto.family.UpdateFamilyRequestDto;
 import com.sai.model.service.FamilyService;
 
 import io.swagger.annotations.ApiOperation;
@@ -38,12 +42,17 @@ public class FamilyController {
 	public ResponseEntity<?> createFamilyId(@PathVariable String userId) throws Exception {
 
 		try {
-			UserDto userDto = familyService.createFamilyId(userId);
+			String familyId = familyService.createFamilyId(userId);
 
-			if (userDto != null) {
-				return new ResponseEntity<UserDto>(userDto, HttpStatus.OK);
+			if (familyId != null) {
+
+				ReturnFamilyIdDto returnFamilyIdDto = new ReturnFamilyIdDto();
+				returnFamilyIdDto.setFamilyId(familyId);
+
+				return new ResponseEntity<ReturnFamilyIdDto>(returnFamilyIdDto, HttpStatus.OK);
+
 			} else {
-				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+				return new ResponseEntity<String>("Error : 가족 코드 생성에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 
 		} catch (Exception e) {
@@ -56,13 +65,8 @@ public class FamilyController {
 	public ResponseEntity<?> disjoinFamily(@PathVariable String userId) throws Exception {
 
 		try {
-			UserDto userDto = familyService.disjoinFamily(userId);
-
-			if (userDto != null) {
-				return new ResponseEntity<UserDto>(userDto, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-			}
+			familyService.disjoinFamily(userId);
+			return new ResponseEntity<Void>(HttpStatus.OK);
 
 		} catch (Exception e) {
 			return exceptionHandling(e);
@@ -71,10 +75,11 @@ public class FamilyController {
 
 	@ApiOperation(value = "applyFamily : 가족 들어가기 신청")
 	@PostMapping("/join/apply")
-	public ResponseEntity<?> applyFamily(@RequestBody FamilyRegisterDto familyRegisterDto) throws Exception {
+	public ResponseEntity<?> applyFamily(@RequestBody InsertFamilyRegisterRequestDto insertFamilyRegisterRequestDto)
+			throws Exception {
 
 		try {
-			familyService.applyFamily(familyRegisterDto);
+			familyService.applyFamily(insertFamilyRegisterRequestDto);
 			return new ResponseEntity<Void>(HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -85,10 +90,11 @@ public class FamilyController {
 	@ApiOperation(value = "responseApplication : 가족 신청 수락/거절")
 	@PatchMapping("/join/response/{userId}")
 	public ResponseEntity<?> responseApplication(@PathVariable String userId,
-			@RequestBody FamilyRegisterDto familyRegisterDto) throws Exception {
+			@RequestBody AnswerFamilyRegisterRequestDto answerFamilyRegisterRequestDto) throws Exception {
 
 		try {
-			List<FamilyCallsignDto> familyCallsignDtos = familyService.responseApplication(userId, familyRegisterDto);
+			List<FamilyCallsignDto> familyCallsignDtos = familyService.responseApplication(userId,
+					answerFamilyRegisterRequestDto);
 
 			if (familyCallsignDtos != null && familyCallsignDtos.size() > 0) {
 				return new ResponseEntity<List<FamilyCallsignDto>>(familyCallsignDtos, HttpStatus.OK);
@@ -170,17 +176,22 @@ public class FamilyController {
 
 	@ApiOperation(value = "updateFamily : 가족 정보 + 콜사인 수정")
 	@PutMapping("/modify")
-	public ResponseEntity<?> updateFamily(@RequestBody UpdateFamilyVo updateFamilyVo) throws Exception {
+	public ResponseEntity<?> updateFamily(
+//			@RequestBody UpdateFamilyRequestDto updateFamilyRequestDto
+			@RequestPart UpdateFamilyRequestDto updateFamilyRequestDto
+			, @RequestPart MultipartFile file) throws Exception {
 
 		try {
-			UpdateFamilyVo returnUpdateFamilyVo = familyService.updateFamily(updateFamilyVo);
+//			UpdateFamilyVo returnUpdateFamilyVo = 
+			familyService.updateFamily(updateFamilyRequestDto, file);
 
-			if (returnUpdateFamilyVo != null) {
-				return new ResponseEntity<UpdateFamilyVo>(returnUpdateFamilyVo, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-			}
+//			if (returnUpdateFamilyVo != null) {
+//				return new ResponseEntity<UpdateFamilyVo>(returnUpdateFamilyVo, HttpStatus.OK);
+//			} else {
+//				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+//			}
 
+			return null;
 		} catch (Exception e) {
 			return exceptionHandling(e);
 		}
