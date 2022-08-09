@@ -109,6 +109,14 @@ export default {
     // console.log(this.$route.params.boardId)
     this.boardId = localStorage.getItem('boardId')
     this.userId = localStorage.getItem('userId')
+
+    // 게시글 상세보기
+    const info = {
+      boardId: this.boardId,
+      userId: this.userId
+    }
+    // this.getOneFeed(info)
+
     // 댓글 목록 조회
     this.getReplyList(localStorage.getItem('boardId'))
 
@@ -132,7 +140,7 @@ export default {
     ...mapState(familyStore, ['familyCallsignList'])
   },
   methods: {
-    ...mapActions(boardStore, ['getReplyList', 'createReply', 'updateReply', 'deleteReply']),
+    ...mapActions(boardStore, ['getOneFeed', 'getReplyList', 'createReply', 'updateReply', 'deleteReply']),
     ...mapActions(familyStore, ['callsignList']),
     // 댓글 작성
     postReply () {

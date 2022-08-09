@@ -66,6 +66,19 @@ const boardStore = {
           console.log(err)
         })
     },
+    // 게시글 상세보기 (테스트 x)
+    getOneFeed ({ commit }, info) {
+      axios({
+        url: api_url + `/board/${info.boardId}/${info.userId}`,
+        method: 'GET'
+      })
+        .then((res) => {
+          console.log(res)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
     // 댓글 조회
     getReplyList ({ commit }, boardId) {
       axios({
