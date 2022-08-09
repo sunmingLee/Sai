@@ -15,6 +15,7 @@ const boardStore = {
   mutations: {
     FEED_All_LIST (state, feed) {
       state.feedList = feed
+      console.log(state.feedList)
     }
   },
   actions: {

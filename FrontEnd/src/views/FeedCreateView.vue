@@ -5,34 +5,16 @@
         <HeaderTitle hasBack="true" title="게시글 작성" hasIcon="true"/>
         <!-- 사진 공간 -->
         <input type="file" @change="fileCheck" id="file" multiple>
-        <div id="carouselExampleIndicators" class="carousel slide" >
-          <div class="carousel-indicators">
-              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-          </div>
-          <div class="carousel-inner" v-for="(src, index) in srcList" :key="index">
-            <div v-if="index === 0" class="carousel-item active">
-              <img :src="src" id="img" class="d-block w-100">
+        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner" >
+            <div class="carousel-item active">
+              <img :src="srcList[0]" id="img" class="d-block w-100">
             </div>
-            <div v-else class="carousel-item">
-              <img :src="src" id="img" class="d-block w-100">
+            <div v-for="(src, index) in srcList" :key="index">
+              <div v-if="index !== 0" class="carousel-item">
+                <img :src="src" id="img" class="d-block w-100">
+              </div>
             </div>
-              <!-- <div class="carousel-item active" >
-                <img src="@/assets/images/user-solid.svg" class="d-block w-100" alt="...">
-              </div>
-              <div class="carousel-item">
-                <img src="@/assets/images/user-solid.svg" class="d-block w-100" alt="...">
-              </div>
-              <div class="carousel-item">
-                <img src="@/assets/images/user-solid.svg" class="d-block w-100" alt="...">
-              </div> -->
-              <!-- <div v-if="index === 0" class="carousel-item active" >
-                <img :src="src" id="img" class="d-block w-100"/>
-              </div>
-              <div v-else class="carousel-item">
-                <img :src="src" id="img" class="d-block w-100"/>
-              </div> -->
           </div>
           <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -43,12 +25,6 @@
               <span class="visually-hidden">Next</span>
           </button>
         </div>
-        <!-- <div class="flex">
-          
-          <div class="media-wrap" style="border: 1px solid black" v-for="(src, index) in srcList" :key="index">
-              <img :src="src" id="img"/>
-          </div>
-        </div> -->
         <!-- 글(텍스트) 공간 -->
         <div class="flex">
           <textarea v-model="boardContent" name="" id="" cols="30" rows="10"></textarea>
@@ -472,12 +448,12 @@ export default {
             boardReplyCnt: 0
         }
         Object.assign(createBoardRequestDto, {inputBoardRequestDto})
-        // if(this.boardMediaYn  === 1) {
-        //   this.boardCreate({createBoardRequestDto, fileList})
-        // }
-        // else {
-        //   this.boardCreate({createBoardRequestDto})
-        // }
+        if(this.boardMediaYn  === 1) {
+          this.boardCreate({createBoardRequestDto, fileList})
+        }
+        else {
+          this.boardCreate({createBoardRequestDto})
+        }
       }
     }
   }

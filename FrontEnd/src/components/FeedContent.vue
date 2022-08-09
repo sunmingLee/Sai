@@ -7,7 +7,9 @@
                     <div class="content-header">
                         <div v-for="(callsign, index) in familyCallsignList" :key="index" class="famliy-callsign">
                             <div v-if="feed.viewBoardResponseDto.userId === callsign.fromUserId">
-                                <span>{{this.userName}}</span>
+                                {{feed.viewBoardResponseDto.userId}}
+                                {{callsign.fromUserId}}
+                                <span>{{callsign.callsign}}</span>
                             </div>
                             <div v-else>
                                 <span>{{callsign.callsign}}</span>
@@ -34,7 +36,7 @@
                     <div class="content-reply">
                         
                     </div>
-                    <button @click="goDetail(feed.boardId)">상세보기</button>
+                    <button @click="goDetail">상세보기</button>
                 </div>
             </div>
             <div v-else>
@@ -61,7 +63,6 @@ export default {
         //피드 조회
         const info = {
             userId: localStorage.getItem('userId'),
-            // familyId: this.familyId
             familyId: localStorage.getItem('familyId')
         }
         console.log(info)
@@ -70,6 +71,7 @@ export default {
         // console.log(this.userInfo)
     },
     mounted() {
+        
     },
     computed: {
         ...mapState(boardStore, ["feedList"]),
@@ -109,8 +111,9 @@ export default {
             this.$router.push({ name: "feedCreate" });
         },
         //글 상세보기 페이지 이동
-        goDetail(boardId) {
-            
+        goDetail() {
+            console.log(this.feedList)
+            console.log(this.familyCallsignList)
         }
     },
     data() {
