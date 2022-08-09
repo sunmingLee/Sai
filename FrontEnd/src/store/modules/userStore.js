@@ -1,12 +1,9 @@
-// import jwtDecode from 'jwt-decode'
-// import { login, findById, updateUser } from '@/api/user.js'
-
 /* eslint-disable camelcase */
 import axios from 'axios'
 import router from '@/router/index.js'
+import { API_BASE_URL } from '@/config'
 
-const api_url = 'http://localhost:8080/api/user'
-// const api_url = 'http://i7a305.p.ssafy.io:8080/api/user'
+const api_url = API_BASE_URL + '/api/user'
 const userStore = {
   namespaced: true,
   state: {
@@ -44,7 +41,7 @@ const userStore = {
   },
   actions: {
     // 로그인
-    login({ commit, dispatch }, user) {
+    login ({ commit, dispatch }, user) {
       const data = {
         userId: user.userId,
         password: user.password
@@ -69,7 +66,7 @@ const userStore = {
         })
     },
     // 로그인 후 회원정보 요청
-    getUserInfo({ commit }, user) {
+    getUserInfo ({ commit }, user) {
       const data = {
         userId: user.userId,
         password: user.password
@@ -98,7 +95,7 @@ const userStore = {
         })
     },
     // 아이디 찾기
-    findId({ commit }, userInfo) {
+    findId ({ commit }, userInfo) {
       console.log(userInfo.userName)
       const params = {
         userName: userInfo.userName,
@@ -122,7 +119,7 @@ const userStore = {
         })
     },
     // 비밀번호 찾기
-    findPassword({ commit }, userInfo) {
+    findPassword ({ commit }, userInfo) {
       const params = {
         userName: userInfo.userName,
         userId: userInfo.userId,
@@ -146,7 +143,7 @@ const userStore = {
         })
     },
     // 비밀번호 확인
-    checkPassword({ commit }, userInfo) {
+    checkPassword ({ commit }, userInfo) {
       const params = userInfo.password
       axios({
         url: api_url + '/verify/' + userInfo.userId,
@@ -166,7 +163,7 @@ const userStore = {
         })
     },
     // 비밀번호 변경
-    updatePassword({ commit }, userInfo) {
+    updatePassword ({ commit }, userInfo) {
       const params = {
         userId: userInfo.id,
         password: userInfo.password
@@ -186,7 +183,7 @@ const userStore = {
         })
     },
     // 회원 탈퇴
-    withdrawalMember({ commit }, userId) {
+    withdrawalMember ({ commit }, userId) {
       axios({
         url: api_url + `/${userId.id}`,
         method: 'DELETE'
@@ -199,62 +196,6 @@ const userStore = {
           console.log(err)
         })
     }
-    // async userConfirm ({ commit }, user) {
-    //   console.log(user)
-    //   await login(
-    //     user,
-    //     (response) => {
-    //       console.log(response)
-    //       if (response.data.code === 200) {
-    //         const token = response.data['access-token']
-    //         commit('SET_IS_LOGIN', true)
-    //         commit('SET_IS_LOGIN_ERROR', false)
-    //         sessionStorage.setItem('access-token', token)
-    //       } else {
-    //         commit('SET_IS_LOGIN', false)
-    //         commit('SET_IS_LOGIN_ERROR', true)
-    //       }
-    //     },
-    //     (response) => {
-    //       console.log(response)
-    //       commit('SET_IS_LOGIN', false)
-    //       commit('SET_IS_LOGIN_ERROR', true)
-    //     }
-    //   )
-    // },
-    // getUserInfo ({ commit }, token) {
-    //   const decodeToken = jwtDecode(token)
-    //   console.log(decodeToken)
-    //   findById(
-    //     decodeToken.id,
-    //     (response) => {
-    //       console.log(response)
-    //       if (response.data) {
-    //         commit('SET_USER_INFO', response.data)
-    //       } else {
-    //         console.log('유저 정보 없음!!')
-    //       }
-    //     },
-    //     (error) => {
-    //       console.log(error)
-    //     }
-    //   )
-    // },
-
-    // updateUserInfo ({ commit }, user) {
-    //   updateUser(
-    //     user,
-    //     (response) => {
-    //       console.log(response)
-    //       if (response.data === 1) {
-    //         commit('SET_USER_INFO', user)
-    //       }
-    //     },
-    //     (error) => {
-    //       console.log(error)
-    //     }
-    //   )
-    // }
   },
   modules: {
 

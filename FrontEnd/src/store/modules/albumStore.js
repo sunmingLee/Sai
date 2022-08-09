@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
 import axios from 'axios'
 import router from '@/router/index.js'
+import { API_BASE_URL } from '@/config'
 
-const api_url = 'http://localhost:8080/album'
-// const api_url = 'http://i7a305.p.ssafy.io:8080/album'
+const api_url = API_BASE_URL + '/album'
 const albumStore = {
   namespaced: true,
   state: {
