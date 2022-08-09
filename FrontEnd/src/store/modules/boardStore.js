@@ -79,6 +79,28 @@ const boardStore = {
         .catch((err) => {
           console.log(err)
         })
+    },
+    // 댓글 작성
+    createReply ({ commit, dispatch }, info) {
+      const data = {
+        userId: info.userId,
+        replyContent: info.replyContent
+      }
+      axios({
+        url: api_url + `/${info.boardId}` + '/reply',
+        method: 'POST',
+        data: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => {
+          dispatch('getReplyList', data.boardId)
+          router.go()
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     }
   },
   modules: {

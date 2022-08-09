@@ -76,8 +76,8 @@
     </table>
     <!-- 댓글 작성칸 -->
     <div class="reply-write-wrap">
-      <input class="reply" type="text" placeholder="누군가를 부르고싶다면 @ 를 입력해보세요">
-      <Button style="display: inline-block;" buttonClass="small positive" buttonText="등록"></Button>
+      <input v-model="message" class="reply" type="text" placeholder="댓글을 입력해보세요" @keyup.enter="postReply">
+      <Button style="display: inline-block;" buttonClass="small positive" buttonText="등록" @click="postReply"></Button>
     </div>
   </div>
 </template>
@@ -96,19 +96,19 @@ export default {
   data () {
     return {
       boardId: '',
-      userId: ''
+      userId: '',
+      message: ''
     }
   },
   async created () {
     // console.log(this.$route.params.boardId)
-    // console.log(localStorage.getItem('boardId'))
+    this.boardId = localStorage.getItem('boardId')
     this.userId = localStorage.getItem('userId')
     // 댓글 목록 조회
     this.getReplyList(localStorage.getItem('boardId'))
 
     // 글쓴이 이름 찾기 (나중에 params에서 넘어온 아이디와 비교해야함)
     await this.callsignList(localStorage.getItem('userId'))
-    // await this.callsignList('ssafy8')
     // if (this.familyCallsignList.length !== 0) {
     //   console.log(this.familyCallsignList)
     //   await this.familyCallsignList.forEach(callsign => {
@@ -124,8 +124,21 @@ export default {
     ...mapState(familyStore, ['familyCallsignList'])
   },
   methods: {
-    ...mapActions(boardStore, ['getReplyList']),
-    ...mapActions(familyStore, ['callsignList'])
+    ...mapActions(boardStore, ['getReplyList', 'createReply']),
+    ...mapActions(familyStore, ['callsignList']),
+    // 댓글 작성
+    postReply () {
+      if (this.message.length === 0) {
+        alert('댓글을 입력해주세요')
+      } else {
+        const info = {
+          boardId: this.boardId,
+          userId: this.userId,
+          replyContent: this.message
+        }
+        this.createReply(info)
+      }
+    }
   }
 }
 </script>
@@ -202,7 +215,7 @@ export default {
     display: inline-block;
     text-align: center;
     margin-right: 5px;
-    width: 80%;
+    width: 70%;
     border-radius: 5px;
     border: 1px solid #ae5f40;
   }
