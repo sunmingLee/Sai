@@ -169,20 +169,17 @@ export default {
 }
 .feed-wrap {
   width: 900px;
-
-  .flex{
+    .flex{
     display: flex;
     justify-content: center;
     text-align: center;
-  }
-  .feed-flex {
-    .feed-div {
-        width: 600px;
-        margin: 0 auto;
-        border: 1px solid black;
     }
-  }
+    .feed-flex {
+        .feed-div {
+            width: 600px;
+            margin: 0 auto;
+            border: 1px solid black;
+        }
+    }
 }
-}
->>>>>>> 8de6bc5bc2eda78e2fcaf9f2bea77c4f90ba6dea
 </style>
