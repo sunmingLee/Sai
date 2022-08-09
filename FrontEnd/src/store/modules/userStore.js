@@ -9,8 +9,7 @@ const userStore = {
   state: {
     isLogin: false,
     isLoginError: false,
-    userInfo: null,
-    familyId: ''
+    userInfo: [],
     // userInfo: {
     //   userId: 'cjftn',
     //   familyId: 123456,
@@ -32,12 +31,8 @@ const userStore = {
       state.isLoginError = isLoginError
     },
     SET_USER_INFO: (state, userInfo) => {
-      state.isLogin = true
       state.userInfo = userInfo
     },
-    SET_FAMILY_ID: (state, familyId) => {
-      state.familyId = familyId
-    }
   },
   actions: {
     // 로그인
@@ -77,7 +72,6 @@ const userStore = {
           // console.log(res)
           // familyId가 있는 경우, 메인으로 이동
           if (res.status === 200 & res.data.familyId != null) {
-            commit('SET_FAMILY_ID', res.data.familyId)
             localStorage.setItem('familyId', res.data.familyId)
             router.push({ name: 'feed' })
           } else { // familyId가 없는 경우
@@ -195,6 +189,20 @@ const userStore = {
         .catch((err) => {
           console.log(err)
         })
+    },
+    // 유저(회원) 정보 조회
+    checkUserInfo({commit}, userId) {
+      axios({
+        url: api_url + '/' + userId,
+        method: 'GET'
+      })
+      .then((res) => {
+        commit('SET_USER_INFO', res.data)
+        localStorage.setItem('userInfo',JSON.stringify(res.data))
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     }
   },
   modules: {

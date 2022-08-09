@@ -1,13 +1,30 @@
 <template>
     <div class="create-wrap">
+      
       <p>{{callsign}}</p>
         <HeaderTitle hasBack="true" title="게시글 작성" hasIcon="true"/>
         <!-- 사진 공간 -->
+        <input type="file" @change="fileCheck" id="file" multiple>
         <div class="flex">
-          <input type="file" @change="fileCheck" id="file" multiple>
-          <div class="media-wrap" style="border: 1px solid black">
-            <img v-if="url" :src="url" id="img"/>
-            <p>여긴 사진 공간이다 임마들아~!</p>
+          <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner" >
+              <div class="carousel-item active">
+                <img :src="srcList[0]" id="img" class="d-block w-100">
+              </div>
+              <div v-for="(src, index) in srcList" :key="index">
+                <div v-if="index !== 0" class="carousel-item">
+                  <img :src="src" id="img" class="d-block w-100">
+                </div>
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
           </div>
         </div>
         <!-- 글(텍스트) 공간 -->
@@ -155,13 +172,16 @@ export default {
       preventDisableDateSelection: true,
       format: '',
       pollCnt: 2,
-      url: null,
-      fileCnt: 0
+      srcList: [],
+      fileList: []
     }
   },
   created () {
     const userId = localStorage.getItem('userId')
     this.callsignList(userId)
+  },
+  mounted() {
+    
   },
   computed: {
     // ...mapState(userStore, ["userId", "userName"]),
@@ -170,16 +190,24 @@ export default {
   methods: {
     ...mapActions(boardStore, ['boardCreate']),
     ...mapActions(familyStore, ['callsignList']),
-    // 파일 처리
-    fileCheck (e) {
-      const fileInput = document.getElementById('file')
-      // 선택한 파일의 정보 리스트
-      const files = fileInput.files
-      // heic 파일 확장자 변경
-      // 선택한 파일의 개수만큼 돌아서 각각의 파일을 다 확인
-      for (let i = 0; i < files.length; i++) {
-        // 파일 하나 선택
-        const file = files[i]
+    //파일 처리
+    fileCheck(e) {
+      //확장자 변경
+      this.changeFile()
+      //미리보기
+      this.previewFile()
+    },
+    changeFile() {
+      const previewCount = 0;
+      const fileInput = document.getElementById("file")
+      //선택한 파일의 정보 리스트
+      let files = fileInput.files
+      // let previewCount = files.length
+      //heic 파일 확장자 변경
+      //선택한 파일의 개수만큼 돌아서 각각의 파일을 다 확인
+      for(let i = 0; i < files.length; i++) {
+        //파일 하나 선택
+        let file = files[i]
         let heicFile = ''
         // 파일의 확장자가 heic일 경우
         if (file.name.split('.')[1] === 'heic') {
@@ -196,10 +224,16 @@ export default {
           fileList.push(file)
         }
       }
-      // 파일 미리보기(작업중)
-      // const preview = e.target.files[0]
-      // console.log(e.target)
-      // this.url = URL.createObjectURL(preview)
+    },
+    previewFile() {
+      console.log(fileList)
+      if(fileList.length != 0) {
+        for(let i = 0; i < fileList.length; i++) {
+          this.srcList.push(URL.createObjectURL(fileList[i]))
+        }
+      }
+      console.log("안녕")
+      console.log(this.srcList)
     },
     // 추가기록과 투표만들기 토글
     record () {
@@ -413,7 +447,6 @@ export default {
         } else {
           this.boardCreate({ createBoardRequestDto })
         }
-        // this.boardCreate(createBoardRequestDto)
       }
     }
   }
@@ -577,5 +610,8 @@ export default {
       }
     }
   }
+}
+.carousel-inner {
+  width: 50%;
 }
 </style>
