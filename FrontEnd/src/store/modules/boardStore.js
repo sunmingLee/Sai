@@ -89,6 +89,20 @@ const boardStore = {
           console.log(err)
         })
     },
+    // 게시글 삭제
+    deleteFeed ({ commit }, boardId) {
+      axios({
+        url: api_url + `/board/${boardId}`,
+        method: 'DELETE'
+      })
+        .then((res) => {
+          alert('게시글이 삭제되었습니다.')
+          router.push({ name: 'feed' })
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
     // 댓글 조회
     getReplyList ({ commit }, boardId) {
       axios({
@@ -134,7 +148,7 @@ const boardStore = {
       }
       axios({
         url: api_url + `/${info.boardId}` + '/reply',
-        method: 'Delete',
+        method: 'DELETE',
         data: JSON.stringify(data),
         headers: {
           'Content-Type': 'application/json'

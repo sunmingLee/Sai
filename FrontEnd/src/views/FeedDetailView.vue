@@ -10,7 +10,7 @@
       </div>
       <Button buttonClass="small information" buttonText="수정"></Button>
       <span style="width: 5px"></span>
-      <Button style="margin-right:5%" buttonClass="small information" buttonText="삭제"></Button>
+      <Button style="margin-right:5%" buttonClass="small negative" buttonText="삭제" @click="eraseFeed"></Button>
     </div>
     <!-- 캐러셀 -->
     <div id="carouselExampleIndicators" class="carousel slide" >
@@ -120,10 +120,10 @@ export default {
     }
     this.getOneFeed(info)
 
-    // 댓글 목록 조회
+    // 댓글 목록 조회 (나중에 param에서 넘어온 boardId로 교체)
     this.getReplyList(localStorage.getItem('boardId'))
 
-    // 글쓴이 이름 찾기 (나중에 params에서 넘어온 아이디와 비교해야함)
+    // 가족 콜사인 찾기 (나중에 param에서 넘어온 아이디로 교체)
     this.callsignList(localStorage.getItem('userId'))
   },
   // async mounted () {
@@ -143,8 +143,12 @@ export default {
     ...mapState(familyStore, ['familyCallsignList'])
   },
   methods: {
-    ...mapActions(boardStore, ['getOneFeed', 'getReplyList', 'createReply', 'updateReply', 'deleteReply']),
+    ...mapActions(boardStore, ['getOneFeed', 'deleteFeed', 'getReplyList', 'createReply', 'updateReply', 'deleteReply']),
     ...mapActions(familyStore, ['callsignList']),
+    // 게시글 삭제
+    eraseFeed () {
+      this.deleteFeed(this.boardId)
+    },
     // 댓글 작성
     postReply () {
       if (this.message.length === 0) {
