@@ -2,17 +2,17 @@
   <div>
     <HeaderTitle title="앨범"></HeaderTitle>
     <ul class="list-group list-group-flush" v-if="folderList.length">
-        <!-- <li class="list-group-item" @click="seeFolder"><img src="@/assets/images/여행1.jpg" class="img-fluid" alt="..."><div ref="folderName" class="folder-name">NYC</div></li> -->
-        <li class="list-group-item" v-for="(folder, index) in folderList" :key="index">
+        <li class="list-group-item" v-for="(folder, index) in folderList" :key="index" @click="seeFolder(folder.albumId, folder.albumName)">
             <img v-if="folder.thumbnailPath" :src="folder.thumbnailPath" class="img-fluid" alt="thumbnail">
             <img v-else src="@/assets/images/여행1.jpg" class="img-fluid" alt="empty thumbnail">
+            <div class="travel-date-wrap">{{ folder.albumStartDate }} ~ {{ folder.albumEndDate }}</div>
             <div class="folder-name">{{ folder.albumName }}</div>
         </li>
     </ul>
-    <div class="nothing-wrap" v-else>앨범이 존재하지 않습니다.</div>
+    <div class="nothing-wrap" v-else>등록된 앨범이 없습니다.</div>
     <!-- Button trigger modal -->
     <button id="btn-modal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    앨범 추가
+    <img style="width:25px;" src="@/assets/images/plus-lg.svg" alt="plus">
     </button>
 
     <!-- Modal -->
@@ -64,7 +64,7 @@ export default {
     ...mapState(albumStore, ['folderList'])
   },
   methods: {
-    ...mapActions(albumStore, ['getFolderList', 'makeAlbum']),
+    ...mapActions(albumStore, ['getFolderList', 'setAlbumInfo', 'makeAlbum']),
     createAlbum () {
       const info = {
         albumName: this.folderName,
@@ -74,8 +74,12 @@ export default {
       }
       this.makeAlbum(info)
     },
-    seeFolder () {
-      this.$router.push({ name: 'picture', params: { folderName: this.$refs.folderName.innerText } })
+    seeFolder (albumId, albumName) {
+      const info = {
+        albumId,
+        albumName
+      }
+      this.setAlbumInfo(info)
     }
   }
 }
@@ -84,6 +88,7 @@ export default {
 <style scoped lang="scss">
 .nothing-wrap{
     text-align: center;
+    font-size: x-large;
 }
 .header{
     margin-bottom: 5%;
@@ -101,6 +106,15 @@ ul{
             opacity: 0.5;
         }
     }
+}
+.travel-date-wrap{
+    font-size: small;
+    font-weight: bolder;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
 }
 .folder-name{
     // color: white;
@@ -124,6 +138,9 @@ ul{
         position: absolute;
         right: 10%;
         bottom: 10%;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
     }
 }
 input {

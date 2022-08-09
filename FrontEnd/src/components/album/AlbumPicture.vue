@@ -1,20 +1,14 @@
 <template>
   <div class="picture-wrap">
-    <HeaderTitle :title="this.$route.params.folderName" hasBack="true"></HeaderTitle>
+    <HeaderTitle :title="albumName" hasBack="true"></HeaderTitle>
     <div class="button-wrap"><Button buttonClass="small information" buttonText="사진 삭제"></Button></div>
-    <div class="container text-center">
-        <div class="row" v-for="(item, index) in pictures" :key="index" >
-            <div class="col" @click="seePicture">
-            {{ item.ImagePath }}
-            </div>
-            <div class="col">
-            {{ item.ImagePath }}
-            </div>
-            <div class="col">
-            {{ item.ImagePath }}
-            </div>
-        </div>
-    </div>
+    <ul class="list-group list-group-flush" v-if="mediaList.length">
+        <li class="list-group-item" v-for="(media, index) in mediaList" :key="index">
+            <img v-if="media.albumMediaThumbnail" :src="media.albumMediaThumbnail" class="img-fluid" alt="thumbnail">
+            <img v-else src="C:\SAI\uploaded\Album\112211\th_c7645e2a-528b-43e4-86e6-dad768b6205f_여행1.jpg" class="img-fluid" alt="empty thumbnail">
+        </li>
+    </ul>
+    <div class="nothing-wrap" v-else>등록된 사진이 없습니다.</div>
      <!-- Button trigger modal -->
     <button id="btn-modal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
     <img style="width:25px;" src="@/assets/images/plus-lg.svg" alt="plus">
@@ -29,11 +23,11 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <input type="file" class="form-control" id="customFile" />
+            <input type="file" class="form-control" id="customFile" @change="fileCheck" multiple />
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">추가</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="addMedia">추가</button>
         </div>
         </div>
     </div>
@@ -45,21 +39,61 @@
 <script>
 import HeaderTitle from '../common/HeaderTitle.vue'
 import Button from '../common/Button.vue'
+import heic2any from 'heic2any'
+
+import { mapState, mapActions } from 'vuex'
+const albumStore = 'albumStore'
+
+// 파일 리스트
+const fileList = []
 export default {
   components: { HeaderTitle, Button },
   data () {
     return {
-      pictures: [
-        { ImagePath: 'column' },
-        { ImagePath: 'column' },
-        { ImagePath: 'column' },
-        { ImagePath: 'column' },
-        { ImagePath: 'column' },
-        { ImagePath: 'column' }
-      ]
+      albumName: ''
     }
   },
+  created () {
+    this.albumName = localStorage.getItem('albumName')
+    this.getMediaList()
+  },
+  computed: {
+    ...mapState(albumStore, ['mediaList'])
+  },
   methods: {
+    ...mapActions(albumStore, ['getMediaList', 'insertMedia']),
+    // 파일 처리
+    fileCheck (e) {
+      const fileInput = document.getElementById('customFile')
+      // 선택한 파일의 정보 리스트
+      const files = fileInput.files
+      // heic 파일 확장자 변경
+      // 선택한 파일의 개수만큼 돌아서 각각의 파일을 다 확인
+      for (let i = 0; i < files.length; i++) {
+        // 파일 하나 선택
+        const file = files[i]
+        let heicFile = ''
+        // 파일의 확장자가 heic일 경우
+        if (file.name.split('.')[1] === 'heic') {
+          // file의 타입을 "image/jpg"로 바꾸고 이름 뒤에 확장자도 .jpg로 바꾼다
+          heic2any({ blob: file, toType: 'image/jpg' })
+            .then(function (resultBlob) {
+              heicFile = new File([resultBlob], file.name.split('.')[0] + '.jpg', { type: 'image/jpg', lastModified: new Date().getTime() })
+              fileList.push(heicFile)
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+        } else {
+          fileList.push(file)
+        }
+      }
+    },
+    // 앨범 미디어 등록
+    addMedia () {
+      // console.log(fileList)
+      this.insertMedia(fileList)
+    },
     seePicture () {
       this.$router.push({ name: 'pictureDetail' })
     }
@@ -69,7 +103,7 @@ export default {
 
 <style scoped lang="scss">
 .picture-wrap{
-    height: 90%;
+  height: 90%;
     .container{
         height: 100%;
         .row{
@@ -79,6 +113,10 @@ export default {
             }
         }
     }
+}
+.nothing-wrap{
+    text-align: center;
+    font-size: x-large;
 }
 .button-wrap{
     text-align: right;
