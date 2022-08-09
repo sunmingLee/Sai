@@ -1,75 +1,134 @@
 <template>
   <div>
     <HeaderTitle title="앨범"></HeaderTitle>
-    <ul class="list-group list-group-flush">
-        <li class="list-group-item" @click="seeFolder"><img src="@/assets/images/여행1.jpg" class="img-fluid" alt="..."><div ref="folderName" class="folder-name">NYC</div></li>
-        <li class="list-group-item"><img src="@/assets/images/여행2.jpg" class="img-fluid" alt="..."><div class="folder-name">제주도</div></li>
-        <li class="list-group-item"><img src="@/assets/images/여행3.jpg" class="img-fluid" alt="..."><div class="folder-name">일본</div></li>
-        <li class="list-group-item"><img src="@/assets/images/여행1.jpg" class="img-fluid" alt="..."><div class="folder-name">NYC</div></li>
-        <li class="list-group-item"><img src="@/assets/images/여행1.jpg" class="img-fluid" alt="..."><div class="folder-name">NYC</div></li>
+    <ul class="list-group list-group-flush" v-if="folderList.length">
+        <li class="list-group-item" v-for="(folder, index) in folderList" :key="index">
+            <img v-if="folder.thumbnailPath" :src="folder.thumbnailPath" class="img-fluid" alt="thumbnail">
+            <img v-else src="@/assets/images/여행1.jpg" class="img-fluid" alt="empty thumbnail">
+            <div @click="seeFolder(folder.albumId, folder.albumName)">
+                <div class="travel-date-wrap">{{ folder.albumStartDate }} ~ {{ folder.albumEndDate }}</div>
+                <div class="folder-name">{{ folder.albumName }}</div>
+            </div>
+            <button type="button" class="btn-close" aria-label="Close" @click="eraseAlbum(folder.albumId)"></button>
+        </li>
     </ul>
-    <!-- floating button -->
-    <!-- <fab
-        :position="position"
-        :bg-color="bgColor"
-        :actions="fabActions"
-        @cache="cache"
-        @alertMe="alert"
-    ></fab> -->
+    <div class="nothing-wrap" v-else>등록된 앨범이 없습니다.</div>
     <!-- Button trigger modal -->
     <button id="btn-modal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    앨범 추가
+    <img style="width:25px;" src="@/assets/images/plus-lg.svg" alt="plus">
     </button>
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">앨범명</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">앨범 정보</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <span>앨범 이름</span>
+                <input v-model="folderName" type="text">
+                <div>
+                    <span>여행 날짜</span>
+                    <Datepicker v-model="date.value" format='yyyy/MM/dd' modelType="yyyy-MM-dd" :enableTimePicker="false" range placeholder="여행 기간을 선택해주세요" selectText="선택" cancelText="취소"></Datepicker>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="createAlbum">만들기</button>
+            </div>
+            </div>
         </div>
-        <div class="modal-body">
-            <input type="text">
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">만들기</button>
-        </div>
-        </div>
-    </div>
     </div>
   </div>
 </template>
 
 <script>
 import HeaderTitle from '../common/HeaderTitle.vue'
+import Datepicker from '@vuepic/vue-datepicker'
+
+import { mapState, mapActions } from 'vuex'
+const albumStore = 'albumStore'
 export default {
-  components: { HeaderTitle },
+  components: { HeaderTitle, Datepicker },
+  data () {
+    return {
+      startDate: new Date(),
+      endDate: new Date(new Date().setDate(new Date().getDate() + 7)),
+      date: [this.startDate, this.endDate],
+      folderName: ''
+    }
+  },
+  created () {
+    this.getFolderList(localStorage.familyId)
+  },
+  computed: {
+    ...mapState(albumStore, ['folderList'])
+  },
   methods: {
-    seeFolder () {
-    //   console.log(this.$refs.folderName.innerText)
-      this.$router.push({ name: 'picture', params: { folderName: this.$refs.folderName.innerText } })
+    ...mapActions(albumStore, ['getFolderList', 'setAlbumInfo', 'makeAlbum', 'deleteAlbum']),
+    // 앨범 생성
+    createAlbum () {
+      const info = {
+        albumName: this.folderName,
+        albumStartDate: this.date.value[0],
+        albumEndDate: this.date.value[1],
+        familyId: localStorage.familyId
+      }
+      this.makeAlbum(info)
+    },
+    // 앨범 삭제
+    eraseAlbum (albumId) {
+      this.deleteAlbum(albumId)
+    },
+    // 앨범 상세보기로 이동
+    seeFolder (albumId, albumName) {
+      const info = {
+        albumId,
+        albumName
+      }
+      this.setAlbumInfo(info)
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
+.nothing-wrap{
+    text-align: center;
+    font-size: x-large;
+}
 .header{
     margin-bottom: 5%;
 }
 ul{
     height: 91%;
     li{
+        min-height: 20vh;
         height: 20%;
         padding: 0;
         img{
             width: 100%;
             height: 100%;
+            max-height: 30vh;
             opacity: 0.5;
         }
     }
+}
+.btn-close{
+    position: absolute;
+    top: 5%;
+    right: 5%;
+}
+.travel-date-wrap{
+    font-size: small;
+    font-weight: bolder;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
 }
 .folder-name{
     // color: white;
@@ -93,6 +152,9 @@ ul{
         position: absolute;
         right: 10%;
         bottom: 10%;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
     }
 }
 input {

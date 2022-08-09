@@ -1,8 +1,8 @@
 import axios from 'axios'
 import router from '@/router/index.js'
+import { API_BASE_URL } from '@/config'
 
-// const api_url = `http://localhost:8080/api`
-const api_url = 'http://i7a305.p.ssafy.io:8080/api'
+const api_url = API_BASE_URL + '/api'
 const joinStore = {
   namespaced: true,
   state: {
@@ -11,7 +11,7 @@ const joinStore = {
   getters: {
   },
   mutations: {
-    SET_CHECKED: (state, isChecked) => {state.isChecked = isChecked} 
+    SET_CHECKED: (state, isChecked) => { state.isChecked = isChecked }
   },
   actions: {
     // 중복체크
@@ -22,7 +22,7 @@ const joinStore = {
       axios({
         method: 'get',
         // eslint-disable-next-line camelcase
-        url: api_url + `/user/duplication/id`,
+        url: api_url + '/user/duplication/id',
         params
       }).then(res => {
         if (res.data === true) {
@@ -34,7 +34,7 @@ const joinStore = {
           context.commit('SET_CHECKED', true)
           console.log(context.state.isChecked)
         }
-        //409를 받으면 실행되는 코드
+        // 409를 받으면 실행되는 코드
       }).catch((res) => {
         console.log(res)
       })
@@ -45,7 +45,7 @@ const joinStore = {
       }
       axios({
         method: 'get',
-        url: api_url + `/user/duplication/email`,
+        url: api_url + '/user/duplication/email',
         params
       }).then(res => {
         if (res.data === true) {
@@ -59,19 +59,18 @@ const joinStore = {
       })
     },
     checkJoin (context, userJoin) {
-      axios.post(api_url + `/user/join`, userJoin, {
+      axios.post(api_url + '/user/join', userJoin, {
       }).then(res => {
-        if (context.state.isChecked === true){
+        if (context.state.isChecked === true) {
           alert('회원가입성공')
           console.log(res)
           router.push({ name: 'login' })
         } else {
           alert('아이디중복 또는 이메일중복을 확인해주세요')
-          commit('SET_CHECKED',true)
+          context.commit('SET_CHECKED', true)
         }
       }).catch((res) => {
         alert('아이디중복 또는 이메일중복을 확인해주세요.')
-
       })
     }
   },

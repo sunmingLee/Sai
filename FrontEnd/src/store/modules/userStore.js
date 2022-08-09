@@ -1,12 +1,9 @@
-// import jwtDecode from 'jwt-decode'
-// import { login, findById, updateUser } from '@/api/user.js'
-
 /* eslint-disable camelcase */
 import axios from 'axios'
 import router from '@/router/index.js'
+import { API_BASE_URL } from '@/config'
 
-// const api_url = 'http://localhost:8080/api/user'
-const api_url = 'http://i7a305.p.ssafy.io:8080/api/user'
+const api_url = API_BASE_URL + '/api/user'
 const userStore = {
   namespaced: true,
   state: {
@@ -39,7 +36,7 @@ const userStore = {
   },
   actions: {
     // 로그인
-    login({ commit, dispatch }, user) {
+    login ({ commit, dispatch }, user) {
       const data = {
         userId: user.userId,
         password: user.password
@@ -64,7 +61,7 @@ const userStore = {
         })
     },
     // 로그인 후 회원정보 요청
-    getUserInfo({ commit }, user) {
+    getUserInfo ({ commit }, user) {
       const data = {
         userId: user.userId,
         password: user.password
@@ -92,7 +89,7 @@ const userStore = {
         })
     },
     // 아이디 찾기
-    findId({ commit }, userInfo) {
+    findId ({ commit }, userInfo) {
       console.log(userInfo.userName)
       const params = {
         userName: userInfo.userName,
@@ -116,7 +113,7 @@ const userStore = {
         })
     },
     // 비밀번호 찾기
-    findPassword({ commit }, userInfo) {
+    findPassword ({ commit }, userInfo) {
       const params = {
         userName: userInfo.userName,
         userId: userInfo.userId,
@@ -140,7 +137,7 @@ const userStore = {
         })
     },
     // 비밀번호 확인
-    checkPassword({ commit }, userInfo) {
+    checkPassword ({ commit }, userInfo) {
       const params = userInfo.password
       axios({
         url: api_url + '/verify/' + userInfo.userId,
@@ -160,7 +157,7 @@ const userStore = {
         })
     },
     // 비밀번호 변경
-    updatePassword({ commit }, userInfo) {
+    updatePassword ({ commit }, userInfo) {
       const params = {
         userId: userInfo.id,
         password: userInfo.password
@@ -180,7 +177,7 @@ const userStore = {
         })
     },
     // 회원 탈퇴
-    withdrawalMember({ commit }, userId) {
+    withdrawalMember ({ commit }, userId) {
       axios({
         url: api_url + `/${userId.id}`,
         method: 'DELETE'
