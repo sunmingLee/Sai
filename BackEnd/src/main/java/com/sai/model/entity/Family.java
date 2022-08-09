@@ -46,11 +46,8 @@ public class Family {
 	@JsonIgnore
 	private List<User> users = new ArrayList<User>();
 
-	public void updateFamily(Family modifiedFamily) {
-		this.familyName = modifiedFamily.getFamilyName();
-		this.familyImagePath = modifiedFamily.getFamilyImagePath();
-		this.familyImageName = modifiedFamily.getFamilyImageName();
-		this.familyImageType = modifiedFamily.getFamilyImageType();
+	public void updateFamilyName(String familyName) {
+		this.familyName = familyName;
 	}
 
 //	@Builder.Default
@@ -62,6 +59,12 @@ public class Family {
 		this.users.add(user);
 		if (user.getFamily() != this)
 			user.setFamily(this);
+	}
+
+	public void updateFamilyImage(String familyImageName, String familyImagePath, String familyImageType) {
+		this.familyImageName = familyImageName;
+		this.familyImagePath = familyImagePath;
+		this.familyImageType = familyImageType;
 	}
 
 //	public void addFamilyRegister(FamilyRegister familyRegister) {

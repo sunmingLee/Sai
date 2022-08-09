@@ -1,7 +1,5 @@
 package com.sai.model.dto.family;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,9 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UpdateFamilyVo {
+public class UpdateFamilyDto {
 
-	private FamilyDto familyDto;
-	private List<FamilyCallsignDto> familyCallsignDtos;
+	private String familyId;
+	private String familyName;
 
 }

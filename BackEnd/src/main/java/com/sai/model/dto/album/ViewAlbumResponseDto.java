@@ -10,6 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ViewAlbumResponseDto {
+	private Long albumId;
 	private String familyId;
 	private String albumName;
 	private LocalDate albumStartDate;
