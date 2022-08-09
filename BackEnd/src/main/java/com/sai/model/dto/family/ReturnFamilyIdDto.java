@@ -7,11 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FamilyCallsignDto {
+public class ReturnFamilyIdDto {
 	
-	private Long familyCallsignId;
-	private String fromUserId;
-	private String toUserId;
-	private String callsign;
+	private String familyId;
 	
 }

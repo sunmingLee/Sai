@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.sai.model.dto.family.FamilyCallsignDto;
 import com.sai.model.dto.family.FamilyDto;
 import com.sai.model.dto.family.FamilyRegisterDto;
+import com.sai.model.dto.family.InsertFamilyRegisterRequestDto;
 import com.sai.model.dto.family.UpdateFamilyVo;
 import com.sai.model.dto.notification.CreateNotificationRequestDto;
 import com.sai.model.dto.user.UserDto;
@@ -24,7 +25,6 @@ import com.sai.model.entity.User;
 import com.sai.model.repository.FamilyCallsignRepository;
 import com.sai.model.repository.FamilyRegisterRepository;
 import com.sai.model.repository.FamilyRepository;
-import com.sai.model.repository.NotificationRepository;
 import com.sai.model.repository.UserRepository;
 
 @Service
@@ -42,7 +42,7 @@ public class FamilyServiceImpl implements FamilyService {
 
 	@Autowired
 	FamilyCallsignRepository familyCallsignRepository;
-	
+
 	@Autowired
 	NotificationService notiService;
 
@@ -50,7 +50,7 @@ public class FamilyServiceImpl implements FamilyService {
 	ModelMapper modelMapper;
 
 	@Override
-	public UserDto createFamilyId(String userId) {
+	public String createFamilyId(String userId) {
 		String familyId;
 		while (true) {
 			familyId = createRandomFamilyId();
@@ -69,12 +69,12 @@ public class FamilyServiceImpl implements FamilyService {
 				.build();
 		familyCallsignRepository.save(callsign);
 
-		return modelMapper.map(user, UserDto.class);
+		return familyId;
 
 	}
 
 	@Override
-	public UserDto disjoinFamily(String userId) {
+	public void disjoinFamily(String userId) {
 		User user = userRepository.findById(userId).get();
 		Family family = user.getFamily();
 
@@ -88,28 +88,22 @@ public class FamilyServiceImpl implements FamilyService {
 		// 가족이 0명이면 가족 삭제
 		if (family.getUsers().size() == 0)
 			familyRepository.delete(family);
-
-		return modelMapper.map(user, UserDto.class);
 	}
 
 	@Override
-	public void applyFamily(FamilyRegisterDto familyRegisterDto) {
-		FamilyRegister familyRegister = modelMapper.map(familyRegisterDto, FamilyRegister.class);
-		Family family = familyRepository.findById(familyRegisterDto.getFamilyId()).get();
-		
+	public void applyFamily(InsertFamilyRegisterRequestDto insertFamilyRegisterRequestDto) {
+		FamilyRegister familyRegister = modelMapper.map(insertFamilyRegisterRequestDto, FamilyRegister.class);
+		Family family = familyRepository.findById(insertFamilyRegisterRequestDto.getFamilyId()).get();
+
 		List<User> userList = family.getUsers();
 		for (User user : userList) {
 			CreateNotificationRequestDto cnrd = CreateNotificationRequestDto.builder()
-										.notiFromUserId(familyRegisterDto.getUserId())
-										.notiToUserId(user.getUserId())
-										.notiContent("님이 당신의 가족인가요?")
-										.notiType(NotiType.FAMILYREGISTER)
-										.build();
+					.notiFromUserId(insertFamilyRegisterRequestDto.getUserId()).notiToUserId(user.getUserId())
+					.notiContent("님이 당신의 가족인가요?").notiType(NotiType.FAMILYREGISTER).build();
 			notiService.createNoti(cnrd);
 		}
-		
 
-		familyRegisterRepository.save(modelMapper.map(familyRegisterDto, FamilyRegister.class));
+		familyRegisterRepository.save(modelMapper.map(insertFamilyRegisterRequestDto, FamilyRegister.class));
 	}
 
 	@Override
@@ -223,8 +217,7 @@ public class FamilyServiceImpl implements FamilyService {
 		int targetStringLength = 6;
 		Random random = new Random();
 
-		String generatedString = random.ints(leftLimit, rightLimit + 1)
-				.filter(i -> (i <= 57 || i >= 65))
+		String generatedString = random.ints(leftLimit, rightLimit + 1).filter(i -> (i <= 57 || i >= 65))
 				.limit(targetStringLength)
 				.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
 
