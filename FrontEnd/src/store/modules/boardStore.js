@@ -22,13 +22,15 @@ const boardStore = {
     boardCreate ({ commit }, boardInfo) {
       console.log('작성')
       console.log(boardInfo)
+      const createBoardRequestDto = boardInfo;
+      let formData = new FormData();
+      formData.append('createBoardRequestDto', new Blob([JSON.stringify(createBoardRequestDto)], {type: "application/json"}));
       axios({
         url: api_url + '/board',
         method: 'POST',
-        // params
-        data: JSON.stringify(boardInfo),
+        data: formData,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'multipart/form-data'
         }
       })
         .then((res) => {
@@ -50,15 +52,18 @@ const boardStore = {
     feedAllList ({ commit }, info) {
       const familyId = info.familyId
       const userId = info.userId
-
+      console.log("피드 리스트 조회")
+      console.log(familyId + " - " + userId)
       axios({
-        url: api_url + familyId + '/' + userId,
+        url: api_url + '/' + familyId + '/' + userId,
         method: 'GET'
       })
         .then((res) => {
+          console.log("졸려")
           commit('FEED_All_LIST', res.data)
         })
         .catch((err) => {
+          console.log("에러")
           console.log(err)
         })
     }

@@ -53,24 +53,27 @@ const userStore = 'userStore'
 const familyStore = 'familyStore'
 
 export default {
-    name: 'Feed',
+    name: 'FeedContent',
     components: {
     },
     created() {
         //피드 조회
         const info = {
-            userId: this.userId,
-            familyId: this.familyId
+            userId: localStorage.getItem('userId'),
+            // familyId: this.familyId
+            familyId: localStorage.getItem('familyId')
         }
+        console.log(info)
         this.feedAllList(info)
-        this.callsignList(info)
+        this.callsignList(info.userId)
+        // console.log(this.userInfo)
     },
     mounted() {
     },
     computed: {
         ...mapState(boardStore, ["feedList"]),
-        ...mapState(userStore, ["userId", "userName"]),
-        ...mapState(familyStore, ["familyCallsignList", "familyId"])
+        ...mapState(userStore, ["familyId"]),
+        ...mapState(familyStore, ["familyCallsignList"])
     },
     methods: {
         ...mapActions(boardStore, ['feedAllList']),

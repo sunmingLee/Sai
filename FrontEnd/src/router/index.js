@@ -17,6 +17,7 @@ import AlbumPicture from '@/components/album/AlbumPicture.vue'
 import AlbumPictureDetail from '@/components/album/AlbumPictureDetail.vue'
 import JoinView from '@/views/JoinView.vue'
 import ApplyDeclineView from '@/views/ApplyDeclineView.vue'
+// import test from '@/views/test.vue'
 
 import store from '@/store/index.js'
 
@@ -47,6 +48,11 @@ const routes = [
     beforeEnter: onlyAuthUser,
     component: LoginView
   },
+  // {
+  //   path: '/',
+  //   name: 'test',
+  //   compoennt: test
+  // },
   {
     path: '/login',
     name: 'login',
