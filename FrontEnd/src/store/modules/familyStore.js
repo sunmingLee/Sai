@@ -20,6 +20,9 @@ const familyStore = {
     },
     CALLSIGN_LIST (state, callsign) {
       state.familyCallsignList = callsign
+    },
+    SET_FAMILY_INFO(state, familyInfo) {
+      state.familyInfo = familyInfo
     }
   },
   actions: {
@@ -100,6 +103,19 @@ const familyStore = {
         .catch((err) => {
           console.log(err)
         })
+    },
+    //가족 정보 조회
+    getFamilyInfo({commit}, familyId) {
+      axios({
+        url: api_url + "/" + familyId,
+        method: 'GET'
+      })
+      .then((res) => {
+        commit('SET_FAMILY_INFO', res.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     }
   },
   modules: {
