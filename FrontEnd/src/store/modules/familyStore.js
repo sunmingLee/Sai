@@ -73,8 +73,8 @@ const familyStore = {
         })
     },
     // 가족 콜사인 리스트
-    callsignList ({ commit }, info) {
-      const userId = info
+    callsignList ({ commit }, user) {
+      const userId = user
       axios({
         url: api_url + '/list/' + userId,
         method: 'GET'

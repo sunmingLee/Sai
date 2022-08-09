@@ -4,6 +4,7 @@
         <HeaderTitle hasBack="true" title="게시글 작성" hasIcon="true"/>
         <!-- 사진 공간 -->
         <div class="flex">
+          <input type="file" @change="fileCheck" id="file" multiple>
           <div class="media-wrap" style="border: 1px solid black">
             <p>여긴 사진 공간이다 임마들아~!</p>
           </div>
@@ -34,7 +35,7 @@
                   <div class="modal-content">
                     <p class="modal-title">날짜 선택</p>
                     <div class="modal-date">
-                      <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" :enableTimePicker="false" :minDate="new Date()" v-model="boardDate"/>
+                      <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" :enableTimePicker="false" v-model="boardDate"/>
                     </div>
                     <div class="btn-wrap">
                       <button class="date-cancle" @click="dateCancle">취소</button>
@@ -105,6 +106,7 @@
 import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import InputBox from '@/components/common/InputBox.vue'
 import Button from '@/components/common/Button.vue'
+import heic2any from "heic2any"
 
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
@@ -131,7 +133,7 @@ export default {
       pollYn: 0, //투표 등록 여부
       boardDate: '', //추가 기록 - 날짜
       boardLocation: '',  //추가 기록 - 위치
-      boardPeopleYn: 0, //추가 기록 - 태그 여부
+      boardTaggedYn: 0, //추가 기록 - 태그 여부
       date: '', //추가 기록(날짜) 선택했을 때 화면에 보여질 날짜
       toggle: true, //추가 기록과 투표 만들기를 토글하기 위함
       pollTitle: '', //투표 제목
@@ -153,23 +155,66 @@ export default {
       ],
       disabledDates :'',
       preventDisableDateSelection: true,
-      format: ''
+      format: '',
+      files: []
     }
   },
   created() {
-    const info = this.userId
-    this.callsignList(info)
-    console.log(this.familyCallsignList)
+    const userId = localStorage.getItem('userId')
+    this.callsignList(userId)
+    console.log(this.callsignList)
   },
   computed: {
-    ...mapState(boardStore, ["feedList"]),
-    ...mapState(userStore, ["userId", "userName"]),
-    ...mapState(familyStore, ["familyCallsignList", "familyId"])
+    // ...mapState(userStore, ["userId", "userName"]),
+    ...mapState(familyStore, ["familyCallsignList"])
   },
   methods: {
     ...mapActions(boardStore, ['boardCreate']),
     ...mapActions(familyStore, ['callsignList']),
     //추가기록과 투표만들기 토글
+    fileCheck() {
+      const fileInput = document.getElementById("file")
+      //선택한 파일의 리스트
+      let files = fileInput.files
+      //최종적으로 담아놓을 파일 리스트
+      let fileList = []
+      //heic 파일 확장자 변경
+      const reader = new FileReader();
+      //선택한 파일의 개수만큼 돌아서 각각의 파일을 다 확인
+      for(let i = 0; i < files.length; i++) {
+        //파일 하나 선택
+        let heicFile = files[i]
+        // console.log(heicFile)
+        let file = ''
+        //확장자가 heic일 경우
+        if(heicFile.name.split('.')[1] === 'heic') {
+          // console.log("heic야")
+          // console.log(file)
+          heic2any({blob : heicFile, toType : "image/jpg"})
+          .then(function(resultBlob) {
+            file = new File([resultBlob], heicFile.name.split('.')[0] + '.jpg', {type: 'image/jpg', lastModified:new Date().getTime()})
+            // console.log(file)
+            fileList.push(file)
+            // console.log(fileList)
+            // props.setImage(file)
+            // reader.readAsDataURL(file);
+            // reader.onloadend = () => {
+            // }
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+          
+        }
+        else {
+          fileList.push(file)
+          // console.log(fileList)
+        } 
+      }
+      this.files = fileList
+      // console.log(fileList.length)
+      console.log(fileList)
+    },
     record() {
       if(!this.toggle) {
         this.toggle = true
@@ -305,6 +350,20 @@ export default {
         alert('글이나 사진을 등록해야 작성이 가능합니다.')
       }
       else {
+        const createBoardRequestDto = {
+          inputBoardRequestDto: {
+            familyId: localStorage.getItem('familyId'),
+            userId: localStorage.getItem('userId'),
+            boardRegDatetime: new Date(),
+            boardContent: this.boardContent,
+            boardDate: this.boardDate,
+            boardLocation: this.boardLocation,
+            boardTaggedYn: this.boardTaggedYn,
+            boardMediaYn: this.boardMediaYn,
+            pollYn: this.pollYn
+          }
+        }
+
         //미디어 파일이 있다!
         if(this.mediaList.length !== 0) {
           this.boardMediaYn = 1
@@ -313,86 +372,53 @@ export default {
         if(this.pollTitle !== '' && this.pollOptions[0].pollOption !== '' && this.pollOptions[1].pollOption) {
           this.pollYn = 1
         }
-        const peopleList = {}
-        //추가 정보에서 사람 태그 여부
-        if(this.peopleList.length !== 0) {
-          this.boardPeopleYn = 1
-          for(let i = 0; i < this.peopleList.length; i++) {
-            const peopleKey = 'userId' + (i+1)
-            const people = {
-              [peopleKey] : this.peopleList[i]
-            }
-            Object.assign(peopleList, people)
-          }
-        }
-        const boardInfo = {
-          boardContent: this.boardContent,
-          boardRegDatetime: new Date(),
-          boardMediaYn: this.boardMediaYn,
-          pollYn: this.pollYn, 
-          boardDate: this.boardDate, 
-          boardLocation: this.boardLocation,  
-          boardPeopleYn: this.boardPeopleYn,
-        }
-        //미디어 파일이 있을 경우
-        const boardMediaInfo = this.mediaList
-        
         //투표가 있을 경우
         if(this.pollYn === 1) {
-          let setPollDate = new Date()
-          //투표 마감 시간 설정 안 했을 때
           if(this.pollDateDisabled) {
-            //따로 마감 시간을 설정하지 않으면 현재 시간에서 3일 뒤에 끝나도록 설정
-            setPollDate = setPollDate.setDate(setPollDate.getDate() + 3)
+            let timeOff = new Date().getTimezoneOffset() * 60000;
+            let timeZone = new Date(Date.now() - timeOff) //현재 시간
+            this.pollEndDate = new Date(timeZone.setDate(timeZone.getDate() + 3)).toISOString()
           }
-          const year = new Date(setPollDate).getFullYear()
-          let month = new Date(setPollDate).getMonth() + 1
-          if(month < 10) {
-            month = '0' + month
+          else {
+            let timeOff =new Date(this.pollDatePicker).getTimezoneOffset() * 60000;
+            let timeZone = new Date(this.pollDatePicker - timeOff)
+            this.pollEndDate = timeZone.toISOString()
           }
-          let date = new Date(setPollDate).getDate()
-          if(date < 10) {
-            date = '0' + date
+          let pollChoice = []
+          for(let i = 0; i < this.pollOptions.length; i++) {
+            const option = {
+              text : this.pollOptions[i].pollOption
+            }
+            pollChoice[i] = option
           }
-          let hours = new Date(setPollDate).getHours()
-          if(hours < 10) {
-            hours = '0' + hours
+          const pollResult = {
+            // boardId: 0,
+            question: this.pollTitle,
+            expirationDateTime : this.pollEndDate,
+            choices : pollChoice
           }
-          let minutes = new Date(setPollDate).getMinutes()
-          if(minutes < 10) {
-            minutes = '0' + minutes
-          }
-          let seconds = new Date(setPollDate).getSeconds()
-          if(seconds < 10) {
-            seconds = '0' + seconds
-          }
-          // console.log(setPollDate.toISOString())
-          this.pollEndDate = year + '-' + month + '-' + date + 'T' + hours + ':' + minutes + ':' + seconds
+          Object.assign(createBoardRequestDto, {pollRequest: pollResult})
         }
-        const pollList = {
-          pollTitle : this.pollTitle,
-          pollEndDate : this.pollEndDate
-        }
-        for(let i = 0; i < this.pollOptions.length; i++) {
-          const key = 'pollOption' + (i+1)
-          const value = {
-            [key] : this.pollOptions[i].pollOption
+        
+        const peopleList = {}
+        //추가 정보에서 사람 태그 여부
+        let taggedResult = []
+        //태그한 사람이 있을 경우
+        if(this.peopleList.length !== 0) {
+          this.boardTaggedYn = 1
+          for(let i = 0; i < this.peopleList.length; i++) {
+            const people = {
+              userId: this.peopleList[i]
+            }
+            taggedResult[i] = people
           }
-          Object.assign(pollList, value)
+          Object.assign(createBoardRequestDto, {inputBoardTaggedRequestDtos: taggedResult})
         }
-        if(pollList.pollTitle !== '') {
-          Object.assign(boardInfo, pollList)
-        }
-        const fId = {
-          familyId : this.familyId
-        }
-        const uId = {
-          userId: this.userId
-        }
-        Object.assign(boardInfo, peopleList)
-        Object.assign(boardInfo, fId)
-        Object.assign(boardInfo, uId)
-        this.boardCreate(boardInfo)
+        
+        //미디어 파일이 있을 경우
+        // const boardMediaInfo = this.mediaList
+        // console.log(createBoardRequestDto)
+        this.boardCreate(createBoardRequestDto)
       }
     }
   }

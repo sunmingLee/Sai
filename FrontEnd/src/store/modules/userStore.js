@@ -12,14 +12,15 @@ const userStore = {
   state: {
     isLogin: false,
     isLoginError: false,
-    // userInfo: null
-    userInfo: {
-      userId: 'cjftn',
-      familyId: 123456,
-      userName: '이철수',
-      email: 'cjftn@naver.com',
-      password: 'asdf@1234'
-    }
+    userInfo: null,
+    familyId: ''
+    // userInfo: {
+    //   userId: 'cjftn',
+    //   familyId: 123456,
+    //   userName: '이철수',
+    //   email: 'cjftn@naver.com',
+    //   password: 'asdf@1234'
+    // }
   },
   getters: {
     checkUserInfo: function (state) {
@@ -36,11 +37,14 @@ const userStore = {
     SET_USER_INFO: (state, userInfo) => {
       state.isLogin = true
       state.userInfo = userInfo
+    },
+    SET_FAMILY_ID: (state, familyId) => {
+      state.familyId = familyId
     }
   },
   actions: {
     // 로그인
-    login ({ commit }, user) {
+    login ({ commit, dispatch }, user) {
       const data = {
         userId: user.userId,
         password: user.password
@@ -48,7 +52,7 @@ const userStore = {
       axios.post(api_url + '/login', data, {
       })
         .then((res) => {
-          console.log(res)
+          // console.log(res)
           // console.log(res.headers)
           if (res.status === 200) {
             // const jwtToken = res.headers['Set-Cookie']
@@ -56,6 +60,7 @@ const userStore = {
             localStorage.setItem('userId', data.userId)
             commit('SET_IS_LOGIN', true)
             commit('SET_IS_LOGIN_ERROR', false)
+            dispatch('getUserInfo', data)
           }
         })
         .catch((err) => {
@@ -72,9 +77,11 @@ const userStore = {
       // console.log(user)
       axios.post(api_url + '/login/info', data)
         .then((res) => {
-          console.log(res)
+          // console.log(res)
           // familyId가 있는 경우, 메인으로 이동
           if (res.status === 200 & res.data.familyId != null) {
+            commit('SET_FAMILY_ID', res.data.familyId)
+            localStorage.setItem('familyId', res.data.familyId)
             router.push({ name: 'feed' })
           } else { // familyId가 없는 경우
             if (!res.data.familyRegYN) { // 가족 미신청
@@ -140,6 +147,24 @@ const userStore = {
     },
     // 비밀번호 확인
     checkPassword ({ commit }, userInfo) {
+      console.log(userInfo.password)
+      const params = userInfo.password
+      axios({
+        url: api_url + '/verify/' + userInfo.userId,
+        method: 'POST',
+        data: JSON.stringify(params),
+        headers: {
+          'Content-Type' : 'application/json'
+        }
+      })
+      .then((res) => {
+        console.log(res)
+        router.push({name : 'account'})
+      })
+      .catch((err) => {
+        alert('비밀번호가 틀렸습니다')
+        console.log(err)
+      })
     },
     // 비밀번호 변경
     updatePassword ({ commit }, userInfo) {

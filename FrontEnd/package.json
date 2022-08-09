@@ -15,6 +15,7 @@
     "bootstrap": "^5.2.0",
     "bottom-navigation-vue": "^3.0.0",
     "core-js": "^3.8.3",
+    "heic2any": "^0.0.3",
     "sass": "^1.54.0",
     "vue": "^3.2.13",
     "vue-fab": "^2.3.1",
