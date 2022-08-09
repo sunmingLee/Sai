@@ -106,16 +106,16 @@
 import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import InputBox from '@/components/common/InputBox.vue'
 import Button from '@/components/common/Button.vue'
-import heic2any from "heic2any"
+import heic2any from 'heic2any'
 
-import Datepicker from '@vuepic/vue-datepicker';
+import Datepicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import { mapState, mapActions } from 'vuex'
 
 const boardStore = 'boardStore'
 const userStore = 'userStore'
 const familyStore = 'familyStore'
-          
+
 export default {
   name: 'FeedCreateView',
   components: {
@@ -124,232 +124,225 @@ export default {
     Datepicker,
     Button
   },
-  data() {
+  data () {
     return {
       dateValid: false,
-      boardContent: '', //글
-      boardRegDatetime: '', //등록 시간
-      boardMediaYn: 0, //미디어 파일 등록 여부
-      pollYn: 0, //투표 등록 여부
-      boardDate: '', //추가 기록 - 날짜
-      boardLocation: '',  //추가 기록 - 위치
-      boardTaggedYn: 0, //추가 기록 - 태그 여부
-      date: '', //추가 기록(날짜) 선택했을 때 화면에 보여질 날짜
-      toggle: true, //추가 기록과 투표 만들기를 토글하기 위함
-      pollTitle: '', //투표 제목
-      //투표 항목들
+      boardContent: '', // 글
+      boardRegDatetime: '', // 등록 시간
+      boardMediaYn: 0, // 미디어 파일 등록 여부
+      pollYn: 0, // 투표 등록 여부
+      boardDate: '', // 추가 기록 - 날짜
+      boardLocation: '', // 추가 기록 - 위치
+      boardTaggedYn: 0, // 추가 기록 - 태그 여부
+      date: '', // 추가 기록(날짜) 선택했을 때 화면에 보여질 날짜
+      toggle: true, // 추가 기록과 투표 만들기를 토글하기 위함
+      pollTitle: '', // 투표 제목
+      // 투표 항목들
       pollOptions: [
-        {pollOption: ''},
-        {pollOption: ''},
+        { pollOption: '' },
+        { pollOption: '' }
       ],
-      pollDatePicker: '', //투표 마감 날짜로 선택한 날(보내는 데이터 값은 아님)
-      pollDateDisabled: true, //투표 마감 날짜 지정 여부..
-      pollEndDate: '', //투표 마감 날짜
-      //미디어 리스트
+      pollDatePicker: '', // 투표 마감 날짜로 선택한 날(보내는 데이터 값은 아님)
+      pollDateDisabled: true, // 투표 마감 날짜 지정 여부..
+      pollEndDate: '', // 투표 마감 날짜
+      // 미디어 리스트
       mediaList: [
-        
+
       ],
-      //태그 리스트
+      // 태그 리스트
       peopleList: [
 
       ],
-      disabledDates :'',
+      disabledDates: '',
       preventDisableDateSelection: true,
       format: '',
       files: []
     }
   },
-  created() {
+  created () {
     const userId = localStorage.getItem('userId')
     this.callsignList(userId)
     console.log(this.callsignList)
   },
   computed: {
     // ...mapState(userStore, ["userId", "userName"]),
-    ...mapState(familyStore, ["familyCallsignList"])
+    ...mapState(familyStore, ['familyCallsignList'])
   },
   methods: {
     ...mapActions(boardStore, ['boardCreate']),
     ...mapActions(familyStore, ['callsignList']),
-    //추가기록과 투표만들기 토글
-    fileCheck() {
-      const fileInput = document.getElementById("file")
-      //선택한 파일의 리스트
-      let files = fileInput.files
-      //최종적으로 담아놓을 파일 리스트
-      let fileList = []
-      //heic 파일 확장자 변경
-      const reader = new FileReader();
-      //선택한 파일의 개수만큼 돌아서 각각의 파일을 다 확인
-      for(let i = 0; i < files.length; i++) {
-        //파일 하나 선택
-        let heicFile = files[i]
+    // 추가기록과 투표만들기 토글
+    fileCheck () {
+      const fileInput = document.getElementById('file')
+      // 선택한 파일의 리스트
+      const files = fileInput.files
+      // 최종적으로 담아놓을 파일 리스트
+      const fileList = []
+      // heic 파일 확장자 변경
+      const reader = new FileReader()
+      // 선택한 파일의 개수만큼 돌아서 각각의 파일을 다 확인
+      for (let i = 0; i < files.length; i++) {
+        // 파일 하나 선택
+        const heicFile = files[i]
         // console.log(heicFile)
         let file = ''
-        //확장자가 heic일 경우
-        if(heicFile.name.split('.')[1] === 'heic') {
+        // 확장자가 heic일 경우
+        if (heicFile.name.split('.')[1] === 'heic') {
           // console.log("heic야")
           // console.log(file)
-          heic2any({blob : heicFile, toType : "image/jpg"})
-          .then(function(resultBlob) {
-            file = new File([resultBlob], heicFile.name.split('.')[0] + '.jpg', {type: 'image/jpg', lastModified:new Date().getTime()})
-            // console.log(file)
-            fileList.push(file)
+          heic2any({ blob: heicFile, toType: 'image/jpg' })
+            .then(function (resultBlob) {
+              file = new File([resultBlob], heicFile.name.split('.')[0] + '.jpg', { type: 'image/jpg', lastModified: new Date().getTime() })
+              // console.log(file)
+              fileList.push(file)
             // console.log(fileList)
             // props.setImage(file)
             // reader.readAsDataURL(file);
             // reader.onloadend = () => {
             // }
-          })
-          .catch((err) => {
-            console.log(err)
-          })
-          
-        }
-        else {
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+        } else {
           fileList.push(file)
           // console.log(fileList)
-        } 
+        }
       }
       this.files = fileList
       // console.log(fileList.length)
       console.log(fileList)
     },
-    record() {
-      if(!this.toggle) {
+    record () {
+      if (!this.toggle) {
         this.toggle = true
       }
     },
-    poll() {
-      if(this.toggle) {
+    poll () {
+      if (this.toggle) {
         this.toggle = false
       }
     },
-    check() {
+    check () {
       // console.log(this.)
-      
+
     },
-    //투표 항목 추가하기
-    addPollItem() {
-      if(this.pollOptions.length < 5) {
-        this.pollOptions.push({pollOption : ''})
-      }
-      else {
+    // 투표 항목 추가하기
+    addPollItem () {
+      if (this.pollOptions.length < 5) {
+        this.pollOptions.push({ pollOption: '' })
+      } else {
         alert('투표 항목은 5개까지 가능합니다.')
       }
     },
-    //투표 마감 시간 설정
-    pollTimeCheck() {
-      //투표 마감 시간을 설정한다고 체크
-      if(!this.pollDateDisabled) {
+    // 투표 마감 시간 설정
+    pollTimeCheck () {
+      // 투표 마감 시간을 설정한다고 체크
+      if (!this.pollDateDisabled) {
         this.pollDateDisabled = true
-      }
-      else {
+      } else {
         this.pollDateDisabled = false
         // this.pollDate = this.pollDate
       }
     },
-    //날짜 선택 모달창 출력
-    showDate() {
+    // 날짜 선택 모달창 출력
+    showDate () {
       const modal = document.querySelector('.modal')
       modal.classList.remove('hidden')
     },
-    //누구랑?
-    showFamily() {
+    // 누구랑?
+    showFamily () {
       const modal = document.querySelector('.person')
       modal.classList.remove('hidden')
     },
-    //날짜 선택 모달창에서 확인 버튼 클릭
-    dateConfirm() {
+    // 날짜 선택 모달창에서 확인 버튼 클릭
+    dateConfirm () {
       const modal = document.querySelector('.modal')
-      //year = 년 , month = 월 , day = 일
+      // year = 년 , month = 월 , day = 일
       const year = this.boardDate.getFullYear()
       let month = (1 + this.boardDate.getMonth())
       let day = this.boardDate.getDate()
-      //MM-DD의 형태로 만들기 위해 10보다 적은 경우 0을 붙이게 함 (예 : 1일이면 01)
+      // MM-DD의 형태로 만들기 위해 10보다 적은 경우 0을 붙이게 함 (예 : 1일이면 01)
       month = month >= 10 ? month : `0${month}`
-      day = day >= 10 ? day: `0${day}`
+      day = day >= 10 ? day : `0${day}`
       this.date = `${year}-${month}-${day}`
-      //모달창 숨기기
+      // 모달창 숨기기
       modal.classList.add('hidden')
     },
-    //날짜 선택 모달창에서 취소 버튼 클릭
-    dateCancle() {
+    // 날짜 선택 모달창에서 취소 버튼 클릭
+    dateCancle () {
       const modal = document.querySelector('.modal')
       this.boardDate = ''
       modal.classList.add('hidden')
     },
-    //날짜 삭제
-    deleteDate() {
+    // 날짜 삭제
+    deleteDate () {
       this.date = ''
       this.boardDate = ''
     },
-    //사람 태그 확인 
-    personConfirm() {
+    // 사람 태그 확인
+    personConfirm () {
       const test = document.getElementsByName('callsign')
-      for(let i = 0; i < test.length; i++) {
-        //체크 했을 때
-        if(test[i].checked) {
-          if(this.peopleList.indexOf(test[i].value) < 0) {
+      for (let i = 0; i < test.length; i++) {
+        // 체크 했을 때
+        if (test[i].checked) {
+          if (this.peopleList.indexOf(test[i].value) < 0) {
             this.peopleList.push(Object(test[i].value))
           }
-        }
-        else {
-          //체크 해제의 경우
-          if(this.peopleList.indexOf(test[i].value) > -1) {
+        } else {
+          // 체크 해제의 경우
+          if (this.peopleList.indexOf(test[i].value) > -1) {
             const index = this.peopleList.indexOf(test[i].value)
             this.peopleList.splice(index, 1)
           }
         }
       }
-      //확인 버튼을 클릭했을 경우 모달창을 끈다
+      // 확인 버튼을 클릭했을 경우 모달창을 끈다
       const modal = document.querySelector('.person')
       modal.classList.add('hidden')
     },
-    //사람 취소
-    personCancle() {
+    // 사람 취소
+    personCancle () {
       const modal = document.querySelector('.person')
       modal.classList.add('hidden')
     },
-    //위치 선택
-    showApi() {
+    // 위치 선택
+    showApi () {
       new window.daum.Postcode({
         oncomplete: (data) => {
-          
-          let fullRoadAddr = data.roadAddress; // 도로명 주소 변수
-          let extraRoadAddr = ""; // 도로명 조합형 주소 변수
+          let fullRoadAddr = data.roadAddress // 도로명 주소 변수
+          let extraRoadAddr = '' // 도로명 조합형 주소 변수
 
-          if (data.bname !== "" && /[동|로|가]$/g.test(data.bname)) {
-            extraRoadAddr += data.bname;
+          if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+            extraRoadAddr += data.bname
           }
-    
-          if (data.buildingName !== "" && data.apartment === "Y") {
+
+          if (data.buildingName !== '' && data.apartment === 'Y') {
             extraRoadAddr +=
-              extraRoadAddr !== ""
-                ? ", " + data.buildingName
-                : data.buildingName;
+              extraRoadAddr !== ''
+                ? ', ' + data.buildingName
+                : data.buildingName
           }
-          if (extraRoadAddr !== "") {
-            extraRoadAddr = " (" + extraRoadAddr + ")";
+          if (extraRoadAddr !== '') {
+            extraRoadAddr = ' (' + extraRoadAddr + ')'
           }
-          if (fullRoadAddr !== "") {
-            fullRoadAddr += extraRoadAddr;
+          if (fullRoadAddr !== '') {
+            fullRoadAddr += extraRoadAddr
           }
-          this.boardLocation = fullRoadAddr;
-        },
-      }).open();
+          this.boardLocation = fullRoadAddr
+        }
+      }).open()
     },
-    //위치 삭제
-    deleteLocation() {
+    // 위치 삭제
+    deleteLocation () {
       this.boardLocation = ''
     },
-    //게시글 작성
-    feedCreate() {
-      //미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
-      if(this.mediaList.length === 0 && this.boardContent === '' && this.pollYn === 0) {
+    // 게시글 작성
+    feedCreate () {
+      // 미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
+      if (this.mediaList.length === 0 && this.boardContent === '' && this.pollYn === 0) {
         alert('글이나 사진을 등록해야 작성이 가능합니다.')
-      }
-      else {
+      } else {
         const createBoardRequestDto = {
           inputBoardRequestDto: {
             familyId: localStorage.getItem('familyId'),
@@ -364,58 +357,57 @@ export default {
           }
         }
 
-        //미디어 파일이 있다!
-        if(this.mediaList.length !== 0) {
+        // 미디어 파일이 있다!
+        if (this.mediaList.length !== 0) {
           this.boardMediaYn = 1
         }
-        //투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
-        if(this.pollTitle !== '' && this.pollOptions[0].pollOption !== '' && this.pollOptions[1].pollOption) {
+        // 투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
+        if (this.pollTitle !== '' && this.pollOptions[0].pollOption !== '' && this.pollOptions[1].pollOption) {
           this.pollYn = 1
         }
-        //투표가 있을 경우
-        if(this.pollYn === 1) {
-          if(this.pollDateDisabled) {
-            let timeOff = new Date().getTimezoneOffset() * 60000;
-            let timeZone = new Date(Date.now() - timeOff) //현재 시간
+        // 투표가 있을 경우
+        if (this.pollYn === 1) {
+          if (this.pollDateDisabled) {
+            const timeOff = new Date().getTimezoneOffset() * 60000
+            const timeZone = new Date(Date.now() - timeOff) // 현재 시간
             this.pollEndDate = new Date(timeZone.setDate(timeZone.getDate() + 3)).toISOString()
-          }
-          else {
-            let timeOff =new Date(this.pollDatePicker).getTimezoneOffset() * 60000;
-            let timeZone = new Date(this.pollDatePicker - timeOff)
+          } else {
+            const timeOff = new Date(this.pollDatePicker).getTimezoneOffset() * 60000
+            const timeZone = new Date(this.pollDatePicker - timeOff)
             this.pollEndDate = timeZone.toISOString()
           }
-          let pollChoice = []
-          for(let i = 0; i < this.pollOptions.length; i++) {
+          const pollChoice = []
+          for (let i = 0; i < this.pollOptions.length; i++) {
             const option = {
-              text : this.pollOptions[i].pollOption
+              text: this.pollOptions[i].pollOption
             }
             pollChoice[i] = option
           }
           const pollResult = {
             // boardId: 0,
             question: this.pollTitle,
-            expirationDateTime : this.pollEndDate,
-            choices : pollChoice
+            expirationDateTime: this.pollEndDate,
+            choices: pollChoice
           }
-          Object.assign(createBoardRequestDto, {pollRequest: pollResult})
+          Object.assign(createBoardRequestDto, { pollRequest: pollResult })
         }
-        
+
         const peopleList = {}
-        //추가 정보에서 사람 태그 여부
-        let taggedResult = []
-        //태그한 사람이 있을 경우
-        if(this.peopleList.length !== 0) {
+        // 추가 정보에서 사람 태그 여부
+        const taggedResult = []
+        // 태그한 사람이 있을 경우
+        if (this.peopleList.length !== 0) {
           this.boardTaggedYn = 1
-          for(let i = 0; i < this.peopleList.length; i++) {
+          for (let i = 0; i < this.peopleList.length; i++) {
             const people = {
               userId: this.peopleList[i]
             }
             taggedResult[i] = people
           }
-          Object.assign(createBoardRequestDto, {inputBoardTaggedRequestDtos: taggedResult})
+          Object.assign(createBoardRequestDto, { inputBoardTaggedRequestDtos: taggedResult })
         }
-        
-        //미디어 파일이 있을 경우
+
+        // 미디어 파일이 있을 경우
         // const boardMediaInfo = this.mediaList
         // console.log(createBoardRequestDto)
         this.boardCreate(createBoardRequestDto)
@@ -466,7 +458,7 @@ export default {
 .record-date, .record-location, .record-person {
   display: inline-block;
 }
-//날짜 선택 모달창 
+//날짜 선택 모달창
 .modal, .person {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
   position: fixed;
