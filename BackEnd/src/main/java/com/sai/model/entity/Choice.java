@@ -2,6 +2,7 @@ package com.sai.model.entity;
 
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -20,8 +21,9 @@ import lombok.Data;
 @Table(name = "choices")
 public class Choice {
     @Id
+    @Column(name="choice_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ChoiceId;
+    private Long choiceId;
 
     @NotBlank
     @Size(max = 40)
@@ -44,11 +46,11 @@ public class Choice {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Choice choice = (Choice) o;
-        return Objects.equals(ChoiceId, choice.ChoiceId);
+        return Objects.equals(choiceId, choice.choiceId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ChoiceId);
+        return Objects.hash(choiceId);
     }
 }

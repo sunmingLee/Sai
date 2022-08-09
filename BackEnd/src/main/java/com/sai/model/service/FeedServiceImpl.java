@@ -94,7 +94,7 @@ public class FeedServiceImpl implements FeedService {
 			// 투표 관련 DTO 세팅
 			if (board.getPollYn()) {
 				
-				Poll poll = pollRepository.findByBoard(board);
+				Poll poll = pollRepository.findByBoardBoardId(board.getBoardId());
 				
 				PollResponse pollResponse = pollService.getPollById(poll.getPollId(), currUser);
 				readFeedResponseDto.setPollResponse(pollResponse);
@@ -150,7 +150,7 @@ public class FeedServiceImpl implements FeedService {
 
 		// 투표 관련 DTO 세팅
 		if (board.getPollYn()) {
-			Poll poll = pollRepository.findByBoard(board);
+			Poll poll = pollRepository.findByBoardBoardId(board.getBoardId());
 			
 			PollResponse pollResponse = pollService.getPollById(poll.getPollId(), currUser);
 			readBoardResponseDto.setPollResponse(pollResponse);
@@ -221,6 +221,8 @@ public class FeedServiceImpl implements FeedService {
 
 			}
 		}
+		
+		createBoardRequestDto.getPollRequest().setBoardId(board.getBoardId());
 
 		if (board.getPollYn()) {
 			pollService.createPoll(createBoardRequestDto.getPollRequest());
@@ -279,7 +281,7 @@ public class FeedServiceImpl implements FeedService {
 		// 투표 삭제 후 재생성
 		if (updateBoardRequestDto.isPollModified()) {
 			// 삭제
-			Poll poll = pollRepository.findByBoard(board);
+			Poll poll = pollRepository.findByBoardBoardId(board.getBoardId());
 			pollRepository.delete(poll);
 
 			// 재생성

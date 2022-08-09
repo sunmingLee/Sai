@@ -21,6 +21,7 @@ import com.sai.model.entity.ChoiceVoteCount;
 import com.sai.model.entity.Poll;
 import com.sai.model.entity.User;
 import com.sai.model.entity.Vote;
+import com.sai.model.repository.BoardRepository;
 import com.sai.model.repository.PollRepository;
 import com.sai.model.repository.UserRepository;
 import com.sai.model.repository.VoteRepository;
@@ -36,12 +37,15 @@ public class PollService {
 	private final PollRepository pollRepository;
 	private final VoteRepository voteRepository;
 	private final UserRepository userRepository;
+	private final BoardRepository boardRepository;
 
 	// 투표 만들기
 	public Poll createPoll(PollRequest pollRequest) {
 		Poll poll = new Poll();
+		
+		poll.setBoard(boardRepository.findById(pollRequest.getBoardId()).get());		
 		poll.setPollTitle(pollRequest.getQuestion());
-
+		
 		pollRequest.getChoices().forEach(choiceRequest -> {
 			poll.addChoice(new Choice(choiceRequest.getText()));
 		});
@@ -62,6 +66,8 @@ public class PollService {
 
 	// 투표 조회하기
 	public PollResponse getPollById(Long pollId, UserPrincipal currentUser) {
+		
+		System.out.println(pollId);
 		Poll poll = pollRepository.findById(pollId)
 				.orElseThrow(() -> new ResourceNotFoundException("Poll", "id", pollId));
 
@@ -75,6 +81,7 @@ public class PollService {
 		User creator = userRepository.findById(poll.getCreatedBy())
 				.orElseThrow(() -> new ResourceNotFoundException("User", "id", poll.getCreatedBy()));
 
+		
 		// Retrieve vote done by logged in user
 		Vote userVote = null;
 		if (currentUser != null) {
@@ -132,7 +139,7 @@ public class PollService {
 			
 		} else {
 			Vote vote = voteRepository.findByUserIdAndPollId(user.getUserId(), pollId);
-			voteRepository.deleteById(vote.getPollResultId());
+			voteRepository.deleteById(vote.getVoteId());
 			
 			// -- Vote Saved, Return the updated Poll Response now --
 

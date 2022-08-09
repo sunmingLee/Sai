@@ -64,6 +64,7 @@ public class PollController {
 	// 투표 보기
 	@GetMapping("/{pollId}")
 	public PollResponse getPollById(UserPrincipal currentUser, @PathVariable Long pollId) {
+		System.out.println(pollId);
 //		public PollResponse getPollById(@CurrentUser UserPrincipal currentUser, @PathVariable Long pollId) {
 		return pollService.getPollById(pollId, currentUser);
 	}
