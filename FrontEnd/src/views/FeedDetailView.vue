@@ -41,20 +41,23 @@
     </div>
     <!-- 추가기록  -->
     <div class="tag-wrap">
-      <span>2022.07.12 </span>
-      <span>제주도 </span>
-      <span>엄마, 아빠</span>
+      <div v-if="feed.viewBoardResponseDto.boardDate">{{feed.viewBoardResponseDto.boardDate}}</div>
+      <div v-if="feed.viewBoardResponseDto.boardLocation">{{feed.viewBoardResponseDto.boardLocation}}</div>
+      <div v-if="feed.viewBoardResponseDto.boardTaggedYn">
+        <span v-for="(user, index) in feed.viewBoardTaggedResponseDto" :key="index">{{user}}</span>
+      </div>
     </div>
     <!-- 본문 -->
-    <div class="content-wrap">
-      <span>본문 본문<br/>여기도 본문 본문</span>
+    <div class="content-wrap" v-if="feed.viewBoardResponseDto.boardContent">
+      <span>{{feed.viewBoardResponseDto.boardContent}}</span>
     </div>
     <!-- 좋아요 & 댓글 개수 -->
     <div class="reaction-wrap">
-      <img src="@/assets/images/suit-heart-fill.svg" alt="filled heart">
-      <span>2</span>
+      <img v-if="!onHeart && !feed.boardLiked" src="@/assets/images/suit-heart.svg" alt="empty heart" @click="changeHeart">
+      <img v-else src="@/assets/images/suit-heart-fill.svg" alt="fill heart" @click="changeHeart">
+      <span>{{feed.viewBoardResponseDto.boardLikeCnt}}</span>
       <img src="@/assets/images/chat-right.svg" alt="reply">
-      <span>2</span>
+      <span>{{feed.viewBoardResponseDto.boardReplyCnt}}</span>
     </div>
     <div style="border-bottom: 1px solid black; margin:10px; position: relative; top: 25%;"></div>
     <!-- 댓글 목록 -->
@@ -102,7 +105,7 @@ export default {
       boardId: '',
       userId: '',
       message: '',
-      onUpdate: false
+      onHeart: false
     }
   },
   created () {
@@ -115,7 +118,7 @@ export default {
       boardId: this.boardId,
       userId: this.userId
     }
-    // this.getOneFeed(info)
+    this.getOneFeed(info)
 
     // 댓글 목록 조회
     this.getReplyList(localStorage.getItem('boardId'))
@@ -136,7 +139,7 @@ export default {
   //   console.log(this.writterName)
   // },
   computed: {
-    ...mapState(boardStore, ['replyList']),
+    ...mapState(boardStore, ['feed', 'replyList']),
     ...mapState(familyStore, ['familyCallsignList'])
   },
   methods: {
@@ -167,6 +170,11 @@ export default {
         userId: userId
       }
       this.deleteReply(info)
+    },
+    // 하트 변경
+    changeHeart () {
+      this.onHeart = !this.onHeart
+      console.log(this.onHeart)
     }
   }
 }

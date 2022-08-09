@@ -8,7 +8,8 @@ const boardStore = {
   namespaced: true,
   state: {
     feedList: [],
-    replyList: []
+    replyList: [],
+    feed: []
   },
   getters: {
 
@@ -19,6 +20,9 @@ const boardStore = {
     },
     SET_REPLY_LIST (state, replyList) {
       state.replyList = replyList
+    },
+    SET_FEED (state, feed) {
+      state.feed = feed
     }
   },
   actions: {
@@ -71,7 +75,7 @@ const boardStore = {
           console.log(err)
         })
     },
-    // 게시글 상세보기 (테스트 x)
+    // 게시글 상세보기
     getOneFeed ({ commit }, info) {
       axios({
         url: api_url + `/board/${info.boardId}/${info.userId}`,
@@ -79,6 +83,7 @@ const boardStore = {
       })
         .then((res) => {
           console.log(res)
+          commit('SET_FEED', res.data)
         })
         .catch((err) => {
           console.log(err)
