@@ -10,5 +10,4 @@ import com.sai.model.entity.Family;
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
 	List<Board> findByFamily(Family family, Pageable pageable);
-
 }

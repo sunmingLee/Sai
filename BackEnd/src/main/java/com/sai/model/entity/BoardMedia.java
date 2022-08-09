@@ -35,6 +35,9 @@ public class BoardMedia {
 	@JoinColumn(name = "board_id")
 	private Board board;
 
+	@Column(name = "board_media_thumbnail")
+	private String boardMediaThumbnail;
+
 	@Column(name = "board_media_path")
 	private String boardMediaPath;
 

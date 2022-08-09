@@ -40,7 +40,7 @@ public class FeedController {
 	@ApiOperation(value = "readAllBoard : 피드 조회")
 	@GetMapping("/{familyId}/{userId}")
 	public ResponseEntity<?> readAllBoard(@PathVariable String familyId, @PathVariable String userId,
-			@PageableDefault(size = 3, sort = "boardRegDatetime", direction = Direction.DESC) Pageable pageable)
+			@PageableDefault(size = 10, sort = "boardRegDatetime", direction = Direction.DESC) Pageable pageable)
 			throws Exception {
 
 		try {

@@ -42,7 +42,7 @@ import com.sai.model.repository.UserRepository;
 @Transactional
 public class FeedServiceImpl implements FeedService {
 
-	@Value("${spring.servlet.multipart.location}")
+	@Value("${spring.servlet.multipart.location}" + "\\Feed")
 	private String uploadPath;
 
 	@Autowired
