@@ -12,7 +12,6 @@ import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,8 +40,9 @@ import net.coobird.thumbnailator.geometry.Positions;
 @Transactional
 public class FamilyServiceImpl implements FamilyService {
 
-	@Value("${spring.servlet.multipart.location}" + "\\FamilyImage")
-	private String uploadPath;
+//	@Value("${spring.servlet.multipart.location}" + "\\FamilyImage")
+//	@Value("${spring.servlet.multipart.location}" + "/FamilyImage")
+	private String uploadPath = System.getProperty("user.home") + File.separator + "FamilyImage";
 
 	@Autowired
 	UserRepository userRepository;

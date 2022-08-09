@@ -14,7 +14,6 @@ import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
@@ -41,8 +40,9 @@ import net.coobird.thumbnailator.geometry.Positions;
 @Transactional
 public class AlbumServiceImpl implements AlbumService {
 
-	@Value("${spring.servlet.multipart.location}" + "\\Album")
-	private String uploadPath;
+//	@Value("${spring.servlet.multipart.location}" + "\\Album")
+//	@Value("${spring.servlet.multipart.location}" + "/Album")
+	private String uploadPath = System.getProperty("user.home") + File.separator + "Album";
 
 	@Autowired
 	AlbumRepository albumRepository;
@@ -107,6 +107,7 @@ public class AlbumServiceImpl implements AlbumService {
 
 	@Override
 	public void insertAlbumMedia(Long albumId, List<MultipartFile> files) {
+		System.out.println(uploadPath);
 		Album album = albumRepository.findById(albumId).get();
 
 		if (files != null && files.size() > 0) {
@@ -124,9 +125,9 @@ public class AlbumServiceImpl implements AlbumService {
 				String saveName = UUID.randomUUID().toString() + "_" + fileName;
 				String savePath = uploadPath + File.separator + folderPath + File.separator + saveName;
 				String thumbnailPath = uploadPath + File.separator + folderPath + File.separator + "th_" + saveName;
-				
+
 				try {
-					
+
 					Path path = Paths.get(savePath);
 					file.transferTo(path);
 					File thumbnailFile = new File(thumbnailPath);
