@@ -101,6 +101,29 @@ const boardStore = {
         .catch((err) => {
           console.log(err)
         })
+    },
+    // 댓글 수정
+    // 댓글 삭제
+    deleteReply ({ commit, dispatch }, info) {
+      const data = {
+        replyId: info.replyId,
+        userId: info.userId
+      }
+      axios({
+        url: api_url + `/${info.boardId}` + '/reply',
+        method: 'Delete',
+        data: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => {
+          dispatch('getReplyList', data.boardId)
+          router.go()
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     }
   },
   modules: {

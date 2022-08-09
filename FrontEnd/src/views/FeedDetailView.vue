@@ -59,20 +59,24 @@
     <div style="border-bottom: 1px solid black; margin:10px; position: relative; top: 25%;"></div>
     <!-- 댓글 목록 -->
     <table class="reply-wrap" v-if="replyList.length">
+      <tbody>
     <!-- <colgroup>
       <col width=40%>
       <col width=60%>
       <col width=100%>
       <col width=100%>
     </colgroup> -->
-      <tr v-for="(reply, index) in replyList" :key="index">
-        <div v-for="(callsign, index) in familyCallsignList" :key="index">
-          <div v-if="reply.userId === callsign.toUserId">
-            <td><span style="font-weight: bold;">{{ callsign.callsign }}</span></td>
-            <td>{{ reply.replyContent }}</td>
+        <tr v-for="reply in replyList" :key="reply.replyId">
+          <div v-for="(callsign, index) in familyCallsignList" :key="index" >
+            <div v-if="reply.userId === callsign.toUserId">
+              <td><button type="button" class="btn-close" aria-label="Close" @click="eraseReply(reply.replyId, reply.userId)"></button></td>
+              <td><span style="font-weight: bold;">{{ callsign.callsign }}</span></td>
+              <td>{{ reply.replyContent }}</td>
+              <!-- <td><img src="@/assets/images/pencil-fill.svg" alt="pencil" @click="changeReply(reply.replyId)"></td> -->
+            </div>
           </div>
-        </div>
-      </tr>
+        </tr>
+      </tbody>
     </table>
     <!-- 댓글 작성칸 -->
     <div class="reply-write-wrap">
@@ -97,10 +101,11 @@ export default {
     return {
       boardId: '',
       userId: '',
-      message: ''
+      message: '',
+      onUpdate: false
     }
   },
-  async created () {
+  created () {
     // console.log(this.$route.params.boardId)
     this.boardId = localStorage.getItem('boardId')
     this.userId = localStorage.getItem('userId')
@@ -108,23 +113,26 @@ export default {
     this.getReplyList(localStorage.getItem('boardId'))
 
     // 글쓴이 이름 찾기 (나중에 params에서 넘어온 아이디와 비교해야함)
-    await this.callsignList(localStorage.getItem('userId'))
-    // if (this.familyCallsignList.length !== 0) {
-    //   console.log(this.familyCallsignList)
-    //   await this.familyCallsignList.forEach(callsign => {
-    //     console.log(callsign)
-    //     if (localStorage.getItem('userId') === callsign.toUserId) {
-    //       this.writterName = callsign.callsign
-    //     }
-    //   })
-    // }
+    this.callsignList(localStorage.getItem('userId'))
   },
+  // async mounted () {
+  //   if (this.familyCallsignList.length !== 0) {
+  //     console.log(this.familyCallsignList)
+  //     await this.familyCallsignList.forEach(callsign => {
+  //       console.log(callsign)
+  //       if (localStorage.getItem('userId') === callsign.toUserId) {
+  //         this.writterName = callsign.callsign
+  //       }
+  //     })
+  //   }
+  //   console.log(this.writterName)
+  // },
   computed: {
     ...mapState(boardStore, ['replyList']),
     ...mapState(familyStore, ['familyCallsignList'])
   },
   methods: {
-    ...mapActions(boardStore, ['getReplyList', 'createReply']),
+    ...mapActions(boardStore, ['getReplyList', 'createReply', 'updateReply', 'deleteReply']),
     ...mapActions(familyStore, ['callsignList']),
     // 댓글 작성
     postReply () {
@@ -138,6 +146,19 @@ export default {
         }
         this.createReply(info)
       }
+    },
+    // 댓글 수정 (미등록)
+    changeReply (replyId) {
+      this.updateReply()
+    },
+    // 댓글 삭제
+    eraseReply (replyId, userId) {
+      const info = {
+        boardId: this.boardId,
+        replyId: replyId,
+        userId: userId
+      }
+      this.deleteReply(info)
     }
   }
 }
@@ -198,13 +219,6 @@ export default {
 .reply-wrap{
   position: relative;
   top: 24%;
-  .list-group-item{
-    background-color: #fafafa;
-    text-align: left;
-    span{
-      margin-right: 5%;
-    }
-  }
 }
 .reply-write-wrap{
   position: relative;
