@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
 import axios from 'axios'
 import router from '@/router/index.js'
+import { API_BASE_URL } from '@/config'
 
-const api_url = 'http://localhost:8080/feed'
-// const api_url = 'http://i7a305.p.ssafy.io:8080/feed'
+const api_url = API_BASE_URL + '/feed'
 const boardStore = {
   namespaced: true,
   state: {
@@ -17,6 +17,7 @@ const boardStore = {
   mutations: {
     FEED_All_LIST (state, feed) {
       state.feedList = feed
+      console.log(state.feedList)
     },
     SET_REPLY_LIST (state, replyList) {
       state.replyList = replyList
@@ -28,11 +29,16 @@ const boardStore = {
   actions: {
     // 게시글 작성
     boardCreate ({ commit }, boardInfo) {
-      console.log('작성')
-      console.log(boardInfo)
-      const createBoardRequestDto = boardInfo;
-      let formData = new FormData();
-      formData.append('createBoardRequestDto', new Blob([JSON.stringify(createBoardRequestDto)], {type: "application/json"}));
+      const files = boardInfo.fileList
+      const createBoardRequestDto = boardInfo.createBoardRequestDto
+      const formData = new FormData()
+      if (files !== undefined) {
+        for (let i = 0; i < files.length; i++) {
+          console.log(files[i])
+          formData.append('files', files[i])
+        }
+      }
+      formData.append('createBoardRequestDto', new Blob([JSON.stringify(createBoardRequestDto)], { type: 'application/json' }))
       axios({
         url: api_url + '/board',
         method: 'POST',
@@ -60,18 +66,18 @@ const boardStore = {
     feedAllList ({ commit }, info) {
       const familyId = info.familyId
       const userId = info.userId
-      console.log("피드 리스트 조회")
-      console.log(familyId + " - " + userId)
+      console.log('피드 리스트 조회')
+      console.log(familyId + ' - ' + userId)
       axios({
         url: api_url + '/' + familyId + '/' + userId,
         method: 'GET'
       })
         .then((res) => {
-          console.log("졸려")
+          console.log('졸려')
           commit('FEED_All_LIST', res.data)
         })
         .catch((err) => {
-          console.log("에러")
+          console.log('에러')
           console.log(err)
         })
     },
