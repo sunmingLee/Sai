@@ -5,25 +5,27 @@
         <HeaderTitle hasBack="true" title="게시글 작성" hasIcon="true"/>
         <!-- 사진 공간 -->
         <input type="file" @change="fileCheck" id="file" multiple>
-        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-          <div class="carousel-inner" >
-            <div class="carousel-item active">
-              <img :src="srcList[0]" id="img" class="d-block w-100">
-            </div>
-            <div v-for="(src, index) in srcList" :key="index">
-              <div v-if="index !== 0" class="carousel-item">
-                <img :src="src" id="img" class="d-block w-100">
+        <div class="flex">
+          <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner" >
+              <div class="carousel-item active">
+                <img :src="srcList[0]" id="img" class="d-block w-100">
+              </div>
+              <div v-for="(src, index) in srcList" :key="index">
+                <div v-if="index !== 0" class="carousel-item">
+                  <img :src="src" id="img" class="d-block w-100">
+                </div>
               </div>
             </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
           </div>
-          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Previous</span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Next</span>
-          </button>
         </div>
         <!-- 글(텍스트) 공간 -->
         <div class="flex">
