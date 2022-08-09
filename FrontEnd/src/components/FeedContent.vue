@@ -9,6 +9,7 @@
                             <div v-if="feed.viewBoardResponseDto.userId === callsign.fromUserId">
                                 {{feed.viewBoardResponseDto.userId}}
                                 {{callsign.fromUserId}}
+                                <h3>하하</h3>
                                 <span>{{callsign.callsign}}</span>
                             </div>
                             <div v-else>
