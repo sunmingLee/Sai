@@ -3,6 +3,7 @@ package com.sai.model.service;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -67,19 +68,25 @@ public class PollService {
 	// 투표 조회하기
 	public PollResponse getPollById(Long pollId, UserPrincipal currentUser) {
 		
-		System.out.println(pollId);
 		Poll poll = pollRepository.findById(pollId)
 				.orElseThrow(() -> new ResourceNotFoundException("Poll", "id", pollId));
 
+		Vote vote = voteRepository.findByPoll(poll);
+		
+//		System.out.println(vote.getVoteId());
+		
+		if(vote != null) {
 		// Retrieve Vote Counts of every choice belonging to the current poll
 		List<ChoiceVoteCount> votes = voteRepository.countByPollIdGroupByChoiceId(pollId);
-
+		
 		Map<Long, Long> choiceVotesMap = votes.stream()
 				.collect(Collectors.toMap(ChoiceVoteCount::getChoiceId, ChoiceVoteCount::getVoteCount));
-
+		}
+		Map<Long, Long> choiceVotesMap = new HashMap<>();
+		
 		// Retrieve poll creator details
-		User creator = userRepository.findById(poll.getCreatedBy())
-				.orElseThrow(() -> new ResourceNotFoundException("User", "id", poll.getCreatedBy()));
+//		User creator = userRepository.findById(poll.getCreatedBy())
+//				.orElseThrow(() -> new ResourceNotFoundException("User", "id", poll.getCreatedBy()));
 
 		
 		// Retrieve vote done by logged in user
@@ -88,7 +95,7 @@ public class PollService {
 			userVote = voteRepository.findByUserIdAndPollId(currentUser.getUserId(), pollId);
 		}
 
-		return PollModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator,
+		return PollModelMapper.mapPollToPollResponse(poll, choiceVotesMap, null,
 				userVote != null ? userVote.getChoice().getChoiceId() : null);
 	}
 
