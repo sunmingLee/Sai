@@ -1,7 +1,7 @@
 <template>
   <div class="family-info">
     <HeaderTitle title="가족정보수정"></HeaderTitle>
-    <img src="src\assets\images\familyimg.png" alt="familyimg" class="rounded-circle">
+    <img src="@/assets/images/familyimg.png" alt="familyimg" class="rounded-circle">
     <InputBox></InputBox>
     <Button class="invitebtn" buttonText="가족 초대하기" buttonClass="big information" @click="goInvite"></Button>
     <h6>우리 가족의 애칭을 정해주세요</h6>
