@@ -45,7 +45,7 @@ const routes = [
     path: '/',
     name: 'home',
     // redirect: '/login',
-    beforeEnter: onlyAuthUser,
+    // beforeEnter: onlyAuthUser,
     component: LoginView
   },
   // {
