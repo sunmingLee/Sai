@@ -1,6 +1,5 @@
 package com.sai.model.entity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,10 +13,8 @@ import javax.persistence.UniqueConstraint;
 import com.sai.model.audit.DateAudit;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper=false)
 @Entity
 @Table(name = "votes", uniqueConstraints = { @UniqueConstraint(columnNames = { "poll_id", "user_id" }) })
 public class Vote extends DateAudit {
