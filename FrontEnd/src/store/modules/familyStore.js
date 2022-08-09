@@ -2,8 +2,8 @@
 import axios from 'axios'
 import router from '@/router/index.js'
 
-const api_url = 'http://localhost:8080/family'
-// const api_url = 'http://i7a305.p.ssafy.io:8080/family'
+// const api_url = 'http://localhost:8080/family'
+const api_url = 'http://i7a305.p.ssafy.io:8080/family'
 const familyStore = {
   namespaced: true,
   state: {

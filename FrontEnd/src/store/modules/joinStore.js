@@ -1,7 +1,8 @@
 import axios from 'axios'
 import router from '@/router/index.js'
 
-const api_url = `http://localhost:8080/api`
+// const api_url = `http://localhost:8080/api`
+const api_url = 'http://i7a305.p.ssafy.io:8080/api'
 const joinStore = {
   namespaced: true,
   state: {
