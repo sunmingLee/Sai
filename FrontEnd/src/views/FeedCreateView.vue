@@ -6,6 +6,7 @@
         <div class="flex">
           <input type="file" @change="fileCheck" id="file" multiple>
           <div class="media-wrap" style="border: 1px solid black">
+            <img v-if="url" :src="url" id="img"/>
             <p>여긴 사진 공간이다 임마들아~!</p>
           </div>
         </div>
@@ -153,7 +154,9 @@ export default {
       disabledDates :'',
       preventDisableDateSelection: true,
       format: '',
-      pollCnt: 2
+      pollCnt: 2,
+      url : null,
+      fileCnt: 0
     }
   },
   created() {
@@ -168,7 +171,7 @@ export default {
     ...mapActions(boardStore, ['boardCreate']),
     ...mapActions(familyStore, ['callsignList']),
     //파일 처리
-    fileCheck() {
+    fileCheck(e) {
       const fileInput = document.getElementById("file")
       //선택한 파일의 정보 리스트
       let files = fileInput.files
@@ -194,6 +197,10 @@ export default {
           fileList.push(file)
         } 
       }
+      //파일 미리보기(작업중)
+      // const preview = e.target.files[0]
+      // console.log(e.target)
+      // this.url = URL.createObjectURL(preview)
     },
     //추가기록과 투표만들기 토글
     record() {
@@ -322,29 +329,15 @@ export default {
     },
     //게시글 작성
     feedCreate() {
+      const createBoardRequestDto = {}
       //미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
-      if(fileList.length === 0 && this.boardContent === '' && this.pollYn === 0) {
+      if(fileList.length === 0 && this.boardContent === '') {
         alert('글이나 사진을 등록해야 작성이 가능합니다.')
         // this.files = test
       }
       else {
-        const createBoardRequestDto = {
-          inputBoardRequestDto: {
-            familyId: localStorage.getItem('familyId'),
-            userId: localStorage.getItem('userId'),
-            boardRegDatetime: new Date(),
-            boardContent: this.boardContent,
-            boardDate: this.boardDate,
-            boardLocation: this.boardLocation,
-            boardTaggedYn: this.boardTaggedYn,
-            boardMediaYn: this.boardMediaYn,
-            pollYn: this.pollYn,
-            boardLikeCnt: 0,
-            boardReplyCnt: 0
-          }
-        }
-
         //미디어 파일이 있다!
+        console.log(fileList.length)
         if(fileList.length !== 0) {
           this.boardMediaYn = 1
         }
@@ -356,11 +349,13 @@ export default {
             pollOptionCnt = pollOptionCnt + 1
           }
         }
-        if(pollOptionCnt !== 0 && this.pollTitle === '') {
-          alert('투표 제목을 입력해주세요')
-        }
-        else {
-          if(pollOptionCnt < 2) {
+        //작성한 항목이 있는데
+        if(pollOptionCnt !== 0) {
+          //제목이 없으면
+          if(this.pollTitle === '') {
+            alert('투표 제목을 입력해주세요')
+          }
+          else if(this.pollTitle === '' && pollOptionCnt < 2) {
             alert('투표 항목은 최소한 두 개 이상이어야 합니다')
           } else {
             this.pollYn = 1
@@ -394,7 +389,6 @@ export default {
           Object.assign(createBoardRequestDto, {pollRequest: pollResult})
         }
         
-        const peopleList = {}
         //추가 정보에서 사람 태그 여부
         let taggedResult = []
         //태그한 사람이 있을 경우
@@ -408,14 +402,25 @@ export default {
           }
           Object.assign(createBoardRequestDto, {inputBoardTaggedRequestDtos: taggedResult})
         }
-        
+        const inputBoardRequestDto = {
+            familyId: localStorage.getItem('familyId'),
+            userId: localStorage.getItem('userId'),
+            boardRegDatetime: new Date(),
+            boardContent: this.boardContent,
+            boardDate: this.boardDate,
+            boardLocation: this.boardLocation,
+            boardTaggedYn: this.boardTaggedYn,
+            boardMediaYn: this.boardMediaYn,
+            pollYn: this.pollYn,
+            boardLikeCnt: 0,
+            boardReplyCnt: 0
+        }
+        Object.assign(createBoardRequestDto, {inputBoardRequestDto})
         if(this.boardMediaYn  === 1) {
-          console.log("파일이 있는 경우")
           this.boardCreate({createBoardRequestDto, fileList})
         }
         else {
-          console.log("파일이 없는 경우")
-          this.boardCreate(createBoardRequestDto)
+          this.boardCreate({createBoardRequestDto})
         }
         // this.boardCreate(createBoardRequestDto)
       }
