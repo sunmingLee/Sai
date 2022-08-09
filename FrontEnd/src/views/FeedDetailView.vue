@@ -8,7 +8,7 @@
           <FeedUser :name="callsign.callsign"></FeedUser>
         </div>
       </div>
-      <Button buttonClass="small information" buttonText="수정"></Button>
+      <Button buttonClass="small information" buttonText="수정" @click="goUpdate"></Button>
       <span style="width: 5px"></span>
       <Button style="margin-right:5%" buttonClass="small negative" buttonText="삭제" @click="eraseFeed"></Button>
     </div>
@@ -145,6 +145,10 @@ export default {
   methods: {
     ...mapActions(boardStore, ['getOneFeed', 'deleteFeed', 'getReplyList', 'createReply', 'updateReply', 'deleteReply']),
     ...mapActions(familyStore, ['callsignList']),
+    // 게시글 수정
+    goUpdate () {
+      this.$router.push({ name: 'feedUpdate', params: { boardId: this.boardId } })
+    },
     // 게시글 삭제
     eraseFeed () {
       this.deleteFeed(this.boardId)
