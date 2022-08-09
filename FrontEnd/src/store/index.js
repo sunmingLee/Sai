@@ -6,6 +6,7 @@ import userStore from './modules/userStore.js'
 import boardStore from './modules/boardStore.js'
 import joinStore from './modules/joinStore.js'
 import notificationStore from './modules/notificationStore.js'
+import albumStore from './modules/albumStore.js'
 
 const store = new Vuex.Store({
   state: {
@@ -21,7 +22,8 @@ const store = new Vuex.Store({
     userStore,
     boardStore,
     notificationStore,
-    joinStore
-  },
+    joinStore,
+    albumStore
+  }
 })
 export default store
