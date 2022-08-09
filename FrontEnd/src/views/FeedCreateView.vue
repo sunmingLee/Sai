@@ -4,6 +4,7 @@
         <HeaderTitle hasBack="true" title="게시글 작성" hasIcon="true"/>
         <!-- 사진 공간 -->
         <div class="flex">
+          <input type="file" @change="fileCheck" id="file" multiple>
           <div class="media-wrap" style="border: 1px solid black">
             <p>여긴 사진 공간이다 임마들아~!</p>
           </div>
@@ -34,7 +35,7 @@
                   <div class="modal-content">
                     <p class="modal-title">날짜 선택</p>
                     <div class="modal-date">
-                      <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" :enableTimePicker="false" :minDate="new Date()" v-model="boardDate"/>
+                      <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" :enableTimePicker="false" v-model="boardDate"/>
                     </div>
                     <div class="btn-wrap">
                       <button class="date-cancle" @click="dateCancle">취소</button>
@@ -131,7 +132,7 @@ export default {
       pollYn: 0, //투표 등록 여부
       boardDate: '', //추가 기록 - 날짜
       boardLocation: '',  //추가 기록 - 위치
-      boardPeopleYn: 0, //추가 기록 - 태그 여부
+      boardTaggedYn: 0, //추가 기록 - 태그 여부
       date: '', //추가 기록(날짜) 선택했을 때 화면에 보여질 날짜
       toggle: true, //추가 기록과 투표 만들기를 토글하기 위함
       pollTitle: '', //투표 제목
@@ -157,19 +158,24 @@ export default {
     }
   },
   created() {
-    const info = this.userId
-    this.callsignList(info)
-    console.log(this.familyCallsignList)
+    const userId = localStorage.getItem('userId')
+    this.callsignList(userId)
+    console.log(this.callsignList)
   },
   computed: {
-    ...mapState(boardStore, ["feedList"]),
-    ...mapState(userStore, ["userId", "userName"]),
-    ...mapState(familyStore, ["familyCallsignList", "familyId"])
+    // ...mapState(userStore, ["userId", "userName"]),
+    ...mapState(familyStore, ["familyCallsignList"])
   },
   methods: {
     ...mapActions(boardStore, ['boardCreate']),
     ...mapActions(familyStore, ['callsignList']),
     //추가기록과 투표만들기 토글
+    fileCheck() {
+      console.log("ㅎㅇ")
+      const fileInput = document.getElementById("file")
+      console.log(fileInput.files)
+
+    },
     record() {
       if(!this.toggle) {
         this.toggle = true
@@ -305,6 +311,20 @@ export default {
         alert('글이나 사진을 등록해야 작성이 가능합니다.')
       }
       else {
+        const createBoardRequestDto = {
+          inputBoardRequestDto: {
+            familyId: localStorage.getItem('familyId'),
+            userId: localStorage.getItem('userId'),
+            boardRegDatetime: new Date(),
+            boardContent: this.boardContent,
+            boardDate: this.boardDate,
+            boardLocation: this.boardLocation,
+            boardTaggedYn: this.boardTaggedYn,
+            boardMediaYn: this.boardMediaYn,
+            pollYn: this.pollYn
+          }
+        }
+
         //미디어 파일이 있다!
         if(this.mediaList.length !== 0) {
           this.boardMediaYn = 1
@@ -313,30 +333,6 @@ export default {
         if(this.pollTitle !== '' && this.pollOptions[0].pollOption !== '' && this.pollOptions[1].pollOption) {
           this.pollYn = 1
         }
-        const peopleList = {}
-        //추가 정보에서 사람 태그 여부
-        if(this.peopleList.length !== 0) {
-          this.boardPeopleYn = 1
-          for(let i = 0; i < this.peopleList.length; i++) {
-            const peopleKey = 'userId' + (i+1)
-            const people = {
-              [peopleKey] : this.peopleList[i]
-            }
-            Object.assign(peopleList, people)
-          }
-        }
-        const boardInfo = {
-          boardContent: this.boardContent,
-          boardRegDatetime: new Date(),
-          boardMediaYn: this.boardMediaYn,
-          pollYn: this.pollYn, 
-          boardDate: this.boardDate, 
-          boardLocation: this.boardLocation,  
-          boardPeopleYn: this.boardPeopleYn,
-        }
-        //미디어 파일이 있을 경우
-        const boardMediaInfo = this.mediaList
-        
         //투표가 있을 경우
         if(this.pollYn === 1) {
           let setPollDate = new Date()
@@ -368,31 +364,42 @@ export default {
           }
           // console.log(setPollDate.toISOString())
           this.pollEndDate = year + '-' + month + '-' + date + 'T' + hours + ':' + minutes + ':' + seconds
-        }
-        const pollList = {
-          pollTitle : this.pollTitle,
-          pollEndDate : this.pollEndDate
-        }
-        for(let i = 0; i < this.pollOptions.length; i++) {
-          const key = 'pollOption' + (i+1)
-          const value = {
-            [key] : this.pollOptions[i].pollOption
+          let pollChoice = []
+          for(let i = 0; i < this.pollOptions.length; i++) {
+            const option = {
+              text : this.pollOptions[i].pollOption
+            }
+            pollChoice[i] = option
           }
-          Object.assign(pollList, value)
+          const pollResult = {
+            // boardId: 0,
+            question: this.pollTitle,
+            expirationDateTime : this.pollEndDate,
+            choices : pollChoice
+          }
+          Object.assign(createBoardRequestDto, {pollRequest: pollResult})
         }
-        if(pollList.pollTitle !== '') {
-          Object.assign(boardInfo, pollList)
+        
+        const peopleList = {}
+        //추가 정보에서 사람 태그 여부
+        let taggedResult = []
+        //태그한 사람이 있을 경우
+        console.log(this.peopleList.length)
+        if(this.peopleList.length !== 0) {
+          this.boardTaggedYn = 1
+          for(let i = 0; i < this.peopleList.length; i++) {
+            const people = {
+              userId: this.peopleList[i]
+            }
+            taggedResult[i] = people
+          }
+          Object.assign(createBoardRequestDto, {inputBoardTaggedRequestDtos: taggedResult})
         }
-        const fId = {
-          familyId : this.familyId
-        }
-        const uId = {
-          userId: this.userId
-        }
-        Object.assign(boardInfo, peopleList)
-        Object.assign(boardInfo, fId)
-        Object.assign(boardInfo, uId)
-        this.boardCreate(boardInfo)
+        
+        //미디어 파일이 있을 경우
+        // const boardMediaInfo = this.mediaList
+        // console.log(createBoardRequestDto)
+        this.boardCreate(createBoardRequestDto)
       }
     }
   }
