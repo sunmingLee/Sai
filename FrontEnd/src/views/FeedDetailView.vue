@@ -3,7 +3,11 @@
     <HeaderTitle hasBack="true"></HeaderTitle>
     <!-- 글 작성자 & 버튼 -->
     <div class="feed-head-wrap">
-      <FeedUser :name="this.userId"></FeedUser>
+      <div v-for="(callsign, index) in familyCallsignList" :key="index">
+        <div v-if="this.userId === callsign.toUserId">
+          <FeedUser :name="callsign.callsign"></FeedUser>
+        </div>
+      </div>
       <Button buttonClass="small information" buttonText="수정"></Button>
       <span style="width: 5px"></span>
       <Button style="margin-right:5%" buttonClass="small information" buttonText="삭제"></Button>
@@ -55,13 +59,19 @@
     <div style="border-bottom: 1px solid black; margin:10px; position: relative; top: 25%;"></div>
     <!-- 댓글 목록 -->
     <table class="reply-wrap" v-if="replyList.length">
-    <colgroup>
+    <!-- <colgroup>
       <col width=40%>
-      <col width=50%>
-    </colgroup>
+      <col width=60%>
+      <col width=100%>
+      <col width=100%>
+    </colgroup> -->
       <tr v-for="(reply, index) in replyList" :key="index">
-          <td><span style="font-weight: bold;">{{ reply.userId }}</span></td>
-          <td>{{ reply.replyContent }}</td>
+        <div v-for="(callsign, index) in familyCallsignList" :key="index">
+          <div v-if="reply.userId === callsign.toUserId">
+            <td><span style="font-weight: bold;">{{ callsign.callsign }}</span></td>
+            <td>{{ reply.replyContent }}</td>
+          </div>
+        </div>
       </tr>
     </table>
     <!-- 댓글 작성칸 -->
@@ -89,18 +99,33 @@ export default {
       userId: ''
     }
   },
-  created () {
+  async created () {
     // console.log(this.$route.params.boardId)
     // console.log(localStorage.getItem('boardId'))
     this.userId = localStorage.getItem('userId')
+    // 댓글 목록 조회
     this.getReplyList(localStorage.getItem('boardId'))
+
+    // 글쓴이 이름 찾기 (나중에 params에서 넘어온 아이디와 비교해야함)
+    await this.callsignList(localStorage.getItem('userId'))
+    // await this.callsignList('ssafy8')
+    // if (this.familyCallsignList.length !== 0) {
+    //   console.log(this.familyCallsignList)
+    //   await this.familyCallsignList.forEach(callsign => {
+    //     console.log(callsign)
+    //     if (localStorage.getItem('userId') === callsign.toUserId) {
+    //       this.writterName = callsign.callsign
+    //     }
+    //   })
+    // }
   },
   computed: {
     ...mapState(boardStore, ['replyList']),
     ...mapState(familyStore, ['familyCallsignList'])
   },
   methods: {
-    ...mapActions(boardStore, ['getReplyList'])
+    ...mapActions(boardStore, ['getReplyList']),
+    ...mapActions(familyStore, ['callsignList'])
   }
 }
 </script>
