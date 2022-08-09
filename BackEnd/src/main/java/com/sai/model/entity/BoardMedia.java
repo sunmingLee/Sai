@@ -55,9 +55,8 @@ public class BoardMedia {
 	}
 
 	public boolean delete() {
-//		String srcFileName = URLDecoder.decode(boardMedia.getna);
-//		File file = new File(uploadPath+File.separator+srcFileName );
 		File file = new File(boardMediaPath);
-		return file.delete();
+		File thumbnail = new File(boardMediaThumbnail);
+		return file.delete() && thumbnail.delete();
 	}
 }

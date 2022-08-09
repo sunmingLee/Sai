@@ -9,6 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ViewBoardMediaResponseDto {
 	private Long boardMediaId;
+	private String boardMediaThumbnail;
 	private String boardMediaPath;
 	private String boardMediaOriginalName;
 	private String boardMediaSaveName;

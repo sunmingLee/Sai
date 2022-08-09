@@ -124,13 +124,12 @@ public class AlbumServiceImpl implements AlbumService {
 				String saveName = UUID.randomUUID().toString() + "_" + fileName;
 				String savePath = uploadPath + File.separator + folderPath + File.separator + saveName;
 				String thumbnailPath = uploadPath + File.separator + folderPath + File.separator + "th_" + saveName;
+				
 				try {
+					
 					Path path = Paths.get(savePath);
 					file.transferTo(path);
 					File thumbnailFile = new File(thumbnailPath);
-
-					// 썸네일 생성
-//					Thumbnailator.createThumbnail(path.toFile(), thumbnailFile, 100, 100);
 					Thumbnails.of(path.toFile()).size(400, 400).crop(Positions.CENTER).toFile(thumbnailFile);
 
 				} catch (IOException e) {
@@ -175,7 +174,7 @@ public class AlbumServiceImpl implements AlbumService {
 	@Override
 	public void deleteAlbumMedia(Long albumMediaId) {
 		AlbumMedia albumMedia = albumMediaRepository.findById(albumMediaId).get();
-		albumMedia.delete(); // 썸네일 삭제 로직 구현 필요
+		albumMedia.delete();
 		albumMediaRepository.delete(albumMedia);
 	}
 

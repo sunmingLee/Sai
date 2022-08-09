@@ -2,6 +2,7 @@ package com.sai.model.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,9 @@ import com.sai.model.repository.ReplyRepository;
 import com.sai.model.repository.UserRepository;
 import com.sai.security.CurrentUser;
 import com.sai.security.UserPrincipal;
+
+import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.geometry.Positions;
 
 @Service
 @Transactional
@@ -208,15 +212,22 @@ public class FeedServiceImpl implements FeedService {
 				String fileName = OriginalName.substring(OriginalName.lastIndexOf('\\') + 1);
 				String saveName = UUID.randomUUID().toString() + "_" + fileName;
 				String savePath = uploadPath + File.separator + folderPath + File.separator + saveName;
+				String thumbnailPath = uploadPath + File.separator + folderPath + File.separator + "th_" + saveName;
+				
 				try {
-					file.transferTo(Paths.get(savePath));
+					
+					Path path = Paths.get(savePath);
+					file.transferTo(path);
+					File thumbnailFile = new File(thumbnailPath);
+					Thumbnails.of(path.toFile()).size(400, 400).crop(Positions.CENTER).toFile(thumbnailFile);
+
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 
 				BoardMedia boardMedia = BoardMedia.builder().board(board).boardMediaPath(savePath)
 						.boardMediaOriginalName(OriginalName).boardMediaSaveName(saveName).boardMediaType(fileType)
-						.build();
+						.boardMediaThumbnail(thumbnailPath).build();
 				boardMediaRepository.save(boardMedia);
 
 			}

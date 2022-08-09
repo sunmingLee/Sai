@@ -57,9 +57,6 @@ public class AlbumMedia {
 	public boolean delete() {
 		File file = new File(albumMediaPath);
 		File thumbnail = new File(albumMediaThumbnail);
-
-		// 썸네일 삭제 로직 필요
-
 		return file.delete() && thumbnail.delete();
 	}
 }
