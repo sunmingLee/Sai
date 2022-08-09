@@ -4,7 +4,7 @@
         <div>
             <div class="feed-flex" v-if="feedList.length">
                 <div v-for="(feed, index) in feedList" :key="index" class="feed-div">
-                    
+
                     <div class="flex">
                         <div class="content-header">
                             <div v-for="(callsign, index) in familyCallsignList" :key="index" class="famliy-callsign">
@@ -48,7 +48,7 @@
                                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                         <span class="visually-hidden">Next</span>
                                     </button>
-                                </div>  
+                                </div>
                             </div>
                             <div v-else>
                                 <p>{{feed.viewBoardResponseDto.boardContent}}</p>
@@ -76,7 +76,7 @@
         <div class="flex">
             <button @click="goBoardCreate" style="color: red">글 작성</button>
         </div>
-        
+
     </div>
 </template>
 <script>
@@ -87,80 +87,79 @@ const userStore = 'userStore'
 const familyStore = 'familyStore'
 
 export default {
-    name: 'FeedContent',
-    components: {
-    },
-    created() {
-        //피드 조회
-        const info = {
-            userId: localStorage.getItem('userId'),
-            familyId: localStorage.getItem('familyId')
-        }
-        //피드 전체 리스트 조회
-        this.feedAllList(info)
-        //가족 콜사인 조회
-        this.callsignList(info.userId)
-        //가족 정보 조회
-        this.getFamilyInfo(info.familyId)
-        //유저 정보 조회
-        this.checkUserInfo(info.userId)
-        const user = localStorage.getItem('userInfo')
-        const userInfo = JSON.parse(user)
-    },
-    mounted() {
-        
-    },
-    computed: {
-        ...mapState(boardStore, ["feedList"]),
-        ...mapState(familyStore, ["familyCallsignList"])
-    },
-    methods: {
-        ...mapActions(userStore, ['checkUserInfo']),
-        ...mapActions(boardStore, ['feedAllList']),
-        ...mapActions(familyStore, ['callsignList', 'getFamilyInfo']),
-        //좋아요 버튼 클릭
-        likeButton() {
-            const info = {
-                userId: this.$store.state.userId,
-                familyId: this.$store.state.familyId
-            }
-            const icon = document.querySelector('.like-icon')
-            console.log(icon)
-            this.unlike = require('@/assets/images/heart-fill.svg')
-            if(this.$store.state.feedAllList.boardLiked) {
-                console.log('좋아요')
-                // console.log(document.querySelector('.like-icon'))
-                // this.$store.dispatch('likeClick', info)
-            }
-            else {
-                console.log('좋아요 취소')
-                this.unlike = require('@/assets/images/heart.svg')
-                // this.$store.dispatch('unlikeClick', info)
-            }
-        },
-        //좋아요 취소
-        unlikeButton() {
-
-        },
-        //글 작성 페이지 이동
-        goBoardCreate() {
-            this.$router.push({ name: "feedCreate" });
-        },
-        //글 상세보기 페이지 이동
-        goDetail() {
-            // this.$router.push({
-            //     name: "detailvideo",
-            //     params: { videoSeq: videoSeq },
-            // });
-        }
-    },
-    data() {
-        return {
-            test: '',
-            like: require('@/assets/images/heart-fill.svg'),
-            unlike: require('@/assets/images/heart.svg')
-        }        
+  name: 'FeedContent',
+  components: {
+  },
+  created () {
+    // 피드 조회
+    const info = {
+      userId: localStorage.getItem('userId'),
+      familyId: localStorage.getItem('familyId')
     }
+    // 피드 전체 리스트 조회
+    this.feedAllList(info)
+    // 가족 콜사인 조회
+    this.callsignList(info.userId)
+    // 가족 정보 조회
+    this.getFamilyInfo(info.familyId)
+    // 유저 정보 조회
+    this.checkUserInfo(info.userId)
+    const user = localStorage.getItem('userInfo')
+    const userInfo = JSON.parse(user)
+  },
+  mounted () {
+
+  },
+  computed: {
+    ...mapState(boardStore, ['feedList']),
+    ...mapState(familyStore, ['familyCallsignList'])
+  },
+  methods: {
+    ...mapActions(userStore, ['checkUserInfo']),
+    ...mapActions(boardStore, ['feedAllList']),
+    ...mapActions(familyStore, ['callsignList', 'getFamilyInfo']),
+    // 좋아요 버튼 클릭
+    likeButton () {
+      const info = {
+        userId: this.$store.state.userId,
+        familyId: this.$store.state.familyId
+      }
+      const icon = document.querySelector('.like-icon')
+      console.log(icon)
+      this.unlike = require('@/assets/images/heart-fill.svg')
+      if (this.$store.state.feedAllList.boardLiked) {
+        console.log('좋아요')
+        // console.log(document.querySelector('.like-icon'))
+        // this.$store.dispatch('likeClick', info)
+      } else {
+        console.log('좋아요 취소')
+        this.unlike = require('@/assets/images/heart.svg')
+        // this.$store.dispatch('unlikeClick', info)
+      }
+    },
+    // 좋아요 취소
+    unlikeButton () {
+
+    },
+    // 글 작성 페이지 이동
+    goBoardCreate () {
+      this.$router.push({ name: 'feedCreate' })
+    },
+    // 글 상세보기 페이지 이동
+    goDetail () {
+      // this.$router.push({
+      //     name: "detailvideo",
+      //     params: { videoSeq: videoSeq },
+      // });
+    }
+  },
+  data () {
+    return {
+      test: '',
+      like: require('@/assets/images/heart-fill.svg'),
+      unlike: require('@/assets/images/heart.svg')
+    }
+  }
 }
 
 </script>
