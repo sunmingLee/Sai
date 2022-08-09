@@ -30,13 +30,13 @@
                                 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
                                     <div class="carousel-inner" >
                                         <div class="carousel-item active">
-                                            {{feed.viewBoardMediaResponseDto[0].boardMediaPath}}
-                                            <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100">
+                                            <!-- {{feed.viewBoardMediaResponseDto[0].boardMediaPath}} -->
+                                            <!-- <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100"> -->
                                         </div>
                                         <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index">
-                                            {{feed.viewBoardMediaResponseDto[index].boardMediaPath}}
+                                            <!-- {{feed.viewBoardMediaResponseDto[index].boardMediaPath}} -->
                                             <div v-if="index !== 0" class="carousel-item">
-                                                <img :src="src.boardMediaPath" id="img" class="d-block w-100">
+                                                <!-- <img :src="src.boardMediaPath" id="img" class="d-block w-100"> -->
                                             </div>
                                         </div>
                                     </div>
@@ -73,7 +73,7 @@
                 <h3>등록된 게시글이 없습니다</h3>
             </div>
         </div>
-        <div>
+        <div class="flex">
             <button @click="goBoardCreate" style="color: red">글 작성</button>
         </div>
         
