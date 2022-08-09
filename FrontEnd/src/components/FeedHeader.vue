@@ -23,10 +23,10 @@
             <div v-else>
                 <img src="@/assets/images/alert-on-svgrepo-com.svg" alt="calendar" style="width: 28px">
             </div>
-            <div v-if="notificationList.length === 0">
+            <div v-if="notificationList.length === 0" @click="goNotice">
                 <img src="@/assets/images/alert-svgrepo-com.svg" alt="calendar" style="width: 28px">
             </div>
-            <div v-else>
+            <div v-else @click="goNotice">
                 <img src="@/assets/images/alert-on-svgrepo-com.svg" alt="calendar" style="width: 28px">
             </div>
         </div>
@@ -67,6 +67,10 @@ export default {
         //가족 정보 수정 페이지로 이동
         goFamilyUpdate() {
             // this.$router.push({ name: "feedCreate" });
+        },
+        //알림함 이동
+        goNotice() {
+            this.$router.push({name : 'notification'})
         }
     }
 }
