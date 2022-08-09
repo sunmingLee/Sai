@@ -23,10 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sai.jwt.JwtTokenProvider;
+import com.sai.model.dto.user.AddUserInfoRequest;
 import com.sai.model.dto.user.InfoUserResponseDto;
 import com.sai.model.dto.user.LoginUserRequestDto;
 import com.sai.model.dto.user.LoginUserResponseDto;
 import com.sai.model.dto.user.UserDto;
+import com.sai.model.dto.user.UserInfoDTO;
 import com.sai.model.service.user.UserServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -59,6 +61,18 @@ public class UserController {
 	public ResponseEntity<String> join(@RequestBody UserDto userInfo) {
 		return ResponseEntity.status(200).body(userService.insertUser(userInfo));
 	}
+	
+	// 추가 정보 입력
+	@PostMapping("/addInfo")
+	public ResponseEntity<?> addUserInformation(@RequestBody UserInfoDTO addInfo) {
+		try {
+			System.out.println(addInfo.toString());
+			return ResponseEntity.status(200).body(userService.addUserInfo(addInfo));
+		} catch (Exception e) {
+			return ResponseEntity.status(400).body("오류가 발생했습니다.");
+		}
+		
+	}
 
 	// 사용자 정보 조회
 	@GetMapping("/{userId}")
@@ -70,8 +84,14 @@ public class UserController {
 	// 개인정보 수정 전 사용자 확인
 	@PostMapping("/verify/{userId}")
 	public ResponseEntity<?> verifyUser(@PathVariable String userId, @RequestBody String password) {
-		userService.verifyUser(userId, password);
-		return ResponseEntity.status(200).body("유저 확인");
+		try {
+			System.out.println(password);
+			userService.verifyUser(userId, password);
+			return ResponseEntity.status(200).body("유저 확인");
+			
+		} catch (Exception e) {
+			return ResponseEntity.status(400).body("잘못된 비밀번호입니다");
+		}
 	}
 	
 	// 비밀번호 변경
@@ -108,18 +128,18 @@ public class UserController {
 	}
 
 	// 소셜 로그인 요청
-	@GetMapping("login/ouath2/naver")
-	public ResponseEntity<OAuth2User> naverAuthRequest(@RequestParam OAuth2UserRequest userRequest) {
-		LoginUserResponseDto loginUserResponseDto = new LoginUserResponseDto();
-		
-		try {
-			return ResponseEntity.ok(oAuth2UserService.loadUser(userRequest)); // body에 appToken 반환(response code 200)
-			
-		} catch (Exception e) {
-			return ResponseEntity.ok(oAuth2UserService.loadUser(userRequest)); 
-		}
-		
-	}
+//	@GetMapping("/oauth2/authorization/naver")
+//	public ResponseEntity<OAuth2User> naverAuthRequest(@RequestParam OAuth2UserRequest userRequest) {
+//		LoginUserResponseDto loginUserResponseDto = new LoginUserResponseDto();
+//		
+//		try {
+//			return ResponseEntity.ok(oAuth2UserService.loadUser(userRequest)); // body에 appToken 반환(response code 200)
+//			
+//		} catch (Exception e) {
+//			return ResponseEntity.ok(oAuth2UserService.loadUser(userRequest)); 
+//		}
+//		
+//	}
 	
 	// 로그인 후 회원정보 요청
 	@PostMapping("/login/info")

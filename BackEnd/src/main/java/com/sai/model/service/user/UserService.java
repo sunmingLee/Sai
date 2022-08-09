@@ -5,6 +5,7 @@ import java.util.HashMap;
 import com.sai.model.dto.user.LoginUserRequestDto;
 import com.sai.model.dto.user.LoginUserResponseDto;
 import com.sai.model.dto.user.UserDto;
+import com.sai.model.dto.user.UserInfoDTO;
 import com.sai.security.UserPrincipal;
 
 public interface UserService {
@@ -15,6 +16,8 @@ public interface UserService {
 	public boolean checkUserEmailDuplicate(String email);
 	// 직접 회원 가입
 	public String insertUser(UserDto userInfo);
+	// 회원 정보 추가
+	public String addUserInfo(UserInfoDTO addInfo);
 	// 사용자 정보 조회
 	public UserDto getUserInfoByUserId(String userId);
 	// 사용자 비밀번호 검증

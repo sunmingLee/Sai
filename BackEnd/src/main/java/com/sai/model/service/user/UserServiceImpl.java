@@ -15,6 +15,7 @@ import com.sai.model.dto.MailDto;
 import com.sai.model.dto.user.InfoUserResponseDto;
 import com.sai.model.dto.user.LoginUserRequestDto;
 import com.sai.model.dto.user.UserDto;
+import com.sai.model.dto.user.UserInfoDTO;
 import com.sai.model.entity.FamilyRegister;
 import com.sai.model.entity.User;
 import com.sai.model.entity.UserRole;
@@ -34,8 +35,7 @@ public class UserServiceImpl implements UserService {
 	private final MailService mailService;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final PasswordEncoder passwordEncoder;
-
-	ModelMapper modelMapper = new ModelMapper();
+	private final ModelMapper modelMapper;
 
 	// 아이디 중복 체크
 	@Override
@@ -58,10 +58,27 @@ public class UserServiceImpl implements UserService {
 		String userName = userInfo.getUserName();
 		String role = userInfo.getRole();
 
-		User user = User.builder().userId(userId).email(email).password(passwordEncoder.encode(password)).role(UserRole.USER)
-				.userName(userName).build();
+		User user = User.builder().userId(userId).email(email).password(passwordEncoder.encode(password))
+				.role(UserRole.USER).userName(userName).build();
 		userRepository.save(user);
 		return "회원가입 성공";
+	}
+
+	// 회원정보 추가 혹은 수정
+	public String addUserInfo(UserInfoDTO addInfo) {
+
+		UserDto userDto = modelMapper.map(userRepository.findByUserId(addInfo.getUserId()), UserDto.class);
+
+		userDto.setBirthday(addInfo.getBirthday());
+		userDto.setLunar(addInfo.getLunar());
+		userDto.setUserImagePath(addInfo.getUserImagePath());
+		userDto.setUserImageName(addInfo.getUserImageName());
+		userDto.setUserImageType(addInfo.getUserImageType());
+		userDto.setUserMessage(addInfo.getUserMessage());
+
+		userRepository.save(modelMapper.map(userDto, User.class));
+
+		return "유저 정보 추가 성공";
 	}
 
 	// 사용자 정보 조회
@@ -83,8 +100,7 @@ public class UserServiceImpl implements UserService {
 			throw new IllegalArgumentException("잘못된 비밀번호입니다.");
 		}
 	}
-	
-	
+
 	// 비밀번호 수정
 	@Override
 	public String changePassword(String userId, String password) {
@@ -114,31 +130,32 @@ public class UserServiceImpl implements UserService {
 		}
 		return jwtTokenProvider.createToken(user.getUserId());
 	}
-	
+
 	// 로그인 인증 후 가족 정보 찾기
 	// 로그인 인증 후 토큰 보내기 -> 토큰 쪼갠 후 유저 아이디 받아오기 -> 유저 검증 -> 유저 정보 중 가족 아이디 찾기
-		// 가족 아이디 있다면 가족 아이디 & 가족 신청 여부는 true 반환 -> 피드 페이지
-		// 가족 아이디 없다면 유저 아이디로 가족 신청 테이블 조회
-			// 가족 신청이 없다면 가족 아이디는 null & 가족 신청 여부는 null 반환 -> 가족 신청 페이지
-			// 가족 신청이 있다면
-				// 가족 수락이 안된 경우 가족 아이디는 null & 가족 신청 여부는 true 반환 -> 가족 신청 후 대기 페이지
+	// 가족 아이디 있다면 가족 아이디 & 가족 신청 여부는 true 반환 -> 피드 페이지
+	// 가족 아이디 없다면 유저 아이디로 가족 신청 테이블 조회
+	// 가족 신청이 없다면 가족 아이디는 null & 가족 신청 여부는 null 반환 -> 가족 신청 페이지
+	// 가족 신청이 있다면
+	// 가족 수락이 안된 경우 가족 아이디는 null & 가족 신청 여부는 true 반환 -> 가족 신청 후 대기 페이지
 	public InfoUserResponseDto loginUserInfo(LoginUserRequestDto loginUserRequestDto) {
 		InfoUserResponseDto infoUserResponseDto = new InfoUserResponseDto();
 		infoUserResponseDto.setUserId(loginUserRequestDto.getUserId());
-		
+
 		User loginUser = userRepository.findByUserId(loginUserRequestDto.getUserId())
-				.orElseThrow(() -> new ResourceNotFoundException("User", loginUserRequestDto.getUserId(), loginUserRequestDto.getUserId()));
-				
-		if(loginUser.getFamily() == null) {
-			FamilyRegister familyRegister = familyRegisterRepository.findOneByUserUserId(loginUserRequestDto.getUserId());
+				.orElseThrow(() -> new ResourceNotFoundException("User", loginUserRequestDto.getUserId(),
+						loginUserRequestDto.getUserId()));
+
+		if (loginUser.getFamily() == null) {
+			FamilyRegister familyRegister = familyRegisterRepository
+					.findOneByUserUserId(loginUserRequestDto.getUserId());
 //					.orElse();
 //					.orElseThrow(() -> new ResourceNotFoundException("FamilyRegister", "familyRegister", loginUserRequestDto.getUserId()));
-					
+
 			// 가족 신청하지 않은 경우
-			if(familyRegister == null) {
+			if (familyRegister == null) {
 				return infoUserResponseDto; // user name 제외하고 모두 null로 리턴
-			}
-			else if (familyRegister.getApproveYn() == null) { // 아직 대기중인 경우
+			} else if (familyRegister.getApproveYn() == null) { // 아직 대기중인 경우
 				infoUserResponseDto.setFamilyRegYN(true);
 				infoUserResponseDto.setFamilyRegYN(false);
 			}
@@ -146,12 +163,12 @@ public class UserServiceImpl implements UserService {
 			else if (!familyRegister.getApproveYn()) { // 수락 거절된 경우
 				infoUserResponseDto.setFamilyRegYN(true);
 				infoUserResponseDto.setApprovedYN(false);
-			} 
-			
+			}
+
 		} else {
 			infoUserResponseDto.setFamilyId(loginUser.getFamily().getFamilyId());
 		}
-		
+
 		return infoUserResponseDto;
 	}
 

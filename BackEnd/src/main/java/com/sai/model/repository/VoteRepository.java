@@ -14,22 +14,22 @@ import com.sai.model.entity.Vote;
 
 @Repository
 public interface VoteRepository extends JpaRepository<Vote, Long>{
-	  @Query("SELECT NEW com.sai.model.entity.ChoiceVoteCount(v.choice.id, count(v.id)) FROM Vote v WHERE v.poll.id in :pollIds GROUP BY v.choice.id")
+	  @Query("SELECT NEW com.sai.model.entity.ChoiceVoteCount(v.choice.choiceId, count(v.voteId)) FROM Vote v WHERE v.poll.pollId in :pollIds GROUP BY v.choice.choiceId")
 	    List<ChoiceVoteCount> countByPollIdInGroupByChoiceId(@Param("pollIds") List<Long> pollIds);
 
-	    @Query("SELECT NEW com.sai.model.entity.ChoiceVoteCount(v.choice.id, count(v.id)) FROM Vote v WHERE v.poll.id = :pollId GROUP BY v.choice.id")
+	    @Query("SELECT NEW com.sai.model.entity.ChoiceVoteCount(v.choice.choiceId, count(v.voteId)) FROM Vote v WHERE v.poll.pollId = :pollId GROUP BY v.choice.choiceId")
 	    List<ChoiceVoteCount> countByPollIdGroupByChoiceId(@Param("pollId") Long pollId);
 
-	    @Query("SELECT v FROM Vote v where v.user.id = :userId and v.poll.id in :pollIds")
+	    @Query("SELECT v FROM Vote v where v.user.userId = :userId and v.poll.pollId in :pollIds")
 	    List<Vote> findByUserIdAndPollIdIn(@Param("userId") String userId, @Param("pollIds") List<Long> pollIds);
 
-	    @Query("SELECT v FROM Vote v where v.user.id = :userId and v.poll.id = :pollId")
+	    @Query("SELECT v FROM Vote v where v.user.userId = :userId and v.poll.pollId = :pollId")
 	    Vote findByUserIdAndPollId(@Param("userId") String userId, @Param("pollId") Long pollId);
 
-	    @Query("SELECT COUNT(v.id) from Vote v where v.user.id = :userId")
+	    @Query("SELECT COUNT(v.voteId) from Vote v where v.user.userId = :userId")
 	    long countByUserId(@Param("userId") String userId);
 
-	    @Query("SELECT v.poll.id FROM Vote v WHERE v.user.id = :userId")
+	    @Query("SELECT v.poll.pollId FROM Vote v WHERE v.user.userId = :userId")
 	    Page<Long> findVotedPollIdsByUserId(@Param("userId") String userId, Pageable pageable);
 	    
 }
