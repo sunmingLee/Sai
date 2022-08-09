@@ -124,6 +124,21 @@ const albumStore = {
         .catch((err) => {
           console.log(err)
         })
+    },
+    // 앨범 미디어 삭제
+    deleteMedia ({ commit }, albumMediaId) {
+      axios.delete(api_url + '/media/' + albumMediaId)
+        .then((res) => {
+          console.log(res)
+          if (res.status === 200) {
+            router.go()
+          } else {
+            console.log(res)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     }
   }
 }

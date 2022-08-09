@@ -1,13 +1,12 @@
 <template>
   <div class="picture-wrap">
     <HeaderTitle :title="albumName" hasBack="true"></HeaderTitle>
-    <div class="button-wrap"><Button buttonClass="small information" buttonText="사진 삭제"></Button></div>
     <ul class="list-group list-group-flush" v-if="mediaList.length">
-        <li class="list-group-item" v-for="(media, index) in mediaList" :key="index">
-            <!-- <img v-if="media.albumMediaThumbnail" :src="media.albumMediaThumbnail" class="img-fluid" alt="thumbnail"> -->
-            <img v-if="media.albumMediaThumbnail" src="@/assets/images/image.svg" class="img-fluid" alt="thumbnail">
-            <img v-else src="@/assets/images/image.svg" class="img-fluid" alt="empty thumbnail">
-        </li>
+      <li class="list-group-item" v-for="(media, index) in mediaList" :key="index">
+        <button type="button" class="btn-close" aria-label="Close" @click="eraseMedia(media.albumMediaId)"></button>
+        <img v-if="media.albumMediaThumbnail" :src="media.albumMediaThumbnail" class="img-fluid" alt="thumbnail">
+        <img v-else src="@/assets/images/image.svg" class="img-fluid" alt="empty thumbnail">
+      </li>
     </ul>
     <div class="nothing-wrap" v-else>등록된 사진이 없습니다.</div>
      <!-- Button trigger modal -->
@@ -39,7 +38,6 @@
 
 <script>
 import HeaderTitle from '../common/HeaderTitle.vue'
-import Button from '../common/Button.vue'
 import heic2any from 'heic2any'
 
 import { mapState, mapActions } from 'vuex'
@@ -48,7 +46,7 @@ const albumStore = 'albumStore'
 // 파일 리스트
 const fileList = []
 export default {
-  components: { HeaderTitle, Button },
+  components: { HeaderTitle },
   data () {
     return {
       albumName: ''
@@ -62,7 +60,7 @@ export default {
     ...mapState(albumStore, ['mediaList'])
   },
   methods: {
-    ...mapActions(albumStore, ['getMediaList', 'insertMedia']),
+    ...mapActions(albumStore, ['getMediaList', 'insertMedia', 'deleteMedia']),
     // 파일 처리
     fileCheck (e) {
       const fileInput = document.getElementById('customFile')
@@ -90,13 +88,14 @@ export default {
         }
       }
     },
-    // 앨범 미디어 등록
+    // 미디어 등록
     addMedia () {
       // console.log(fileList)
       this.insertMedia(fileList)
     },
-    seePicture () {
-      this.$router.push({ name: 'pictureDetail' })
+    // 미디어 삭제
+    eraseMedia (albumMediaId) {
+      this.deleteMedia(albumMediaId)
     }
   }
 }
@@ -119,9 +118,10 @@ export default {
     text-align: center;
     font-size: x-large;
 }
-.button-wrap{
-    text-align: right;
-    margin-bottom: 1%;
+.btn-close{
+    position: absolute;
+    top: 5%;
+    right: 5%;
 }
 ul{
   text-align: center;
