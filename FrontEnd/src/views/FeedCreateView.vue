@@ -106,6 +106,7 @@
 import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import InputBox from '@/components/common/InputBox.vue'
 import Button from '@/components/common/Button.vue'
+import heic2any from "heic2any"
 
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
@@ -154,7 +155,8 @@ export default {
       ],
       disabledDates :'',
       preventDisableDateSelection: true,
-      format: ''
+      format: '',
+      files: []
     }
   },
   created() {
@@ -171,10 +173,47 @@ export default {
     ...mapActions(familyStore, ['callsignList']),
     //추가기록과 투표만들기 토글
     fileCheck() {
-      console.log("ㅎㅇ")
       const fileInput = document.getElementById("file")
-      console.log(fileInput.files)
-
+      //선택한 파일의 리스트
+      let files = fileInput.files
+      //최종적으로 담아놓을 파일 리스트
+      let fileList = []
+      //heic 파일 확장자 변경
+      const reader = new FileReader();
+      //선택한 파일의 개수만큼 돌아서 각각의 파일을 다 확인
+      for(let i = 0; i < files.length; i++) {
+        //파일 하나 선택
+        let heicFile = files[i]
+        // console.log(heicFile)
+        let file = ''
+        //확장자가 heic일 경우
+        if(heicFile.name.split('.')[1] === 'heic') {
+          // console.log("heic야")
+          // console.log(file)
+          heic2any({blob : heicFile, toType : "image/jpg"})
+          .then(function(resultBlob) {
+            file = new File([resultBlob], heicFile.name.split('.')[0] + '.jpg', {type: 'image/jpg', lastModified:new Date().getTime()})
+            // console.log(file)
+            fileList.push(file)
+            // console.log(fileList)
+            // props.setImage(file)
+            // reader.readAsDataURL(file);
+            // reader.onloadend = () => {
+            // }
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+          
+        }
+        else {
+          fileList.push(file)
+          // console.log(fileList)
+        } 
+      }
+      this.files = fileList
+      // console.log(fileList.length)
+      console.log(fileList)
     },
     record() {
       if(!this.toggle) {
@@ -335,35 +374,16 @@ export default {
         }
         //투표가 있을 경우
         if(this.pollYn === 1) {
-          let setPollDate = new Date()
-          //투표 마감 시간 설정 안 했을 때
           if(this.pollDateDisabled) {
-            //따로 마감 시간을 설정하지 않으면 현재 시간에서 3일 뒤에 끝나도록 설정
-            setPollDate = setPollDate.setDate(setPollDate.getDate() + 3)
+            let timeOff = new Date().getTimezoneOffset() * 60000;
+            let timeZone = new Date(Date.now() - timeOff) //현재 시간
+            this.pollEndDate = new Date(timeZone.setDate(timeZone.getDate() + 3)).toISOString()
           }
-          const year = new Date(setPollDate).getFullYear()
-          let month = new Date(setPollDate).getMonth() + 1
-          if(month < 10) {
-            month = '0' + month
+          else {
+            let timeOff =new Date(this.pollDatePicker).getTimezoneOffset() * 60000;
+            let timeZone = new Date(this.pollDatePicker - timeOff)
+            this.pollEndDate = timeZone.toISOString()
           }
-          let date = new Date(setPollDate).getDate()
-          if(date < 10) {
-            date = '0' + date
-          }
-          let hours = new Date(setPollDate).getHours()
-          if(hours < 10) {
-            hours = '0' + hours
-          }
-          let minutes = new Date(setPollDate).getMinutes()
-          if(minutes < 10) {
-            minutes = '0' + minutes
-          }
-          let seconds = new Date(setPollDate).getSeconds()
-          if(seconds < 10) {
-            seconds = '0' + seconds
-          }
-          // console.log(setPollDate.toISOString())
-          this.pollEndDate = year + '-' + month + '-' + date + 'T' + hours + ':' + minutes + ':' + seconds
           let pollChoice = []
           for(let i = 0; i < this.pollOptions.length; i++) {
             const option = {
@@ -384,7 +404,6 @@ export default {
         //추가 정보에서 사람 태그 여부
         let taggedResult = []
         //태그한 사람이 있을 경우
-        console.log(this.peopleList.length)
         if(this.peopleList.length !== 0) {
           this.boardTaggedYn = 1
           for(let i = 0; i < this.peopleList.length; i++) {

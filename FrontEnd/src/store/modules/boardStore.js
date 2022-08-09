@@ -21,23 +21,17 @@ const boardStore = {
     // 게시글 작성
     boardCreate ({ commit }, boardInfo) {
       console.log('작성')
+      console.log(boardInfo)
       const createBoardRequestDto = boardInfo;
       let formData = new FormData();
       formData.append('createBoardRequestDto', new Blob([JSON.stringify(createBoardRequestDto)], {type: "application/json"}));
-      console.log(formData.get('createBoardRequestDto'))
       axios({
         url: api_url + '/board',
         method: 'POST',
         data: formData,
-        // contentType: 'multipart/form-data'
-        // data: JSON.stringify(createBoardRequestDto),
         headers: {
-          // 'Content-Type': 'application/json'
           'Content-Type': 'multipart/form-data'
         }
-        // data: new Blob([JSON.stringify(boardInfo)], {
-        //   type: 'application/json'
-        // }
       })
         .then((res) => {
           // console.log(res)
@@ -69,6 +63,7 @@ const boardStore = {
           commit('FEED_All_LIST', res.data)
         })
         .catch((err) => {
+          console.log("에러")
           console.log(err)
         })
     }
