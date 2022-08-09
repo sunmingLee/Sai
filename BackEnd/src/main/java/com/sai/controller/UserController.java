@@ -67,6 +67,13 @@ public class UserController {
 		return ResponseEntity.status(200).body(getUser);
 	}
 
+	// 개인정보 수정 전 사용자 확인
+	@PostMapping("/verify/{userId}")
+	public ResponseEntity<?> verifyUser(@PathVariable String userId, @RequestBody String password) {
+		userService.verifyUser(userId, password);
+		return ResponseEntity.status(200).body("유저 확인");
+	}
+	
 	// 비밀번호 변경
 	@PatchMapping("/profile/{userId}")
 	public ResponseEntity<String> changePassword(@PathVariable String userId, @RequestParam String password) {
@@ -101,8 +108,8 @@ public class UserController {
 	}
 
 	// 소셜 로그인 요청
-	@PostMapping("login/ouath2/naver")
-	public ResponseEntity<OAuth2User> naverAuthRequest(@RequestBody OAuth2UserRequest userRequest) {
+	@GetMapping("login/ouath2/naver")
+	public ResponseEntity<OAuth2User> naverAuthRequest(@RequestParam OAuth2UserRequest userRequest) {
 		LoginUserResponseDto loginUserResponseDto = new LoginUserResponseDto();
 		
 		try {
@@ -117,10 +124,11 @@ public class UserController {
 	// 로그인 후 회원정보 요청
 	@PostMapping("/login/info")
 	public ResponseEntity<InfoUserResponseDto> loginUserInfo(@RequestBody LoginUserRequestDto loginUserRequestDto){
+		
 		try {
 			return ResponseEntity.ok(userService.loginUserInfo(loginUserRequestDto));
 		} catch (Exception e) {
-			return ResponseEntity.status(400).body(userService.loginUserInfo(loginUserRequestDto));
+			return ResponseEntity.status(404).body(userService.loginUserInfo(loginUserRequestDto));
 		}
 	};
 	
@@ -149,7 +157,7 @@ public class UserController {
 
 	// 비밀번호 찾기
 	@GetMapping("/findPw")
-	public ResponseEntity<Map<String, Object>> findUserPw(@RequestParam UserDto user) throws Exception {
+	public ResponseEntity<Map<String, Object>> findUserPw(UserDto user) throws Exception {
 
 		return ResponseEntity.ok(userService.findUserPw(user));
 //		return new ResponseEntity<Map<String, Object>>(userService.findUserPw(user),

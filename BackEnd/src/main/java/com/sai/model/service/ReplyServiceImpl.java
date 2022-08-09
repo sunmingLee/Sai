@@ -11,14 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.sai.model.dto.notification.CreateNotificationRequestDto;
 import com.sai.model.dto.reply.CreateReplyRequestDto;
 import com.sai.model.dto.reply.GetReplyResponseDto;
 import com.sai.model.dto.reply.ReplyDto;
 import com.sai.model.dto.reply.UpdateReplyRequestDto;
 import com.sai.model.entity.Board;
+import com.sai.model.entity.NotiType;
 import com.sai.model.entity.Reply;
 import com.sai.model.entity.User;
 import com.sai.model.repository.BoardRepository;
+import com.sai.model.repository.NotificationRepository;
 import com.sai.model.repository.ReplyRepository;
 import com.sai.model.repository.UserRepository;
 
@@ -33,21 +36,38 @@ public class ReplyServiceImpl implements ReplyService {
 
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	NotificationRepository notiRepository;
+	
+	@Autowired
+	NotificationService notiService;
+	
+	
 
 	@Override
 	public String createReply(Long boardId, CreateReplyRequestDto createReplyRequestDTO) {
-//		Optional<Board> boardItem = boardRepository.findById(id);
-//		reply.setBoard(boardItem.get());
-//
-//		replyRepository.save(reply);
-//		return reply;
-		System.out.println(LocalTime.now());
-//LocalTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 		Board board = boardRepository.findById(boardId).get();
 		User user = userRepository.findById(createReplyRequestDTO.getUserId()).get();
 		Reply reply = Reply.builder().replyContent(createReplyRequestDTO.getReplyContent()).board(board).user(user)
 				.replyRegDateTime(LocalDateTime.now()).build();
 		replyRepository.save(reply);
+		
+		// 댓글 작성 후 게시글의 댓글 수 up
+		board.upBoardReply();
+		boardRepository.save(board);
+		
+		// 댓글 작성 후 알림 발송
+		
+		CreateNotificationRequestDto cnrd = 
+				CreateNotificationRequestDto.builder()
+											.notiToUserId(board.getUser().getUserId())
+											.notiFromUserId(createReplyRequestDTO.getUserId())
+											.notiContent(createReplyRequestDTO.getReplyContent())
+											.notiType(NotiType.COMMENT)
+											.build();
+		
+		notiService.createNoti(cnrd);
 
 		return "success";
 
@@ -78,6 +98,9 @@ public class ReplyServiceImpl implements ReplyService {
 
 	@Override
 	public void deleteReplyByReplyId(Long replyId) {
+		Board board = replyRepository.findById(replyId).get().getBoard();
+		board.downBoardReply();
+		boardRepository.save(board);
 		replyRepository.deleteById(replyId);
 	}
 

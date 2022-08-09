@@ -53,10 +53,10 @@ public class Board {
 	private String boardContent;
 
 	@Column(name = "board_like_cnt")
-	private int boardLikeCnt;
+	private Integer boardLikeCnt;
 
 	@Column(name = "board_reply_cnt")
-	private int boardReplyCnt;
+	private Integer boardReplyCnt;
 
 	@Column(name = "board_date")
 	private LocalDate boardDate;
@@ -87,6 +87,14 @@ public class Board {
 
 	public void downBoardLike() {
 		this.boardLikeCnt--;
+	}
+
+	public void upBoardReply() {
+		this.boardReplyCnt++;
+	}
+
+	public void downBoardReply() {
+		this.boardReplyCnt--;
 	}
 
 	public void updateBoard(ModifyBoardRequestDto modifyBoardRequestDto) {

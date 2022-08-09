@@ -1,6 +1,6 @@
 package com.sai.model.entity;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class Poll extends UserDateAudit {
 	private List<Choice> choices = new ArrayList<>();
 
 	@Column(name = "poll_end_datetime")
-	private Instant expirationDateTime;
+	private LocalDateTime expirationDateTime;
 
 	public void addChoice(Choice choice) {
 		choices.add(choice);

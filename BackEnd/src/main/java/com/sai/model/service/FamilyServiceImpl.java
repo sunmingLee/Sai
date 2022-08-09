@@ -14,14 +14,17 @@ import com.sai.model.dto.family.FamilyCallsignDto;
 import com.sai.model.dto.family.FamilyDto;
 import com.sai.model.dto.family.FamilyRegisterDto;
 import com.sai.model.dto.family.UpdateFamilyVo;
+import com.sai.model.dto.notification.CreateNotificationRequestDto;
 import com.sai.model.dto.user.UserDto;
 import com.sai.model.entity.Family;
 import com.sai.model.entity.FamilyCallsign;
 import com.sai.model.entity.FamilyRegister;
+import com.sai.model.entity.NotiType;
 import com.sai.model.entity.User;
 import com.sai.model.repository.FamilyCallsignRepository;
 import com.sai.model.repository.FamilyRegisterRepository;
 import com.sai.model.repository.FamilyRepository;
+import com.sai.model.repository.NotificationRepository;
 import com.sai.model.repository.UserRepository;
 
 @Service
@@ -39,6 +42,9 @@ public class FamilyServiceImpl implements FamilyService {
 
 	@Autowired
 	FamilyCallsignRepository familyCallsignRepository;
+	
+	@Autowired
+	NotificationService notiService;
 
 	@Autowired
 	ModelMapper modelMapper;
@@ -89,6 +95,19 @@ public class FamilyServiceImpl implements FamilyService {
 	@Override
 	public void applyFamily(FamilyRegisterDto familyRegisterDto) {
 		FamilyRegister familyRegister = modelMapper.map(familyRegisterDto, FamilyRegister.class);
+		Family family = familyRepository.findById(familyRegisterDto.getFamilyId()).get();
+		
+		List<User> userList = family.getUsers();
+		for (User user : userList) {
+			CreateNotificationRequestDto cnrd = CreateNotificationRequestDto.builder()
+										.notiFromUserId(familyRegisterDto.getUserId())
+										.notiToUserId(user.getUserId())
+										.notiContent("님이 당신의 가족인가요?")
+										.notiType(NotiType.FAMILYREGISTER)
+										.build();
+			notiService.createNoti(cnrd);
+		}
+		
 
 		familyRegisterRepository.save(modelMapper.map(familyRegisterDto, FamilyRegister.class));
 	}
