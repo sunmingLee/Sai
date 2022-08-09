@@ -13,7 +13,7 @@
     </div>
     <div class="signIn">
       아직 회원이 아니신가요?
-      <Button buttonClass="small positive" buttonText="회원가입"></Button>
+      <Button buttonClass="small positive" buttonText="회원가입" @click="goJoin"></Button>
     </div>
   </div>
 </template>
@@ -24,7 +24,13 @@ import LoginInput from '@/components/login/LoginInput.vue'
 import LoginSocial from '@/components/login/LoginSocial.vue'
 export default {
   name: 'LoginView',
-  components: { Button, LoginInput, LoginSocial }
+  components: { Button, LoginInput, LoginSocial },
+  methods: {
+    goJoin () {
+      this.$router.push({ name: 'join' })
+    }
+  }
+
 }
 </script>
 

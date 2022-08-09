@@ -12,14 +12,15 @@ const userStore = {
   state: {
     isLogin: false,
     isLoginError: false,
-    // userInfo: null
-    userInfo: {
-      userId: 'cjftn',
-      familyId: 123456,
-      userName: '이철수',
-      email: 'cjftn@naver.com',
-      password: 'asdf@1234'
-    }
+    userInfo: null,
+    familyId: ''
+    // userInfo: {
+    //   userId: 'cjftn',
+    //   familyId: 123456,
+    //   userName: '이철수',
+    //   email: 'cjftn@naver.com',
+    //   password: 'asdf@1234'
+    // }
   },
   getters: {
     checkUserInfo: function (state) {
@@ -36,11 +37,14 @@ const userStore = {
     SET_USER_INFO: (state, userInfo) => {
       state.isLogin = true
       state.userInfo = userInfo
+    },
+    SET_FAMILY_ID: (state, familyId) => {
+      state.familyId = familyId
     }
   },
   actions: {
     // 로그인
-    login ({ commit }, user) {
+    login ({ commit, dispatch }, user) {
       const data = {
         userId: user.userId,
         password: user.password
@@ -56,6 +60,7 @@ const userStore = {
             localStorage.setItem('userId', data.userId)
             commit('SET_IS_LOGIN', true)
             commit('SET_IS_LOGIN_ERROR', false)
+            dispatch('getUserInfo', data)
           }
         })
         .catch((err) => {
@@ -63,19 +68,28 @@ const userStore = {
           alert('아이디와 비밀번호를 다시한번 확인해주세요.')
         })
     },
-    // 사용자 정보 조회 (나중에 로그인 후 회원정보 요청 으로 변경)
-    getUserInfo ({ commit }, userId) {
-      axios.get(api_url + `/${userId}`)
+    // 로그인 후 회원정보 요청
+    getUserInfo ({ commit }, user) {
+      const data = {
+        userId: user.userId,
+        password: user.password
+      }
+      // console.log(user)
+      axios.post(api_url + '/login/info', data)
         .then((res) => {
           console.log(res)
           // familyId가 있는 경우, 메인으로 이동
           if (res.status === 200 & res.data.familyId != null) {
+            commit('SET_FAMILY_ID', res.data.familyId)
             router.push({ name: 'feed' })
-          }
-          // familyId가 없는 경우
-          else {
-            // if (res.data.)
-            router.push({ name: 'familyCode' })
+          } else { // familyId가 없는 경우
+            if (!res.data.familyRegYN) { // 가족 미신청
+              router.push({ name: 'familyCode' })
+            } else if (res.data.familyRegYN && res.data.approvedYN === null) { // 가족 신청 후 대기
+              router.push({ name: 'applywait' })
+            } else if (res.data.familyRegYN && !res.data.approvedYN) { // 가족 신청 후 거절당함
+              router.push({ name: 'applyDecline' })
+            }
           }
         })
         .catch((err) => {

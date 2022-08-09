@@ -42,6 +42,7 @@ const familyStore = {
           // console.log(res)
           if (res.status === 200) {
             alert('가족 들어가기 신청 완료')
+            commit('SET_FAMILY_ID', userInfo.familyId)
             router.push({ name: 'applywait' })
           } else {
             console.log(res)
@@ -80,6 +81,21 @@ const familyStore = {
       })
         .then((res) => {
           commit('CALLSIGN_LIST', res.data)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 가족 신청 취소
+    deleteFamilyApply ({ commit }, userId) {
+      axios({
+        url: api_url + `/join/${userId}`,
+        method: 'Delete'
+      })
+        .then((res) => {
+          alert('가족 신청 취소가 완료되었습니다.')
+          commit('SET_FAMILY_ID', '')
+          router.push({ name: 'familyCode' })
         })
         .catch((err) => {
           console.log(err)
