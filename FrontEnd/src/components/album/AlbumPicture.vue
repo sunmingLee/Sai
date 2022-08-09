@@ -4,8 +4,9 @@
     <div class="button-wrap"><Button buttonClass="small information" buttonText="사진 삭제"></Button></div>
     <ul class="list-group list-group-flush" v-if="mediaList.length">
         <li class="list-group-item" v-for="(media, index) in mediaList" :key="index">
-            <img v-if="media.albumMediaThumbnail" :src="media.albumMediaThumbnail" class="img-fluid" alt="thumbnail">
-            <img v-else src="C:\SAI\uploaded\Album\112211\th_c7645e2a-528b-43e4-86e6-dad768b6205f_여행1.jpg" class="img-fluid" alt="empty thumbnail">
+            <!-- <img v-if="media.albumMediaThumbnail" :src="media.albumMediaThumbnail" class="img-fluid" alt="thumbnail"> -->
+            <img v-if="media.albumMediaThumbnail" src="@/assets/images/image.svg" class="img-fluid" alt="thumbnail">
+            <img v-else src="@/assets/images/image.svg" class="img-fluid" alt="empty thumbnail">
         </li>
     </ul>
     <div class="nothing-wrap" v-else>등록된 사진이 없습니다.</div>
@@ -121,6 +122,19 @@ export default {
 .button-wrap{
     text-align: right;
     margin-bottom: 1%;
+}
+ul{
+  text-align: center;
+  li{
+    background-color: #fafafa;
+    border: 0;
+    padding: 2px;
+    min-height: 20vh;
+    img{
+      height: 100vh;
+      max-height: 30vh;
+    }
+  }
 }
 .btn{
     height: 40px;
