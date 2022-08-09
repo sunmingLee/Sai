@@ -98,7 +98,6 @@
             <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" :minDate="new Date()" v-model="pollDatePicker" :disabled="pollDateDisabled"/>
           </div>
         </div>
-        <button @click="check" style="color: red">테스트 확인</button>
         <button @click="feedCreate" style="color: blue">작성</button>
     </div>
 </template>
@@ -115,7 +114,9 @@ import { mapState, mapActions } from 'vuex'
 const boardStore = 'boardStore'
 const userStore = 'userStore'
 const familyStore = 'familyStore'
-          
+
+//파일 리스트
+let fileList = []
 export default {
   name: 'FeedCreateView',
   components: {
@@ -145,10 +146,6 @@ export default {
       pollDatePicker: '', //투표 마감 날짜로 선택한 날(보내는 데이터 값은 아님)
       pollDateDisabled: true, //투표 마감 날짜 지정 여부..
       pollEndDate: '', //투표 마감 날짜
-      //미디어 리스트
-      mediaList: [
-        
-      ],
       //태그 리스트
       peopleList: [
 
@@ -156,13 +153,12 @@ export default {
       disabledDates :'',
       preventDisableDateSelection: true,
       format: '',
-      files: []
+      pollCnt: 2
     }
   },
   created() {
     const userId = localStorage.getItem('userId')
     this.callsignList(userId)
-    console.log(this.callsignList)
   },
   computed: {
     // ...mapState(userStore, ["userId", "userName"]),
@@ -171,50 +167,35 @@ export default {
   methods: {
     ...mapActions(boardStore, ['boardCreate']),
     ...mapActions(familyStore, ['callsignList']),
-    //추가기록과 투표만들기 토글
+    //파일 처리
     fileCheck() {
       const fileInput = document.getElementById("file")
-      //선택한 파일의 리스트
+      //선택한 파일의 정보 리스트
       let files = fileInput.files
-      //최종적으로 담아놓을 파일 리스트
-      let fileList = []
       //heic 파일 확장자 변경
-      const reader = new FileReader();
       //선택한 파일의 개수만큼 돌아서 각각의 파일을 다 확인
       for(let i = 0; i < files.length; i++) {
         //파일 하나 선택
-        let heicFile = files[i]
-        // console.log(heicFile)
-        let file = ''
-        //확장자가 heic일 경우
-        if(heicFile.name.split('.')[1] === 'heic') {
-          // console.log("heic야")
-          // console.log(file)
-          heic2any({blob : heicFile, toType : "image/jpg"})
+        let file = files[i]
+        let heicFile = ''
+        //파일의 확장자가 heic일 경우
+        if(file.name.split('.')[1] === 'heic') {
+          //file의 타입을 "image/jpg"로 바꾸고 이름 뒤에 확장자도 .jpg로 바꾼다
+          heic2any({blob : file, toType : "image/jpg"})
           .then(function(resultBlob) {
-            file = new File([resultBlob], heicFile.name.split('.')[0] + '.jpg', {type: 'image/jpg', lastModified:new Date().getTime()})
-            // console.log(file)
-            fileList.push(file)
-            // console.log(fileList)
-            // props.setImage(file)
-            // reader.readAsDataURL(file);
-            // reader.onloadend = () => {
-            // }
+            heicFile = new File([resultBlob], file.name.split('.')[0] + '.jpg', {type: 'image/jpg', lastModified:new Date().getTime()})
+            fileList.push(heicFile)
           })
           .catch((err) => {
             console.log(err)
           })
-          
         }
         else {
           fileList.push(file)
-          // console.log(fileList)
         } 
       }
-      this.files = fileList
-      // console.log(fileList.length)
-      console.log(fileList)
     },
+    //추가기록과 투표만들기 토글
     record() {
       if(!this.toggle) {
         this.toggle = true
@@ -225,13 +206,10 @@ export default {
         this.toggle = false
       }
     },
-    check() {
-      // console.log(this.)
-      
-    },
     //투표 항목 추가하기
     addPollItem() {
       if(this.pollOptions.length < 5) {
+        this.pollCnt = this.pollCnt + 1
         this.pollOptions.push({pollOption : ''})
       }
       else {
@@ -246,7 +224,6 @@ export default {
       }
       else {
         this.pollDateDisabled = false
-        // this.pollDate = this.pollDate
       }
     },
     //날짜 선택 모달창 출력
@@ -346,8 +323,9 @@ export default {
     //게시글 작성
     feedCreate() {
       //미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
-      if(this.mediaList.length === 0 && this.boardContent === '' && this.pollYn === 0) {
+      if(fileList.length === 0 && this.boardContent === '' && this.pollYn === 0) {
         alert('글이나 사진을 등록해야 작성이 가능합니다.')
+        // this.files = test
       }
       else {
         const createBoardRequestDto = {
@@ -360,17 +338,33 @@ export default {
             boardLocation: this.boardLocation,
             boardTaggedYn: this.boardTaggedYn,
             boardMediaYn: this.boardMediaYn,
-            pollYn: this.pollYn
+            pollYn: this.pollYn,
+            boardLikeCnt: 0,
+            boardReplyCnt: 0
           }
         }
 
         //미디어 파일이 있다!
-        if(this.mediaList.length !== 0) {
+        if(fileList.length !== 0) {
           this.boardMediaYn = 1
         }
         //투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
-        if(this.pollTitle !== '' && this.pollOptions[0].pollOption !== '' && this.pollOptions[1].pollOption) {
-          this.pollYn = 1
+        // for(let i = 0; i < )
+        let pollOptionCnt = 0;
+        for(let i = 0; i < this.pollCnt; i++) {
+          if(this.pollOptions[i].pollOption !== ''){
+            pollOptionCnt = pollOptionCnt + 1
+          }
+        }
+        if(pollOptionCnt !== 0 && this.pollTitle === '') {
+          alert('투표 제목을 입력해주세요')
+        }
+        else {
+          if(pollOptionCnt < 2) {
+            alert('투표 항목은 최소한 두 개 이상이어야 합니다')
+          } else {
+            this.pollYn = 1
+          }
         }
         //투표가 있을 경우
         if(this.pollYn === 1) {
@@ -415,10 +409,15 @@ export default {
           Object.assign(createBoardRequestDto, {inputBoardTaggedRequestDtos: taggedResult})
         }
         
-        //미디어 파일이 있을 경우
-        // const boardMediaInfo = this.mediaList
-        // console.log(createBoardRequestDto)
-        this.boardCreate(createBoardRequestDto)
+        if(this.boardMediaYn  === 1) {
+          console.log("파일이 있는 경우")
+          this.boardCreate({createBoardRequestDto, fileList})
+        }
+        else {
+          console.log("파일이 없는 경우")
+          this.boardCreate(createBoardRequestDto)
+        }
+        // this.boardCreate(createBoardRequestDto)
       }
     }
   }
