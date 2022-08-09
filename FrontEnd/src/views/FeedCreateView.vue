@@ -1,15 +1,54 @@
 <template>
     <div class="create-wrap">
+      
       <p>{{callsign}}</p>
         <HeaderTitle hasBack="true" title="게시글 작성" hasIcon="true"/>
         <!-- 사진 공간 -->
-        <div class="flex">
-          <input type="file" @change="fileCheck" id="file" multiple>
-          <div class="media-wrap" style="border: 1px solid black">
-            <img v-if="url" :src="url" id="img"/>
-            <p>여긴 사진 공간이다 임마들아~!</p>
+        <input type="file" @change="fileCheck" id="file" multiple>
+        <div id="carouselExampleIndicators" class="carousel slide" >
+          <div class="carousel-indicators">
+              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
           </div>
+          <div class="carousel-inner" v-for="(src, index) in srcList" :key="index">
+            <div v-if="index === 0" class="carousel-item active">
+              <img :src="src" id="img" class="d-block w-100">
+            </div>
+            <div v-else class="carousel-item">
+              <img :src="src" id="img" class="d-block w-100">
+            </div>
+              <!-- <div class="carousel-item active" >
+                <img src="@/assets/images/user-solid.svg" class="d-block w-100" alt="...">
+              </div>
+              <div class="carousel-item">
+                <img src="@/assets/images/user-solid.svg" class="d-block w-100" alt="...">
+              </div>
+              <div class="carousel-item">
+                <img src="@/assets/images/user-solid.svg" class="d-block w-100" alt="...">
+              </div> -->
+              <!-- <div v-if="index === 0" class="carousel-item active" >
+                <img :src="src" id="img" class="d-block w-100"/>
+              </div>
+              <div v-else class="carousel-item">
+                <img :src="src" id="img" class="d-block w-100"/>
+              </div> -->
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+          </button>
         </div>
+        <!-- <div class="flex">
+          
+          <div class="media-wrap" style="border: 1px solid black" v-for="(src, index) in srcList" :key="index">
+              <img :src="src" id="img"/>
+          </div>
+        </div> -->
         <!-- 글(텍스트) 공간 -->
         <div class="flex">
           <textarea v-model="boardContent" name="" id="" cols="30" rows="10"></textarea>
@@ -155,13 +194,16 @@ export default {
       preventDisableDateSelection: true,
       format: '',
       pollCnt: 2,
-      url : null,
-      fileCnt: 0
+      srcList: [],
+      fileList: []
     }
   },
   created() {
     const userId = localStorage.getItem('userId')
     this.callsignList(userId)
+  },
+  mounted() {
+    
   },
   computed: {
     // ...mapState(userStore, ["userId", "userName"]),
@@ -172,9 +214,17 @@ export default {
     ...mapActions(familyStore, ['callsignList']),
     //파일 처리
     fileCheck(e) {
+      //확장자 변경
+      this.changeFile()
+      //미리보기
+      this.previewFile()
+    },
+    changeFile() {
+      const previewCount = 0;
       const fileInput = document.getElementById("file")
       //선택한 파일의 정보 리스트
       let files = fileInput.files
+      // let previewCount = files.length
       //heic 파일 확장자 변경
       //선택한 파일의 개수만큼 돌아서 각각의 파일을 다 확인
       for(let i = 0; i < files.length; i++) {
@@ -197,10 +247,16 @@ export default {
           fileList.push(file)
         } 
       }
-      //파일 미리보기(작업중)
-      // const preview = e.target.files[0]
-      // console.log(e.target)
-      // this.url = URL.createObjectURL(preview)
+    },
+    previewFile() {
+      console.log(fileList)
+      if(fileList.length != 0) {
+        for(let i = 0; i < fileList.length; i++) {
+          this.srcList.push(URL.createObjectURL(fileList[i]))
+        }
+      }
+      console.log("안녕")
+      console.log(this.srcList)
     },
     //추가기록과 투표만들기 토글
     record() {
@@ -416,13 +472,12 @@ export default {
             boardReplyCnt: 0
         }
         Object.assign(createBoardRequestDto, {inputBoardRequestDto})
-        if(this.boardMediaYn  === 1) {
-          this.boardCreate({createBoardRequestDto, fileList})
-        }
-        else {
-          this.boardCreate({createBoardRequestDto})
-        }
-        // this.boardCreate(createBoardRequestDto)
+        // if(this.boardMediaYn  === 1) {
+        //   this.boardCreate({createBoardRequestDto, fileList})
+        // }
+        // else {
+        //   this.boardCreate({createBoardRequestDto})
+        // }
       }
     }
   }
@@ -586,5 +641,8 @@ export default {
       }
     }
   }
+}
+.carousel-inner {
+  width: 50%;
 }
 </style>

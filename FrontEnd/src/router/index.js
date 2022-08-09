@@ -49,7 +49,7 @@ const routes = [
     component: LoginView
   },
   // {
-  //   path: '/',
+  //   path: '/test',
   //   name: 'test',
   //   compoennt: test
   // },
