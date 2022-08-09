@@ -22,7 +22,8 @@
     "vue-float-action-button": "^0.7.9",
     "vue-router": "^4.0.3",
     "vue3-datepicker": "^0.3.4",
-    "vuex": "^4.0.0"
+    "vuex": "^4.0.0",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

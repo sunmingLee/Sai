@@ -44,7 +44,7 @@ export default {
 
 <style scoped lang="scss">
 .header{
-  position: sticky;
+  // position: sticky;
   top: 0;
   padding-left: 5%;
   padding-right: 5%;
