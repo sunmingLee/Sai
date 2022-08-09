@@ -60,6 +60,21 @@ const albumStore = {
           console.log(err)
         })
     },
+    // 앨범 삭제
+    deleteAlbum ({ commit }, albumId) {
+      axios.delete(api_url + '/' + albumId)
+        .then((res) => {
+          console.log(res)
+          if (res.status === 200) {
+            router.go()
+          } else {
+            console.log(res)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
     // 앨범 정보 저장 (로컬스토리지)
     setAlbumInfo ({ commit }, info) {
     //   commit('SET_ALBUM_ID', info.albumId)

@@ -2,11 +2,14 @@
   <div>
     <HeaderTitle title="앨범"></HeaderTitle>
     <ul class="list-group list-group-flush" v-if="folderList.length">
-        <li class="list-group-item" v-for="(folder, index) in folderList" :key="index" @click="seeFolder(folder.albumId, folder.albumName)">
+        <li class="list-group-item" v-for="(folder, index) in folderList" :key="index">
             <img v-if="folder.thumbnailPath" :src="folder.thumbnailPath" class="img-fluid" alt="thumbnail">
             <img v-else src="@/assets/images/여행1.jpg" class="img-fluid" alt="empty thumbnail">
-            <div class="travel-date-wrap">{{ folder.albumStartDate }} ~ {{ folder.albumEndDate }}</div>
-            <div class="folder-name">{{ folder.albumName }}</div>
+            <div @click="seeFolder(folder.albumId, folder.albumName)">
+                <div class="travel-date-wrap">{{ folder.albumStartDate }} ~ {{ folder.albumEndDate }}</div>
+                <div class="folder-name">{{ folder.albumName }}</div>
+            </div>
+            <button type="button" class="btn-close" aria-label="Close" @click="eraseAlbum(folder.albumId)"></button>
         </li>
     </ul>
     <div class="nothing-wrap" v-else>등록된 앨범이 없습니다.</div>
@@ -64,7 +67,8 @@ export default {
     ...mapState(albumStore, ['folderList'])
   },
   methods: {
-    ...mapActions(albumStore, ['getFolderList', 'setAlbumInfo', 'makeAlbum']),
+    ...mapActions(albumStore, ['getFolderList', 'setAlbumInfo', 'makeAlbum', 'deleteAlbum']),
+    // 앨범 생성
     createAlbum () {
       const info = {
         albumName: this.folderName,
@@ -74,6 +78,11 @@ export default {
       }
       this.makeAlbum(info)
     },
+    // 앨범 삭제
+    eraseAlbum (albumId) {
+      this.deleteAlbum(albumId)
+    },
+    // 앨범 상세보기로 이동
     seeFolder (albumId, albumName) {
       const info = {
         albumId,
@@ -106,6 +115,11 @@ ul{
             opacity: 0.5;
         }
     }
+}
+.btn-close{
+    position: absolute;
+    top: 5%;
+    right: 5%;
 }
 .travel-date-wrap{
     font-size: small;
