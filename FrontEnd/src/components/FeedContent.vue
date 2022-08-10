@@ -120,7 +120,7 @@ export default {
   },
   methods: {
     ...mapActions(userStore, ['checkUserInfo']),
-    ...mapActions(boardStore, ['feedAllList']),
+    ...mapActions(boardStore, ['feedAllList', 'setBoardId']),
     ...mapActions(familyStore, ['callsignList', 'getFamilyInfo']),
     // 좋아요 버튼 클릭
     likeButton () {
@@ -151,10 +151,8 @@ export default {
     },
     // 글 상세보기 페이지 이동
     goDetail (boardId) {
-      this.$router.push({
-        name: 'feedDetail',
-        params: { boardId: boardId }
-      })
+    //   console.log('들어가기 전: ' + boardId)
+      this.setBoardId(boardId)
     }
   },
   data () {

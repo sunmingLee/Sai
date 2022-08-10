@@ -78,6 +78,11 @@ const boardStore = {
           console.log(err)
         })
     },
+    setBoardId ({ commit }, boardId) {
+      // console.log('boardId: ' + boardId)
+      localStorage.setItem('boardId', boardId)
+      router.push({ name: 'feedDetail' })
+    },
     // 게시글 상세보기
     getOneFeed ({ commit }, info) {
       axios({
@@ -101,6 +106,26 @@ const boardStore = {
         .then((res) => {
           alert('게시글이 삭제되었습니다.')
           router.push({ name: 'feed' })
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 투표 선택 (임시 / 쿠키 세팅 이슈)
+    chooseVote ({ commit }, info) {
+      const data = {
+        choiceId: info.choiceId
+      }
+      axios({
+        url: API_BASE_URL + `/api/poll/${info.pollId}/votes`,
+        method: 'POST',
+        data: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => {
+          router.go()
         })
         .catch((err) => {
           console.log(err)
