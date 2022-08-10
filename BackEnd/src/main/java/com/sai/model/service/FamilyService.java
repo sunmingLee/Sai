@@ -5,11 +5,11 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sai.model.dto.family.AnswerFamilyRegisterRequestDto;
-import com.sai.model.dto.family.FamilyCallsignDto;
 import com.sai.model.dto.family.FamilyDto;
 import com.sai.model.dto.family.FamilyRegisterDto;
 import com.sai.model.dto.family.InsertFamilyRegisterRequestDto;
 import com.sai.model.dto.family.UpdateFamilyRequestDto;
+import com.sai.model.dto.family.ViewFamilyCallsignResponseDto;
 
 public interface FamilyService {
 
@@ -19,7 +19,7 @@ public interface FamilyService {
 
 	public void applyFamily(InsertFamilyRegisterRequestDto insertFamilyRegisterRequestDto);
 
-	public List<FamilyCallsignDto> responseApplication(String userId,
+	public List<ViewFamilyCallsignResponseDto> responseApplication(String userId,
 			AnswerFamilyRegisterRequestDto answerFamilyRegisterRequestDto);
 
 	public FamilyRegisterDto resultApplication(String userId);
@@ -28,9 +28,8 @@ public interface FamilyService {
 
 	public FamilyDto searchFamily(String familyId);
 
-	public List<FamilyCallsignDto> searchFamilyList(String userId);
+	public List<ViewFamilyCallsignResponseDto> searchFamilyList(String userId);
 
-	// 리턴값 추가 필요
 	public void updateFamily(UpdateFamilyRequestDto updateFamilyRequestDto, MultipartFile file);
 
 }

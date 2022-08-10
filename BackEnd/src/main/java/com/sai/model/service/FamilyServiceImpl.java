@@ -1,13 +1,16 @@
 package com.sai.model.service;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
@@ -16,12 +19,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sai.model.dto.family.AnswerFamilyRegisterRequestDto;
-import com.sai.model.dto.family.FamilyCallsignDto;
 import com.sai.model.dto.family.FamilyDto;
 import com.sai.model.dto.family.FamilyRegisterDto;
 import com.sai.model.dto.family.InsertFamilyRegisterRequestDto;
+import com.sai.model.dto.family.UpdateFamilyCallsignDto;
 import com.sai.model.dto.family.UpdateFamilyDto;
 import com.sai.model.dto.family.UpdateFamilyRequestDto;
+import com.sai.model.dto.family.ViewFamilyCallsignResponseDto;
 import com.sai.model.dto.notification.CreateNotificationRequestDto;
 import com.sai.model.entity.Family;
 import com.sai.model.entity.FamilyCallsign;
@@ -120,25 +124,21 @@ public class FamilyServiceImpl implements FamilyService {
 	}
 
 	@Override
-	public List<FamilyCallsignDto> responseApplication(String userId,
+	public List<ViewFamilyCallsignResponseDto> responseApplication(String userId,
 			AnswerFamilyRegisterRequestDto answerFamilyRegisterRequestDto) {
 		FamilyRegister findFamilyRegister = familyRegisterRepository
 				.findById(answerFamilyRegisterRequestDto.getFamilyRegisterId()).get();
 		if (answerFamilyRegisterRequestDto.getApproveYn()) { // 수락이면 가족에 추가, 가족 호칭 추가, 신청 레코드 삭제
-			// 1. 유저 가족ID 변경
 
 			Family family = findFamilyRegister.getFamily();
 			User user = findFamilyRegister.getUser();
-			family.addUser(user);
-			userRepository.save(user);
-			familyRepository.save(family);
 
-			// 2. 가족 호칭 추가
+			// 1. 가족 호칭 추가
 
 			List<User> toUsers = family.getUsers();
 			for (User toUser : toUsers) {
-				if (user.equals(toUser))
-					continue;
+//				if (user.getUserId().equals(toUser.getUserId()))
+//					continue;
 				// 내가 부르는 경우
 				FamilyCallsign callsign1 = FamilyCallsign.builder().fromUser(user).toUser(toUser)
 						.callsign(toUser.getUserName()).build();
@@ -152,6 +152,11 @@ public class FamilyServiceImpl implements FamilyService {
 			FamilyCallsign callsign3 = FamilyCallsign.builder().fromUser(user).toUser(user).callsign(user.getUserName())
 					.build();
 			familyCallsignRepository.save(callsign3);
+
+			// 2. 유저 가족ID 변경
+			family.addUser(user);
+			userRepository.save(user);
+			familyRepository.save(family);
 
 			// 3. 신청 레코드 삭제
 			familyRegisterRepository.delete(findFamilyRegister);
@@ -184,21 +189,28 @@ public class FamilyServiceImpl implements FamilyService {
 	}
 
 	@Override
-	public List<FamilyCallsignDto> searchFamilyList(String userId) {
+	public List<ViewFamilyCallsignResponseDto> searchFamilyList(String userId) {
 		User user = userRepository.findById(userId).get();
 		List<FamilyCallsign> familyCallsigns = familyCallsignRepository.findByFromUser(user);
 
-		List<FamilyCallsignDto> list = new ArrayList<>();
+		List<ViewFamilyCallsignResponseDto> list = new ArrayList<>();
 		for (FamilyCallsign familyCallsign : familyCallsigns) {
-			list.add(modelMapper.map(familyCallsign, FamilyCallsignDto.class));
+
+			ViewFamilyCallsignResponseDto viewFamilyCallsignResponseDto = modelMapper.map(familyCallsign,
+					ViewFamilyCallsignResponseDto.class);
+
+			User toUser = familyCallsign.getToUser();
+			viewFamilyCallsignResponseDto.setToUserName(toUser.getUserName());
+			viewFamilyCallsignResponseDto.setToUserImage(toUser.getUserImagePath());
+
+			list.add(viewFamilyCallsignResponseDto);
+
 		}
 		return list;
 	}
 
 	@Override
 	public void updateFamily(UpdateFamilyRequestDto updateFamilyRequestDto, MultipartFile file) {
-
-//		UpdateFamilyVo returnFamilyVo = new UpdateFamilyVo();
 
 		UpdateFamilyDto updateFamilyDto = updateFamilyRequestDto.getUpdatefamilyDto();
 		Family family = familyRepository.findById(updateFamilyDto.getFamilyId()).get();
@@ -229,14 +241,17 @@ public class FamilyServiceImpl implements FamilyService {
 			String thumbnailPath = uploadPath + File.separator + saveName;
 
 			try {
-				File convFile = new File(OriginalName);
-				convFile.createNewFile();
-				FileOutputStream fos = new FileOutputStream(convFile);
-				fos.write(file.getBytes());
-				fos.close();
+//				File convFile = new File(OriginalName);
+//				convFile.createNewFile();
+//				FileOutputStream fos = new FileOutputStream(convFile);
+//				fos.write(file.getBytes());
+//				fos.close();
+				
+				InputStream in = file.getInputStream();
+				BufferedImage originalImage = ImageIO.read(in);
 
 				File thumbnailFile = new File(thumbnailPath);
-				Thumbnails.of(convFile).size(500, 500).crop(Positions.CENTER).toFile(thumbnailFile);
+				Thumbnails.of(originalImage).size(500, 500).crop(Positions.CENTER).toFile(thumbnailFile);
 
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -246,24 +261,20 @@ public class FamilyServiceImpl implements FamilyService {
 		}
 
 		familyRepository.save(family);
-//		returnFamilyVo.setFamilyDto(modelMapper.map(family, FamilyDto.class));
 
 		// 콜사인 변경
 		if (updateFamilyRequestDto.isCallsignModified()) {
-			List<FamilyCallsignDto> returnFamilyCallsignDtos = new ArrayList<>();
 
-			List<FamilyCallsignDto> familyCallsignDtos = updateFamilyRequestDto.getFamilyCallsignDtos();
-			for (FamilyCallsignDto familyCallsignDto : familyCallsignDtos) {
+			List<UpdateFamilyCallsignDto> updateFamilyCallsignDtos = updateFamilyRequestDto
+					.getUpdateFamilyCallsignDtos();
+
+			for (UpdateFamilyCallsignDto updateFamilyCallsignDto : updateFamilyCallsignDtos) {
 				FamilyCallsign familyCallsign = familyCallsignRepository
-						.findById(familyCallsignDto.getFamilyCallsignId()).get();
-				familyCallsign.updateCallsign(familyCallsignDto.getCallsign());
+						.findById(updateFamilyCallsignDto.getFamilyCallsignId()).get();
+				familyCallsign.updateCallsign(updateFamilyCallsignDto.getCallsign());
 				familyCallsignRepository.save(familyCallsign);
-				returnFamilyCallsignDtos.add(modelMapper.map(familyCallsign, FamilyCallsignDto.class));
 			}
 		}
-//		returnFamilyVo.setFamilyCallsignDtos(returnFamilyCallsignDtos);
-
-//		return returnFamilyVo;
 	}
 
 	private static String createRandomFamilyId() {
