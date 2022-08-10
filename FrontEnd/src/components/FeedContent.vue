@@ -31,12 +31,12 @@
                                     <div class="carousel-inner" >
                                         <div class="carousel-item active">
                                             <!-- {{feed.viewBoardMediaResponseDto[0].boardMediaPath}} -->
-                                            <!-- <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100"> -->
+                                            <img :src="url + feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100">
                                         </div>
                                         <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index">
                                             <!-- {{feed.viewBoardMediaResponseDto[index].boardMediaPath}} -->
                                             <div v-if="index !== 0" class="carousel-item">
-                                                <!-- <img :src="src.boardMediaPath" id="img" class="d-block w-100"> -->
+                                                <img :src="url + src.boardMediaPath" id="img" class="d-block w-100">
                                             </div>
                                         </div>
                                     </div>
@@ -114,7 +114,10 @@ export default {
   },
   computed: {
     ...mapState(boardStore, ['feedList']),
-    ...mapState(familyStore, ['familyCallsignList'])
+    ...mapState(familyStore, ['familyCallsignList']),
+    url () {
+      return 'i7a305.p.ssafy.io:8080'
+    }
   },
   methods: {
     ...mapActions(userStore, ['checkUserInfo']),

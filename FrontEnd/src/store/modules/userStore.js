@@ -9,7 +9,7 @@ const userStore = {
   state: {
     isLogin: false,
     isLoginError: false,
-    userInfo: []
+    userInfo: [],
     // userInfo: {
     //   userId: 'cjftn',
     //   familyId: 123456,
@@ -17,6 +17,7 @@ const userStore = {
     //   email: 'cjftn@naver.com',
     //   password: 'asdf@1234'
     // }
+    isAddInfo: true
   },
   getters: {
     checkUserInfo: function (state) {
@@ -203,7 +204,36 @@ const userStore = {
         .catch((err) => {
           console.log(err)
         })
+    },
+    // 회원 정보 추가 / 수정
+    addUserInfo ({ commit }, userInfo) {
+      const file = userInfo.fileList[0]
+      const addInfo = userInfo.addInfo
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('addInfo', new Blob([JSON.stringify(addInfo)], { type: 'application/json' }))
+      axios({
+        url: api_url + '/addInfo',
+        method: 'POST',
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+        .then((res) => {
+          alert('추가 정보가 입력되었습니다')
+          console.log(res)
+          // commit()
+          // 회원 가입 후
+          router.push({ name: 'familyCode' })
+          // 개인 페이지에서 온 경우
+          // router.push({ naem: })
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     }
+
   },
   modules: {
 
