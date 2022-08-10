@@ -11,18 +11,28 @@
             </div>
             <div class="family-title">
                 <span class="title">{{ familyInfo.familyName }}</span>
-                <div style="display: inline-block">
+                <div style="display: inline-block" @click="goFamilyUpdate">
                     <img src="@/assets/images/pencil-fill.svg" alt="calendar" style="width: 15px">
                 </div>
             </div>
         </div>
         <div class="flex">
-            <div v-if="userInfo.userImagePath === null">
+            <!-- 유저 사진 -->
+            <div v-if="userInfo.userImagePath === null" id="drop">
                 <img src="@/assets/images/person-circle.svg" alt="user" style="width:28px">
             </div>
-            <div v-else>
+            <div v-else id="drop"> 
                 <img src="@/assets/images/alert-on-svgrepo-com.svg" alt="calendar" style="width: 28px">
             </div>
+            <!-- <router-link :to="{name : 'detailreview'}">상세보기</router-link> -->
+            <div>
+                <ul>
+                    <li @click="goMyPage">내 페이지</li>
+                    <li @click="goAccount">계정관리</li>
+                    <li @clcick="logout">로그아웃</li>
+                </ul>
+            </div>
+            <!-- 알림 -->
             <div v-if="notificationList.length === 0" @click="goNotice">
                 <img src="@/assets/images/alert-svgrepo-com.svg" alt="calendar" style="width: 28px">
             </div>
@@ -30,9 +40,6 @@
                 <img src="@/assets/images/alert-on-svgrepo-com.svg" alt="calendar" style="width: 28px">
             </div>
         </div>
-        
-        
-    
     </div>
 </template>
 <script>
@@ -66,11 +73,25 @@ export default {
         ...mapActions(notificationStore, ['listNotification']),
         //가족 정보 수정 페이지로 이동
         goFamilyUpdate() {
-            // this.$router.push({ name: "feedCreate" });
+            this.$router.push({ name: "familyInfoChange" });
         },
         //알림함 이동
         goNotice() {
             this.$router.push({name : 'notification'})
+        },
+        //로그아웃
+        logout() {
+            //로컬 스토리지에 있는 값을 모두 지우고 로그인 페이지로 이동
+            window.localStorage.clear();
+            this.$router.push({name: 'login'})
+        },
+        //마이 페이지 이동
+        goMyPage() {
+            this.$router.push({name: 'myPage'})
+        },
+        //계정관리 페이지 이동
+        goAccount() {
+            this.$router.push({name: 'accountConfirm'})
         }
     }
 }
