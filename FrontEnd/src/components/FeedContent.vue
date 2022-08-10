@@ -1,7 +1,7 @@
 <template>
-    <div class="feed-wrap">
-        <FeedHeader />
-        <div>
+    <div>
+      <FeedHeader />
+      <div class="feed-wrap">
             <div class="feed-flex" v-if="feedList.length">
                 <div v-for="(feed, index) in feedList" :key="index" class="feed-div">
                     <div class="flex">
@@ -14,16 +14,25 @@
                             <span>{{feed.viewBoardResponseDto.boardRegDatetime.substring(0,10)}}</span>
                         </div>
                     </div>
-                    <div class="flex">
+                    <div class="flex body">
                         <div class="content-body">
-                            <div v-if="feed.viewBoardResponseDto.pollYn">
-                                <h3>{{feed.pollResponse.question}}</h3>
+                            <div v-if="feed.viewBoardResponseDto.pollYn" class="poll-body">
+                              <table>
+                                <tr class="poll-title">
+                                  <th>{{feed.pollResponse.question}}</th>
+                                </tr>
+                                <tr class="poll-choice" v-for="(choice, index) in feed.pollResponse.choices" :key="index">
+                                  <td>{{choice.text}}</td>
+                                  <td><img class="poll-image" src="@/assets/images/person.svg" alt="user image">{{choice.voteCount}}</td>
+                                </tr>
+                              </table>
+                                <!-- <h3>{{feed.pollResponse.question}}</h3>
                                 <div v-for="(choice, index) in feed.pollResponse.choices" :key="index">
                                     <div>
                                         <span>{{choice.text}}</span>
                                         <span>{{choice.voteCount}}</span>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                             <div v-else-if="feed.viewBoardResponseDto.boardMediaYn">
                                 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
@@ -54,7 +63,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex">
+                    <div class="flex reaction">
                         <div class="content-cnt">
                             <img v-if="feed.boardLiked" :src="like" @click="unlikeButton" class="like-icon">
                             <img v-else :src="unlike" @click="likeButton">
@@ -72,10 +81,9 @@
                 <h3>등록된 게시글이 없습니다</h3>
             </div>
         </div>
-        <div class="flex">
+      <div class="flex">
             <button @click="goBoardCreate" style="color: red">글 작성</button>
         </div>
-
     </div>
 </template>
 <script>
@@ -168,23 +176,110 @@ export default {
 
 </script>
 <style lang="scss">
+p {
+  margin: 0;
+}
+.content-header {
+  display: flex;
+  justify-content: space-around;
+  margin: 10px 0 10px 0;
+}
+.flex {
+  &.body {
+    // width: 500px;
+    border: 1px solid black;
+    padding: 10px;
+    height: 250px;
+    margin: 0 auto;
+  }
+}
+// .content-body {
+//   width: 500px;
+// }
 .famliy-callsign {
     display: inline-block;
 }
+// content
 .feed-wrap {
-  height: 100%;
-  width: 900px;
-    .flex{
+  max-width: 900px;
+  margin: 0 auto;
+}
+// flexbox
+.feed-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+// item
+.feed-div {
+  min-height: 300px;
+  flex-basis: 600px;
+  flex-grow: 1;
+  margin: 0 auto;
+  border-bottom: 2px solid #AE5F40;
+  border-top: 2px solid #AE5F40;
+}
+.feed-flex > *{
+    flex-grow: 0;
+}
+.flex {
+  &.reaction {
     display: flex;
-    justify-content: center;
-    text-align: center;
-    }
-    .feed-flex {
-        .feed-div {
-            width: 600px;
-            margin: 0 auto;
-            border: 1px solid black;
-        }
-    }
+    // border: 1px solid black;
+  }
+}
+// .poll-body {
+//   border: 1px solid black;
+//   padding: 10px;
+// }
+// .feed-wrap {
+//   height: 100%;
+//   width: 900px;
+//     .flex{
+//     display: flex;
+//     justify-content: center;
+//     text-align: center;
+//     }
+//     // .feed-flex {
+//     //     .feed-div {
+//     //         width: 600px;
+//     //         margin: 0 auto;
+//     //         border: 1px solid black;
+//     //     }
+//     // }
+//     .feed-flex {
+//         display: flex;
+//         justify-content: center;
+//         flex-wrap: wrap;
+//         .feed-div {
+//             position: relative;
+//             width: 500px;
+//             border: 1px solid black;
+//             height: 210px;
+//             text-align: center;
+//             margin: 20px auto 20px auto;
+//         }
+//     }
+// }
+//투표
+.poll-title {
+  th {
+    font-size: 23px;
+  }
+}
+.poll-choice {
+  td {
+    border: 1px solid black;
+  }
+  :nth-child(1) {
+    border-right: none;
+  }
+  :nth-child(2) {
+    border-left: none;
+  }
+}
+table {
+  border-collapse: separate;
+  border-spacing: 0 10px;
 }
 </style>
