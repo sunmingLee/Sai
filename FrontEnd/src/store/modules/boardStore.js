@@ -81,6 +81,11 @@ const boardStore = {
           console.log(err)
         })
     },
+    setBoardId ({ commit }, boardId) {
+      // console.log('boardId: ' + boardId)
+      localStorage.setItem('boardId', boardId)
+      router.push({ name: 'feedDetail' })
+    },
     // 게시글 상세보기
     getOneFeed ({ commit }, info) {
       axios({

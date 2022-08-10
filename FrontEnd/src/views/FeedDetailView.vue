@@ -115,7 +115,7 @@ export default {
   },
   created () {
     // console.log(this.$route.params.boardId)
-    this.boardId = this.$route.params.boardId
+    this.boardId = localStorage.getItem('boardId')
     this.userId = localStorage.getItem('userId')
 
     // 게시글 상세보기
@@ -152,7 +152,7 @@ export default {
         pollId: this.feed.pollResponse.id,
         choiceId
       }
-      this.chooseVote(info)
+      // this.chooseVote(info)
     },
     // 댓글 작성
     postReply () {
