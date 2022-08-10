@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sai.model.dto.family.AnswerFamilyRegisterRequestDto;
-import com.sai.model.dto.family.FamilyCallsignDto;
 import com.sai.model.dto.family.FamilyDto;
 import com.sai.model.dto.family.FamilyRegisterDto;
 import com.sai.model.dto.family.InsertFamilyRegisterRequestDto;
 import com.sai.model.dto.family.ReturnFamilyIdDto;
 import com.sai.model.dto.family.UpdateFamilyRequestDto;
+import com.sai.model.dto.family.ViewFamilyCallsignResponseDto;
 import com.sai.model.service.FamilyService;
 
 import io.swagger.annotations.ApiOperation;
@@ -93,11 +93,12 @@ public class FamilyController {
 			@RequestBody AnswerFamilyRegisterRequestDto answerFamilyRegisterRequestDto) throws Exception {
 
 		try {
-			List<FamilyCallsignDto> familyCallsignDtos = familyService.responseApplication(userId,
-					answerFamilyRegisterRequestDto);
+			List<ViewFamilyCallsignResponseDto> viewFamilyCallsignResponseDtos = familyService
+					.responseApplication(userId, answerFamilyRegisterRequestDto);
 
-			if (familyCallsignDtos != null && familyCallsignDtos.size() > 0) {
-				return new ResponseEntity<List<FamilyCallsignDto>>(familyCallsignDtos, HttpStatus.OK);
+			if (viewFamilyCallsignResponseDtos != null && viewFamilyCallsignResponseDtos.size() > 0) {
+				return new ResponseEntity<List<ViewFamilyCallsignResponseDto>>(viewFamilyCallsignResponseDtos,
+						HttpStatus.OK);
 			} else {
 				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 			}
@@ -161,10 +162,11 @@ public class FamilyController {
 	public ResponseEntity<?> searchFamilyList(@PathVariable String userId) throws Exception {
 
 		try {
-			List<FamilyCallsignDto> familyCallsignDtos = familyService.searchFamilyList(userId);
+			List<ViewFamilyCallsignResponseDto> viewFamilyCallsignResponseDtos = familyService.searchFamilyList(userId);
 
-			if (familyCallsignDtos != null && familyCallsignDtos.size() > 0) {
-				return new ResponseEntity<List<FamilyCallsignDto>>(familyCallsignDtos, HttpStatus.OK);
+			if (viewFamilyCallsignResponseDtos != null && viewFamilyCallsignResponseDtos.size() > 0) {
+				return new ResponseEntity<List<ViewFamilyCallsignResponseDto>>(viewFamilyCallsignResponseDtos,
+						HttpStatus.OK);
 			} else {
 				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 			}
@@ -178,20 +180,13 @@ public class FamilyController {
 	@PutMapping("/modify")
 	public ResponseEntity<?> updateFamily(
 //			@RequestBody UpdateFamilyRequestDto updateFamilyRequestDto
-			@RequestPart UpdateFamilyRequestDto updateFamilyRequestDto
-			, @RequestPart MultipartFile file) throws Exception {
+			@RequestPart UpdateFamilyRequestDto updateFamilyRequestDto, @RequestPart MultipartFile file)
+			throws Exception {
 
 		try {
-//			UpdateFamilyVo returnUpdateFamilyVo = 
 			familyService.updateFamily(updateFamilyRequestDto, file);
+			return new ResponseEntity<Void>(HttpStatus.OK);
 
-//			if (returnUpdateFamilyVo != null) {
-//				return new ResponseEntity<UpdateFamilyVo>(returnUpdateFamilyVo, HttpStatus.OK);
-//			} else {
-//				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-//			}
-
-			return null;
 		} catch (Exception e) {
 			return exceptionHandling(e);
 		}
