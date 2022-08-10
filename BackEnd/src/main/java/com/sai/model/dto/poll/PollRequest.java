@@ -8,11 +8,14 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.sai.model.entity.Board;
+
 import lombok.Data;
 
 @Data
 public class PollRequest {
 	
+//	private Board board;
 	private long boardId;
 	
     @NotBlank

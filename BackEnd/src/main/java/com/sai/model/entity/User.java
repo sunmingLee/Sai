@@ -13,6 +13,8 @@ import javax.persistence.Table;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.sai.model.dto.user.UserInfoDTO;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +28,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 //public class User extends DateAudit {
-	public class User {
+public class User {
 
 	@Id
 	@Column(name = "user_id")
@@ -120,8 +122,29 @@ import lombok.NoArgsConstructor;
 		return this;
 	}
 
+	// 역할 확인
 	public String getRoleKey() {
 		return this.role.getKey();
+	}
+
+	// 추가정보 입력
+	public User addUserinfo(UserInfoDTO userInfoDTO) {
+		if (userInfoDTO.getBirthday() != null)
+			this.birthday = userInfoDTO.getBirthday();
+
+		if (userInfoDTO.getLunar() != null)
+			this.lunar = userInfoDTO.getLunar();
+
+		if (userInfoDTO.getUserMessage() != null)
+			this.userMessage = userInfoDTO.getUserMessage();
+		return this;
+	}
+
+	// 프로필 사진 넣기
+	public void updateUserImage(String originalName, String thumbnailPath, String fileType) {
+		this.userImageName = originalName;
+		this.userImagePath = thumbnailPath;
+		this.userImageType = fileType;
 	}
 
 }

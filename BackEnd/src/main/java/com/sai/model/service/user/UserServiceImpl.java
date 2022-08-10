@@ -1,13 +1,19 @@
 package com.sai.model.service.user;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sai.exception.poll.ResourceNotFoundException;
 import com.sai.jwt.JwtTokenProvider;
@@ -24,11 +30,16 @@ import com.sai.model.repository.UserRepository;
 import com.sai.model.service.MailService;
 
 import lombok.RequiredArgsConstructor;
+import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.geometry.Positions;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class UserServiceImpl implements UserService {
+	
+	@Value("${spring.servlet.multipart.location}" + "\\user")
+	private String uploadPath;
 
 	private final UserRepository userRepository;
 	private final FamilyRegisterRepository familyRegisterRepository;
@@ -65,19 +76,63 @@ public class UserServiceImpl implements UserService {
 	}
 
 	// 회원정보 추가 혹은 수정
-	public String addUserInfo(UserInfoDTO addInfo) {
+	@Override
+	public String addUserInfo(UserInfoDTO addInfo, MultipartFile file) {
+		
+		User user = userRepository.findByUserId(addInfo.getUserId()).get();
+		
+		user.addUserinfo(addInfo);
 
-		UserDto userDto = modelMapper.map(userRepository.findByUserId(addInfo.getUserId()), UserDto.class);
+//		UserDto userDto = modelMapper.map(user, UserDto.class);
 
-		userDto.setBirthday(addInfo.getBirthday());
-		userDto.setLunar(addInfo.getLunar());
-		userDto.setUserImagePath(addInfo.getUserImagePath());
-		userDto.setUserImageName(addInfo.getUserImageName());
-		userDto.setUserImageType(addInfo.getUserImageType());
-		userDto.setUserMessage(addInfo.getUserMessage());
+//		userDto.setBirthday(addInfo.getBirthday());
+//		userDto.setLunar(addInfo.getLunar());
+//		userDto.setUserMessage(addInfo.getUserMessage());
+//		userDto.setUserImagePath(addInfo.getUserImagePath());
+//		userDto.setUserImageName(addInfo.getUserImageName());
+//		userDto.setUserImageType(addInfo.getUserImageType());
 
-		userRepository.save(modelMapper.map(userDto, User.class));
+//		userRepository.save(modelMapper.map(userDto, User.class));
+		
+		// 유저 이미지 업로드
+		if(!file.isEmpty()) {
+			// 폴더 생성
+			File uploadPathFolder = new File(uploadPath);
+			if(!uploadPathFolder.exists()) {
+				uploadPathFolder.mkdirs();
+			}
+			// 이미 있는 이미지 삭제
+			String existingPath = user.getUserImagePath();
+			if (existingPath != null) {
+				File existingImage = new File(existingPath);
+				if(existingImage.exists()) {
+					existingImage.delete();
+				}
+			}
+			// 새로운 이미지 생성
+			String fileType = file.getContentType();
+			String OriginalName = file.getOriginalFilename();
+			String fileName = OriginalName.substring(OriginalName.lastIndexOf('\\') + 1);
+			String saveName = UUID.randomUUID().toString() + "_" + fileName;
+			String thumbnailPath = uploadPath + File.separator + saveName;
+			try {
+				File convFile = new File(OriginalName);
+				convFile.createNewFile();
+				FileOutputStream fos = new FileOutputStream(convFile);
+				fos.write(file.getBytes());
+				fos.close();
 
+				File thumbnailFile = new File(thumbnailPath);
+				Thumbnails.of(convFile).size(500, 500).crop(Positions.CENTER).toFile(thumbnailFile);
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			user.updateUserImage(OriginalName, thumbnailPath, fileType);
+		}
+			userRepository.save(user);
+		
 		return "유저 정보 추가 성공";
 	}
 
@@ -258,5 +313,14 @@ public class UserServiceImpl implements UserService {
 
 		return result;
 	}
+	
+	private String makeFolder(String userId) {
+		File uploadPathFolder = new File(uploadPath, userId);
+		if (!uploadPathFolder.exists())
+			uploadPathFolder.mkdirs();
+
+		return userId;
+	}
+
 
 }

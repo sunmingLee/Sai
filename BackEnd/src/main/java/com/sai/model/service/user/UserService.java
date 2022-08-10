@@ -2,6 +2,8 @@ package com.sai.model.service.user;
 
 import java.util.HashMap;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.sai.model.dto.user.LoginUserRequestDto;
 import com.sai.model.dto.user.LoginUserResponseDto;
 import com.sai.model.dto.user.UserDto;
@@ -17,7 +19,7 @@ public interface UserService {
 	// 직접 회원 가입
 	public String insertUser(UserDto userInfo);
 	// 회원 정보 추가
-	public String addUserInfo(UserInfoDTO addInfo);
+	public String addUserInfo(UserInfoDTO addInfo,  MultipartFile file);
 	// 사용자 정보 조회
 	public UserDto getUserInfoByUserId(String userId);
 	// 사용자 비밀번호 검증
@@ -32,6 +34,5 @@ public interface UserService {
 	public HashMap<String, Object> findUserId(UserDto user);
 	// 비밀번호 찾기
 	public HashMap<String, Object> findUserPw(UserDto user);
-//	public Optional<UserDto> getUser(String userId);
 
 }
