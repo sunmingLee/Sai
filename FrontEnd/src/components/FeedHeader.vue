@@ -1,7 +1,5 @@
 <template>
     <div class="header">
-        <div>
-        </div>
         <div class="flex" style="width: 200px">
             <div class="family-image" v-if="familyInfo.familyImagePath !== null">
                 <img :src="familyInfo.familyImagePath">
@@ -16,7 +14,7 @@
                 </div>
             </div>
         </div>
-        <div class="flex">
+        <div class="flex right">
             <!-- 유저 사진 -->
             <div v-if="userInfo.userImagePath === null" id="drop">
                 <img src="@/assets/images/person-circle.svg" alt="user" style="width:28px">
@@ -25,8 +23,10 @@
                 <img src="@/assets/images/alert-on-svgrepo-com.svg" alt="calendar" style="width: 28px">
             </div>
             <!-- <router-link :to="{name : 'detailreview'}">상세보기</router-link> -->
-            <div>
+            <div class="mymenu-wrap">
                 <ul>
+                    <li>{{userInfo.userName}}</li>
+                    <hr>
                     <li @click="goMyPage">내 페이지</li>
                     <li @click="goAccount">계정관리</li>
                     <li @clcick="logout">로그아웃</li>
@@ -98,15 +98,17 @@ export default {
 <style lang="scss" scoped>
 .header {
     top: 0;
-    padding-left: 5%;
-    padding-right: 5%;
+    padding: 0 5%;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 5%;
+    margin: 5% 0 2% 0;
     .flex {
         display: flex;
         justify-content: space-evenly;
+        &.right {
+            justify-content: flex-end
+        }
     }
 }
 .family-image {
@@ -121,5 +123,21 @@ export default {
   color: #7B371C;
   font-size: 20px;
   font-weight: bold;
+}
+//유저 메뉴
+.mymenu-wrap {
+    display: none;
+    border: 1px solid #F0EAE3;
+    background-color: #F0EAE3;
+    ul {
+        margin: 0;
+        padding: 0;
+    }
+    li {
+        text-align: center;
+    }
+    hr {
+        margin: 0;
+    }
 }
 </style>

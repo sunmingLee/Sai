@@ -1,6 +1,6 @@
 <template>
-    <div>
-      <FeedHeader />
+  <FeedHeader />
+    <div style="height: 100%">
       <div class="feed-wrap">
             <div class="feed-flex" v-if="feedList.length">
                 <div v-for="(feed, index) in feedList" :key="index" class="feed-div">
@@ -39,7 +39,7 @@
                                     <div class="carousel-inner" >
                                         <div class="carousel-item active">
                                             <!-- {{feed.viewBoardMediaResponseDto[0].boardMediaPath}} -->
-                                            <img :src="url + feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100">
+                                            <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100">
                                         </div>
                                         <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index">
                                             <!-- {{feed.viewBoardMediaResponseDto[index].boardMediaPath}} -->
@@ -66,24 +66,26 @@
                     <div class="flex reaction">
                         <div class="content-cnt">
                             <img v-if="feed.boardLiked" :src="like" @click="unlikeButton" class="like-icon">
-                            <img v-else :src="unlike" @click="likeButton">
+                            <img v-else :src="unlike" @click="likeButton" class="like-icon">
                             {{feed.viewBoardResponseDto.boardLikeCnt}}
                         </div>
                         <div class="content-reply">
-                            <img src="@/assets/images/comment-regular.svg" alt="calendar" style="width: 18px">
+                            <img src="@/assets/images/comment-regular.svg" alt="calendar" class="reply-icon">
                             {{feed.viewBoardResponseDto.boardReplyCnt}}
                         </div>
+                        <div class="detail-button">
+                          <Button buttonClass="small information" buttonText="상세보기" @click="goDetail(feed.viewBoardResponseDto.boardId)"></Button>
+                        </div>
                     </div>
-                    <Button buttonClass="small information" buttonText="상세보기" @click="goDetail(feed.viewBoardResponseDto.boardId)"></Button>
                 </div>
             </div>
             <div v-else>
                 <h3>등록된 게시글이 없습니다</h3>
             </div>
         </div>
-      <div class="flex">
-            <button @click="goBoardCreate" style="color: red">글 작성</button>
-        </div>
+      <button id="btn-modal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="goBoardCreate">
+        <img style="width:25px;" src="@/assets/images/plus-lg.svg" alt="plus">
+      </button>
     </div>
 </template>
 <script>
@@ -122,9 +124,6 @@ export default {
   computed: {
     ...mapState(boardStore, ['feedList']),
     ...mapState(familyStore, ['familyCallsignList']),
-    url () {
-      return 'i7a305.p.ssafy.io:8080'
-    }
   },
   methods: {
     ...mapActions(userStore, ['checkUserInfo']),
@@ -176,14 +175,22 @@ export default {
 
 </script>
 <style lang="scss">
+li {
+  list-style: none;
+}
 p {
   margin: 0;
 }
+
+//콜사인과 날짜
 .content-header {
+  font-weight: bold;
   display: flex;
   justify-content: space-around;
   margin: 10px 0 10px 0;
 }
+
+//글, 사진, 투표의 공간
 .flex {
   &.body {
     // width: 500px;
@@ -191,13 +198,10 @@ p {
     padding: 10px;
     height: 250px;
     margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
-}
-// .content-body {
-//   width: 500px;
-// }
-.famliy-callsign {
-    display: inline-block;
 }
 // content
 .feed-wrap {
@@ -213,8 +217,8 @@ p {
 // item
 .feed-div {
   min-height: 300px;
+  //항목의 초기 길이 -> 이 div의 처음 길이(너비)는 600px
   flex-basis: 600px;
-  flex-grow: 1;
   margin: 0 auto;
   border-bottom: 2px solid #AE5F40;
   border-top: 2px solid #AE5F40;
@@ -222,45 +226,30 @@ p {
 .feed-flex > *{
     flex-grow: 0;
 }
+
+//좋아요, 댓글, 상세보기
 .flex {
   &.reaction {
     display: flex;
+    padding: 10px;
     // border: 1px solid black;
+    // .detail-button {
+    //   margin-left: 375px;
+    // }
   }
-}
-// .poll-body {
-//   border: 1px solid black;
-//   padding: 10px;
-// }
-// .feed-wrap {
-//   height: 100%;
-//   width: 900px;
-//     .flex{
-//     display: flex;
-//     justify-content: center;
-//     text-align: center;
-//     }
-//     // .feed-flex {
-//     //     .feed-div {
-//     //         width: 600px;
-//     //         margin: 0 auto;
-//     //         border: 1px solid black;
-//     //     }
-//     // }
-//     .feed-flex {
-//         display: flex;
-//         justify-content: center;
-//         flex-wrap: wrap;
-//         .feed-div {
-//             position: relative;
-//             width: 500px;
-//             border: 1px solid black;
-//             height: 210px;
-//             text-align: center;
-//             margin: 20px auto 20px auto;
-//         }
-//     }
-// }
+  .content-cnt {
+    padding-right: 20px;
+    .like-icon {
+      width: 25px;
+    }
+  }
+  .content-reply {
+    padding-right: 20px;
+    .reply-icon {
+      width: 25px;
+    }
+  }
+} 
 //투표
 .poll-title {
   th {
@@ -281,5 +270,25 @@ p {
 table {
   border-collapse: separate;
   border-spacing: 0 10px;
+}
+
+//글 작성 버튼
+.btn{
+    height: 40px;
+    &-primary{
+    --bs-btn-bg: #7b371c;
+    --bs-btn-border-color: #7b371c;
+    --bs-btn-hover-bg: #54210d;
+    --bs-btn-hover-border-color: #54210d;
+    --bs-btn-focus-shadow-rgb: none;
+    }
+    &#btn-modal{
+        position: absolute;
+        right: 10%;
+        bottom: 10%;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+    }
 }
 </style>
