@@ -1,7 +1,8 @@
 <template>
   <div class="add-info-wrap">
      <HeaderTitle title="내 정보"></HeaderTitle>
-    <img class="profile img-thumbnail" src="@/assets/images/user-solid.svg" alt="user image">
+    <img v-if="srcList[0] == null" class="profile img-thumbnail" src="@/assets/images/user-solid.svg" alt="user image">
+    <img v-else-if="srcList[0] !== null" class="profile img-thumbnail" :src="srcList[0]" alt="user image">
     <!-- <label class="form-label" for="customFile">Default file input example</label> -->
     <input type="file" class="form-control" id="customFile" @change="fileCheck"/>
     <div class="date">
@@ -69,6 +70,7 @@ export default {
   data () {
     return {
       addInfo: {
+        userId: '',
         radioValues: '',
         userMessage: '',
         date: new Date()
@@ -79,6 +81,10 @@ export default {
       srcList: [],
       fileList: []
     }
+  },
+  created () {
+    // 유저 정보 조회
+    this.addInfo.userId = localStorage.getItem('userId')
   },
   computed: {
     // ...mapState(userStore, [isAddInfo])
@@ -95,9 +101,11 @@ export default {
     changeFile () {
       const fileInput = document.getElementById('customFile')
       // 선택한 파일의 정보
-      const file = fileInput.file
+      const files = fileInput.files
 
       // heic 파일 확장자 변경
+      const file = files[0]
+
       let heicFile = ''
       // 파일의 확장자가 heic일 경우
       if (file.name.split('.')[1] === 'heic') {
@@ -136,6 +144,7 @@ export default {
 
       Object.assign(userInfo, this.addInfo)
       if (this.isProfilePic) {
+        console.log(fileList)
         this.addUserInfo({ userInfo, fileList })
       } else {
         this.addUserInfo({ userInfo })
