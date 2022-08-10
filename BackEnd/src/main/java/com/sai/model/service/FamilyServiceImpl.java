@@ -1,13 +1,16 @@
 package com.sai.model.service;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
@@ -126,20 +129,16 @@ public class FamilyServiceImpl implements FamilyService {
 		FamilyRegister findFamilyRegister = familyRegisterRepository
 				.findById(answerFamilyRegisterRequestDto.getFamilyRegisterId()).get();
 		if (answerFamilyRegisterRequestDto.getApproveYn()) { // 수락이면 가족에 추가, 가족 호칭 추가, 신청 레코드 삭제
-			// 1. 유저 가족ID 변경
 
 			Family family = findFamilyRegister.getFamily();
 			User user = findFamilyRegister.getUser();
-			family.addUser(user);
-			userRepository.save(user);
-			familyRepository.save(family);
 
-			// 2. 가족 호칭 추가
+			// 1. 가족 호칭 추가
 
 			List<User> toUsers = family.getUsers();
 			for (User toUser : toUsers) {
-				if (user.equals(toUser))
-					continue;
+//				if (user.getUserId().equals(toUser.getUserId()))
+//					continue;
 				// 내가 부르는 경우
 				FamilyCallsign callsign1 = FamilyCallsign.builder().fromUser(user).toUser(toUser)
 						.callsign(toUser.getUserName()).build();
@@ -153,6 +152,11 @@ public class FamilyServiceImpl implements FamilyService {
 			FamilyCallsign callsign3 = FamilyCallsign.builder().fromUser(user).toUser(user).callsign(user.getUserName())
 					.build();
 			familyCallsignRepository.save(callsign3);
+
+			// 2. 유저 가족ID 변경
+			family.addUser(user);
+			userRepository.save(user);
+			familyRepository.save(family);
 
 			// 3. 신청 레코드 삭제
 			familyRegisterRepository.delete(findFamilyRegister);
@@ -237,14 +241,17 @@ public class FamilyServiceImpl implements FamilyService {
 			String thumbnailPath = uploadPath + File.separator + saveName;
 
 			try {
-				File convFile = new File(OriginalName);
-				convFile.createNewFile();
-				FileOutputStream fos = new FileOutputStream(convFile);
-				fos.write(file.getBytes());
-				fos.close();
+//				File convFile = new File(OriginalName);
+//				convFile.createNewFile();
+//				FileOutputStream fos = new FileOutputStream(convFile);
+//				fos.write(file.getBytes());
+//				fos.close();
+				
+				InputStream in = file.getInputStream();
+				BufferedImage originalImage = ImageIO.read(in);
 
 				File thumbnailFile = new File(thumbnailPath);
-				Thumbnails.of(convFile).size(500, 500).crop(Positions.CENTER).toFile(thumbnailFile);
+				Thumbnails.of(originalImage).size(500, 500).crop(Positions.CENTER).toFile(thumbnailFile);
 
 			} catch (IOException e) {
 				e.printStackTrace();

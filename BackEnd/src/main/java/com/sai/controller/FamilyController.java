@@ -180,7 +180,8 @@ public class FamilyController {
 	@PutMapping("/modify")
 	public ResponseEntity<?> updateFamily(
 //			@RequestBody UpdateFamilyRequestDto updateFamilyRequestDto
-			@RequestPart UpdateFamilyRequestDto updateFamilyRequestDto, @RequestPart MultipartFile file)
+			@RequestPart UpdateFamilyRequestDto updateFamilyRequestDto
+			, @RequestPart MultipartFile file)
 			throws Exception {
 
 		try {
