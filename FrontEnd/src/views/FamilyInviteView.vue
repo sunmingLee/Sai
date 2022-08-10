@@ -2,7 +2,7 @@
     <div class="family-wrap">
         <HeaderTitle hasBack=true title="가족들을 불러볼까요?"/>
         <div class="flex">
-            <GuideMessage guide="회원님의 가족 코드입니다." guide2="가족들과 클로저를 함께하세요."/>
+            <GuideMessage guide="회원님의 가족 코드입니다." guide2="가족들과 사이를 함께하세요."/>
         </div>
         <div class="flex">
             <div class="code-wrap">

@@ -1,6 +1,6 @@
 <template>
   <div class="join-wrap">
-    <HeaderTitle class="header" title="회원가입"/>
+    <HeaderTitle hasBack="true" class="header" title="회원가입"/>
     <br>
     <form id="join-form">
       <div class="input-wrap">
