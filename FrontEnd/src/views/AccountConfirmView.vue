@@ -1,10 +1,12 @@
 <template>
-    <div class="flex-wrap">
-        <HeaderTitle title="계정 관리"/>
-        <div class="input-wrap">
+    <div class="account-wrap">
+        <HeaderTitle :hasBack=true title="계정 관리"/>
+        <div class="flex">
             <InputBox inputSelect="input-box" :hasLabel="true" labelName="비밀번호" inputType="password" @inputCheck="inputPassword"/>
         </div>
-        <Button buttonClass="small positive" buttonText="확인" @click="confirmPassword"/>
+        <div class="flex">
+          <Button buttonClass="small positive" buttonText="확인" @click="confirmPassword"/>
+        </div>
     </div>
 </template>
 <script>
@@ -46,3 +48,14 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.account-wrap {
+  width: 900px;
+
+  .flex{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+  }
+}
+</style>

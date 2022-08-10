@@ -10,6 +10,7 @@ import boardStore from './modules/boardStore.js'
 import joinStore from './modules/joinStore.js'
 import notificationStore from './modules/notificationStore.js'
 import albumStore from './modules/albumStore.js'
+import memoStore from './modules/memoStore.js'
 
 const store = new Vuex.Store({
   state: {
@@ -26,7 +27,8 @@ const store = new Vuex.Store({
     boardStore,
     notificationStore,
     joinStore,
-    albumStore
+    albumStore,
+    memoStore
   },
   plugins: [
     // createPersistedState({
@@ -34,6 +36,5 @@ const store = new Vuex.Store({
       // storage: sessionStorage
     // })
   ]
-
 })
 export default store
