@@ -10,6 +10,12 @@
             <button class="lightpink-button" value="LightPink" @click="colorChange"/>
             <button class="lightblue-button" value="LightBlue" @click="colorChange"/>
         </div>
+        <div class="color-select">
+            <button class="purple-button" value="Purple" @click="colorChange"/>
+            <button class="orange-button" value="Orange" @click="colorChange"/>
+            <button class="lightpink-button" value="LightPink" @click="colorChange"/>
+            <button class="lightblue-button" value="LightBlue" @click="colorChange"/>
+        </div>
         <Button buttonClass="small positive" buttonText="등록" @click="addMeMo"/>
         <!-- <input type="button" id="clear_button" value="스티키 노트 전부 삭제"> --> 
     </div>
@@ -53,43 +59,57 @@ export default {
         addMeMo() {
             //글 내용
             const content = document.getElementById('memo-text').value
-            //가족 아이디와 유저 아이디
-            const familyId = localStorage.getItem('familyId')
-            const userId = localStorage.getItem('userId')
-            const createMemoRequestDto = {
-                familyId : familyId,
-                userId: userId,
-                color: this.color,
-                memoContent: content
+            if(content === '') {
+                alert('내용을 입력해주세요')
+            } else {
+                //가족 아이디와 유저 아이디
+                const familyId = localStorage.getItem('familyId')
+                const userId = localStorage.getItem('userId')
+                const createMemoRequestDto = {
+                    familyId : familyId,
+                    userId: userId,
+                    color: this.color,
+                    memoContent: content
+                }
+                this.createMemo(createMemoRequestDto)
             }
-
-            this.createMemo(createMemoRequestDto)
         }
     },
 }
 </script>
 <style lang="scss" scoped>
 .color-select {
+    display: flex;
+    justify-content: space-around;
     button {
         width: 50px;
         height: 47px;
         border-radius: 27px;
     }
     .lightgoldenrodyellow-button {
-        background-color: lightgoldenrodyellow;
-        border: 1px solid rgb(188, 188, 90);
+        // #FFC24B;
+        background-color: moccasin;
+        border: 1px solid rgb(248, 203, 125);
     }
     .palegreen-button {
         background-color: palegreen;
-        border: 1px solid rgb(65, 159, 65);
+        border: 1px solid rgb(91, 236, 91);
     }
     .lightpink-button {
         background-color: lightpink;
-        border: 1px solid rgb(163, 68, 83);
+        border: 1px solid rgb(247, 136, 152);
     }
     .lightblue-button {
         background-color: lightblue;
-        border: 1px solid rgb(74, 140, 162);
+        border: 1px solid rgb(74, 191, 230);
+    }
+    .purple-button {
+        background-color: #b9b7fc;
+        border: 1px solid #9b98fd;
+    }
+    .orange-button {
+        background-color: #F28D52;
+        border: 1px solid #ee7f3e
     }
 }
 textarea {
@@ -97,24 +117,34 @@ textarea {
     resize: none;
     text-align: center;
     &.LightGoldenRodYellow {
-        background-color: lightgoldenrodyellow;
-        outline-color: rgb(188, 188, 90);
-        border: 1px solid rgb(188, 188, 90);
+        background-color: moccasin;
+        border: 1px solid rgb(248, 203, 125);
+        outline-color: rgb(248, 203, 125);
     }
     &.PaleGreen {
         background-color: palegreen;
-        outline-color: rgb(65, 159, 65);
-        border: 1px solid rgb(65, 159, 65);
+        outline-color: rgb(91, 236, 91);
+        border: 1px solid rgb(91, 236, 91);
     }
     &.LightPink {
         background-color: lightpink;
-        outline-color: rgb(163, 68, 83);
-        border: 1px solid rgb(163, 68, 83);
+        outline-color: rgb(247, 136, 152);
+        border: 1px solid rgb(247, 136, 152);
     }
     &.LightBlue {
         background-color: lightblue;
-        outline-color: rgb(74, 140, 162);
-        border: 1px solid rgb(74, 140, 162);
+        outline-color: rgb(74, 191, 230);
+        border: 1px solid rgb(74, 191, 230);
+    }
+    &.Purple {
+        background-color: #b9b7fc;
+        outline-color: #9b98fd;
+        border: 1px solid #9b98fd;
+    }
+    &.Orange {
+        background-color: #F28D52;
+        outline-color: #ee7f3e;
+        border: 1px solid #ee7f3e;
     }
 }
 

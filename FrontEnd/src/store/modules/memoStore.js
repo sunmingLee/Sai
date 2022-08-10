@@ -53,6 +53,19 @@ const albumStore = {
       .catch((err) => {
         console.log(err)
       })
+    },
+    //메모 삭제
+    async deleteMemo({commit}, memoId) {
+      await axios({
+        url: api_url + `/${memoId}`,
+        method: 'DELETE'
+      })
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     }
     // 앨범 리스트 조회
   //   getFolderList ({ commit }, familyId) {

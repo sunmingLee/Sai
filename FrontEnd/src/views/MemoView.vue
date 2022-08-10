@@ -10,7 +10,8 @@
                 <div :class="memo.color">
                     <span>{{memoAllList[index].memoContent}}</span>
                 </div>
-                <Button buttonClass="small negative" buttonText="삭제" @click="delMemo"/>
+                <button type="button" class="btn-close" aria-label="Close" @click="removeMemo(memo.memoId)"></button>
+                <!-- <Button buttonClass="small negative" buttonText="삭제" @click="delMemo"/> -->
             </div>
         </div>
         <BottomTap></BottomTap>
@@ -19,6 +20,7 @@
 <script>
 import BottomTap from '@/components/common/BottomTap.vue'
 import HeaderTitle from '@/components/common/HeaderTitle.vue'
+import Button from '@/components/common/Button.vue'
 import { mapState, mapActions } from 'vuex'
 const memoStore = 'memoStore'
 
@@ -26,7 +28,8 @@ export default {
     name: 'MemoView',
     components: {
         HeaderTitle,
-        BottomTap
+        BottomTap,
+        Button
     },
     data () {
         return {
@@ -45,12 +48,13 @@ export default {
         ...mapState(memoStore, ['memoAllList'])
     },
     methods: {
-        ...mapActions(memoStore, ['createMemo', 'getMemoAllList']),
+        ...mapActions(memoStore, ['createMemo', 'getMemoAllList', 'deleteMemo']),
         //메모 색상 바꾸기
         memoColor(e) {
             this.color = e.target.value
             console.log(this.color)
         },
+        //메모 등록
         addMeMo() {
             //글 내용
             const content = document.getElementById('memo-text').value
@@ -63,13 +67,26 @@ export default {
                 color: this.color,
                 memoContent: content
             }
-
             this.createMemo(createMemoRequestDto)
+        },
+        //메모 삭제
+        removeMemo(memoId) {
+            this.deleteMemo(memoId)
+            window.location.reload(true);
         }
+        //
     },
 }
 </script>
 <style lang="scss" scoped>
+.btn-close{
+    position: absolute;
+    top: 5%;
+    right: 5%;
+}
+.memo-wrap {
+    background-color: rgb(200, 200, 200);
+}
 .memo-wrap {
   width: 900px;
 
@@ -87,8 +104,8 @@ export default {
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
-        height: 100%;
         .content-wrap {
+            position: relative;
             width: 235px;
             height: 210px;
             text-align: center;
@@ -125,9 +142,17 @@ export default {
                 background-color: lightblue;
                 border: 1px solid rgb(74, 140, 162);
             }
+            .Orange {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 210px;
+                background-color: #F28D52;
+                border: 1px solid #ee7f3e;
+            }
             span {
-                // width: 235px;
-                // height: 210x;
+                width: 235px;
+                height: 210x;
             }
         }
     }
