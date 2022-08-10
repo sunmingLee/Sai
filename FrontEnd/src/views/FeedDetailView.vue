@@ -4,7 +4,7 @@
     <!-- 글 작성자 & 버튼 -->
     <div class="feed-head-wrap">
       <div v-for="(callsign, index) in familyCallsignList" :key="index">
-        <div v-if="this.userId === callsign.toUserId">
+        <div v-if="feed.viewBoardResponseDto.userId === callsign.toUserId">
           <FeedUser :name="callsign.callsign"></FeedUser>
         </div>
       </div>
@@ -12,8 +12,18 @@
       <span style="width: 5px"></span>
       <Button style="margin-right:5%" buttonClass="small negative" buttonText="삭제" @click="eraseFeed"></Button>
     </div>
+    <!-- 투표 -->
+    <div class="poll-wrap" v-if="feed.viewBoardResponseDto.pollYn">
+        <h3>{{feed.pollResponse.question}}</h3>
+        <div v-for="(choice, index) in feed.pollResponse.choices" :key="index">
+            <div @click="choose(choice.id)">
+                <span>{{choice.text}}</span>
+                <span>{{choice.voteCount}}</span>
+            </div>
+        </div>
+    </div>
     <!-- 캐러셀 -->
-    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+    <div v-if="feed.viewBoardResponseDto.boardMediaYn" id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
       <div class="carousel-inner">
         <div class="carousel-item active">
           <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100" alt="...">
@@ -105,7 +115,7 @@ export default {
   },
   created () {
     // console.log(this.$route.params.boardId)
-    this.boardId = this.$route.params.boardId
+    this.boardId = localStorage.getItem('boardId')
     this.userId = localStorage.getItem('userId')
 
     // 게시글 상세보기
@@ -126,7 +136,7 @@ export default {
     ...mapState(familyStore, ['familyCallsignList'])
   },
   methods: {
-    ...mapActions(boardStore, ['getOneFeed', 'deleteFeed', 'getReplyList', 'createReply', 'updateReply', 'deleteReply']),
+    ...mapActions(boardStore, ['getOneFeed', 'deleteFeed', 'getReplyList', 'createReply', 'updateReply', 'deleteReply', 'chooseVote']),
     ...mapActions(familyStore, ['callsignList']),
     // 게시글 수정
     goUpdate () {
@@ -135,6 +145,14 @@ export default {
     // 게시글 삭제
     eraseFeed () {
       this.deleteFeed(this.boardId)
+    },
+    // 투표 선택하기
+    choose (choiceId) {
+      const info = {
+        pollId: this.feed.pollResponse.id,
+        choiceId
+      }
+      // this.chooseVote(info)
     },
     // 댓글 작성
     postReply () {
@@ -185,6 +203,10 @@ export default {
 }
 .feed-head-wrap{
   display: flex;
+}
+.poll-wrap{
+  margin-top: 5%;
+  border: 1px solid
 }
 #carouselExampleIndicators{
   // max-width: ;

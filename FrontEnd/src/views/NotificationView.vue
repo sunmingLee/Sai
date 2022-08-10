@@ -12,16 +12,18 @@
           <button type="button" class="btn-close" aria-label="Close" @click="deleteNoti(noti.notiId)"></button>
           <span v-for="(callsign, index) in familyCallsignList" :key="index">
             <!-- 댓글 -->
-            <span v-if="noti.notiType === 'COMMENT'">
-              <span style="font-weight: bold;"> 댓글 </span>
-              <span v-if="noti.fromUser.userId === callsign.toUserId"> {{callsign.callsign}}님이 새로운 댓글을 달았습니다.</span>
-              <span style="float: right;">{{noti.notiDateTime}}</span>
-            </span>
-            <!-- 가족신청 -->
-            <span v-else-if="noti.notiType === 'FAMILYREGISTER'">
-              <span style="font-weight: bold;"> 가족신청 </span>
-              <span v-if="noti.fromUser.userId === callsign.toUserId"> {{callsign.callsign}}님이 가족 신청을 요청했습니다.</span>
-              <span style="float: right;">{{noti.notiDateTime}}</span>
+            <span v-if="noti.fromUser.userId === callsign.toUserId">
+              <span v-if="noti.notiType === 'COMMENT'">
+                <span style="font-weight: bold;"> 댓글 </span>
+                <span> {{callsign.callsign}}님이 새로운 댓글을 달았습니다.</span>
+                <span style="float: right;">{{noti.notiDateTime}}</span>
+              </span>
+              <!-- 가족신청 -->
+              <span v-else-if="noti.notiType === 'FAMILYREGISTER'">
+                <span style="font-weight: bold;"> 가족신청 </span>
+                <span> {{callsign.callsign}}님이 가족 신청을 요청했습니다.</span>
+                <span style="float: right;">{{noti.notiDateTime}}</span>
+              </span>
             </span>
           </span>
         </li>
@@ -68,8 +70,13 @@ export default {
     }
   },
   created () {
-    // this.$store.dispatch('notificationStore/readNotification', localStorage.getItem('userId'))
+    // 알림 읽음 처리
     this.readNotification(localStorage.getItem('userId'))
+
+    // 가족 콜사인 찾기
+    this.callsignList(localStorage.getItem('userId'))
+
+    // 알림 리스트 조회
     this.listNotification(this.pageInfo)
   },
   computed: {
@@ -78,6 +85,7 @@ export default {
   },
   methods: {
     ...mapActions(notificationStore, ['deleteNotification', 'deleteAllNotification', 'listNotification', 'readNotification', 'listNotification']),
+    ...mapActions(familyStore, ['callsignList']),
     // 알림 하나 삭제
     deleteNoti (notiId) {
       const info = {
