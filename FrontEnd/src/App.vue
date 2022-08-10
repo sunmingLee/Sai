@@ -7,6 +7,7 @@
 <style lang="scss">
 body {
   background-color: #fafafa;
+  height: 100vh;
 }
 
 * {

@@ -32,7 +32,7 @@ const notificationStore = {
         })
     },
     // 알림 리스트 조회
-    listNotification ({commit}, pageInfo) {
+    listNotification ({ commit }, pageInfo) {
       const params = {
         page: pageInfo.currentPage,
         size: pageInfo.perPage
@@ -53,13 +53,12 @@ const notificationStore = {
         })
     },
     // 알림 삭제
-    deleteNotification ({ commit }, notiId) {
-      axios.delete(api_url + `${notiId}`, { data: localStorage.userId })
+    deleteNotification ({ commit, dispatch }, info) {
+      axios.delete(api_url + `/${info.notiId}`, { data: localStorage.userId })
         .then((res) => {
           // console.log(res)
           if (res.status === 200) {
-            // 새로고침
-            router.go()
+            dispatch('listNotification', info.pageInfo)
           } else {
             alert(res.data.msg)
           }
@@ -69,13 +68,12 @@ const notificationStore = {
         })
     },
     // 알림 전체 삭제
-    deleteAllNotification ({ commit }) {
+    deleteAllNotification ({ commit, dispatch }, pageInfo) {
       axios.delete(api_url, { data: localStorage.userId })
         .then((res) => {
           // console.log(res)
           if (res.status === 200) {
-            // 새로고침
-            router.go()
+            dispatch('listNotification', pageInfo)
           } else {
             alert(res.data.msg)
           }

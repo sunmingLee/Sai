@@ -4,7 +4,6 @@
         <div>
             <div class="feed-flex" v-if="feedList.length">
                 <div v-for="(feed, index) in feedList" :key="index" class="feed-div">
-
                     <div class="flex">
                         <div class="content-header">
                             <div v-for="(callsign, index) in familyCallsignList" :key="index" class="famliy-callsign">
@@ -31,12 +30,12 @@
                                     <div class="carousel-inner" >
                                         <div class="carousel-item active">
                                             <!-- {{feed.viewBoardMediaResponseDto[0].boardMediaPath}} -->
-                                            <!-- <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100"> -->
+                                            <img :src="url + feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100">
                                         </div>
                                         <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index">
                                             <!-- {{feed.viewBoardMediaResponseDto[index].boardMediaPath}} -->
                                             <div v-if="index !== 0" class="carousel-item">
-                                                <!-- <img :src="src.boardMediaPath" id="img" class="d-block w-100"> -->
+                                                <img :src="url + src.boardMediaPath" id="img" class="d-block w-100">
                                             </div>
                                         </div>
                                     </div>
@@ -66,7 +65,7 @@
                             {{feed.viewBoardResponseDto.boardReplyCnt}}
                         </div>
                     </div>
-                    <button @click="goDetail(feed.viewBoardResponseDto.boardId)">상세보기</button>
+                    <Button buttonClass="small information" buttonText="상세보기" @click="goDetail(feed.viewBoardResponseDto.boardId)"></Button>
                 </div>
             </div>
             <div v-else>
@@ -81,6 +80,7 @@
 </template>
 <script>
 import { mapActions, mapState } from 'vuex'
+import Button from './common/Button.vue'
 
 const boardStore = 'boardStore'
 const userStore = 'userStore'
@@ -89,6 +89,7 @@ const familyStore = 'familyStore'
 export default {
   name: 'FeedContent',
   components: {
+    Button
   },
   created () {
     // 피드 조회
@@ -112,11 +113,14 @@ export default {
   },
   computed: {
     ...mapState(boardStore, ['feedList']),
-    ...mapState(familyStore, ['familyCallsignList'])
+    ...mapState(familyStore, ['familyCallsignList']),
+    url () {
+      return 'i7a305.p.ssafy.io:8080'
+    }
   },
   methods: {
     ...mapActions(userStore, ['checkUserInfo']),
-    ...mapActions(boardStore, ['feedAllList']),
+    ...mapActions(boardStore, ['feedAllList', 'setBoardId']),
     ...mapActions(familyStore, ['callsignList', 'getFamilyInfo']),
     // 좋아요 버튼 클릭
     likeButton () {
@@ -146,11 +150,9 @@ export default {
       this.$router.push({ name: 'feedCreate' })
     },
     // 글 상세보기 페이지 이동
-    goDetail () {
-      // this.$router.push({
-      //     name: "detailvideo",
-      //     params: { videoSeq: videoSeq },
-      // });
+    goDetail (boardId) {
+    //   console.log('들어가기 전: ' + boardId)
+      this.setBoardId(boardId)
     }
   },
   data () {
@@ -168,19 +170,19 @@ export default {
     display: inline-block;
 }
 .feed-wrap {
+  height: 100%;
   width: 900px;
-
-  .flex{
+    .flex{
     display: flex;
     justify-content: center;
     text-align: center;
-  }
-  .feed-flex {
-    .feed-div {
-        width: 600px;
-        margin: 0 auto;
-        border: 1px solid black;
     }
-  }
+    .feed-flex {
+        .feed-div {
+            width: 600px;
+            margin: 0 auto;
+            border: 1px solid black;
+        }
+    }
 }
 </style>
