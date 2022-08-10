@@ -4,7 +4,6 @@
         <div>
             <div class="feed-flex" v-if="feedList.length">
                 <div v-for="(feed, index) in feedList" :key="index" class="feed-div">
-
                     <div class="flex">
                         <div class="content-header">
                             <div v-for="(callsign, index) in familyCallsignList" :key="index" class="famliy-callsign">
@@ -31,12 +30,12 @@
                                     <div class="carousel-inner" >
                                         <div class="carousel-item active">
                                             <!-- {{feed.viewBoardMediaResponseDto[0].boardMediaPath}} -->
-                                            <!-- <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100"> -->
+                                            <img :src="url + feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100">
                                         </div>
                                         <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index">
                                             <!-- {{feed.viewBoardMediaResponseDto[index].boardMediaPath}} -->
                                             <div v-if="index !== 0" class="carousel-item">
-                                                <!-- <img :src="src.boardMediaPath" id="img" class="d-block w-100"> -->
+                                                <img :src="url + src.boardMediaPath" id="img" class="d-block w-100">
                                             </div>
                                         </div>
                                     </div>
@@ -114,7 +113,10 @@ export default {
   },
   computed: {
     ...mapState(boardStore, ['feedList']),
-    ...mapState(familyStore, ['familyCallsignList'])
+    ...mapState(familyStore, ['familyCallsignList']),
+    url () {
+      return 'i7a305.p.ssafy.io:8080'
+    }
   },
   methods: {
     ...mapActions(userStore, ['checkUserInfo']),
@@ -168,6 +170,7 @@ export default {
     display: inline-block;
 }
 .feed-wrap {
+  height: 100%;
   width: 900px;
     .flex{
     display: flex;
