@@ -1,9 +1,6 @@
 <template>
     <div class="memo-wrap">
         <HeaderTitle title="냉장고"/>
-        <div>
-            <router-link :to="{name : 'memoCreate'}" class="ByPhone">메모지 생성</router-link>
-        </div>
         <div class="memo-content">
             <div class="content-wrap" v-for="(memo, index) in memoAllList" :key="index">
                 <div :class="memo.color">
@@ -12,6 +9,9 @@
                 <button type="button" class="btn-close" aria-label="Close" @click="removeMemo(memo.memoId)"></button>
             </div>
         </div>
+        <button id="btn-modal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="goMemoCreate">
+            <img style="width:25px;" src="@/assets/images/plus-lg.svg" alt="plus">
+        </button>
         <BottomTap></BottomTap>
     </div>
 </template>
@@ -52,20 +52,9 @@ export default {
             this.color = e.target.value
             console.log(this.color)
         },
-        //메모 등록
-        addMeMo() {
-            //글 내용
-            const content = document.getElementById('memo-text').value
-            //가족 아이디와 유저 아이디
-            const familyId = localStorage.getItem('familyId')
-            const userId = localStorage.getItem('userId')
-            const createMemoRequestDto = {
-                familyId : familyId,
-                userId: userId,
-                color: this.color,
-                memoContent: content
-            }
-            this.createMemo(createMemoRequestDto)
+        //메모 등록 페이지 이동
+        goMemoCreate() {
+            this.$router.push({name: 'memoCreate'})
         },
         //메모 삭제
         removeMemo(memoId) {
@@ -77,6 +66,25 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+//글 작성 버튼
+.btn{
+    height: 40px;
+    &-primary{
+    --bs-btn-bg: #7b371c;
+    --bs-btn-border-color: #7b371c;
+    --bs-btn-hover-bg: #54210d;
+    --bs-btn-hover-border-color: #54210d;
+    --bs-btn-focus-shadow-rgb: none;
+    }
+    &#btn-modal{
+        position: absolute;
+        right: 10%;
+        bottom: 10%;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+    }
+}
 .btn-close{
     position: absolute;
     top: 5%;
