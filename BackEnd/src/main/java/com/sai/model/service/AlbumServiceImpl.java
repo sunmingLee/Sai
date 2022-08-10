@@ -40,9 +40,8 @@ import net.coobird.thumbnailator.geometry.Positions;
 @Transactional
 public class AlbumServiceImpl implements AlbumService {
 
-//	@Value("${spring.servlet.multipart.location}" + "\\Album")
-//	@Value("${spring.servlet.multipart.location}" + "/Album")
-	private String uploadPath = System.getProperty("user.home") + File.separator + "Album";
+	private String uploadPath = File.separator + "app" + File.separator + "Album";
+	private String dbPath = File.separator + "static" + File.separator + "Album";
 
 	@Autowired
 	AlbumRepository albumRepository;
@@ -125,6 +124,8 @@ public class AlbumServiceImpl implements AlbumService {
 				String saveName = UUID.randomUUID().toString() + "_" + fileName;
 				String savePath = uploadPath + File.separator + folderPath + File.separator + saveName;
 				String thumbnailPath = uploadPath + File.separator + folderPath + File.separator + "th_" + saveName;
+				String dbSavePath = dbPath + File.separator + folderPath + File.separator + saveName;
+				String dbThumbnailPath = dbPath + File.separator + folderPath + File.separator + "th_" + saveName;
 
 				try {
 
@@ -137,9 +138,9 @@ public class AlbumServiceImpl implements AlbumService {
 					e.printStackTrace();
 				}
 
-				AlbumMedia albumMedia = AlbumMedia.builder().album(album).albumMediaPath(savePath)
+				AlbumMedia albumMedia = AlbumMedia.builder().album(album).albumMediaPath(dbSavePath)
 						.albumMediaOriginalName(OriginalName).albumMediaSaveName(saveName).albumMediaType(fileType)
-						.albumMediaThumbnail(thumbnailPath).build();
+						.albumMediaThumbnail(dbThumbnailPath).build();
 				albumMediaRepository.save(albumMedia);
 
 			}

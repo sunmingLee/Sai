@@ -44,9 +44,8 @@ import net.coobird.thumbnailator.geometry.Positions;
 @Transactional
 public class FamilyServiceImpl implements FamilyService {
 
-//	@Value("${spring.servlet.multipart.location}" + "\\FamilyImage")
-//	@Value("${spring.servlet.multipart.location}" + "/FamilyImage")
-	private String uploadPath = System.getProperty("user.home") + File.separator + "FamilyImage";
+	private String uploadPath = File.separator + "app" + File.separator + "FamilyImage";
+	private String dbPath = File.separator + "static" + File.separator + "FamilyImage";
 
 	@Autowired
 	UserRepository userRepository;
@@ -239,6 +238,7 @@ public class FamilyServiceImpl implements FamilyService {
 			String fileName = OriginalName.substring(OriginalName.lastIndexOf('\\') + 1);
 			String saveName = UUID.randomUUID().toString() + "_" + fileName;
 			String thumbnailPath = uploadPath + File.separator + saveName;
+			String dbThumbnailPath = dbPath + File.separator + saveName;
 
 			try {
 //				File convFile = new File(OriginalName);
@@ -246,7 +246,7 @@ public class FamilyServiceImpl implements FamilyService {
 //				FileOutputStream fos = new FileOutputStream(convFile);
 //				fos.write(file.getBytes());
 //				fos.close();
-				
+
 				InputStream in = file.getInputStream();
 				BufferedImage originalImage = ImageIO.read(in);
 
@@ -257,7 +257,7 @@ public class FamilyServiceImpl implements FamilyService {
 				e.printStackTrace();
 			}
 
-			family.updateFamilyImage(OriginalName, thumbnailPath, fileType);
+			family.updateFamilyImage(OriginalName, dbThumbnailPath, fileType);
 		}
 
 		familyRepository.save(family);
