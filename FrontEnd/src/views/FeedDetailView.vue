@@ -4,7 +4,7 @@
     <!-- 글 작성자 & 버튼 -->
     <div class="feed-head-wrap">
       <div v-for="(callsign, index) in familyCallsignList" :key="index">
-        <div v-if="this.userId === callsign.toUserId">
+        <div v-if="feed.viewBoardResponseDto.userId === callsign.toUserId">
           <FeedUser :name="callsign.callsign"></FeedUser>
         </div>
       </div>
