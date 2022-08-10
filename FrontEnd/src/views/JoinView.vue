@@ -21,12 +21,12 @@
       <br>
       </div>
       <div class="input-wrap">
-        <InputBox :hasLabel="true" labelName="비밀번호" @inputCheck="checkPassword"></InputBox>
+        <InputBox :hasLabel="true" labelName="비밀번호" inputType="password" @inputCheck="checkPassword"></InputBox>
         <p v-if="validPassword" class="valid-error">비밀번호는 영문,숫자,특수문자를 포함하여 8자 이상으로 입력하세요.</p>
         <br>
       </div>
       <div class="input-wrap">
-        <InputBox :hasLabel="true" labelName="비밀번호 확인" @inputCheck="checkPasswordConfirm"></InputBox>
+        <InputBox :hasLabel="true" labelName="비밀번호 확인" inputType="password" @inputCheck="checkPasswordConfirm"></InputBox>
         <p v-if="validPasswordConfirm" class="valid-error">비밀번호가 일치하지 않습니다.</p>
         <br>
       </div>
