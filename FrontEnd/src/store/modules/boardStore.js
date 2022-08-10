@@ -109,6 +109,26 @@ const boardStore = {
           console.log(err)
         })
     },
+    // 투표 선택 (임시 / 쿠키 세팅 이슈)
+    chooseVote ({ commit }, info) {
+      const data = {
+        choiceId: info.choiceId
+      }
+      axios({
+        url: API_BASE_URL + `/api/poll/${info.pollId}/votes`,
+        method: 'POST',
+        data: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => {
+          router.go()
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
     // 댓글 조회
     getReplyList ({ commit }, boardId) {
       axios({
