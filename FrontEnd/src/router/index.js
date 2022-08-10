@@ -16,6 +16,8 @@ import AlbumFolder from '@/components/album/AlbumFolder.vue'
 import AlbumPicture from '@/components/album/AlbumPicture.vue'
 import AlbumPictureDetail from '@/components/album/AlbumPictureDetail.vue'
 import JoinView from '@/views/JoinView.vue'
+import ApplyDeclineView from '@/views/ApplyDeclineView.vue'
+// import test from '@/views/test.vue'
 
 import store from '@/store/index.js'
 
@@ -43,9 +45,14 @@ const routes = [
     path: '/',
     name: 'home',
     // redirect: '/login',
-    beforeEnter: onlyAuthUser,
+    // beforeEnter: onlyAuthUser,
     component: LoginView
   },
+  // {
+  //   path: '/test',
+  //   name: 'test',
+  //   compoennt: test
+  // },
   {
     path: '/login',
     name: 'login',
@@ -75,6 +82,11 @@ const routes = [
     path: '/applywait',
     name: 'applywait',
     component: ApplyWaitView
+  },
+  {
+    path: '/applyDecline',
+    name: 'applyDecline',
+    component: ApplyDeclineView
   },
   {
     path: '/account',

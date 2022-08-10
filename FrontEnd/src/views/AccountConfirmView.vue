@@ -2,7 +2,7 @@
     <div class="flex-wrap">
         <HeaderTitle title="계정 관리"/>
         <div class="input-wrap">
-            <InputBox inputSelect="input-box" :hasLabel="true" labelName="비밀번호" @inputCheck="checkPassword"/>
+            <InputBox inputSelect="input-box" :hasLabel="true" labelName="비밀번호" inputType="password" @inputCheck="inputPassword"/>
         </div>
         <Button buttonClass="small positive" buttonText="확인" @click="confirmPassword"/>
     </div>
@@ -28,17 +28,16 @@ export default {
     }
   },
   computed: {
-    ...mapState(userStore, ['userInfo'])
   },
   methods: {
     ...mapActions(userStore, ['checkPassword']),
-    checkPassword (password) {
+    inputPassword (password) {
       this.password = password
     },
     // 비밀번호 확인 버튼 클릭
     confirmPassword () {
       const user = {
-        userId: this.userInfo.userId,
+        userId: localStorage.getItem('userId'),
         password: this.password
       }
       this.checkPassword(user)

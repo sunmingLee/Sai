@@ -1,11 +1,30 @@
 <template>
     <div class="create-wrap">
+      
       <p>{{callsign}}</p>
         <HeaderTitle hasBack="true" title="게시글 작성" hasIcon="true"/>
         <!-- 사진 공간 -->
+        <input type="file" @change="fileCheck" id="file" multiple>
         <div class="flex">
-          <div class="media-wrap" style="border: 1px solid black">
-            <p>여긴 사진 공간이다 임마들아~!</p>
+          <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner" >
+              <div class="carousel-item active">
+                <img :src="srcList[0]" id="img" class="d-block w-100">
+              </div>
+              <div v-for="(src, index) in srcList" :key="index">
+                <div v-if="index !== 0" class="carousel-item">
+                  <img :src="src" id="img" class="d-block w-100">
+                </div>
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
           </div>
         </div>
         <!-- 글(텍스트) 공간 -->
@@ -34,7 +53,7 @@
                   <div class="modal-content">
                     <p class="modal-title">날짜 선택</p>
                     <div class="modal-date">
-                      <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" :enableTimePicker="false" :minDate="new Date()" v-model="boardDate"/>
+                      <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" :enableTimePicker="false" v-model="boardDate"/>
                     </div>
                     <div class="btn-wrap">
                       <button class="date-cancle" @click="dateCancle">취소</button>
@@ -97,7 +116,6 @@
             <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" :minDate="new Date()" v-model="pollDatePicker" :disabled="pollDateDisabled"/>
           </div>
         </div>
-        <button @click="check" style="color: red">테스트 확인</button>
         <button @click="feedCreate" style="color: blue">작성</button>
     </div>
 </template>
@@ -105,15 +123,18 @@
 import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import InputBox from '@/components/common/InputBox.vue'
 import Button from '@/components/common/Button.vue'
+import heic2any from 'heic2any'
 
-import Datepicker from '@vuepic/vue-datepicker';
+import Datepicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import { mapState, mapActions } from 'vuex'
 
 const boardStore = 'boardStore'
 const userStore = 'userStore'
 const familyStore = 'familyStore'
-          
+
+// 파일 리스트
+const fileList = []
 export default {
   name: 'FeedCreateView',
   components: {
@@ -122,277 +143,310 @@ export default {
     Datepicker,
     Button
   },
-  data() {
+  data () {
     return {
       dateValid: false,
-      boardContent: '', //글
-      boardRegDatetime: '', //등록 시간
-      boardMediaYn: 0, //미디어 파일 등록 여부
-      pollYn: 0, //투표 등록 여부
-      boardDate: '', //추가 기록 - 날짜
-      boardLocation: '',  //추가 기록 - 위치
-      boardPeopleYn: 0, //추가 기록 - 태그 여부
-      date: '', //추가 기록(날짜) 선택했을 때 화면에 보여질 날짜
-      toggle: true, //추가 기록과 투표 만들기를 토글하기 위함
-      pollTitle: '', //투표 제목
-      //투표 항목들
+      boardContent: '', // 글
+      boardRegDatetime: '', // 등록 시간
+      boardMediaYn: 0, // 미디어 파일 등록 여부
+      pollYn: 0, // 투표 등록 여부
+      boardDate: '', // 추가 기록 - 날짜
+      boardLocation: '', // 추가 기록 - 위치
+      boardTaggedYn: 0, // 추가 기록 - 태그 여부
+      date: '', // 추가 기록(날짜) 선택했을 때 화면에 보여질 날짜
+      toggle: true, // 추가 기록과 투표 만들기를 토글하기 위함
+      pollTitle: '', // 투표 제목
+      // 투표 항목들
       pollOptions: [
-        {pollOption: ''},
-        {pollOption: ''},
+        { pollOption: '' },
+        { pollOption: '' }
       ],
-      pollDatePicker: '', //투표 마감 날짜로 선택한 날(보내는 데이터 값은 아님)
-      pollDateDisabled: true, //투표 마감 날짜 지정 여부..
-      pollEndDate: '', //투표 마감 날짜
-      //미디어 리스트
-      mediaList: [
-        
-      ],
-      //태그 리스트
+      pollDatePicker: '', // 투표 마감 날짜로 선택한 날(보내는 데이터 값은 아님)
+      pollDateDisabled: true, // 투표 마감 날짜 지정 여부..
+      pollEndDate: '', // 투표 마감 날짜
+      // 태그 리스트
       peopleList: [
 
       ],
-      disabledDates :'',
+      disabledDates: '',
       preventDisableDateSelection: true,
-      format: ''
+      format: '',
+      pollCnt: 2,
+      srcList: [],
+      fileList: []
     }
   },
-  created() {
-    const info = this.userId
-    this.callsignList(info)
-    console.log(this.familyCallsignList)
+  created () {
+    const userId = localStorage.getItem('userId')
+    this.callsignList(userId)
+  },
+  mounted() {
+    
   },
   computed: {
-    ...mapState(boardStore, ["feedList"]),
-    ...mapState(userStore, ["userId", "userName"]),
-    ...mapState(familyStore, ["familyCallsignList", "familyId"])
+    // ...mapState(userStore, ["userId", "userName"]),
+    ...mapState(familyStore, ['familyCallsignList'])
   },
   methods: {
     ...mapActions(boardStore, ['boardCreate']),
     ...mapActions(familyStore, ['callsignList']),
-    //추가기록과 투표만들기 토글
-    record() {
-      if(!this.toggle) {
+    //파일 처리
+    fileCheck(e) {
+      //확장자 변경
+      this.changeFile()
+      //미리보기
+      this.previewFile()
+    },
+    changeFile() {
+      const previewCount = 0;
+      const fileInput = document.getElementById("file")
+      //선택한 파일의 정보 리스트
+      let files = fileInput.files
+      // let previewCount = files.length
+      //heic 파일 확장자 변경
+      //선택한 파일의 개수만큼 돌아서 각각의 파일을 다 확인
+      for(let i = 0; i < files.length; i++) {
+        //파일 하나 선택
+        let file = files[i]
+        let heicFile = ''
+        // 파일의 확장자가 heic일 경우
+        if (file.name.split('.')[1] === 'heic') {
+          // file의 타입을 "image/jpg"로 바꾸고 이름 뒤에 확장자도 .jpg로 바꾼다
+          heic2any({ blob: file, toType: 'image/jpg' })
+            .then(function (resultBlob) {
+              heicFile = new File([resultBlob], file.name.split('.')[0] + '.jpg', { type: 'image/jpg', lastModified: new Date().getTime() })
+              fileList.push(heicFile)
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+        } else {
+          fileList.push(file)
+        }
+      }
+    },
+    previewFile() {
+      console.log(fileList)
+      if(fileList.length != 0) {
+        for(let i = 0; i < fileList.length; i++) {
+          this.srcList.push(URL.createObjectURL(fileList[i]))
+        }
+      }
+      console.log("안녕")
+      console.log(this.srcList)
+    },
+    // 추가기록과 투표만들기 토글
+    record () {
+      if (!this.toggle) {
         this.toggle = true
       }
     },
-    poll() {
-      if(this.toggle) {
+    poll () {
+      if (this.toggle) {
         this.toggle = false
       }
     },
-    check() {
-      // console.log(this.)
-      
-    },
-    //투표 항목 추가하기
-    addPollItem() {
-      if(this.pollOptions.length < 5) {
-        this.pollOptions.push({pollOption : ''})
-      }
-      else {
+    // 투표 항목 추가하기
+    addPollItem () {
+      if (this.pollOptions.length < 5) {
+        this.pollCnt = this.pollCnt + 1
+        this.pollOptions.push({ pollOption: '' })
+      } else {
         alert('투표 항목은 5개까지 가능합니다.')
       }
     },
-    //투표 마감 시간 설정
-    pollTimeCheck() {
-      //투표 마감 시간을 설정한다고 체크
-      if(!this.pollDateDisabled) {
+    // 투표 마감 시간 설정
+    pollTimeCheck () {
+      // 투표 마감 시간을 설정한다고 체크
+      if (!this.pollDateDisabled) {
         this.pollDateDisabled = true
-      }
-      else {
+      } else {
         this.pollDateDisabled = false
-        // this.pollDate = this.pollDate
       }
     },
-    //날짜 선택 모달창 출력
-    showDate() {
+    // 날짜 선택 모달창 출력
+    showDate () {
       const modal = document.querySelector('.modal')
       modal.classList.remove('hidden')
     },
-    //누구랑?
-    showFamily() {
+    // 누구랑?
+    showFamily () {
       const modal = document.querySelector('.person')
       modal.classList.remove('hidden')
     },
-    //날짜 선택 모달창에서 확인 버튼 클릭
-    dateConfirm() {
+    // 날짜 선택 모달창에서 확인 버튼 클릭
+    dateConfirm () {
       const modal = document.querySelector('.modal')
-      //year = 년 , month = 월 , day = 일
+      // year = 년 , month = 월 , day = 일
       const year = this.boardDate.getFullYear()
       let month = (1 + this.boardDate.getMonth())
       let day = this.boardDate.getDate()
-      //MM-DD의 형태로 만들기 위해 10보다 적은 경우 0을 붙이게 함 (예 : 1일이면 01)
+      // MM-DD의 형태로 만들기 위해 10보다 적은 경우 0을 붙이게 함 (예 : 1일이면 01)
       month = month >= 10 ? month : `0${month}`
-      day = day >= 10 ? day: `0${day}`
+      day = day >= 10 ? day : `0${day}`
       this.date = `${year}-${month}-${day}`
-      //모달창 숨기기
+      // 모달창 숨기기
       modal.classList.add('hidden')
     },
-    //날짜 선택 모달창에서 취소 버튼 클릭
-    dateCancle() {
+    // 날짜 선택 모달창에서 취소 버튼 클릭
+    dateCancle () {
       const modal = document.querySelector('.modal')
       this.boardDate = ''
       modal.classList.add('hidden')
     },
-    //날짜 삭제
-    deleteDate() {
+    // 날짜 삭제
+    deleteDate () {
       this.date = ''
       this.boardDate = ''
     },
-    //사람 태그 확인 
-    personConfirm() {
+    // 사람 태그 확인
+    personConfirm () {
       const test = document.getElementsByName('callsign')
-      for(let i = 0; i < test.length; i++) {
-        //체크 했을 때
-        if(test[i].checked) {
-          if(this.peopleList.indexOf(test[i].value) < 0) {
+      for (let i = 0; i < test.length; i++) {
+        // 체크 했을 때
+        if (test[i].checked) {
+          if (this.peopleList.indexOf(test[i].value) < 0) {
             this.peopleList.push(Object(test[i].value))
           }
-        }
-        else {
-          //체크 해제의 경우
-          if(this.peopleList.indexOf(test[i].value) > -1) {
+        } else {
+          // 체크 해제의 경우
+          if (this.peopleList.indexOf(test[i].value) > -1) {
             const index = this.peopleList.indexOf(test[i].value)
             this.peopleList.splice(index, 1)
           }
         }
       }
-      //확인 버튼을 클릭했을 경우 모달창을 끈다
+      // 확인 버튼을 클릭했을 경우 모달창을 끈다
       const modal = document.querySelector('.person')
       modal.classList.add('hidden')
     },
-    //사람 취소
-    personCancle() {
+    // 사람 취소
+    personCancle () {
       const modal = document.querySelector('.person')
       modal.classList.add('hidden')
     },
-    //위치 선택
-    showApi() {
+    // 위치 선택
+    showApi () {
       new window.daum.Postcode({
         oncomplete: (data) => {
-          
-          let fullRoadAddr = data.roadAddress; // 도로명 주소 변수
-          let extraRoadAddr = ""; // 도로명 조합형 주소 변수
+          let fullRoadAddr = data.roadAddress // 도로명 주소 변수
+          let extraRoadAddr = '' // 도로명 조합형 주소 변수
 
-          if (data.bname !== "" && /[동|로|가]$/g.test(data.bname)) {
-            extraRoadAddr += data.bname;
+          if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+            extraRoadAddr += data.bname
           }
-    
-          if (data.buildingName !== "" && data.apartment === "Y") {
+
+          if (data.buildingName !== '' && data.apartment === 'Y') {
             extraRoadAddr +=
-              extraRoadAddr !== ""
-                ? ", " + data.buildingName
-                : data.buildingName;
+              extraRoadAddr !== ''
+                ? ', ' + data.buildingName
+                : data.buildingName
           }
-          if (extraRoadAddr !== "") {
-            extraRoadAddr = " (" + extraRoadAddr + ")";
+          if (extraRoadAddr !== '') {
+            extraRoadAddr = ' (' + extraRoadAddr + ')'
           }
-          if (fullRoadAddr !== "") {
-            fullRoadAddr += extraRoadAddr;
+          if (fullRoadAddr !== '') {
+            fullRoadAddr += extraRoadAddr
           }
-          this.boardLocation = fullRoadAddr;
-        },
-      }).open();
+          this.boardLocation = fullRoadAddr
+        }
+      }).open()
     },
-    //위치 삭제
-    deleteLocation() {
+    // 위치 삭제
+    deleteLocation () {
       this.boardLocation = ''
     },
-    //게시글 작성
-    feedCreate() {
-      //미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
-      if(this.mediaList.length === 0 && this.boardContent === '' && this.pollYn === 0) {
+    // 게시글 작성
+    feedCreate () {
+      const createBoardRequestDto = {}
+      // 미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
+      if (fileList.length === 0 && this.boardContent === '') {
         alert('글이나 사진을 등록해야 작성이 가능합니다.')
-      }
-      else {
-        //미디어 파일이 있다!
-        if(this.mediaList.length !== 0) {
+        // this.files = test
+      } else {
+        // 미디어 파일이 있다!
+        console.log(fileList.length)
+        if (fileList.length !== 0) {
           this.boardMediaYn = 1
         }
-        //투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
-        if(this.pollTitle !== '' && this.pollOptions[0].pollOption !== '' && this.pollOptions[1].pollOption) {
-          this.pollYn = 1
+        // 투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
+        // for(let i = 0; i < )
+        let pollOptionCnt = 0
+        for (let i = 0; i < this.pollCnt; i++) {
+          if (this.pollOptions[i].pollOption !== '') {
+            pollOptionCnt = pollOptionCnt + 1
+          }
         }
-        const peopleList = {}
-        //추가 정보에서 사람 태그 여부
-        if(this.peopleList.length !== 0) {
-          this.boardPeopleYn = 1
-          for(let i = 0; i < this.peopleList.length; i++) {
-            const peopleKey = 'userId' + (i+1)
-            const people = {
-              [peopleKey] : this.peopleList[i]
+        // 작성한 항목이 있는데
+        if (pollOptionCnt !== 0) {
+          // 제목이 없으면
+          if (this.pollTitle === '') {
+            alert('투표 제목을 입력해주세요')
+          } else if (this.pollTitle === '' && pollOptionCnt < 2) {
+            alert('투표 항목은 최소한 두 개 이상이어야 합니다')
+          } else {
+            this.pollYn = 1
+          }
+        }
+        // 투표가 있을 경우
+        if (this.pollYn === 1) {
+          if (this.pollDateDisabled) {
+            const timeOff = new Date().getTimezoneOffset() * 60000
+            const timeZone = new Date(Date.now() - timeOff) // 현재 시간
+            this.pollEndDate = new Date(timeZone.setDate(timeZone.getDate() + 3)).toISOString()
+          } else {
+            const timeOff = new Date(this.pollDatePicker).getTimezoneOffset() * 60000
+            const timeZone = new Date(this.pollDatePicker - timeOff)
+            this.pollEndDate = timeZone.toISOString()
+          }
+          const pollChoice = []
+          for (let i = 0; i < this.pollOptions.length; i++) {
+            const option = {
+              text: this.pollOptions[i].pollOption
             }
-            Object.assign(peopleList, people)
+            pollChoice[i] = option
           }
+          const pollResult = {
+            // boardId: 0,
+            question: this.pollTitle,
+            expirationDateTime: this.pollEndDate,
+            choices: pollChoice
+          }
+          Object.assign(createBoardRequestDto, { pollRequest: pollResult })
         }
-        const boardInfo = {
-          boardContent: this.boardContent,
+
+        // 추가 정보에서 사람 태그 여부
+        const taggedResult = []
+        // 태그한 사람이 있을 경우
+        if (this.peopleList.length !== 0) {
+          this.boardTaggedYn = 1
+          for (let i = 0; i < this.peopleList.length; i++) {
+            const people = {
+              userId: this.peopleList[i]
+            }
+            taggedResult[i] = people
+          }
+          Object.assign(createBoardRequestDto, { inputBoardTaggedRequestDtos: taggedResult })
+        }
+        const inputBoardRequestDto = {
+          familyId: localStorage.getItem('familyId'),
+          userId: localStorage.getItem('userId'),
           boardRegDatetime: new Date(),
+          boardContent: this.boardContent,
+          boardDate: this.boardDate,
+          boardLocation: this.boardLocation,
+          boardTaggedYn: this.boardTaggedYn,
           boardMediaYn: this.boardMediaYn,
-          pollYn: this.pollYn, 
-          boardDate: this.boardDate, 
-          boardLocation: this.boardLocation,  
-          boardPeopleYn: this.boardPeopleYn,
+          pollYn: this.pollYn,
+          boardLikeCnt: 0,
+          boardReplyCnt: 0
         }
-        //미디어 파일이 있을 경우
-        const boardMediaInfo = this.mediaList
-        
-        //투표가 있을 경우
-        if(this.pollYn === 1) {
-          let setPollDate = new Date()
-          //투표 마감 시간 설정 안 했을 때
-          if(this.pollDateDisabled) {
-            //따로 마감 시간을 설정하지 않으면 현재 시간에서 3일 뒤에 끝나도록 설정
-            setPollDate = setPollDate.setDate(setPollDate.getDate() + 3)
-          }
-          const year = new Date(setPollDate).getFullYear()
-          let month = new Date(setPollDate).getMonth() + 1
-          if(month < 10) {
-            month = '0' + month
-          }
-          let date = new Date(setPollDate).getDate()
-          if(date < 10) {
-            date = '0' + date
-          }
-          let hours = new Date(setPollDate).getHours()
-          if(hours < 10) {
-            hours = '0' + hours
-          }
-          let minutes = new Date(setPollDate).getMinutes()
-          if(minutes < 10) {
-            minutes = '0' + minutes
-          }
-          let seconds = new Date(setPollDate).getSeconds()
-          if(seconds < 10) {
-            seconds = '0' + seconds
-          }
-          // console.log(setPollDate.toISOString())
-          this.pollEndDate = year + '-' + month + '-' + date + 'T' + hours + ':' + minutes + ':' + seconds
+        Object.assign(createBoardRequestDto, { inputBoardRequestDto })
+        if (this.boardMediaYn === 1) {
+          this.boardCreate({ createBoardRequestDto, fileList })
+        } else {
+          this.boardCreate({ createBoardRequestDto })
         }
-        const pollList = {
-          pollTitle : this.pollTitle,
-          pollEndDate : this.pollEndDate
-        }
-        for(let i = 0; i < this.pollOptions.length; i++) {
-          const key = 'pollOption' + (i+1)
-          const value = {
-            [key] : this.pollOptions[i].pollOption
-          }
-          Object.assign(pollList, value)
-        }
-        if(pollList.pollTitle !== '') {
-          Object.assign(boardInfo, pollList)
-        }
-        const fId = {
-          familyId : this.familyId
-        }
-        const uId = {
-          userId: this.userId
-        }
-        Object.assign(boardInfo, peopleList)
-        Object.assign(boardInfo, fId)
-        Object.assign(boardInfo, uId)
-        this.boardCreate(boardInfo)
       }
     }
   }
@@ -440,7 +494,7 @@ export default {
 .record-date, .record-location, .record-person {
   display: inline-block;
 }
-//날짜 선택 모달창 
+//날짜 선택 모달창
 .modal, .person {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
   position: fixed;
@@ -556,5 +610,8 @@ export default {
       }
     }
   }
+}
+.carousel-inner {
+  width: 50%;
 }
 </style>

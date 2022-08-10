@@ -2,13 +2,14 @@
     <div>
         <FeedHeader />
         <FeedContent/>
+        <BottomTap></BottomTap>
     </div>
 </template>
 <script>
 import FeedContent from '@/components/FeedContent.vue'
 import FeedHeader from '@/components/FeedHeader.vue'
 import Button from '../components/common/Button.vue'
-
+import BottomTap from '@/components/common/BottomTap.vue'
 import { mapState } from 'vuex'
 
 export default {
@@ -16,7 +17,8 @@ export default {
     components: {
         FeedHeader,
         Button,
-        FeedContent
+        FeedContent,
+        BottomTap
     },
     created() {
     },
@@ -34,7 +36,5 @@ export default {
 
 </script>
 <style lang="scss">
-.feed-wrap {
-    border: 1px solid black;
-}
+
 </style>
