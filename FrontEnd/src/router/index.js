@@ -17,6 +17,8 @@ import AlbumPicture from '@/components/album/AlbumPicture.vue'
 import AlbumPictureDetail from '@/components/album/AlbumPictureDetail.vue'
 import JoinView from '@/views/JoinView.vue'
 import ApplyDeclineView from '@/views/ApplyDeclineView.vue'
+import MemoView from '@/views/MemoView.vue'
+import MemoCreateView from '@/views/MemoCreateView.vue'
 // import test from '@/views/test.vue'
 
 import store from '@/store/index.js'
@@ -146,6 +148,16 @@ const routes = [
     path: '/join',
     name: 'join',
     component: JoinView
+  },
+  {
+    path: '/memo',
+    name: 'memo',
+    component: MemoView
+  },
+  {
+    path: '/memoCreate',
+    name: 'memoCreate',
+    component: MemoCreateView
   }
 ]
 
