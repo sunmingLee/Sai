@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sai.jwt.JwtTokenProvider;
@@ -64,10 +66,9 @@ public class UserController {
 	
 	// 추가 정보 입력
 	@PostMapping("/addInfo")
-	public ResponseEntity<?> addUserInformation(@RequestBody UserInfoDTO addInfo) {
+	public ResponseEntity<?> addUserInformation(@RequestPart UserInfoDTO addInfo, @RequestPart MultipartFile file) throws Exception {
 		try {
-			System.out.println(addInfo.toString());
-			return ResponseEntity.status(200).body(userService.addUserInfo(addInfo));
+			return ResponseEntity.status(200).body(userService.addUserInfo(addInfo, file));
 		} catch (Exception e) {
 			return ResponseEntity.status(400).body("오류가 발생했습니다.");
 		}
@@ -183,5 +184,6 @@ public class UserController {
 //		return new ResponseEntity<Map<String, Object>>(userService.findUserPw(user),
 //				(HttpStatus) userService.findUserPw(user).get("status"));
 	}
+	
 
 }
