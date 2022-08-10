@@ -3,6 +3,7 @@ import AccountConfirmView from '@/views/AccountConfirmView.vue'
 import AccountManagementView from '@/views/AccountManagementView.vue'
 import FeedView from '@/views/FeedView.vue'
 import FeedCreateView from '@/views/FeedCreateView.vue'
+import FeedDetailView from '../views/FeedDetailView.vue'
 import LoginView from '../views/LoginView.vue'
 import AddInformationView from '../views/user/AddInformationView.vue'
 import FamilyInviteView from '@/views/FamilyInviteView.vue'
@@ -146,6 +147,12 @@ const routes = [
     path: '/join',
     name: 'join',
     component: JoinView
+  },
+  {
+    path: '/feedDetail',
+    name: 'feedDetail',
+    component: FeedDetailView,
+    props: true
   }
 ]
 

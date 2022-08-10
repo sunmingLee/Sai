@@ -368,8 +368,7 @@ export default {
         console.log(fileList.length)
         if (fileList.length !== 0) {
           this.boardMediaYn = 1
-        }
-        // 투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
+        }   // 투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
         // for(let i = 0; i < )
         let pollOptionCnt = 0
         for (let i = 0; i < this.pollCnt; i++) {
