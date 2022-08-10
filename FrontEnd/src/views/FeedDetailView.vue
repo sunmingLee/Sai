@@ -69,7 +69,7 @@
       <col width=100%>
       <col width=100%>
     </colgroup> -->
-        <tr v-for="reply in replyList" :key="reply.replyId">
+        <tr v-for="reply in replyList" :key="reply.replyId" @change="changeReplyList">
           <div v-for="(callsign, index) in familyCallsignList" :key="index" >
             <div v-if="reply.userId === callsign.toUserId">
               <td><button type="button" class="btn-close" aria-label="Close" @click="eraseReply(reply.replyId, reply.userId)"></button></td>
@@ -126,18 +126,6 @@ export default {
     // 가족 콜사인 찾기
     this.callsignList(localStorage.getItem('userId'))
   },
-  // async mounted () {
-  //   if (this.familyCallsignList.length !== 0) {
-  //     console.log(this.familyCallsignList)
-  //     await this.familyCallsignList.forEach(callsign => {
-  //       console.log(callsign)
-  //       if (localStorage.getItem('userId') === callsign.toUserId) {
-  //         this.writterName = callsign.callsign
-  //       }
-  //     })
-  //   }
-  //   console.log(this.writterName)
-  // },
   computed: {
     ...mapState(boardStore, ['feed', 'replyList']),
     ...mapState(familyStore, ['familyCallsignList'])
@@ -163,7 +151,9 @@ export default {
           userId: this.userId,
           replyContent: this.message
         }
+        // console.log('postsReply: ' + info.boardId)
         this.createReply(info)
+        this.message = ''
       }
     },
     // 댓글 수정 (미등록)
@@ -184,6 +174,9 @@ export default {
       this.onHeart = !this.onHeart
       console.log(this.onHeart)
     }
+  },
+  changeReplyList () {
+    console.log('change')
   }
 }
 </script>

@@ -138,8 +138,7 @@ const boardStore = {
         }
       })
         .then((res) => {
-          dispatch('getReplyList', data.boardId)
-          router.go()
+          dispatch('getReplyList', info.boardId)
         })
         .catch((err) => {
           console.log(err)
@@ -161,8 +160,7 @@ const boardStore = {
         }
       })
         .then((res) => {
-          dispatch('getReplyList', data.boardId)
-          router.go()
+          dispatch('getReplyList', info.boardId)
         })
         .catch((err) => {
           console.log(err)
