@@ -6,12 +6,10 @@
         </div>
         <div class="memo-content">
             <div class="content-wrap" v-for="(memo, index) in memoAllList" :key="index">
-                <!-- <li :class="memo.color" >{{memoAllList[index].memoContent}}</li> -->
                 <div :class="memo.color">
                     <span>{{memoAllList[index].memoContent}}</span>
                 </div>
                 <button type="button" class="btn-close" aria-label="Close" @click="removeMemo(memo.memoId)"></button>
-                <!-- <Button buttonClass="small negative" buttonText="삭제" @click="delMemo"/> -->
             </div>
         </div>
         <BottomTap></BottomTap>

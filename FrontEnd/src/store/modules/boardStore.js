@@ -58,14 +58,11 @@ const boardStore = {
     feedAllList ({ commit }, info) {
       const familyId = info.familyId
       const userId = info.userId
-      console.log('피드 리스트 조회')
-      console.log(familyId + ' - ' + userId)
       axios({
         url: api_url + '/' + familyId + '/' + userId,
         method: 'GET'
       })
         .then((res) => {
-          console.log('졸려')
           commit('FEED_All_LIST', res.data)
         })
         .catch((err) => {

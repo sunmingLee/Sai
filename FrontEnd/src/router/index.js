@@ -17,8 +17,9 @@ import AlbumPicture from '@/components/album/AlbumPicture.vue'
 import AlbumPictureDetail from '@/components/album/AlbumPictureDetail.vue'
 import JoinView from '@/views/JoinView.vue'
 import ApplyDeclineView from '@/views/ApplyDeclineView.vue'
-import MemoView from '@/views/MemoView.vue'
-import MemoCreateView from '@/views/MemoCreateView.vue'
+import MemoView from '@/views/memo/MemoView.vue'
+import MemoCreateView from '@/views/memo/MemoCreateView.vue'
+import MypageView from '@/views/user/MypageView.vue'
 // import test from '@/views/test.vue'
 
 import store from '@/store/index.js'
@@ -158,6 +159,11 @@ const routes = [
     path: '/memoCreate',
     name: 'memoCreate',
     component: MemoCreateView
+  },
+  {
+    path: '/myPage',
+    name: 'myPage',
+    component: MypageView
   }
 ]
 
