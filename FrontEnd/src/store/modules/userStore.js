@@ -9,7 +9,7 @@ const userStore = {
   state: {
     isLogin: false,
     isLoginError: false,
-    userInfo: [],
+    userInfo: []
     // userInfo: {
     //   userId: 'cjftn',
     //   familyId: 123456,
@@ -32,7 +32,7 @@ const userStore = {
     },
     SET_USER_INFO: (state, userInfo) => {
       state.userInfo = userInfo
-    },
+    }
   },
   actions: {
     // 로그인
@@ -191,18 +191,18 @@ const userStore = {
         })
     },
     // 유저(회원) 정보 조회
-    checkUserInfo({commit}, userId) {
+    checkUserInfo ({ commit }, userId) {
       axios({
         url: api_url + '/' + userId,
         method: 'GET'
       })
-      .then((res) => {
-        commit('SET_USER_INFO', res.data)
-        localStorage.setItem('userInfo',JSON.stringify(res.data))
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+        .then((res) => {
+          commit('SET_USER_INFO', res.data)
+          localStorage.setItem('userInfo', JSON.stringify(res.data))
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     }
   },
   modules: {

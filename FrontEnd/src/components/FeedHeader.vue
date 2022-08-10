@@ -30,49 +30,47 @@
                 <img src="@/assets/images/alert-on-svgrepo-com.svg" alt="calendar" style="width: 28px">
             </div>
         </div>
-        
-        
-    
+
     </div>
 </template>
 <script>
+import { mapState, mapActions } from 'vuex'
+
 const familyStore = 'familyStore'
 const notificationStore = 'notificationStore'
 const userStore = 'userStore'
-
-import { mapState, mapActions } from 'vuex'
 export default {
-    name: 'FeedHeader',
-    date() {
-        return {
+  name: 'FeedHeader',
+  date () {
+    return {
 
-        }
-    },
-    created() {
-        //알림 조회
-        const userId = localStorage.getItem('userId')
-        this.listNotification(userId)
-        //가족 정보 조회(가족 이름, 이미지)
-        const familyId = localStorage.getItem('familyId')
-        this.getFamilyInfo(familyId)
-    },
-    computed: {
-        ...mapState(userStore, ['userInfo']),
-        ...mapState(familyStore, ['familyInfo']),
-        ...mapState(notificationStore, ['notificationList'])
-    },
-    methods: {
-        ...mapActions(familyStore, ['getFamilyInfo']),
-        ...mapActions(notificationStore, ['listNotification']),
-        //가족 정보 수정 페이지로 이동
-        goFamilyUpdate() {
-            // this.$router.push({ name: "feedCreate" });
-        },
-        //알림함 이동
-        goNotice() {
-            this.$router.push({name : 'notification'})
-        }
     }
+  },
+  created () {
+    // 알림 조회
+    const userId = localStorage.getItem('userId')
+    this.listNotification(userId)
+    // 가족 정보 조회(가족 이름, 이미지)
+    const familyId = localStorage.getItem('familyId')
+    this.getFamilyInfo(familyId)
+  },
+  computed: {
+    ...mapState(userStore, ['userInfo']),
+    ...mapState(familyStore, ['familyInfo']),
+    ...mapState(notificationStore, ['notificationList'])
+  },
+  methods: {
+    ...mapActions(familyStore, ['getFamilyInfo']),
+    ...mapActions(notificationStore, ['listNotification']),
+    // 가족 정보 수정 페이지로 이동
+    goFamilyUpdate () {
+      // this.$router.push({ name: "feedCreate" });
+    },
+    // 알림함 이동
+    goNotice () {
+      this.$router.push({ name: 'notification' })
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>

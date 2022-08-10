@@ -150,8 +150,9 @@ const routes = [
   },
   {
     path: '/feedDetail',
-    name: 'FeedDetailView',
-    component: FeedDetailView
+    name: 'feedDetail',
+    component: FeedDetailView,
+    props: true
   }
 ]
 

@@ -110,7 +110,7 @@ export default {
   },
   created () {
     // console.log(this.$route.params.boardId)
-    this.boardId = localStorage.getItem('boardId')
+    this.boardId = this.$route.params.boardId
     this.userId = localStorage.getItem('userId')
 
     // 게시글 상세보기
@@ -120,10 +120,10 @@ export default {
     }
     this.getOneFeed(info)
 
-    // 댓글 목록 조회 (나중에 param에서 넘어온 boardId로 교체)
-    this.getReplyList(localStorage.getItem('boardId'))
+    // 댓글 목록 조회
+    this.getReplyList(this.$route.params.boardId)
 
-    // 가족 콜사인 찾기 (나중에 param에서 넘어온 아이디로 교체)
+    // 가족 콜사인 찾기
     this.callsignList(localStorage.getItem('userId'))
   },
   // async mounted () {

@@ -66,7 +66,7 @@
                             {{feed.viewBoardResponseDto.boardReplyCnt}}
                         </div>
                     </div>
-                    <button @click="goDetail(feed.viewBoardResponseDto.boardId)">상세보기</button>
+                    <Button buttonClass="small information" buttonText="상세보기" @click="goDetail(feed.viewBoardResponseDto.boardId)"></Button>
                 </div>
             </div>
             <div v-else>
@@ -81,6 +81,7 @@
 </template>
 <script>
 import { mapActions, mapState } from 'vuex'
+import Button from './common/Button.vue'
 
 const boardStore = 'boardStore'
 const userStore = 'userStore'
@@ -89,6 +90,7 @@ const familyStore = 'familyStore'
 export default {
   name: 'FeedContent',
   components: {
+    Button
   },
   created () {
     // 피드 조회
@@ -146,11 +148,11 @@ export default {
       this.$router.push({ name: 'feedCreate' })
     },
     // 글 상세보기 페이지 이동
-    goDetail () {
-      // this.$router.push({
-      //     name: "detailvideo",
-      //     params: { videoSeq: videoSeq },
-      // });
+    goDetail (boardId) {
+      this.$router.push({
+        name: 'feedDetail',
+        params: { boardId: boardId }
+      })
     }
   },
   data () {
