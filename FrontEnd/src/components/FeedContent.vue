@@ -167,6 +167,7 @@ export default {
     display: inline-block;
 }
 .feed-wrap {
+  height: 100%;
   width: 900px;
 
   .flex{
