@@ -43,16 +43,15 @@
     </div>
 </template>
 <script>
+import { mapState, mapActions } from 'vuex'
+
 const familyStore = 'familyStore'
 const notificationStore = 'notificationStore'
 const userStore = 'userStore'
-
-import { mapState, mapActions } from 'vuex'
 export default {
     name: 'FeedHeader',
-    date() {
+    date () {
         return {
-
         }
     },
     created() {

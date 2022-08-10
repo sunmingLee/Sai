@@ -6,9 +6,9 @@
                 <img :src="userInfo.userImagePath">
             </div>
             <div>
-                <div class="user-update">
+                <div class="user-update" >
                     <span>{{userInfo.userName}}</span>
-                    <img src="@/assets/images/pencil-fill.svg" alt="calendar" style="width: 15px"> 
+                    <img src="@/assets/images/pencil-fill.svg" alt="calendar" style="width: 15px" @click="goUpdateUser"> 
                 </div>
                 <div class="user-msg">
                     <p v-if="userInfo.userMessage === null">상태 메시지를 등록해주세요</p>
@@ -55,6 +55,10 @@ export default {
   },
   methods: {
     ...mapActions(userStore, ['checkUserInfo']),
+    //프로필 편집 페이지 이동
+    goUpdateUser() {
+      this.$router.push({name: 'addinformation'})
+    }
   }
 }
 </script>
