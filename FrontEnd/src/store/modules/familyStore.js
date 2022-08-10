@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
 import axios from 'axios'
 import router from '@/router/index.js'
+import { API_BASE_URL } from '@/config'
 
-const api_url = 'http://localhost:8080/family'
-// const api_url = 'http://i7a305.p.ssafy.io:8080/family'
+const api_url = API_BASE_URL + '/family'
 const familyStore = {
   namespaced: true,
   state: {
@@ -20,6 +20,9 @@ const familyStore = {
     },
     CALLSIGN_LIST (state, callsign) {
       state.familyCallsignList = callsign
+    },
+    SET_FAMILY_INFO(state, familyInfo) {
+      state.familyInfo = familyInfo
     }
   },
   actions: {
@@ -73,8 +76,8 @@ const familyStore = {
         })
     },
     // 가족 콜사인 리스트
-    callsignList ({ commit }, info) {
-      const userId = info
+    callsignList ({ commit }, user) {
+      const userId = user
       axios({
         url: api_url + '/list/' + userId,
         method: 'GET'
@@ -100,6 +103,19 @@ const familyStore = {
         .catch((err) => {
           console.log(err)
         })
+    },
+    //가족 정보 조회
+    getFamilyInfo({commit}, familyId) {
+      axios({
+        url: api_url + "/" + familyId,
+        method: 'GET'
+      })
+      .then((res) => {
+        commit('SET_FAMILY_INFO', res.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     }
   },
   modules: {

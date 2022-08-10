@@ -1,19 +1,15 @@
-// import jwtDecode from 'jwt-decode'
-// import { login, findById, updateUser } from '@/api/user.js'
-
 /* eslint-disable camelcase */
 import axios from 'axios'
 import router from '@/router/index.js'
+import { API_BASE_URL } from '@/config'
 
-const api_url = 'http://localhost:8080/api/user'
-// const api_url = 'http://i7a305.p.ssafy.io:8080/api/user'
+const api_url = API_BASE_URL + '/api/user'
 const userStore = {
   namespaced: true,
   state: {
     isLogin: false,
     isLoginError: false,
-    userInfo: null,
-    familyId: ''
+    userInfo: [],
     // userInfo: {
     //   userId: 'cjftn',
     //   familyId: 123456,
@@ -35,12 +31,8 @@ const userStore = {
       state.isLoginError = isLoginError
     },
     SET_USER_INFO: (state, userInfo) => {
-      state.isLogin = true
       state.userInfo = userInfo
     },
-    SET_FAMILY_ID: (state, familyId) => {
-      state.familyId = familyId
-    }
   },
   actions: {
     // 로그인
@@ -52,7 +44,7 @@ const userStore = {
       axios.post(api_url + '/login', data, {
       })
         .then((res) => {
-          console.log(res)
+          // console.log(res)
           // console.log(res.headers)
           if (res.status === 200) {
             // const jwtToken = res.headers['Set-Cookie']
@@ -77,10 +69,10 @@ const userStore = {
       // console.log(user)
       axios.post(api_url + '/login/info', data)
         .then((res) => {
-          console.log(res)
+          // console.log(res)
           // familyId가 있는 경우, 메인으로 이동
           if (res.status === 200 & res.data.familyId != null) {
-            commit('SET_FAMILY_ID', res.data.familyId)
+            localStorage.setItem('familyId', res.data.familyId)
             router.push({ name: 'feed' })
           } else { // familyId가 없는 경우
             if (!res.data.familyRegYN) { // 가족 미신청
@@ -146,6 +138,23 @@ const userStore = {
     },
     // 비밀번호 확인
     checkPassword ({ commit }, userInfo) {
+      const params = userInfo.password
+      axios({
+        url: api_url + '/verify/' + userInfo.userId,
+        method: 'POST',
+        data: params,
+        headers: {
+          'Content-Type': 'text/html; charset=utf-8'
+        }
+      })
+        .then((res) => {
+          console.log(res)
+          router.push({ name: 'account' })
+        })
+        .catch((err) => {
+          alert('비밀번호가 틀렸습니다')
+          console.log(err)
+        })
     },
     // 비밀번호 변경
     updatePassword ({ commit }, userInfo) {
@@ -180,63 +189,21 @@ const userStore = {
         .catch((err) => {
           console.log(err)
         })
+    },
+    // 유저(회원) 정보 조회
+    checkUserInfo({commit}, userId) {
+      axios({
+        url: api_url + '/' + userId,
+        method: 'GET'
+      })
+      .then((res) => {
+        commit('SET_USER_INFO', res.data)
+        localStorage.setItem('userInfo',JSON.stringify(res.data))
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     }
-    // async userConfirm ({ commit }, user) {
-    //   console.log(user)
-    //   await login(
-    //     user,
-    //     (response) => {
-    //       console.log(response)
-    //       if (response.data.code === 200) {
-    //         const token = response.data['access-token']
-    //         commit('SET_IS_LOGIN', true)
-    //         commit('SET_IS_LOGIN_ERROR', false)
-    //         sessionStorage.setItem('access-token', token)
-    //       } else {
-    //         commit('SET_IS_LOGIN', false)
-    //         commit('SET_IS_LOGIN_ERROR', true)
-    //       }
-    //     },
-    //     (response) => {
-    //       console.log(response)
-    //       commit('SET_IS_LOGIN', false)
-    //       commit('SET_IS_LOGIN_ERROR', true)
-    //     }
-    //   )
-    // },
-    // getUserInfo ({ commit }, token) {
-    //   const decodeToken = jwtDecode(token)
-    //   console.log(decodeToken)
-    //   findById(
-    //     decodeToken.id,
-    //     (response) => {
-    //       console.log(response)
-    //       if (response.data) {
-    //         commit('SET_USER_INFO', response.data)
-    //       } else {
-    //         console.log('유저 정보 없음!!')
-    //       }
-    //     },
-    //     (error) => {
-    //       console.log(error)
-    //     }
-    //   )
-    // },
-
-    // updateUserInfo ({ commit }, user) {
-    //   updateUser(
-    //     user,
-    //     (response) => {
-    //       console.log(response)
-    //       if (response.data === 1) {
-    //         commit('SET_USER_INFO', user)
-    //       }
-    //     },
-    //     (error) => {
-    //       console.log(error)
-    //     }
-    //   )
-    // }
   },
   modules: {
 
