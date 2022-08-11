@@ -118,6 +118,43 @@ const familyStore = {
           console.log(err)
         })
     },
+
+    // 가족 정보 수정
+    updateFamilyInfo ({ commit }, modifiedFamilyInfo) {
+    // 게시글 작성
+    // boardCreate ({ commit }, boardInfo) {
+      const files = modifiedFamilyInfo.fileList
+      const updateFamilyRequestDto = modifiedFamilyInfo.updateFamilyRequestDto
+      const formData = new FormData()
+
+      if (files !== undefined) {
+        formData.append('file', files[0])
+      }
+
+      formData.append('updateFamilyRequestDto', new Blob([JSON.stringify(updateFamilyRequestDto)], { type: 'application/json' }))
+      axios({
+        url: api_url + '/modify',
+        method: 'PUT',
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+        .then((res) => {
+        // console.log(res)
+          if (res.status === 200) {
+            alert('가족 정보가 수정되었습니다.')
+            // router.push({ name: 'feed' })
+          } else {
+            console.log(res)
+            alert('가족 정보 수정 중 오류가 발생했습니다.')
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+          alert('가족 정보 수정 중 오류가 발생했습니다.')
+        })
+    },
     // 가족 신청 수락, 거절
     answerFamilyRegister ({ commit }, info) {
       const data = {
@@ -143,7 +180,9 @@ const familyStore = {
           console.log(err)
         })
     }
+
   },
+
   modules: {
   }
 }

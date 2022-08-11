@@ -16,24 +16,24 @@
         </div>
         <div class="flex right">
             <!-- 유저 사진 -->
-            <div v-if="userInfo.userImagePath === null" id="drop">
+            <div v-if="userInfo.userImagePath === null" @click="dropDown">
                 <img src="@/assets/images/person-circle.svg" alt="user" style="width:28px">
             </div>
-            <div v-else id="drop"> 
+            <div v-else @click="dropDown"> 
                 <img src="@/assets/images/alert-on-svgrepo-com.svg" alt="calendar" style="width: 28px">
             </div>
             <!-- <router-link :to="{name : 'detailreview'}">상세보기</router-link> -->
-            <div class="mymenu-wrap">
+            <div v-if="menuFlag" class="mymenu-wrap">
                 <ul>
                     <li>{{userInfo.userName}}</li>
                     <hr>
                     <li @click="goMyPage">내 페이지</li>
                     <li @click="goAccount">계정관리</li>
-                    <li @clcick="logout">로그아웃</li>
+                    <li @click="logout">로그아웃</li>
                 </ul>
             </div>
             <!-- 알림 -->
-            <div v-if="notificationList.length === 0" @click="goNotice">
+            <div v-if="notificationCount === 0" @click="goNotice">
                 <img src="@/assets/images/alert-svgrepo-com.svg" alt="calendar" style="width: 28px">
             </div>
             <div v-else @click="goNotice">
@@ -43,15 +43,16 @@
     </div>
 </template>
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 
 const familyStore = 'familyStore'
 const notificationStore = 'notificationStore'
 const userStore = 'userStore'
 export default {
     name: 'FeedHeader',
-    date () {
+    data () {
         return {
+            menuFlag: false
         }
     },
     created() {
@@ -65,7 +66,8 @@ export default {
     computed: {
         ...mapState(userStore, ['userInfo']),
         ...mapState(familyStore, ['familyInfo']),
-        ...mapState(notificationStore, ['notificationList'])
+        ...mapState(notificationStore, ['notificationList']),
+        ...mapGetters(notificationStore, ['notificationCount'])
     },
     methods: {
         ...mapActions(familyStore, ['getFamilyInfo']),
@@ -73,6 +75,15 @@ export default {
         //가족 정보 수정 페이지로 이동
         goFamilyUpdate() {
             this.$router.push({ name: "familyInfoChange" });
+        },
+        //드롭다운
+        dropDown() {
+            console.log(this.menuFlag)
+            if(this.menuFlag) {
+                this.menuFlag = false
+            } else {
+                this.menuFlag = true
+            }
         },
         //알림함 이동
         goNotice() {
@@ -96,6 +107,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+#drop {
+
+}
 .header {
     top: 0;
     padding: 0 5%;
@@ -126,7 +140,7 @@ export default {
 }
 //유저 메뉴
 .mymenu-wrap {
-    display: none;
+    // display: none;
     border: 1px solid #F0EAE3;
     background-color: #F0EAE3;
     ul {

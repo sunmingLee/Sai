@@ -1,9 +1,9 @@
 <template>
     <div class="mypage-wrap">
-        <p>게시물 {{feedList.length}}개</p>
+        <p>게시물 {{myFeedList.length}}개</p>
         <div class="flex">
             <div class="mypage-content">
-                <div class="content-wrap" v-for="(feed, index) in feedList" :key="index">
+                <div class="content-wrap" v-for="(feed, index) in myFeedList" :key="index">
                     <div></div>
                 </div>
             </div>
@@ -34,21 +34,17 @@ export default {
   },
   created() {
     // 피드 조회
-    const info = {
-      userId: localStorage.getItem('userId'),
-      familyId: localStorage.getItem('familyId')
-    }
+    const userId = localStorage.getItem('userId')
     // 피드 전체 리스트 조회
-    this.feedAllList(info)
-    
+    this.myFeedAllList(userId)
   },
   mounted() {
   },
   computed: {
-    ...mapState(boardStore, ['feedList'])
+    ...mapState(boardStore, ['myFeedList'])
   },
   methods: {
-    ...mapActions(boardStore, ['feedAllList'])
+    ...mapActions(boardStore, ['myFeedAllList'])
   }
 }
 </script>
