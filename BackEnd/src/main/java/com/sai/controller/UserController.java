@@ -42,6 +42,7 @@ import com.sai.model.service.user.UserServiceImpl;
 import com.sai.security.CurrentUser;
 import com.sai.security.UserPrincipal;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
 @CrossOrigin(origins = "*")
@@ -56,25 +57,25 @@ public class UserController {
 	private final JwtTokenProvider jwtTokenProvider;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-	// 아이디 중복 검사
+	@ApiOperation("checkUserIdDuplicate: 아이디 중복 검사")
 	@GetMapping("/duplication/id")
 	public ResponseEntity<Boolean> checkUserIdDuplicate(@RequestParam String userId) {
 		return ResponseEntity.ok(userService.checkUserIdDuplicate(userId));
 	}
 
-	// 이메일 중복 검사
+	@ApiOperation("checkUserEmailDuplicate: 이메일 중복 검사")
 	@GetMapping("/duplication/email")
 	public ResponseEntity<Boolean> checkUserEmailDuplicate(@RequestParam String email) {
 		return ResponseEntity.ok(userService.checkUserEmailDuplicate(email));
 	}
 
-	// 직접 회원가입
+	@ApiOperation("join: 직접 회원가입")
 	@PostMapping("/join")
 	public ResponseEntity<String> join(@RequestBody UserDto userInfo) {
 		return ResponseEntity.status(200).body(userService.insertUser(userInfo));
 	}
 	
-	// 추가 정보 입력
+	@ApiOperation("addUserInformation: 추가 정보 입력")
 	@PostMapping("/addInfo")
 	public ResponseEntity<?> addUserInformation(@RequestPart UserInfoDTO addInfo, @RequestPart MultipartFile file) throws Exception {
 		try {
@@ -85,7 +86,7 @@ public class UserController {
 		
 	}
 
-	// 사용자 정보 조회
+	@ApiOperation("getUserInfoByUserId: 사용자 정보 조회")
 	@GetMapping("/{userId}")
 	public ResponseEntity<UserDto> getUserInfoByUserId(@PathVariable String userId) throws JsonProcessingException {
 		UserDto getUser = userService.getUserInfoByUserId(userId);
@@ -93,6 +94,7 @@ public class UserController {
 	}
 
 	// 개인정보 수정 전 사용자 확인
+	@ApiOperation("verifyUser: 개인정보 수정 전 사용자 확인")
 	@PostMapping("/verify/{userId}")
 	public ResponseEntity<?> verifyUser(@PathVariable String userId, @RequestBody String password) {
 		try {
@@ -106,18 +108,21 @@ public class UserController {
 	}
 	
 	// 비밀번호 변경
+	@ApiOperation("changePassword: 비밀번호 변경")
 	@PatchMapping("/profile/{userId}")
 	public ResponseEntity<String> changePassword(@PathVariable String userId, @RequestParam String password) {
 		return ResponseEntity.status(200).body(userService.changePassword(userId, password));
 	}
 
 	// 회원 탈퇴
+	@ApiOperation("deleteUser: 회원 탈퇴")
 	@DeleteMapping("/{userId}")
 	public ResponseEntity<String> deleteUser(@PathVariable String userId) {
 		return ResponseEntity.ok(userService.deleteUser(userId));
 	}
 
 	// 로그인
+	@ApiOperation("login: 로그인")
 	@PostMapping("/login")
 	public ResponseEntity<LoginUserResponseDto> login(@RequestBody LoginUserRequestDto user, HttpServletResponse response) throws Exception {
 		
@@ -153,6 +158,7 @@ public class UserController {
 //	}
 	
 	// 로그인 후 회원정보 요청
+	@ApiOperation("loginUserInfo: 로그인 후 회원정보 요청")
 	@PostMapping("/login/info")
 	public ResponseEntity<InfoUserResponseDto> loginUserInfo(@RequestBody LoginUserRequestDto loginUserRequestDto){
 		
@@ -165,6 +171,7 @@ public class UserController {
 	
 	
 	// 로그아웃
+	@ApiOperation("logout: 로그아웃")
 	@PostMapping("/logout")
 	public void logout(HttpServletResponse response) {
 		
@@ -177,6 +184,7 @@ public class UserController {
 	}
 
 	// 아이디 찾기
+	@ApiOperation("findUserId: 아이디 찾기")
 	@GetMapping("/findId")
 	public ResponseEntity<Map<String, Object>> findUserId(UserDto user) throws Exception {
 
@@ -188,6 +196,7 @@ public class UserController {
 	}
 
 	// 비밀번호 찾기
+	@ApiOperation("findUserPw: 비밀번호 찾기")
 	@GetMapping("/findPw")
 	public ResponseEntity<Map<String, Object>> findUserPw(UserDto user) throws Exception {
 
@@ -197,13 +206,13 @@ public class UserController {
 	}
 	
 	// 개인 페이지(개인 피드) 조회
+	@ApiOperation("readMyAllBoard: 개인 페이지 조회")
 	@GetMapping("/myPage/{userId}")
 	public ResponseEntity<?> readMyAllBoard(@PathVariable String userId, @PageableDefault(size = 3, sort = "boardRegDatetime", direction = Direction.DESC) Pageable pageable, @CurrentUser UserPrincipal currUser)
 			throws Exception {
 
 		try {
 			List<ReadFeedResponseDto> readFeedResponseDtos = feedService.readAllBoard(userId, pageable, currUser);
-
 			if (readFeedResponseDtos != null) {
 				return new ResponseEntity<List<ReadFeedResponseDto>>(readFeedResponseDtos, HttpStatus.OK);
 			} else {

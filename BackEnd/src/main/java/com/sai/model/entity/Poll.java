@@ -28,6 +28,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "poll")
 public class Poll extends UserDateAudit {
+//	public class Poll  {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "poll_id")
