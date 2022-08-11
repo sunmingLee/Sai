@@ -116,8 +116,49 @@ const familyStore = {
       .catch((err) => {
         console.log(err)
       })
-    }
+    },
+
+    //가족 정보 수정
+    updateFamilyInfo({commit}, modifiedFamilyInfo) {
+    // 게시글 작성
+    // boardCreate ({ commit }, boardInfo) {
+      // const files = boardInfo.fileList
+      console.log(modifiedFamilyInfo);
+      const updateFamilyRequestDto = modifiedFamilyInfo.updateFamilyRequestDto
+      const formData = new FormData()
+      // if (files !== undefined) {
+      //   for (let i = 0; i < files.length; i++) {
+      //     console.log(files[i])
+      //     formData.append('files', files[i])
+      //   }
+      // }
+      formData.append('updateFamilyRequestDto', new Blob([JSON.stringify(updateFamilyRequestDto)], { type: 'application/json' }))
+      axios({
+        url: api_url + '/modify',
+        method: 'PUT',
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+        .then((res) => {
+          // console.log(res)
+          if (res.status === 200) {
+            alert('작성이 완료되었습니다')
+            // router.push({ name: 'feed' })
+          } else {
+            alert('안됐지롱')
+            console.log(res)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+          alert('잘못된 코드입니다.')
+        })
+    },
+
   },
+
   modules: {
   }
 }
