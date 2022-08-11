@@ -181,7 +181,7 @@ public class FamilyController {
 	public ResponseEntity<?> updateFamily(
 //			@RequestBody UpdateFamilyRequestDto updateFamilyRequestDto
 			@RequestPart UpdateFamilyRequestDto updateFamilyRequestDto
-			, @RequestPart MultipartFile file)
+			, @RequestPart(required = false) MultipartFile file)
 			throws Exception {
 
 		try {

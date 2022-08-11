@@ -217,7 +217,7 @@ public class FamilyServiceImpl implements FamilyService {
 		family.updateFamilyName(updateFamilyDto.getFamilyName());
 
 		// 가족 이미지 업로드
-		if (!file.isEmpty()) {
+		if (file != null) {
 
 			// 폴더 생성
 			File uploadPathFolder = new File(uploadPath);
@@ -261,9 +261,9 @@ public class FamilyServiceImpl implements FamilyService {
 		}
 
 		familyRepository.save(family);
-
+		
 		// 콜사인 변경
-		if (updateFamilyRequestDto.isCallsignModified()) {
+		if (updateFamilyRequestDto.getIsCallsignModified()) {
 
 			List<UpdateFamilyCallsignDto> updateFamilyCallsignDtos = updateFamilyRequestDto
 					.getUpdateFamilyCallsignDtos();
