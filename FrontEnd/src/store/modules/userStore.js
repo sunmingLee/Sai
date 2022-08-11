@@ -207,16 +207,14 @@ const userStore = {
     },
     // 회원 정보 추가 / 수정
     addUserInfo ({ commit }, userInfo) {
-    
       const files = userInfo.fileList
       const addInfo = userInfo.userInfo
-            
+
       const formData = new FormData()
       if (files !== undefined) {
         formData.append('file', files[0])
       }
       formData.append('addInfo', new Blob([JSON.stringify(addInfo)], { type: 'application/json' }))
-      console.log(formData)
       axios({
         url: api_url + '/addInfo',
         method: 'POST',
@@ -225,7 +223,7 @@ const userStore = {
           'Content-Type': 'multipart/form-data'
         }
       })
-      .then((res) => {
+        .then((res) => {
           alert('추가 정보가 입력되었습니다')
           console.log(res)
           // commit()

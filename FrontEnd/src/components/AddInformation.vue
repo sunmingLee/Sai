@@ -72,12 +72,6 @@ export default {
       fileList: []
     }
   },
-  props() {
-    return {
-      userId: '',
-      isAddInfo: true
-    }
-  },
   created () {
     // 유저 정보 조회
     this.addInfo.userId = localStorage.getItem('userId')
