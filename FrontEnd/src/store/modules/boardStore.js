@@ -66,20 +66,22 @@ const boardStore = {
     feedAllList ({ commit }, info) {
       const familyId = info.familyId
       const userId = info.userId
-      console.log('피드 리스트 조회')
-      console.log(familyId + ' - ' + userId)
       axios({
         url: api_url + '/' + familyId + '/' + userId,
         method: 'GET'
       })
         .then((res) => {
-          console.log('졸려')
           commit('FEED_All_LIST', res.data)
         })
         .catch((err) => {
           console.log('에러')
           console.log(err)
         })
+    },
+    setBoardId ({ commit }, boardId) {
+      // console.log('boardId: ' + boardId)
+      localStorage.setItem('boardId', boardId)
+      router.push({ name: 'feedDetail' })
     },
     // 게시글 상세보기
     getOneFeed ({ commit }, info) {
@@ -104,6 +106,26 @@ const boardStore = {
         .then((res) => {
           alert('게시글이 삭제되었습니다.')
           router.push({ name: 'feed' })
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 투표 선택 (임시 / 쿠키 세팅 이슈)
+    chooseVote ({ commit }, info) {
+      const data = {
+        choiceId: info.choiceId
+      }
+      axios({
+        url: API_BASE_URL + `/api/poll/${info.pollId}/votes`,
+        method: 'POST',
+        data: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => {
+          router.go()
         })
         .catch((err) => {
           console.log(err)
