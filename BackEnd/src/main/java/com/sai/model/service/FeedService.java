@@ -16,6 +16,8 @@ public interface FeedService {
 	// 반환값 수정 필요
 	public List<ReadFeedResponseDto> readAllBoard(String familyId, String userId, Pageable pageable, UserPrincipal currUser);
 
+	public List<ReadFeedResponseDto> readAllBoard(String userId, Pageable pageable, UserPrincipal currUser);
+
 	public ReadBoardResponseDto readOneBoard(Long boardId, String userId, UserPrincipal currUser);
 
 	public void writeBoard(CreateBoardRequestDto createBoardRequestDto, List<MultipartFile> files);

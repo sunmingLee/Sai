@@ -126,10 +126,11 @@ public class FeedServiceImpl implements FeedService {
 				readFeedResponseDto.setBoardLiked(true);
 
 			// 댓글 DTO 1개 세팅
+			 if(board.getBoardReplyCnt() != 0) {
 			Reply reply = replyRepository.findFirstByBoard(boardRepository.findById(board.getBoardId()).get()).get();
 			ReplyDto replyDto = modelMapper.map(reply, ReplyDto.class);
 			readFeedResponseDto.setReplyDto(replyDto);
-
+			 }
 			// List add
 			readFeedResponseDtos.add(readFeedResponseDto);
 		}
@@ -359,5 +360,61 @@ public class FeedServiceImpl implements FeedService {
 			uploadPathFolder.mkdirs();
 
 		return familyId;
+	}
+
+	
+	// 개인페이지 유저 피드 조회
+	@Override
+	public List<ReadFeedResponseDto> readAllBoard(String userId, Pageable pageable, UserPrincipal currUser) {
+		List<ReadFeedResponseDto> readFeedResponseDtos = new ArrayList<>();
+		User user = userRepository.findById(userId).get();
+
+		List<Board> boards = boardRepository.findByUser(user, pageable);
+		for (Board board : boards) {
+			ReadFeedResponseDto readFeedResponseDto = new ReadFeedResponseDto();
+
+			// 게시글 DTO 세팅
+			readFeedResponseDto.setViewBoardResponseDto(modelMapper.map(board, ViewBoardResponseDto.class));
+
+			// 투표 관련 DTO 세팅
+			if (board.getPollYn()) {
+
+				Poll poll = pollRepository.findByBoardBoardId(board.getBoardId());
+
+				PollResponse pollResponse = pollService.getPollById(poll.getPollId(), currUser);
+				readFeedResponseDto.setPollResponse(pollResponse);
+
+//				viewPollResponseDto = modelMapper.map(poll, ViewPollResponseDto.class);
+//				readFeedResponseDto.setViewPollResponseDto(viewPollResponseDto);
+			}
+
+			// 게시글 미디어 DTO 세팅
+			else if (board.getBoardMediaYn()) {
+				List<ViewBoardMediaResponseDto> viewBoardMediaResponseDtos = new ArrayList<>();
+				List<BoardMedia> boardMedias = boardMediaRepository.findByBoard(board);
+				for (BoardMedia boardMedia : boardMedias) {
+					viewBoardMediaResponseDtos.add(modelMapper.map(boardMedia, ViewBoardMediaResponseDto.class));
+				}
+				readFeedResponseDto.setViewBoardMediaResponseDto(viewBoardMediaResponseDtos);
+			}
+
+			// 좋아요 여부 세팅
+//			BoardLike boardLike = boardLikeRepository.findOneByBoardAndUser(board, user);
+//			if (boardLike == null)
+//				readFeedResponseDto.setBoardLiked(false);
+//			else
+//				readFeedResponseDto.setBoardLiked(true);
+
+			// 댓글 DTO 1개 세팅
+//			 if(board.getBoardReplyCnt() != 0) {
+//			Reply reply = replyRepository.findFirstByBoard(boardRepository.findById(board.getBoardId()).get()).get();
+//			ReplyDto replyDto = modelMapper.map(reply, ReplyDto.class);
+//			readFeedResponseDto.setReplyDto(replyDto);
+//			 }
+			// List add
+			readFeedResponseDtos.add(readFeedResponseDto);
+		}
+
+		return readFeedResponseDtos;
 	}
 }

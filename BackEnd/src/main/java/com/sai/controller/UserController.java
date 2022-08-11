@@ -1,10 +1,15 @@
 package com.sai.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -25,13 +30,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sai.jwt.JwtTokenProvider;
+import com.sai.model.dto.ReadFeedResponseDto;
 import com.sai.model.dto.user.AddUserInfoRequest;
 import com.sai.model.dto.user.InfoUserResponseDto;
 import com.sai.model.dto.user.LoginUserRequestDto;
 import com.sai.model.dto.user.LoginUserResponseDto;
 import com.sai.model.dto.user.UserDto;
 import com.sai.model.dto.user.UserInfoDTO;
+import com.sai.model.service.FeedService;
 import com.sai.model.service.user.UserServiceImpl;
+import com.sai.security.CurrentUser;
+import com.sai.security.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,6 +51,7 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
 	private final UserServiceImpl userService;
+	private final FeedService feedService;
 	private final OAuth2UserService oAuth2UserService;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -157,6 +167,7 @@ public class UserController {
 	// 로그아웃
 	@PostMapping("/logout")
 	public void logout(HttpServletResponse response) {
+		
 		Cookie cookie = new Cookie("X-AUTH-TOKEN", null);
 		cookie.setHttpOnly(true);
 		cookie.setSecure(false);
@@ -183,6 +194,30 @@ public class UserController {
 		return ResponseEntity.ok(userService.findUserPw(user));
 //		return new ResponseEntity<Map<String, Object>>(userService.findUserPw(user),
 //				(HttpStatus) userService.findUserPw(user).get("status"));
+	}
+	
+	// 개인 페이지(개인 피드) 조회
+	@GetMapping("/myPage/{userId}")
+	public ResponseEntity<?> readMyAllBoard(@PathVariable String userId, @PageableDefault(size = 3, sort = "boardRegDatetime", direction = Direction.DESC) Pageable pageable, @CurrentUser UserPrincipal currUser)
+			throws Exception {
+
+		try {
+			List<ReadFeedResponseDto> readFeedResponseDtos = feedService.readAllBoard(userId, pageable, currUser);
+
+			if (readFeedResponseDtos != null) {
+				return new ResponseEntity<List<ReadFeedResponseDto>>(readFeedResponseDtos, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+			}
+
+		} catch (Exception e) {
+			return exceptionHandling(e);
+		}
+	}
+	
+	private ResponseEntity<String> exceptionHandling(Exception e) {
+		e.printStackTrace();
+		return new ResponseEntity<String>("Error : " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 
