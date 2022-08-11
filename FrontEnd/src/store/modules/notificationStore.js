@@ -10,6 +10,16 @@ const notificationStore = {
     notificationList: []
   },
   getters: {
+    notificationCount(state) {
+      const notiList = state.notificationList
+      let count = 0;
+      for(let i = 0; i < notiList.length; i++) {
+        if(!notiList[i].notiReadYn) {
+          count++;
+        }
+      }
+      return count
+    }
   },
   mutations: {
     SET_NOTIFICATION_LIST: (state, notificationList) => {

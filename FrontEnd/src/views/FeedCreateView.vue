@@ -1,122 +1,127 @@
 <template>
     <div class="create-wrap">
-      
+
       <p>{{callsign}}</p>
         <HeaderTitle hasBack="true" title="게시글 작성" hasIcon="true"/>
         <!-- 사진 공간 -->
-        <input type="file" @change="fileCheck" id="file" multiple>
-        <div class="flex">
-          <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner" >
-              <div class="carousel-item active">
-                <img :src="srcList[0]" id="img" class="d-block w-100">
-              </div>
-              <div v-for="(src, index) in srcList" :key="index">
-                <div v-if="index !== 0" class="carousel-item">
-                  <img :src="src" id="img" class="d-block w-100">
+        <div>
+          <div class="file-wrap">
+            <input class="form-control" type="file" @change="fileCheck" id="file" multiple>
+          </div>
+            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+              <div class="carousel-inner" >
+                <div class="carousel-item active">
+                  <img :src="srcList[0]" id="img" class="d-block w-100">
                 </div>
-              </div>
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-          </div>
-        </div>
-        <!-- 글(텍스트) 공간 -->
-        <div class="flex">
-          <textarea v-model="boardContent" name="" id="" cols="30" rows="10"></textarea>
-        </div>
-        <!-- 추가기록과 투표만들기 토글 -->
-        <div class="flex">
-          <div class="toggle-wrap">
-            <button @click="record">추가 기록</button>
-            <button @click="poll">투표 만들기</button>
-          </div>
-        </div>
-        <div class="flex">
-          <!-- 추가 기록 -->
-          <div class="record-wrap" v-if="toggle">
-            <p>기록하고 싶은 시간, 장소, 사람이 있나요?</p>
-            <div class="record-flex">
-              <div class="record-date">
-                <p>언제?</p>
-                <img :class="visibilityIcon" src="@/assets/images/calendar-check.svg" alt="calendar" style="width: 30px" @click="showDate">
-              </div>
-              <!-- 날짜 모달창 -->
-              <div class="modal hidden" id="size">
-                <div class="modal-overlay">
-                  <div class="modal-content">
-                    <p class="modal-title">날짜 선택</p>
-                    <div class="modal-date">
-                      <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" :enableTimePicker="false" v-model="boardDate"/>
-                    </div>
-                    <div class="btn-wrap">
-                      <button class="date-cancle" @click="dateCancle">취소</button>
-                      <button class="date-confirm" @click="dateConfirm">확인</button>
-                    </div>
+                <div v-for="(src, index) in srcList" :key="index">
+                  <div v-if="index !== 0" class="carousel-item">
+                    <img :src="src" id="img" class="d-block w-100">
                   </div>
                 </div>
               </div>
-              <div class="record-location">
-                <p>어디서?</p>
-                <img :class="visibilityBack" src="@/assets/images/geo-alt.svg" alt="location" style="width: 30px" @click="showApi">
-              </div>
-              <div class="record-person">
-                <p>누구랑?</p>
-                <img :class="visibilityIcon" src="@/assets/images/person-circle.svg" alt="calendar" style="width: 30px" @click="showFamily">
-              </div>
-              <!-- 사람 선택 모달창 -->
-              <div class="person hidden">
-                <div class="person-overlay">
-                  <div class="person-content">
-                    <p class="person-title">사람 선택</p>
-                    <div class="person-date">
-                      <div v-for="(callsign, index) in familyCallsignList" :key="index">
-                        <label for="callsign-select">{{callsign.callsign}}</label>
-                        <input type="checkbox" name="callsign" :value="family" class="callsign-select">
+              <button v-if="imageFlag" class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+              </button>
+              <button v-if="imageFlag" class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+              </button>
+          </div>
+          <!-- 글(텍스트) 공간 -->
+          <div class="flex">
+            <textarea v-model="boardContent" name="" id="" cols="30" rows="10"></textarea>
+          </div>
+          <!-- 추가기록과 투표만들기 토글 -->
+          <div class="flex">
+            <div class="toggle-wrap">
+              <button @click="record">추가 기록</button>
+              <button @click="poll">투표 만들기</button>
+            </div>
+          </div>
+          <div class="flex">
+            <!-- 추가 기록 -->
+            <div class="record-wrap" v-if="toggle">
+              <p>기록하고 싶은 시간, 장소, 사람이 있나요?</p>
+              <div class="record-flex">
+                <div class="record-date">
+                  <p>언제?</p>
+                  <img :class="visibilityIcon" src="@/assets/images/calendar-check.svg" alt="calendar" style="width: 30px" @click="showDate">
+                </div>
+                <!-- 날짜 모달창 -->
+                <div class="modal hidden" id="size">
+                  <div class="modal-overlay">
+                    <div class="modal-content">
+                      <p class="modal-title">날짜 선택</p>
+                      <div class="modal-date">
+                        <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" :enableTimePicker="false" v-model="boardDate"/>
+                      </div>
+                      <div class="btn-wrap">
+                        <button class="date-cancle" @click="dateCancle">취소</button>
+                        <button class="date-confirm" @click="dateConfirm">확인</button>
                       </div>
                     </div>
-                    <div class="btn-wrap">
-                      <button class="date-cancle" @click="personCancle">취소</button>
-                      <button class="date-confirm" @click="personConfirm">확인</button>
+                  </div>
+                </div>
+                <div class="record-location">
+                  <p>어디서?</p>
+                  <img :class="visibilityBack" src="@/assets/images/geo-alt.svg" alt="location" style="width: 30px" @click="showApi">
+                </div>
+                <div class="record-person">
+                  <p>누구랑?</p>
+                  <img :class="visibilityIcon" src="@/assets/images/person-circle.svg" alt="calendar" style="width: 30px" @click="showFamily">
+                </div>
+                <!-- 사람 선택 모달창 -->
+                <div class="person hidden">
+                  <div class="person-overlay">
+                    <div class="person-content">
+                      <p class="person-title">사람 선택</p>
+                      <div class="person-date">
+                        <div v-for="(callsign, index) in familyCallsignList" :key="index">
+                          <label for="callsign-select">{{callsign.callsign}}</label>
+                          <input type="checkbox" name="callsign" :value="callsign.callsign" class="callsign-select">
+                        </div>
+                      </div>
+                      <div class="btn-wrap">
+                        <button class="date-cancle" @click="personCancle">취소</button>
+                        <button class="date-confirm" @click="personConfirm">확인</button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div>
-              <p v-if="date !== ''">시간 : {{date}}</p>
-              <button class="delete-date" @click="deleteDate" v-if="date !== ''">삭제</button>
-              <p>위치 : {{boardLocation}}</p>
-              <button class="delete-date" @click="deleteLocation" v-if="boardLocation !== ''">삭제</button>
-            </div>
-          </div>
-          <!-- 투표 만들기 -->
-          <div v-else class="poll-wrap">
-            <!-- 투표 제목 -->
-            <div calss="poll-title-wrap">
-              <input type="text" v-model="pollTitle" placeholder="투표 제목" class="poll-title-input">
-            </div>
-            <!-- 투표 항목 -->
-            <p style="font-weight: bold">항목 입력</p>
-            <div class="poll-item-wrap">
-              <div v-for="(option, index) in pollOptions" :key="index">
-                <input name="option" v-model="option.pollOption" placeholder="항목을 입력하세요">
+              <div>
+                <span v-if="date !== ''">시간 : {{date}}</span>
+                <button class="delete-date" @click="deleteDate" v-if="date !== ''">삭제</button>
+                <span v-if="boardLocation !== ''">위치 : {{boardLocation}}</span>
+                <button class="delete-date" @click="deleteLocation" v-if="boardLocation !== ''">삭제</button>
+                <div v-if="peopleList.length !== 0">
+                  <span v-for="(person, index) in peopleList" :key="index">{{person}}</span>
+                </div>
               </div>
             </div>
-            <!-- 투표 항목 추가 버튼 -->
-            <button @click="addPollItem">항목 추가</button>
-            <p>마감시간 설정</p>
-            <input type="checkbox" class="poll-time" @click="pollTimeCheck">
-            <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" :minDate="new Date()" v-model="pollDatePicker" :disabled="pollDateDisabled"/>
+            <!-- 투표 만들기 -->
+            <div v-else class="poll-wrap">
+              <!-- 투표 제목 -->
+              <div calss="poll-title-wrap">
+                <input type="text" v-model="pollTitle" placeholder="투표 제목" class="poll-title-input">
+              </div>
+              <!-- 투표 항목 -->
+              <p style="font-weight: bold">항목 입력</p>
+              <div class="poll-item-wrap">
+                <div v-for="(option, index) in pollOptions" :key="index">
+                  <input name="option" v-model="option.pollOption" placeholder="항목을 입력하세요">
+                </div>
+              </div>
+              <!-- 투표 항목 추가 버튼 -->
+              <button @click="addPollItem">항목 추가</button>
+              <p>마감시간 설정</p>
+              <input type="checkbox" class="poll-time" @click="pollTimeCheck">
+              <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" :minDate="new Date()" v-model="pollDatePicker" :disabled="pollDateDisabled"/>
+            </div>
           </div>
+          <button @click="feedCreate" style="color: blue">작성</button>
         </div>
-        <button @click="feedCreate" style="color: blue">작성</button>
     </div>
 </template>
 <script>
@@ -134,7 +139,7 @@ const userStore = 'userStore'
 const familyStore = 'familyStore'
 
 // 파일 리스트
-const fileList = []
+let fileList = []
 export default {
   name: 'FeedCreateView',
   components: {
@@ -173,15 +178,17 @@ export default {
       format: '',
       pollCnt: 2,
       srcList: [],
-      fileList: []
+      fileList: [],
+      imageFlag : false
     }
   },
   created () {
     const userId = localStorage.getItem('userId')
     this.callsignList(userId)
+    fileList = []
   },
-  mounted() {
-    
+  mounted () {
+
   },
   computed: {
     // ...mapState(userStore, ["userId", "userName"]),
@@ -192,22 +199,31 @@ export default {
     ...mapActions(familyStore, ['callsignList']),
     //파일 처리
     fileCheck(e) {
+      //파일을 다시 선택한다고 했을 때 이미 선택했던 파일을 다 없앤다
+      //fileList -> 담아서 전송해줄 파일 데이터를 담는 배열
+      //srcList -> 사진 미리보기를 보여주는 배열
+      fileList = []
+      this.srcList = []
+      this.imageFlag = false
       //확장자 변경
       this.changeFile()
-      //미리보기
+      // 미리보기
       this.previewFile()
+      if(this.srcList.length !== 0) {
+        this.imageFlag = true
+      }
     },
-    changeFile() {
-      const previewCount = 0;
-      const fileInput = document.getElementById("file")
-      //선택한 파일의 정보 리스트
-      let files = fileInput.files
+    changeFile () {
+      const previewCount = 0
+      const fileInput = document.getElementById('file')
+      // 선택한 파일의 정보 리스트
+      const files = fileInput.files
       // let previewCount = files.length
-      //heic 파일 확장자 변경
-      //선택한 파일의 개수만큼 돌아서 각각의 파일을 다 확인
-      for(let i = 0; i < files.length; i++) {
-        //파일 하나 선택
-        let file = files[i]
+      // heic 파일 확장자 변경
+      // 선택한 파일의 개수만큼 돌아서 각각의 파일을 다 확인
+      for (let i = 0; i < files.length; i++) {
+        // 파일 하나 선택
+        const file = files[i]
         let heicFile = ''
         // 파일의 확장자가 heic일 경우
         if (file.name.split('.')[1] === 'heic') {
@@ -225,14 +241,14 @@ export default {
         }
       }
     },
-    previewFile() {
+    previewFile () {
       console.log(fileList)
-      if(fileList.length != 0) {
-        for(let i = 0; i < fileList.length; i++) {
+      if (fileList.length != 0) {
+        for (let i = 0; i < fileList.length; i++) {
           this.srcList.push(URL.createObjectURL(fileList[i]))
         }
       }
-      console.log("안녕")
+      console.log('안녕')
       console.log(this.srcList)
     },
     // 추가기록과 투표만들기 토글
@@ -307,15 +323,23 @@ export default {
         if (test[i].checked) {
           if (this.peopleList.indexOf(test[i].value) < 0) {
             this.peopleList.push(Object(test[i].value))
+            console.log("넣었따")
+            console.log(this.peopleList)
           }
-        } else {
+        } 
+        else {
           // 체크 해제의 경우
           if (this.peopleList.indexOf(test[i].value) > -1) {
             const index = this.peopleList.indexOf(test[i].value)
+            console.log(this.peopleList.splice(index, 1))
             this.peopleList.splice(index, 1)
+            
+            console.log("뺐다")
+            console.log(this.peopleList)
           }
         }
       }
+      console.log(this.peopleList)
       // 확인 버튼을 클릭했을 경우 모달창을 끈다
       const modal = document.querySelector('.person')
       modal.classList.add('hidden')
@@ -368,7 +392,7 @@ export default {
         console.log(fileList.length)
         if (fileList.length !== 0) {
           this.boardMediaYn = 1
-        }   // 투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
+        } // 투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
         // for(let i = 0; i < )
         let pollOptionCnt = 0
         for (let i = 0; i < this.pollCnt; i++) {
@@ -446,6 +470,7 @@ export default {
         } else {
           this.boardCreate({ createBoardRequestDto })
         }
+        console.log(fileList)
       }
     }
   }
@@ -453,6 +478,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+//사진 공간
+.carousel-inner{
+  width: 40%!important;
+}
+.carousel-control-prev {
+  position: unset;
+  background-color: #A57966;
+  width: 30px;
+  display: inline-block;
+}
+.carousel-control-next {
+  position: unset;
+  background-color: #A57966;
+  width: 30px;  
+  display: inline-block;
+}
 .create-wrap {
   width: 900px;
   .flex{

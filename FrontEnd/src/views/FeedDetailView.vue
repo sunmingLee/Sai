@@ -58,11 +58,11 @@
     </div>
     <!-- 좋아요 & 댓글 개수 -->
     <div class="reaction-wrap">
-      <img v-if="!onHeart && !feed.boardLiked" src="@/assets/images/suit-heart.svg" alt="empty heart" @click="changeHeart">
+      <img v-if="!feed.boardLiked" src="@/assets/images/suit-heart.svg" alt="empty heart" @click="changeHeart">
       <img v-else src="@/assets/images/suit-heart-fill.svg" alt="fill heart" @click="changeHeart">
       <span>{{feed.viewBoardResponseDto.boardLikeCnt}}</span>
       <img src="@/assets/images/chat-right.svg" alt="reply">
-      <span>{{feed.viewBoardResponseDto.boardReplyCnt}}</span>
+      <span>{{replyList.length}}</span>
     </div>
     <div style="border-bottom: 1px solid black; margin:10px; position: relative; top: 25%;"></div>
     <!-- 댓글 목록 -->
@@ -109,8 +109,7 @@ export default {
     return {
       boardId: '',
       userId: '',
-      message: '',
-      onHeart: false
+      message: ''
     }
   },
   created () {
@@ -126,7 +125,7 @@ export default {
     this.getOneFeed(info)
 
     // 댓글 목록 조회
-    this.getReplyList(this.$route.params.boardId)
+    this.getReplyList(this.boardId)
 
     // 가족 콜사인 찾기
     this.callsignList(localStorage.getItem('userId'))
@@ -136,7 +135,7 @@ export default {
     ...mapState(familyStore, ['familyCallsignList'])
   },
   methods: {
-    ...mapActions(boardStore, ['getOneFeed', 'deleteFeed', 'getReplyList', 'createReply', 'updateReply', 'deleteReply', 'chooseVote']),
+    ...mapActions(boardStore, ['getOneFeed', 'deleteFeed', 'getReplyList', 'createReply', 'updateReply', 'deleteReply', 'chooseVote', 'upBoardLike', 'downBoardLike']),
     ...mapActions(familyStore, ['callsignList']),
     // 게시글 수정
     goUpdate () {
@@ -182,10 +181,17 @@ export default {
       }
       this.deleteReply(info)
     },
-    // 하트 변경
+    // 좋아요 변경
     changeHeart () {
-      this.onHeart = !this.onHeart
-      console.log(this.onHeart)
+      const info = {
+        boardId: this.boardId,
+        userId: this.userId
+      }
+      if (!this.feed.boardLiked) { // 좋아요 등록
+        this.upBoardLike(info)
+      } else { // 좋아요 취소
+        this.downBoardLike(info)
+      }
     }
   },
   changeReplyList () {

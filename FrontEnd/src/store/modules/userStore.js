@@ -210,10 +210,13 @@ const userStore = {
     },
     // 회원 정보 추가 / 수정
     addUserInfo ({ commit }, userInfo) {
-      const file = userInfo.fileList[0]
-      const addInfo = userInfo.addInfo
+      const files = userInfo.fileList
+      const addInfo = userInfo.userInfo
+
       const formData = new FormData()
-      formData.append('file', file)
+      if (files !== undefined) {
+        formData.append('file', files[0])
+      }
       formData.append('addInfo', new Blob([JSON.stringify(addInfo)], { type: 'application/json' }))
       axios({
         url: api_url + '/addInfo',
