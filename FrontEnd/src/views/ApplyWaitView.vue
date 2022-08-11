@@ -5,7 +5,7 @@
     가족들에게 어서<br/>수락해달라고 말해보세요!</span>
     <Button class="btn-back" buttonClass="big negative" buttonText="신청 취소하기" @click="goFamilyCode"></Button>
     <br>
-    <Button class="btn-go" buttonClass="big positive" buttonText="피드 보러가기" @click="goResult"></Button>
+    <Button class="btn-go" buttonClass="big positive" buttonText="신청 결과보기" @click="goResult"></Button>
 </div>
 </template>
 
@@ -17,7 +17,7 @@ const userStore = 'userStore'
 export default {
   components: { Button },
   methods: {
-    ...mapActions(familyStore, ['deleteFamilyApply', 'resultFamilyApply']),
+    ...mapActions(familyStore, ['deleteFamilyApply']),
     ...mapActions(userStore, ['getUserInfo']),
     goFamilyCode () {
       this.deleteFamilyApply(localStorage.getItem('userId'))
