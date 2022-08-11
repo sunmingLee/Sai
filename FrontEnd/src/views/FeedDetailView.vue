@@ -58,11 +58,16 @@
     </div>
     <!-- 좋아요 & 댓글 개수 -->
     <div class="reaction-wrap">
-      <img v-if="!onHeart && !feed.boardLiked" src="@/assets/images/suit-heart.svg" alt="empty heart" @click="changeHeart">
-      <img v-else src="@/assets/images/suit-heart-fill.svg" alt="fill heart" @click="changeHeart">
-      <span>{{feed.viewBoardResponseDto.boardLikeCnt}}</span>
+      <span v-if="!onHeart && !feed.boardLiked">
+        <img src="@/assets/images/suit-heart.svg" alt="empty heart" @click="changeHeart">
+        <span>{{feed.viewBoardResponseDto.boardLikeCnt}}</span>
+      </span>
+      <span v-else>
+        <img  src="@/assets/images/suit-heart-fill.svg" alt="fill heart" @click="changeHeart">
+        <span>{{feed.viewBoardResponseDto.boardLikeCnt + 1}}</span>
+      </span>
       <img src="@/assets/images/chat-right.svg" alt="reply">
-      <span>{{feed.viewBoardResponseDto.boardReplyCnt}}</span>
+      <span>{{replyList.length}}</span>
     </div>
     <div style="border-bottom: 1px solid black; margin:10px; position: relative; top: 25%;"></div>
     <!-- 댓글 목록 -->
@@ -126,7 +131,7 @@ export default {
     this.getOneFeed(info)
 
     // 댓글 목록 조회
-    this.getReplyList(this.$route.params.boardId)
+    this.getReplyList(this.boardId)
 
     // 가족 콜사인 찾기
     this.callsignList(localStorage.getItem('userId'))
@@ -185,7 +190,6 @@ export default {
     // 하트 변경
     changeHeart () {
       this.onHeart = !this.onHeart
-      console.log(this.onHeart)
     }
   },
   changeReplyList () {
