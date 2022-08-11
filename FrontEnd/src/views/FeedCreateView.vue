@@ -185,6 +185,7 @@ export default {
   created () {
     const userId = localStorage.getItem('userId')
     this.callsignList(userId)
+    fileList = []
   },
   mounted () {
 
@@ -464,11 +465,11 @@ export default {
           boardReplyCnt: 0
         }
         Object.assign(createBoardRequestDto, { inputBoardRequestDto })
-        // if (this.boardMediaYn === 1) {
-        //   this.boardCreate({ createBoardRequestDto, fileList })
-        // } else {
-        //   this.boardCreate({ createBoardRequestDto })
-        // }
+        if (this.boardMediaYn === 1) {
+          this.boardCreate({ createBoardRequestDto, fileList })
+        } else {
+          this.boardCreate({ createBoardRequestDto })
+        }
         console.log(fileList)
       }
     }
