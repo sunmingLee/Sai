@@ -7,6 +7,7 @@ import com.sai.model.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 
+@SuppressWarnings("unchecked")
 @Getter
 public class OAuthAttributes {
 	private Map<String, Object> attributes; // OAuth2 반환하는 유저 정보 Map

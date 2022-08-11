@@ -29,6 +29,7 @@ import com.sai.model.dto.user.UserInfoDTO;
 import com.sai.model.entity.FamilyRegister;
 import com.sai.model.entity.User;
 import com.sai.model.entity.UserRole;
+import com.sai.model.repository.BoardRepository;
 import com.sai.model.repository.FamilyRegisterRepository;
 import com.sai.model.repository.UserRepository;
 import com.sai.model.service.MailService;
@@ -47,6 +48,7 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final FamilyRegisterRepository familyRegisterRepository;
+	private final BoardRepository boardRepository;
 	private final MailService mailService;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final PasswordEncoder passwordEncoder;
@@ -151,7 +153,7 @@ public class UserServiceImpl implements UserService {
 
 		User user = userRepository.findById(userId).get();
 		UserDto userDto = modelMapper.map(user, UserDto.class);
-
+		userDto.setPassword(null);
 		return userDto;
 	}
 
@@ -221,7 +223,6 @@ public class UserServiceImpl implements UserService {
 				return infoUserResponseDto; // user name 제외하고 모두 null로 리턴
 			} else if (familyRegister.getApproveYn() == null) { // 아직 대기중인 경우
 				infoUserResponseDto.setFamilyRegYN(true);
-				infoUserResponseDto.setFamilyRegYN(false);
 			}
 			// 가족 신청한 경우
 			else if (!familyRegister.getApproveYn()) { // 수락 거절된 경우
