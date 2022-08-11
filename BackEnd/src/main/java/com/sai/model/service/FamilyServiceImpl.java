@@ -115,7 +115,7 @@ public class FamilyServiceImpl implements FamilyService {
 		for (User user : userList) {
 			CreateNotificationRequestDto cnrd = CreateNotificationRequestDto.builder()
 					.notiFromUserId(insertFamilyRegisterRequestDto.getUserId()).notiToUserId(user.getUserId())
-					.notiContent("님이 당신의 가족인가요?").notiType(NotiType.FAMILYREGISTER).build();
+					.notiContent("님이 당신의 가족인가요?").notiType(NotiType.FAMILYREGISTER).notiContentId(Long.toString(familyRegister.getFamilyRegisterId())).build();
 			notiService.createNoti(cnrd);
 		}
 
