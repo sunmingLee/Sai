@@ -7,11 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FamilyCallsignDto {
+public class UpdateFamilyCallsignDto {
 	
 	private Long familyCallsignId;
-	private String fromUserId;
-	private String toUserId;
 	private String callsign;
 	
 }

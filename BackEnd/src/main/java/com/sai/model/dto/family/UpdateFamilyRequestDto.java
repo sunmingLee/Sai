@@ -12,7 +12,7 @@ import lombok.Setter;
 public class UpdateFamilyRequestDto {
 
 	private UpdateFamilyDto updatefamilyDto;
-	private List<FamilyCallsignDto> familyCallsignDtos;
+	private List<UpdateFamilyCallsignDto> updateFamilyCallsignDtos;
 	private boolean isCallsignModified;
 
 }

@@ -106,4 +106,9 @@ public class Board {
 		this.pollYn = modifyBoardRequestDto.getPollYn();
 	}
 
+	public void makeLikeReplyCntZero() {
+		this.boardReplyCnt = 0;
+		this.boardLikeCnt = 0;
+	}
+
 }

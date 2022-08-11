@@ -16,7 +16,7 @@ import lombok.Data;
 public class PollRequest {
 	
 //	private Board board;
-	private long boardId;
+	private Long boardId;
 	
     @NotBlank
     @Size(max = 140)

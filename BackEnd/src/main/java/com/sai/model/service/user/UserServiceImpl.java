@@ -1,11 +1,15 @@
 package com.sai.model.service.user;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
+
+import javax.imageio.ImageIO;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,9 +42,9 @@ import net.coobird.thumbnailator.geometry.Positions;
 @RequiredArgsConstructor
 @Transactional
 public class UserServiceImpl implements UserService {
-	
-	@Value("${spring.servlet.multipart.location}" + "\\user")
-	private String uploadPath;
+
+	private String uploadPath = File.separator + "app" + File.separator + "UserImage";
+	private String dbPath = File.separator + "static" + File.separator + "UserImage";
 
 	private final UserRepository userRepository;
 	private final FamilyRegisterRepository familyRegisterRepository;
@@ -80,9 +84,9 @@ public class UserServiceImpl implements UserService {
 	// 회원정보 추가 혹은 수정
 	@Override
 	public String addUserInfo(UserInfoDTO addInfo, MultipartFile file) {
-		
+
 		User user = userRepository.findByUserId(addInfo.getUserId()).get();
-		
+
 		user.addUserinfo(addInfo);
 
 //		UserDto userDto = modelMapper.map(user, UserDto.class);
@@ -95,19 +99,19 @@ public class UserServiceImpl implements UserService {
 //		userDto.setUserImageType(addInfo.getUserImageType());
 
 //		userRepository.save(modelMapper.map(userDto, User.class));
-		
+
 		// 유저 이미지 업로드
-		if(!file.isEmpty()) {
+		if (!file.isEmpty()) {
 			// 폴더 생성
 			File uploadPathFolder = new File(uploadPath);
-			if(!uploadPathFolder.exists()) {
+			if (!uploadPathFolder.exists()) {
 				uploadPathFolder.mkdirs();
 			}
 			// 이미 있는 이미지 삭제
 			String existingPath = user.getUserImagePath();
 			if (existingPath != null) {
 				File existingImage = new File(existingPath);
-				if(existingImage.exists()) {
+				if (existingImage.exists()) {
 					existingImage.delete();
 				}
 			}
@@ -117,24 +121,29 @@ public class UserServiceImpl implements UserService {
 			String fileName = OriginalName.substring(OriginalName.lastIndexOf('\\') + 1);
 			String saveName = UUID.randomUUID().toString() + "_" + fileName;
 			String thumbnailPath = uploadPath + File.separator + saveName;
+			String dbThumbnailPath = dbPath + File.separator + saveName;
+
 			try {
-				File convFile = new File(OriginalName);
-				convFile.createNewFile();
-				FileOutputStream fos = new FileOutputStream(convFile);
-				fos.write(file.getBytes());
-				fos.close();
+//				File convFile = new File(OriginalName);
+//				convFile.createNewFile();
+//				FileOutputStream fos = new FileOutputStream(convFile);
+//				fos.write(file.getBytes());
+//				fos.close();
+
+				InputStream in = file.getInputStream();
+				BufferedImage originalImage = ImageIO.read(in);
 
 				File thumbnailFile = new File(thumbnailPath);
-				Thumbnails.of(convFile).size(500, 500).crop(Positions.CENTER).toFile(thumbnailFile);
+				Thumbnails.of(originalImage).size(500, 500).crop(Positions.CENTER).toFile(thumbnailFile);
 
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 
-			user.updateUserImage(OriginalName, thumbnailPath, fileType);
+			user.updateUserImage(OriginalName, dbThumbnailPath, fileType);
 		}
-			userRepository.save(user);
-		
+		userRepository.save(user);
+
 		return "유저 정보 추가 성공";
 	}
 
@@ -162,7 +171,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public String changePassword(String userId, String password) {
 		User user = userRepository.findById(userId).get();
-		user.updateUserPassword(password);
+		user.updateUserPassword(passwordEncoder.encode(password));
 		userRepository.save(user);
 		return "비밀번호 수정";
 	}
@@ -314,12 +323,7 @@ public class UserServiceImpl implements UserService {
 
 		return result;
 	}
-	
-	// 개인 페이지 로드
-	
-	
-	
-	
+
 	private String makeFolder(String userId) {
 		File uploadPathFolder = new File(uploadPath, userId);
 		if (!uploadPathFolder.exists())
@@ -327,6 +331,5 @@ public class UserServiceImpl implements UserService {
 
 		return userId;
 	}
-
 
 }

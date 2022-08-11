@@ -8,7 +8,9 @@ import com.sai.model.entity.Reply;
 import com.sai.model.entity.User;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Data
 public class ReplyDto {
 	private Long replyId;

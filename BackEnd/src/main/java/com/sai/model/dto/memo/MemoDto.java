@@ -12,10 +12,6 @@ public class MemoDto {
 	
 	private LocalDateTime memoRegDateTime;
 	
-	private Double x;
-	
-	private Double y;
-	
 	private String color;
 	
 	private String memoContent;

@@ -55,9 +55,8 @@ import net.coobird.thumbnailator.geometry.Positions;
 @Transactional
 public class FeedServiceImpl implements FeedService {
 
-//	@Value("${spring.servlet.multipart.location}" + "\\Feed")
-//	@Value("${spring.servlet.multipart.location}" + "/Feed")
-	private String uploadPath = System.getProperty("user.home") + File.separator + "Feed";
+	private String uploadPath = File.separator + "app" + File.separator + "Feed";
+	private String dbPath = File.separator + "saimedia" + File.separator + "Feed";
 
 	@Autowired
 	UserRepository userRepository;
@@ -119,11 +118,14 @@ public class FeedServiceImpl implements FeedService {
 			}
 
 			// 좋아요 여부 세팅
-			BoardLike boardLike = boardLikeRepository.findOneByBoardAndUser(board, user);
-			if (boardLike == null)
+			if (board.getBoardLikeCnt() != 0) {
+				BoardLike boardLike = boardLikeRepository.findOneByBoardAndUser(board, user);
+				if (boardLike == null)
+					readFeedResponseDto.setBoardLiked(false);
+				else
+					readFeedResponseDto.setBoardLiked(true);
+			} else
 				readFeedResponseDto.setBoardLiked(false);
-			else
-				readFeedResponseDto.setBoardLiked(true);
 
 			// 댓글 DTO 1개 세팅
 			 if(board.getBoardReplyCnt() != 0) {
@@ -186,11 +188,15 @@ public class FeedServiceImpl implements FeedService {
 
 		// 좋아요 여부 세팅
 		User user = userRepository.findById(userId).get();
-		BoardLike boardLike = boardLikeRepository.findOneByBoardAndUser(board, user);
-		if (boardLike == null)
+
+		if (board.getBoardLikeCnt() != 0) {
+			BoardLike boardLike = boardLikeRepository.findOneByBoardAndUser(board, user);
+			if (boardLike == null)
+				readBoardResponseDto.setBoardLiked(false);
+			else
+				readBoardResponseDto.setBoardLiked(true);
+		} else
 			readBoardResponseDto.setBoardLiked(false);
-		else
-			readBoardResponseDto.setBoardLiked(true);
 
 		return readBoardResponseDto;
 	}
@@ -198,6 +204,8 @@ public class FeedServiceImpl implements FeedService {
 	@Override
 	public void writeBoard(CreateBoardRequestDto createBoardRequestDto, List<MultipartFile> files) {
 		Board board = modelMapper.map(createBoardRequestDto.getInputBoardRequestDto(), Board.class);
+		board.makeLikeReplyCntZero();
+
 		boardRepository.save(board);
 
 		if (board.getBoardMediaYn()) {
@@ -215,6 +223,8 @@ public class FeedServiceImpl implements FeedService {
 				String saveName = UUID.randomUUID().toString() + "_" + fileName;
 				String savePath = uploadPath + File.separator + folderPath + File.separator + saveName;
 				String thumbnailPath = uploadPath + File.separator + folderPath + File.separator + "th_" + saveName;
+				String dbSavePath = dbPath + File.separator + folderPath + File.separator + saveName;
+				String dbThumbnailPath = dbPath + File.separator + folderPath + File.separator + "th_" + saveName;
 
 				try {
 
@@ -227,17 +237,16 @@ public class FeedServiceImpl implements FeedService {
 					e.printStackTrace();
 				}
 
-				BoardMedia boardMedia = BoardMedia.builder().board(board).boardMediaPath(savePath)
+				BoardMedia boardMedia = BoardMedia.builder().board(board).boardMediaPath(dbSavePath)
 						.boardMediaOriginalName(OriginalName).boardMediaSaveName(saveName).boardMediaType(fileType)
-						.boardMediaThumbnail(thumbnailPath).build();
+						.boardMediaThumbnail(dbThumbnailPath).build();
 				boardMediaRepository.save(boardMedia);
 
 			}
 		}
 
-		createBoardRequestDto.getPollRequest().setBoardId(board.getBoardId());
-
 		if (board.getPollYn()) {
+			createBoardRequestDto.getPollRequest().setBoardId(board.getBoardId());
 			pollService.createPoll(createBoardRequestDto.getPollRequest());
 		}
 
@@ -249,6 +258,10 @@ public class FeedServiceImpl implements FeedService {
 			for (InputBoardTaggedRequestDto inputBoardTaggedRequestDto : inputBoardTaggedRequestDtos) {
 				User user = userRepository.findById(inputBoardTaggedRequestDto.getUserId()).get();
 				BoardTagged boardTagged = BoardTagged.builder().board(board).user(user).build();
+
+				if (createBoardRequestDto.getInputBoardRequestDto().getUserId()
+						.equals(inputBoardTaggedRequestDto.getUserId()))
+					continue;
 
 				CreateNotificationRequestDto cnrd = CreateNotificationRequestDto.builder()
 						.notiFromUserId(board.getUser().getUserId()).notiToUserId(user.getUserId())
@@ -333,10 +346,12 @@ public class FeedServiceImpl implements FeedService {
 
 		board.upBoardLike();
 
-		CreateNotificationRequestDto cnrd = CreateNotificationRequestDto.builder()
-				.notiToUserId(board.getUser().getUserId()).notiFromUserId(userId).notiContent("좋아요를 눌렀습니다.")
-				.notiType(NotiType.LIKE).build();
-		notiService.createNoti(cnrd);
+		if (!userId.equals(board.getUser().getUserId())) {
+			CreateNotificationRequestDto cnrd = CreateNotificationRequestDto.builder()
+					.notiToUserId(board.getUser().getUserId()).notiFromUserId(userId).notiContent("좋아요를 눌렀습니다.")
+					.notiType(NotiType.LIKE).build();
+			notiService.createNoti(cnrd);
+		}
 
 		boardLikeRepository.save(BoardLike.builder().board(board).user(user).build());
 		boardRepository.save(board);

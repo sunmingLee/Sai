@@ -38,12 +38,6 @@ public class Memo {
 	@Column(name = "memo_reg_datetime")
 	private LocalDateTime memoRegDateTime;
 	
-	@Column(name = "x")
-	private Double x;
-	
-	@Column(name = "y")
-	private Double y;
-	
 	@Column(name = "color")
 	private String color;
 	
