@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="view-wrap">
         <MyPageHeader />
         <MyPageContent/>
         <BottomTap></BottomTap>
@@ -30,5 +30,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-
+.view-wrap {
+  width: 900px;
+}
 </style>

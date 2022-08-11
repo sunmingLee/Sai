@@ -1,5 +1,5 @@
 <template>
-    <div class="mypage-wrap">
+    <div class="content-wrap">
         <p>게시물 {{myFeedList.length}}개</p>
         <div class="flex">
             <div class="mypage-content">
@@ -52,24 +52,32 @@ export default {
 p {
   margin: 0;
 }
-.mypage-wrap {
-  width: 900px;
-
-  .flex{
-    display: flex;
-    justify-content: center;
-    text-align: center;
-
-    .input-wrap{
-      text-align: left;
-      margin-bottom: 100px;
-
-      .name-wrap, .email-wrap {
-        margin: 10px 0 10px 0;
-      }
-    }
-  }
+.content-wrap {
+  top: 0;
+  padding: 0 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5% 0 2% 0;  
 }
+// .mypage-wrap {
+//   width: 900px;
+
+//   .flex{
+//     display: flex;
+//     justify-content: center;
+//     text-align: center;
+
+//     .input-wrap{
+//       text-align: left;
+//       margin-bottom: 100px;
+
+//       .name-wrap, .email-wrap {
+//         margin: 10px 0 10px 0;
+//       }
+//     }
+//   }
+// }
 
 </style>
 

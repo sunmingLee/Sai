@@ -1,12 +1,12 @@
 <template>
-    <div class="mypage-wrap">
+    <div class="header-wrap">
         <div class="flex">
             <div class="user-image">
                 <img src="@/assets/images/person-circle.svg" v-if="userInfo.userImagePath === null">
                 <img :src="userInfo.userImagePath">
             </div>
             <div>
-                <div class="user-update" >
+                <div class="user-update">
                     <span>{{userInfo.userName}}</span>
                     <img src="@/assets/images/pencil-fill.svg" alt="calendar" style="width: 15px" @click="goUpdateUser">
                 </div>
@@ -67,23 +67,50 @@ export default {
 p {
   margin: 0;
 }
-.mypage-wrap {
-  width: 900px;
-
-  .flex{
-    display: flex;
-    justify-content: center;
-    text-align: center;
-
-    .input-wrap{
-      text-align: left;
-      margin-bottom: 100px;
-
-      .name-wrap, .email-wrap {
-        margin: 10px 0 10px 0;
-      }
-    }
+.header-wrap {
+  // width: 900px;
+  // top: 0;
+  // padding: 0 5%;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+  margin: 5% 0 2% 0;
+}
+.flex {
+  display: flex;
+  justify-content: space-evenly;
+}
+.user-image {
+  width: 100px;
+  height: auto;
+  img {
+    width: 100%;
   }
 }
+.user-update {
+  margin: 4px 0 4px 0;
+  span {
+    font-size: 19px;
+    font-weight: bold;
+  }
+}
+// .mypage-wrap {
+//   width: 900px;
+
+//   .flex{
+//     display: flex;
+//     justify-content: center;
+//     text-align: center;
+
+//     .input-wrap{
+//       text-align: left;
+//       margin-bottom: 100px;
+
+//       .name-wrap, .email-wrap {
+//         margin: 10px 0 10px 0;
+//       }
+//     }
+//   }
+// }
 
 </style>
