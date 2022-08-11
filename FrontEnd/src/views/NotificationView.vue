@@ -11,32 +11,27 @@
         <li class="list-group-item" v-for="(noti, index) in notificationList" :key="index" @change="getNotiList">
           <button type="button" class="btn-close" aria-label="Close" @click="deleteNoti(noti.notiId)"></button>
           <span v-for="(callsign, index) in familyCallsignList" :key="index">
-            <!-- 댓글 -->
             <span v-if="noti.fromUser.userId === callsign.toUserId">
+              <!-- 댓글 -->
               <span v-if="noti.notiType === 'COMMENT'">
                 <span style="font-weight: bold;"> 댓글 </span>
                 <span> {{callsign.callsign}}님이 새로운 댓글을 달았습니다.</span>
+              </span>
+              <!-- 좋아요 -->
+              <span v-else-if="noti.notiType === 'LIKE'">
+                <span style="font-weight: bold;"> 좋아요 </span>
+                <span> {{callsign.callsign}}님이 {{noti.notiContent}}</span>
               </span>
             </span>
           </span>
           <!-- 가족신청 -->
           <span v-if="noti.notiType === 'FAMILYREGISTER'">
-            <!-- 가족 신청 응답 전 -->
             <span style="font-weight: bold;"> 신청 </span>
             <span v-if="!hasAnswered">
               <span> {{noti.fromUser.userId}}님이 가족 신청을 요청했습니다.</span>
               <span class="button-accept-wrap">
-                <Button buttonClass="small positive" buttonText="수락" @click="acceptRegister(noti.notiContentId, noti.fromUser.userId)"></Button>
-                <Button buttonClass="small negative" buttonText="거절" @click="declineRegister(noti.notiContentId, noti.fromUser.userId)"></Button>
-              </span>
-            </span>
-            <!-- 가족 신청 응답 후 -->
-            <span v-else>
-              <span v-if="approved">
-                <span> {{noti.fromUser.userId}}님의 신청을 수락했습니다.</span>
-              </span>
-              <span v-else>
-                <span> {{noti.fromUser.userId}}님의 신청을 거절했습니다.</span>
+                <Button buttonClass="small positive" buttonText="수락" @click="acceptRegister(noti.notiContentId, noti.fromUser.userId, noti.notiId)"></Button>
+                <Button buttonClass="small negative" buttonText="거절" @click="declineRegister(noti.notiContentId, noti.fromUser.userId, noti.notiId)"></Button>
               </span>
             </span>
           </span>
@@ -114,22 +109,24 @@ export default {
       this.deleteAllNotification(this.pageInfo)
     },
     // 가족 신청 수락
-    acceptRegister (familyRegisterId, userId) {
+    acceptRegister (familyRegisterId, userId, notiId) {
       const info = {
         userId: userId,
         approveYn: true,
         familyRegisterId: familyRegisterId
       }
       this.answerFamilyRegister(info)
+      this.deleteNoti(notiId)
     },
     // 가족 신청 거절
-    declineRegister (familyRegisterId, userId) {
+    declineRegister (familyRegisterId, userId, notiId) {
       const info = {
         userId: userId,
         approveYn: false,
         familyRegisterId: familyRegisterId
       }
       this.answerFamilyRegister(info)
+      this.deleteNoti(notiId)
     },
     // 이전 알림 목록 받아오기
     previousList () {

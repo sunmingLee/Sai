@@ -10,9 +10,7 @@ const familyStore = {
     familyId: '',
     familyCallsignList: [],
     familyInfo: [],
-    notificationList: [],
-    hasAnswered: false,
-    approved: false
+    notificationList: []
   },
   getters: {
   },
@@ -25,12 +23,6 @@ const familyStore = {
     },
     SET_FAMILY_INFO (state, familyInfo) {
       state.familyInfo = familyInfo
-    },
-    SET_HAS_ANSWERED (state, hasAnswered) {
-      state.hasAnswered = hasAnswered
-    },
-    SET_APPROVED (state, approved) {
-      state.approved = approved
     }
   },
   actions: {
@@ -141,12 +133,10 @@ const familyStore = {
         }
       })
         .then((res) => {
-          commit('SET_HAS_ANSWERED', true)
-
           if (info.approveYn) { // 가족 신청 수락
-            commit('SET_APPROVED', true)
+            alert(info.userId + '님의 가족신청을 수락했습니다.')
           } else { // 가족 신청 거절
-            commit('SET_APPROVED', false)
+            alert(info.userId + '님의 가족신청을 거절했습니다.')
           }
         })
         .catch((err) => {
