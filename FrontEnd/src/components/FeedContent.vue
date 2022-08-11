@@ -35,7 +35,6 @@
                                     </div>
                                 </div> -->
                             </div>
-                            
                             <div v-else-if="feed.viewBoardResponseDto.boardMediaYn">
                                 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
                                     <div class="carousel-inner" >
@@ -46,7 +45,7 @@
                                           <img src="@/assets/images/여행2.jpg" class="d-block w-100">
                                         </div>
                                         <div class="carousel-item">
-                                          <img src="@/assets/images/사이logo.png" class="d-block w-100">
+                                          <img src="@/assets/images/bye.png" class="d-block w-100">
                                         </div>
                                     </div>
                                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -77,6 +76,17 @@
                         <div class="detail-button">
                           <Button buttonClass="small information" buttonText="상세보기" @click="goDetail(feed.viewBoardResponseDto.boardId)"></Button>
                         </div>
+                    </div>
+                    <div v-if="feed.replyDto !== null">
+                      <div v-for="(callsign, index) in familyCallsignList" :key="index" class="famliy-callsign">
+                        <div v-if="feed.replyDto.userId === callsign.toUserId">
+                          <span>{{callsign.callsign}}</span>
+                        </div>
+                      </div>
+                      {{feed.replyDto.replyContent}}
+                    </div>
+                    <div v-else>
+                      <span>등록된 댓글이 없습니다. 첫 댓글의 주인공이 되어보세요!</span>
                     </div>
                 </div>
             </div>
