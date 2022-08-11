@@ -35,19 +35,22 @@
                                     </div>
                                 </div> -->
                             </div>
-                            <div v-else-if="feed.viewBoardResponseDto.boardMediaYn">
+                            <div v-else-if="feed.viewBoardResponseDto.boardMediaYn" class="media-wrap">
                                 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
                                     <div class="carousel-inner" >
+                                      <div class="carousel-inner" >
                                         <div class="carousel-item active">
-                                            <img src="@/assets/images/여행1.jpg" class="d-block w-100">
+                                            <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100">
+                                            <!-- <img src="@/assets/images/byebye.png" class="d-block w-100"> -->
                                         </div>
-                                        <div class="carousel-item">
-                                          <img src="@/assets/images/여행2.jpg" class="d-block w-100">
-                                        </div>
-                                        <div class="carousel-item">
-                                          <img src="@/assets/images/bye.png" class="d-block w-100">
+                                        <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index"> 
+                                          <div v-if="index !== 0" class="carousel-item">
+                                            <img :src="src.boardMediaPath" class="d-block w-100">
+                                            <!-- <img src="@/assets/images/dog2.png" class="d-block w-100"> -->
+                                          </div>
                                         </div>
                                     </div>
+                                  </div>
                                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
                                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                         <span class="visually-hidden">Previous</span>
@@ -193,15 +196,27 @@ p {
 //캐러셀
 .carousel-inner{
   width: auto;
-  height: 200px;
+  height: 250px;
 }
 .carousel-item{
-  width: auto;
-  height: 100px;
+  // width: auto;
+  // height: 100px;
+  width: 100%;
+  height: 100%;
 }
 .d-block {
-  width: auto;
-  height: 100%;
+  //사진 크기를 가운데
+  margin: 0 auto;
+  // width: auto!important;
+  // height: 250px;
+  //옆으로 길게 늘리기
+  width: 100%;
+  //사진의 일부  
+  // height: 100%;
+}
+
+.media-wrap {
+  min-height: 300px;
 }
 
 //콜사인과 날짜
@@ -226,6 +241,9 @@ p {
     // align-items: center;
   }
 }
+
+
+
 // content
 .feed-wrap {
   max-width: 900px;
@@ -235,7 +253,7 @@ p {
 .feed-flex {
   display: flex;
   flex-wrap: wrap;
-  gap: 1em;
+  gap: 2em;
 }
 // item
 .feed-div {

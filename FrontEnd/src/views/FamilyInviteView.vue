@@ -22,14 +22,17 @@ import Button from '@/components/common/Button.vue'
 import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import GuideMessage from '@/components/GuideMessage.vue'
 
-import { mapState } from 'vuex'
-const familyStore = 'familyStore'
 export default {
   name: 'FamilyInviteView',
   components: {
     Button,
     HeaderTitle,
     GuideMessage
+  },
+  data() {
+    return {
+      familyId: localStorage.getItem('familyId')
+    }
   },
   methods: {
     copyCode () {
@@ -48,7 +51,6 @@ export default {
     }
   },
   computed: {
-    ...mapState(familyStore, ['familyId'])
   }
 }
 </script>
