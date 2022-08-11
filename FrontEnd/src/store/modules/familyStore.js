@@ -122,16 +122,14 @@ const familyStore = {
     updateFamilyInfo({commit}, modifiedFamilyInfo) {
     // 게시글 작성
     // boardCreate ({ commit }, boardInfo) {
-      // const files = boardInfo.fileList
-      console.log(modifiedFamilyInfo);
+      const files = modifiedFamilyInfo.fileList
       const updateFamilyRequestDto = modifiedFamilyInfo.updateFamilyRequestDto
       const formData = new FormData()
-      // if (files !== undefined) {
-      //   for (let i = 0; i < files.length; i++) {
-      //     console.log(files[i])
-      //     formData.append('files', files[i])
-      //   }
-      // }
+
+      if (files !== undefined) {
+        formData.append('file', files[0])
+      }
+
       formData.append('updateFamilyRequestDto', new Blob([JSON.stringify(updateFamilyRequestDto)], { type: 'application/json' }))
       axios({
         url: api_url + '/modify',
@@ -144,16 +142,16 @@ const familyStore = {
         .then((res) => {
           // console.log(res)
           if (res.status === 200) {
-            alert('작성이 완료되었습니다')
+            alert('가족 정보가 수정되었습니다.')
             // router.push({ name: 'feed' })
           } else {
-            alert('안됐지롱')
             console.log(res)
+            alert('가족 정보 수정 중 오류가 발생했습니다.')
           }
         })
         .catch((err) => {
           console.log(err)
-          alert('잘못된 코드입니다.')
+          alert('가족 정보 수정 중 오류가 발생했습니다.')
         })
     },
 

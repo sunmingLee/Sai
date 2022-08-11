@@ -3,7 +3,15 @@
 
     <HeaderTitle title="가족정보수정"></HeaderTitle>
 
-    <img src="@/assets/images/familyimg.png" alt="familyimg" class="rounded-circle">
+    <img v-if="familyInfo.familyImagePath == null && srcList[0] == null" src="@/assets/images/familyimg.png" alt="가족 사진" class="profile img-thumbnail rounded-circle">
+    <div v-else>
+      <img v-if="srcList[0] == null" class="profile img-thumbnail rounded-circle" :src="familyInfo.familyImagePath" alt="가족 사진">
+      <img v-else class="profile img-thumbnail rounded-circle" :src="srcList[0]" alt="가족 사진">
+    </div>
+    <input type="file" class="form-control" id="customFile" @change="fileCheck"/>
+    
+
+    
     <InputBox @inputCheck="changeFamilyName" :inputValue="familyInfo.familyName" ></InputBox>
     <Button class="invitebtn" buttonText="가족 초대하기" buttonClass="big information" @click="goInvite"></Button>
 
@@ -34,6 +42,7 @@ import { mapState, mapActions } from "vuex"
 
 const familyStore = "familyStore"
 const userStore = 'userStore'
+const fileList = []
 
 export default {
 
@@ -47,16 +56,21 @@ export default {
 
       familyId: null,
       userId: null,
+
       familyNameModified:false,
       familyName:null,
+
       updateFamilyRequestDto: {
-        callsignModified: false,
+        isCallsignModified: false,
         updateFamilyCallsignDtos : [],
         updatefamilyDto:{
         "familyId": null,
         "familyName": null
         }
-      }
+      },
+
+      srcList: [],  
+      fileList: [],
 
     }
 
@@ -69,6 +83,7 @@ export default {
     // familyCallsigns(){
     //   return this.familyCallsignList;
     // }
+
   },
 
   created() {
@@ -95,10 +110,46 @@ export default {
     mylog(){
       console.log("로그");
 
-    // console.log(this.familyInfo);
-    console.log(this.familyCallsignList);
+    console.log(this.familyInfo);
+    // console.log(this.familyCallsignList);
     // console.log(this.familyCallsigns);
     },
+
+    // 파일 처리
+    fileCheck (e) {
+      this.changeFile()
+      this.previewFile()
+    },
+    // 확장자 변경
+    changeFile () {
+      const fileInput = document.getElementById('customFile')
+      // 선택한 파일의 정보
+      const files = fileInput.files
+
+      // heic 파일 확장자 변경
+      const file = files[0]
+
+      let heicFile = ''
+      // 파일의 확장자가 heic일 경우
+      if (file.name.split('.')[1] === 'heic') {
+        // file의 타입을 "image/jpg"로 바꾸고 이름 뒤에 확장자도 .jpg로 바꾼다
+        heic2any({ blob: file, toType: 'image/jpg' })
+          .then(function (resultBlob) {
+            heicFile = new File([resultBlob], file.name.split('.')[0] + '.jpg', { type: 'image/jpg', lastModified: new Date().getTime() })
+            fileList.push(heicFile)
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      } else {
+        fileList.push(file)
+      }
+    },
+    // 미리보기
+    previewFile () {
+      this.srcList.push(URL.createObjectURL(fileList[0]))
+    },
+
 
     changeFamilyName(data){
       this.familyNameModified = true;
@@ -107,7 +158,7 @@ export default {
     },
 
     callsignChange(){
-      this.updateFamilyRequestDto.callsignModified = true;
+      this.updateFamilyRequestDto.isCallsignModified = true;
     },
 
     goInvite () {
@@ -120,16 +171,22 @@ export default {
     },
 
     save () {
-      if(this.updateFamilyRequestDto.callsignModified)
-        this.updateFamilyRequestDto.familyCallsignList = this.familyCallsignList;
+      const updateFamilyRequestDto = this.updateFamilyRequestDto
 
-      this.updateFamilyRequestDto.updatefamilyDto.familyId = this.familyId;
+      if(updateFamilyRequestDto.isCallsignModified)
+        updateFamilyRequestDto.updateFamilyCallsignDtos = this.familyCallsignList;
+
+      updateFamilyRequestDto.updatefamilyDto.familyId = this.familyId;
       if(this.familyNameModified)
-        this.updateFamilyRequestDto.updatefamilyDto.familyName = this.familyName;
+        updateFamilyRequestDto.updatefamilyDto.familyName = this.familyName;
       else
-        this.updateFamilyRequestDto.updatefamilyDto.familyName = this.familyInfo.familyName;
+        updateFamilyRequestDto.updatefamilyDto.familyName = this.familyInfo.familyName;
 
-      this.updateFamilyInfo(this.updateFamilyRequestDto);
+      if(fileList.length !== 0){
+        this.updateFamilyInfo( { updateFamilyRequestDto, fileList } );
+      } else{
+        this.updateFamilyInfo( { updateFamilyRequestDto } );
+      }
     }
   }
 
