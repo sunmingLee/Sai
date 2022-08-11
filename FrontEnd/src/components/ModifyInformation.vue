@@ -7,7 +7,6 @@
     <input type="file" class="form-control" id="customFile" @change="fileCheck"/>
     <div class="date">
       <span>생일</span>
-      <!-- 달력으로 날짜 선택시 선택된 날짜가 뜨지 않는다. -->
       <Datepicker
         v-model="addInfo.date"
         format="yyyy / MM / dd"
@@ -33,7 +32,10 @@
         buttonText="뒤로가기"
         @click="goMyPage"
       ></Button>
-      <Button buttonClass="small positive" buttonText="확인" @click="onAdd"></Button>
+      <Button buttonClass="small positive"
+      buttonText="확인"
+      @click="onModify"
+      ></Button>
     </div>
 
   </div>
@@ -46,7 +48,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import Button from './common/Button.vue'
 import heic2any from 'heic2any'
 
-import { mapGetters, mapState, mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 // import userStore from '../store/modules/userStore'
 const userStore = 'userStore'
 const fileList = []
@@ -59,15 +61,8 @@ export default {
         radioValues: JSON.parse(localStorage.getItem('userInfo')).radioValues,
         userMessage: JSON.parse(localStorage.getItem('userInfo')).userMessage,
         date: JSON.parse(localStorage.getItem('userInfo')).date
-
-        // userId: this.userInfo.userId,
-        // radioValues: this.userInfo.radioValues,
-        // userMessage: this.userInfo.userMessage,
-        // date: this.userInfo.date
       },
       isProfilePic: false,
-      // isAddInfo: false,
-      // isModifyInfo: false
       currPic: JSON.parse(localStorage.getItem('userInfo')).userImagePath,
       srcList: [],
       fileList: []
@@ -84,7 +79,7 @@ export default {
     // ...mapGetters(userStore, ['checkUserInfo'])
   },
   methods: {
-    ...mapActions(userStore, ['addUserInfo', 'checkUserInfo']),
+    ...mapActions(userStore, ['modifyUserInfo', 'checkUserInfo']),
     // 파일 처리
     fileCheck (e) {
       this.changeFile()
@@ -120,16 +115,12 @@ export default {
       this.srcList.push(URL.createObjectURL(fileList[0]))
     },
 
-    // 추가 정보 입력시 건너뛰기
-    goFamilyCode () {
-      this.$router.push({ name: 'familyCode' })
+    // 뒤로 가기 버튼
+    goMyPage () {
+      this.$router.push({ name: 'myPage'})
     },
-    // 회원 정보 수정 시 뒤로 가기
-    // goMyPage () {
-    //   this.$router.push({ name: ''})
-    // },
     // 확인버튼 눌렀을 때 추가
-    onAdd () {
+    onModify () {
       const userInfo = {}
       if (fileList.length !== 0) {
         this.isProfilePic = true
