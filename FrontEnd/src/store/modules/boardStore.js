@@ -9,7 +9,8 @@ const boardStore = {
   state: {
     feedList: [],
     replyList: [],
-    feed: []
+    feed: [],
+    myFeedList: []
   },
   getters: {
 
@@ -24,6 +25,10 @@ const boardStore = {
     },
     SET_FEED (state, feed) {
       state.feed = feed
+    },
+    MY_FEED_All_LIST (state, myFeed) {
+      state.myFeedList = myFeed
+      console.log(state.myFeedList)
     }
   },
   actions: {
@@ -185,6 +190,20 @@ const boardStore = {
           dispatch('getReplyList', info.boardId)
         })
         .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 개인페이지 피드 조회
+    myFeedAllList ({ commit }, userId) {
+      axios({
+        url: API_BASE_URL + '/api/user/myPage' + userId,
+        method: 'GET'
+      })
+        .then((res) => {
+          commit('MY_FEED_All_LIST', res.data)
+        })
+        .catch((err) => {
+          console.log('에러')
           console.log(err)
         })
     }
