@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.sai.model.dto.notification.CreateNotificationRequestDto;
@@ -21,6 +22,7 @@ import com.sai.model.repository.UserRepository;
 @Transactional
 public class NotificationServiceImpl implements NotificationService {
 	
+	
 	@Autowired
 	UserRepository userRepository;
 	
@@ -33,8 +35,8 @@ public class NotificationServiceImpl implements NotificationService {
 
 	// userId를 활용해서, Noti를 쫙 불러모아서, 노티를 DTO에 담아서 반환
 	@Override
-	public List<NotificationDto> getNotiList(String userId) { 
-		List<Notification> list = notificationRepository.findNotificationsByToUser(userRepository.findById(userId).get());
+	public List<NotificationDto> getNotiList(String userId, Pageable pageable) { 
+		List<Notification> list = notificationRepository.findNotificationsByToUser(userRepository.findById(userId).get(), pageable);
 		List<NotificationDto> resultList = new ArrayList<NotificationDto>();
 		for(Notification noti : list) {
 			// noti to notiDTO

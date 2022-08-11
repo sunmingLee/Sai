@@ -2,6 +2,8 @@ package com.sai.model.service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -20,6 +22,7 @@ import com.sai.model.entity.ChoiceVoteCount;
 import com.sai.model.entity.Poll;
 import com.sai.model.entity.User;
 import com.sai.model.entity.Vote;
+import com.sai.model.repository.BoardRepository;
 import com.sai.model.repository.PollRepository;
 import com.sai.model.repository.UserRepository;
 import com.sai.model.repository.VoteRepository;
@@ -35,21 +38,24 @@ public class PollService {
 	private final PollRepository pollRepository;
 	private final VoteRepository voteRepository;
 	private final UserRepository userRepository;
+	private final BoardRepository boardRepository;
 
 	// 투표 만들기
 	public Poll createPoll(PollRequest pollRequest) {
 		Poll poll = new Poll();
+		
+		poll.setBoard(boardRepository.findById(pollRequest.getBoardId()).get());		
 		poll.setPollTitle(pollRequest.getQuestion());
-
+		
 		pollRequest.getChoices().forEach(choiceRequest -> {
 			poll.addChoice(new Choice(choiceRequest.getText()));
 		});
 
-		Instant now = Instant.now();
-		Instant expirationDateTime = now.plus(Duration.ofDays(pollRequest.getPollLength().getDays()))
-				.plus(Duration.ofHours(pollRequest.getPollLength().getHours()));
+//		Instant now = Instant.now();
+//		Instant expirationDateTime = now.plus(Duration.ofDays(pollRequest.getPollLength().getDays()))
+//				.plus(Duration.ofHours(pollRequest.getPollLength().getHours()));
 
-		poll.setExpirationDateTime(expirationDateTime);
+		poll.setExpirationDateTime(pollRequest.getExpirationDateTime());
 
 		return pollRepository.save(poll);
 	}
@@ -61,26 +67,35 @@ public class PollService {
 
 	// 투표 조회하기
 	public PollResponse getPollById(Long pollId, UserPrincipal currentUser) {
+		
 		Poll poll = pollRepository.findById(pollId)
 				.orElseThrow(() -> new ResourceNotFoundException("Poll", "id", pollId));
 
+		Vote vote = voteRepository.findByPoll(poll);
+		
+//		System.out.println(vote.getVoteId());
+		
+		if(vote != null) {
 		// Retrieve Vote Counts of every choice belonging to the current poll
 		List<ChoiceVoteCount> votes = voteRepository.countByPollIdGroupByChoiceId(pollId);
-
+		
 		Map<Long, Long> choiceVotesMap = votes.stream()
 				.collect(Collectors.toMap(ChoiceVoteCount::getChoiceId, ChoiceVoteCount::getVoteCount));
-
+		}
+		Map<Long, Long> choiceVotesMap = new HashMap<>();
+		
 		// Retrieve poll creator details
-		User creator = userRepository.findById(poll.getCreatedBy())
-				.orElseThrow(() -> new ResourceNotFoundException("User", "id", poll.getCreatedBy()));
+//		User creator = userRepository.findById(poll.getCreatedBy())
+//				.orElseThrow(() -> new ResourceNotFoundException("User", "id", poll.getCreatedBy()));
 
+		
 		// Retrieve vote done by logged in user
 		Vote userVote = null;
 		if (currentUser != null) {
 			userVote = voteRepository.findByUserIdAndPollId(currentUser.getUserId(), pollId);
 		}
 
-		return PollModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator,
+		return PollModelMapper.mapPollToPollResponse(poll, choiceVotesMap, null,
 				userVote != null ? userVote.getChoice().getChoiceId() : null);
 	}
 
@@ -89,7 +104,7 @@ public class PollService {
 		Poll poll = pollRepository.findById(pollId)
 				.orElseThrow(() -> new ResourceNotFoundException("Poll", "id", pollId));
 
-		if (poll.getExpirationDateTime().isBefore(Instant.now())) {
+		if (poll.getExpirationDateTime().isBefore(LocalDateTime.now())) {
 			throw new BadRequestException("Sorry! This Poll has already expired");
 		}
 
@@ -131,7 +146,7 @@ public class PollService {
 			
 		} else {
 			Vote vote = voteRepository.findByUserIdAndPollId(user.getUserId(), pollId);
-			voteRepository.deleteById(vote.getPollResultId());
+			voteRepository.deleteById(vote.getVoteId());
 			
 			// -- Vote Saved, Return the updated Poll Response now --
 

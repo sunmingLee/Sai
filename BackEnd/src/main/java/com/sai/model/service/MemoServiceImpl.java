@@ -140,8 +140,6 @@ public class MemoServiceImpl implements MemoService {
 				.family(family)
 				.user(user)
 				.memoRegDateTime(LocalDateTime.now())
-				.x(createMemoRequestDto.getX())
-				.y(createMemoRequestDto.getY())
 				.color(createMemoRequestDto.getColor())
 				.memoContent(createMemoRequestDto.getMemoContent())
 				.readList(createMemoRequestDto.getUserId())

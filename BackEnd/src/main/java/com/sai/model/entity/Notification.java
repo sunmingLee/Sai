@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,8 +41,9 @@ public class Notification {
 	@Column(name = "noti_content")
 	private String notiContent;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "noti_type")
-	private String notiType;
+	private NotiType notiType;
 	
 	@Column(name = "noti_datetime")
 	private LocalDateTime notiDateTime;
@@ -49,7 +52,7 @@ public class Notification {
 	private Boolean notiReadYn;
 	
 	@Column(name = "noti_content_id")
-	private Long notiContentId;
+	private String notiContentId;
 	
 	public void readNoti() {
 		this.notiReadYn = true;

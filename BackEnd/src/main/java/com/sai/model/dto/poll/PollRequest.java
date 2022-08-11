@@ -1,5 +1,6 @@
 package com.sai.model.dto.poll;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -7,12 +8,15 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.sai.model.entity.Board;
+
 import lombok.Data;
 
 @Data
 public class PollRequest {
 	
-	private long boardId;
+//	private Board board;
+	private Long boardId;
 	
     @NotBlank
     @Size(max = 140)
@@ -25,5 +29,5 @@ public class PollRequest {
 
     @NotNull
     @Valid
-    private PollLength pollLength;
+    private LocalDateTime expirationDateTime;
 }

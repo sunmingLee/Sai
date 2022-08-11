@@ -16,13 +16,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sai.model.dto.CreateBoardRequestDto;
 import com.sai.model.dto.ReadBoardResponseDto;
 import com.sai.model.dto.ReadFeedResponseDto;
 import com.sai.model.dto.UpdateBoardRequestDto;
 import com.sai.model.service.FeedService;
+import com.sai.security.CurrentUser;
+import com.sai.security.UserPrincipal;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -37,11 +42,11 @@ public class FeedController {
 	@ApiOperation(value = "readAllBoard : 피드 조회")
 	@GetMapping("/{familyId}/{userId}")
 	public ResponseEntity<?> readAllBoard(@PathVariable String familyId, @PathVariable String userId,
-			@PageableDefault(size = 3, sort = "boardRegDatetime", direction = Direction.DESC) Pageable pageable)
+            @PageableDefault(size = 3, sort = "boardRegDatetime", direction = Direction.DESC) Pageable pageable, @CurrentUser UserPrincipal currUser)
 			throws Exception {
 
 		try {
-			List<ReadFeedResponseDto> readFeedResponseDtos = feedService.readAllBoard(familyId, userId, pageable);
+			List<ReadFeedResponseDto> readFeedResponseDtos = feedService.readAllBoard(familyId, userId, pageable, currUser);
 
 			if (readFeedResponseDtos != null) {
 				return new ResponseEntity<List<ReadFeedResponseDto>>(readFeedResponseDtos, HttpStatus.OK);
@@ -56,10 +61,10 @@ public class FeedController {
 
 	@ApiOperation(value = "readOneBoard : 글 상세조회")
 	@GetMapping("/board/{boardId}/{userId}")
-	public ResponseEntity<?> readOneBoard(@PathVariable Long boardId, @PathVariable String userId) throws Exception {
+	public ResponseEntity<?> readOneBoard(@PathVariable Long boardId, @PathVariable String userId, @CurrentUser UserPrincipal currUser) throws Exception {
 
 		try {
-			ReadBoardResponseDto readBoardResponseDto = feedService.readOneBoard(boardId, userId);
+			ReadBoardResponseDto readBoardResponseDto = feedService.readOneBoard(boardId, userId, currUser);
 
 			if (readBoardResponseDto != null) {
 				return new ResponseEntity<ReadBoardResponseDto>(readBoardResponseDto, HttpStatus.OK);
@@ -74,10 +79,15 @@ public class FeedController {
 
 	@ApiOperation(value = "writeBoard : 글 작성하기")
 	@PostMapping("/board")
-	public ResponseEntity<?> writeBoard(@RequestBody CreateBoardRequestDto createBoardRequestDto) throws Exception {
+	public ResponseEntity<?> writeBoard(
+//			@RequestBody CreateBoardRequestDto createBoardRequestDto
+			@RequestPart CreateBoardRequestDto createBoardRequestDto
+			,@RequestPart(name = "files", required = false) List<MultipartFile> files
+//			,@RequestParam(name = "files", required = false) List<MultipartFile> files
+	) throws Exception {
 
 		try {
-			feedService.writeBoard(createBoardRequestDto);
+			feedService.writeBoard(createBoardRequestDto, files);
 			return new ResponseEntity<Void>(HttpStatus.OK);
 
 		} catch (Exception e) {

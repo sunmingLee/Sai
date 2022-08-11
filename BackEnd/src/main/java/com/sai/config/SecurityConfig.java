@@ -91,6 +91,7 @@ public class SecurityConfig {
 			// user - 로그인, 회원가입, 아이디 찾기, 비밀번호 찾기
 			.antMatchers("/", "/api/user/**").permitAll()
 			.antMatchers("/api/poll/**").permitAll()
+			.antMatchers("/**").permitAll()	// 개발 기간 동안 모든 사이트 허용
 			.antMatchers("/v2/api-docs", "/swagger*/**").permitAll()
 			.anyRequest().authenticated();
 

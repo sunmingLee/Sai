@@ -1,10 +1,15 @@
 package com.sai.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -19,15 +24,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sai.jwt.JwtTokenProvider;
+import com.sai.model.dto.ReadFeedResponseDto;
+import com.sai.model.dto.user.AddUserInfoRequest;
 import com.sai.model.dto.user.InfoUserResponseDto;
 import com.sai.model.dto.user.LoginUserRequestDto;
 import com.sai.model.dto.user.LoginUserResponseDto;
 import com.sai.model.dto.user.UserDto;
+import com.sai.model.dto.user.UserInfoDTO;
+import com.sai.model.service.FeedService;
 import com.sai.model.service.user.UserServiceImpl;
+import com.sai.security.CurrentUser;
+import com.sai.security.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,6 +51,7 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
 	private final UserServiceImpl userService;
+	private final FeedService feedService;
 	private final OAuth2UserService oAuth2UserService;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -59,6 +73,17 @@ public class UserController {
 	public ResponseEntity<String> join(@RequestBody UserDto userInfo) {
 		return ResponseEntity.status(200).body(userService.insertUser(userInfo));
 	}
+	
+	// 추가 정보 입력
+	@PostMapping("/addInfo")
+	public ResponseEntity<?> addUserInformation(@RequestPart UserInfoDTO addInfo, @RequestPart MultipartFile file) throws Exception {
+		try {
+			return ResponseEntity.status(200).body(userService.addUserInfo(addInfo, file));
+		} catch (Exception e) {
+			return ResponseEntity.status(400).body("오류가 발생했습니다.");
+		}
+		
+	}
 
 	// 사용자 정보 조회
 	@GetMapping("/{userId}")
@@ -67,6 +92,19 @@ public class UserController {
 		return ResponseEntity.status(200).body(getUser);
 	}
 
+	// 개인정보 수정 전 사용자 확인
+	@PostMapping("/verify/{userId}")
+	public ResponseEntity<?> verifyUser(@PathVariable String userId, @RequestBody String password) {
+		try {
+			System.out.println(password);
+			userService.verifyUser(userId, password);
+			return ResponseEntity.status(200).body("유저 확인");
+			
+		} catch (Exception e) {
+			return ResponseEntity.status(400).body("잘못된 비밀번호입니다");
+		}
+	}
+	
 	// 비밀번호 변경
 	@PatchMapping("/profile/{userId}")
 	public ResponseEntity<String> changePassword(@PathVariable String userId, @RequestParam String password) {
@@ -101,26 +139,27 @@ public class UserController {
 	}
 
 	// 소셜 로그인 요청
-	@PostMapping("/logid/naver")
-	public ResponseEntity<OAuth2User> naverAuthRequest(@RequestBody OAuth2UserRequest userRequest) {
-		LoginUserResponseDto loginUserResponseDto = new LoginUserResponseDto();
-		
-		try {
-			return ResponseEntity.ok(oAuth2UserService.loadUser(userRequest)); // body에 appToken 반환(response code 200)
-			
-		} catch (Exception e) {
-			return ResponseEntity.ok(oAuth2UserService.loadUser(userRequest)); 
-		}
-		
-	}
+//	@GetMapping("/oauth2/authorization/naver")
+//	public ResponseEntity<OAuth2User> naverAuthRequest(@RequestParam OAuth2UserRequest userRequest) {
+//		LoginUserResponseDto loginUserResponseDto = new LoginUserResponseDto();
+//		
+//		try {
+//			return ResponseEntity.ok(oAuth2UserService.loadUser(userRequest)); // body에 appToken 반환(response code 200)
+//			
+//		} catch (Exception e) {
+//			return ResponseEntity.ok(oAuth2UserService.loadUser(userRequest)); 
+//		}
+//		
+//	}
 	
 	// 로그인 후 회원정보 요청
 	@PostMapping("/login/info")
 	public ResponseEntity<InfoUserResponseDto> loginUserInfo(@RequestBody LoginUserRequestDto loginUserRequestDto){
+		
 		try {
 			return ResponseEntity.ok(userService.loginUserInfo(loginUserRequestDto));
 		} catch (Exception e) {
-			return ResponseEntity.status(400).body(userService.loginUserInfo(loginUserRequestDto));
+			return ResponseEntity.status(404).body(userService.loginUserInfo(loginUserRequestDto));
 		}
 	};
 	
@@ -128,6 +167,7 @@ public class UserController {
 	// 로그아웃
 	@PostMapping("/logout")
 	public void logout(HttpServletResponse response) {
+		
 		Cookie cookie = new Cookie("X-AUTH-TOKEN", null);
 		cookie.setHttpOnly(true);
 		cookie.setSecure(false);
@@ -138,7 +178,7 @@ public class UserController {
 
 	// 아이디 찾기
 	@GetMapping("/findId")
-	public ResponseEntity<Map<String, Object>> findUserId(@RequestParam UserDto user) throws Exception {
+	public ResponseEntity<Map<String, Object>> findUserId(UserDto user) throws Exception {
 
 		// 이부분 수정해야 함. findUserId 두 번 호출해서 메일이 두번 보내짐
 
@@ -149,11 +189,36 @@ public class UserController {
 
 	// 비밀번호 찾기
 	@GetMapping("/findPw")
-	public ResponseEntity<Map<String, Object>> findUserPw(@RequestParam UserDto user) throws Exception {
+	public ResponseEntity<Map<String, Object>> findUserPw(UserDto user) throws Exception {
 
 		return ResponseEntity.ok(userService.findUserPw(user));
 //		return new ResponseEntity<Map<String, Object>>(userService.findUserPw(user),
 //				(HttpStatus) userService.findUserPw(user).get("status"));
 	}
+	
+	// 개인 페이지(개인 피드) 조회
+	@GetMapping("/myPage/{userId}")
+	public ResponseEntity<?> readMyAllBoard(@PathVariable String userId, @PageableDefault(size = 3, sort = "boardRegDatetime", direction = Direction.DESC) Pageable pageable, @CurrentUser UserPrincipal currUser)
+			throws Exception {
+
+		try {
+			List<ReadFeedResponseDto> readFeedResponseDtos = feedService.readAllBoard(userId, pageable, currUser);
+
+			if (readFeedResponseDtos != null) {
+				return new ResponseEntity<List<ReadFeedResponseDto>>(readFeedResponseDtos, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+			}
+
+		} catch (Exception e) {
+			return exceptionHandling(e);
+		}
+	}
+	
+	private ResponseEntity<String> exceptionHandling(Exception e) {
+		e.printStackTrace();
+		return new ResponseEntity<String>("Error : " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
 
 }

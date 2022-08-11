@@ -1,6 +1,5 @@
 package com.sai.model.entity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,13 +16,12 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "poll_result", uniqueConstraints = { @UniqueConstraint(columnNames = { "poll_id", "user_id" }) })
+@Table(name = "votes", uniqueConstraints = { @UniqueConstraint(columnNames = { "poll_id", "user_id" }) })
 public class Vote extends DateAudit {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "poll_result_id")
-	private Long pollResultId;
+	private Long voteId;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "poll_id", nullable = false)

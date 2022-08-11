@@ -1,6 +1,6 @@
 package com.sai.util;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,7 +19,7 @@ public class PollModelMapper {
 		pollResponse.setQuestion(poll.getPollTitle());
 		pollResponse.setCreationDateTime(poll.getCreatedAt());
 		pollResponse.setExpirationDateTime(poll.getExpirationDateTime());
-		Instant now = Instant.now();
+		LocalDateTime now = LocalDateTime.now();
 		pollResponse.setIsExpired(poll.getExpirationDateTime().isBefore(now));
 
 		List<ChoiceResponse> choiceResponses = poll.getChoices().stream().map(choice -> {
@@ -36,8 +36,9 @@ public class PollModelMapper {
 		}).collect(Collectors.toList());
 
 		pollResponse.setChoices(choiceResponses);
-		UserSummary creatorSummary = new UserSummary(creator.getUserId(), creator.getUserName());
-		pollResponse.setCreatedBy(creatorSummary);
+//		UserSummary creatorSummary = new UserSummary(creator.getUserId(), creator.getUserName());
+//		pollResponse.setCreatedBy(creatorSummary);
+		pollResponse.setCreatedBy(null);
 
 		if (userVote != null) {
 			pollResponse.setSelectedChoice(userVote);

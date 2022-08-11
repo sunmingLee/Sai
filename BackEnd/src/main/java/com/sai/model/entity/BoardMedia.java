@@ -1,5 +1,7 @@
 package com.sai.model.entity;
 
+import java.io.File;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -33,11 +35,17 @@ public class BoardMedia {
 	@JoinColumn(name = "board_id")
 	private Board board;
 
+	@Column(name = "board_media_thumbnail")
+	private String boardMediaThumbnail;
+
 	@Column(name = "board_media_path")
 	private String boardMediaPath;
 
-	@Column(name = "board_media_name")
-	private String boardMediaName;
+	@Column(name = "board_media_original_name")
+	private String boardMediaOriginalName;
+
+	@Column(name = "board_media_save_name")
+	private String boardMediaSaveName;
 
 	@Column(name = "board_media_type")
 	private String boardMediaType;
@@ -46,4 +54,9 @@ public class BoardMedia {
 		this.board = board;
 	}
 
+	public boolean delete() {
+		File file = new File(boardMediaPath);
+		File thumbnail = new File(boardMediaThumbnail);
+		return file.delete() && thumbnail.delete();
+	}
 }

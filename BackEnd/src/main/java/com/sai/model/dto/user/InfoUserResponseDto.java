@@ -12,7 +12,10 @@ public class InfoUserResponseDto {
 	private String familyId;
 	
 	// 가족신청 여부
-	private boolean familyReg;
+	private Boolean familyRegYN;
+	
+	// 가족신청 수락여부
+	private Boolean approvedYN;
 
 
 }

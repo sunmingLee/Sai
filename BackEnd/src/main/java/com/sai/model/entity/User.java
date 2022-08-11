@@ -1,9 +1,6 @@
 
 package com.sai.model.entity;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,14 +8,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.sai.model.audit.DateAudit;
+import com.sai.model.dto.user.UserInfoDTO;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -32,7 +27,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class User extends DateAudit {
+//public class User extends DateAudit {
+public class User {
 
 	@Id
 	@Column(name = "user_id")
@@ -53,9 +49,6 @@ public class User extends DateAudit {
 	// 패스워드
 	private String password;
 
-	// 유저 닉네임
-	private String nickname;
-
 	// 유저 생일
 	private String birthday;
 
@@ -63,11 +56,12 @@ public class User extends DateAudit {
 	private Boolean lunar;
 
 	// roles(for poll)
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-	private Set<Role> roles = new HashSet<>();
+//	@ManyToMany(fetch = FetchType.LAZY)
+//	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+//	private final Set<Role> roles = new HashSet<>();
 
 	// role
+	@Column(name = "role")
 	@Enumerated(EnumType.STRING)
 	private UserRole role;
 
@@ -128,8 +122,29 @@ public class User extends DateAudit {
 		return this;
 	}
 
+	// 역할 확인
 	public String getRoleKey() {
 		return this.role.getKey();
+	}
+
+	// 추가정보 입력
+	public User addUserinfo(UserInfoDTO userInfoDTO) {
+		if (userInfoDTO.getBirthday() != null)
+			this.birthday = userInfoDTO.getBirthday();
+
+		if (userInfoDTO.getLunar() != null)
+			this.lunar = userInfoDTO.getLunar();
+
+		if (userInfoDTO.getUserMessage() != null)
+			this.userMessage = userInfoDTO.getUserMessage();
+		return this;
+	}
+
+	// 프로필 사진 넣기
+	public void updateUserImage(String originalName, String thumbnailPath, String fileType) {
+		this.userImageName = originalName;
+		this.userImagePath = thumbnailPath;
+		this.userImageType = fileType;
 	}
 
 }

@@ -3,6 +3,7 @@ package com.sai.model.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -41,15 +42,12 @@ public class Family {
 	private String familyImageType;
 
 	@Builder.Default
-	@OneToMany(mappedBy = "family", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "family", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<User> users = new ArrayList<User>();
 
-	public void updateFamily(Family modifiedFamily) {
-		this.familyName = modifiedFamily.getFamilyName();
-		this.familyImagePath = modifiedFamily.getFamilyImagePath();
-		this.familyImageName = modifiedFamily.getFamilyImageName();
-		this.familyImageType = modifiedFamily.getFamilyImageType();
+	public void updateFamilyName(String familyName) {
+		this.familyName = familyName;
 	}
 
 //	@Builder.Default
@@ -61,6 +59,12 @@ public class Family {
 		this.users.add(user);
 		if (user.getFamily() != this)
 			user.setFamily(this);
+	}
+
+	public void updateFamilyImage(String familyImageName, String familyImagePath, String familyImageType) {
+		this.familyImageName = familyImageName;
+		this.familyImagePath = familyImagePath;
+		this.familyImageType = familyImageType;
 	}
 
 //	public void addFamilyRegister(FamilyRegister familyRegister) {
