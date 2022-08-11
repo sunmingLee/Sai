@@ -1,6 +1,7 @@
 <template>
-  <FeedHeader />
+ 
     <div style="height: 100%">
+       <FeedHeader />
       <div class="feed-wrap">
             <div class="feed-flex" v-if="feedList.length">
                 <div v-for="(feed, index) in feedList" :key="index" class="feed-div">
@@ -34,18 +35,18 @@
                                     </div>
                                 </div> -->
                             </div>
+                            
                             <div v-else-if="feed.viewBoardResponseDto.boardMediaYn">
                                 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
                                     <div class="carousel-inner" >
                                         <div class="carousel-item active">
-                                            <!-- {{feed.viewBoardMediaResponseDto[0].boardMediaPath}} -->
-                                            <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100">
+                                            <img src="@/assets/images/여행1.jpg" class="d-block w-100">
                                         </div>
-                                        <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index">
-                                            <!-- {{feed.viewBoardMediaResponseDto[index].boardMediaPath}} -->
-                                            <div v-if="index !== 0" class="carousel-item">
-                                                <img :src="url + src.boardMediaPath" id="img" class="d-block w-100">
-                                            </div>
+                                        <div class="carousel-item">
+                                          <img src="@/assets/images/여행2.jpg" class="d-block w-100">
+                                        </div>
+                                        <div class="carousel-item">
+                                          <img src="@/assets/images/사이logo.png" class="d-block w-100">
                                         </div>
                                     </div>
                                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -179,6 +180,19 @@ li {
 p {
   margin: 0;
 }
+//캐러셀
+.carousel-inner{
+  width: auto;
+  height: 200px;
+}
+.carousel-item{
+  width: auto;
+  height: 100px;
+}
+.d-block {
+  width: auto;
+  height: 100%;
+}
 
 //콜사인과 날짜
 .content-header {
@@ -194,11 +208,12 @@ p {
     // width: 500px;
     border: 1px solid black;
     padding: 10px;
-    height: 250px;
+    // height: 300px;
+    height: auto;
     margin: 0 auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
   }
 }
 // content
@@ -214,7 +229,9 @@ p {
 }
 // item
 .feed-div {
-  min-height: 300px;
+  min-width: 300px;
+  // min-height: 300px;
+  min-height: auto;
   //항목의 초기 길이 -> 이 div의 처음 길이(너비)는 600px
   flex-basis: 600px;
   margin: 0 auto;
