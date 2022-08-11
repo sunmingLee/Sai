@@ -131,6 +131,32 @@ const boardStore = {
           console.log(err)
         })
     },
+    // 좋아요 등록
+    upBoardLike ({ commit, dispatch }, info) {
+      axios({
+        url: api_url + `/board/${info.boardId}/like/${info.userId}`,
+        method: 'POST'
+      })
+        .then((res) => {
+          dispatch('getOneFeed', info)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 좋아요 취소
+    downBoardLike ({ commit, dispatch }, info) {
+      axios({
+        url: api_url + `/board/${info.boardId}/like/${info.userId}`,
+        method: 'DELETE'
+      })
+        .then((res) => {
+          dispatch('getOneFeed', info)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
     // 댓글 조회
     getReplyList ({ commit }, boardId) {
       axios({

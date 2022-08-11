@@ -58,14 +58,9 @@
     </div>
     <!-- 좋아요 & 댓글 개수 -->
     <div class="reaction-wrap">
-      <span v-if="!onHeart && !feed.boardLiked">
-        <img src="@/assets/images/suit-heart.svg" alt="empty heart" @click="changeHeart">
-        <span>{{feed.viewBoardResponseDto.boardLikeCnt}}</span>
-      </span>
-      <span v-else>
-        <img  src="@/assets/images/suit-heart-fill.svg" alt="fill heart" @click="changeHeart">
-        <span>{{feed.viewBoardResponseDto.boardLikeCnt + 1}}</span>
-      </span>
+      <img v-if="!feed.boardLiked" src="@/assets/images/suit-heart.svg" alt="empty heart" @click="changeHeart">
+      <img v-else src="@/assets/images/suit-heart-fill.svg" alt="fill heart" @click="changeHeart">
+      <span>{{feed.viewBoardResponseDto.boardLikeCnt}}</span>
       <img src="@/assets/images/chat-right.svg" alt="reply">
       <span>{{replyList.length}}</span>
     </div>
@@ -114,8 +109,7 @@ export default {
     return {
       boardId: '',
       userId: '',
-      message: '',
-      onHeart: false
+      message: ''
     }
   },
   created () {
@@ -141,7 +135,7 @@ export default {
     ...mapState(familyStore, ['familyCallsignList'])
   },
   methods: {
-    ...mapActions(boardStore, ['getOneFeed', 'deleteFeed', 'getReplyList', 'createReply', 'updateReply', 'deleteReply', 'chooseVote']),
+    ...mapActions(boardStore, ['getOneFeed', 'deleteFeed', 'getReplyList', 'createReply', 'updateReply', 'deleteReply', 'chooseVote', 'upBoardLike', 'downBoardLike']),
     ...mapActions(familyStore, ['callsignList']),
     // 게시글 수정
     goUpdate () {
@@ -187,9 +181,17 @@ export default {
       }
       this.deleteReply(info)
     },
-    // 하트 변경
+    // 좋아요 변경
     changeHeart () {
-      this.onHeart = !this.onHeart
+      const info = {
+        boardId: this.boardId,
+        userId: this.userId
+      }
+      if (!this.feed.boardLiked) { // 좋아요 등록
+        this.upBoardLike(info)
+      } else { // 좋아요 취소
+        this.downBoardLike(info)
+      }
     }
   },
   changeReplyList () {
