@@ -52,7 +52,7 @@ public class Notification {
 	private Boolean notiReadYn;
 	
 	@Column(name = "noti_content_id")
-	private Long notiContentId;
+	private String notiContentId;
 	
 	public void readNoti() {
 		this.notiReadYn = true;

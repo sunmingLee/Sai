@@ -16,5 +16,5 @@ public class CreateNotificationRequestDto {
 	
 	private NotiType notiType;
 	
-	private Long notiContentId;
+	private String notiContentId;
 }
