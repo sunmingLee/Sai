@@ -1,7 +1,7 @@
 <template>
   <div class="add-info-wrap">
      <HeaderTitle title="내 정보"></HeaderTitle>
-    <img v-if="srcList[0] == null" class="profile img-thumbnail" src="@/assets/images/user-solid.svg" alt="user image">
+    <img v-if="srcList[0] == null" class="profile img-thumbnail" :src="currPic" alt="user image">
     <img v-else-if="srcList[0] !== null" class="profile img-thumbnail" :src="srcList[0]" alt="user image">
     <!-- <label class="form-label" for="customFile">Default file input example</label> -->
     <input type="file" class="form-control" id="customFile" @change="fileCheck"/>
@@ -26,19 +26,14 @@
       <textarea v-model="addInfo.userMessage"></textarea>
     </div>
 
-    <!-- 회원 가입 직후 추가 정보 입력-->
-    <!-- <div class="button" v-if="isAddInfo"> -->
+    <!-- 개인 정보 수정 -->
     <div class="button">
       <Button
         buttonClass="small information"
-        buttonText="건너뛰기"
-        @click="goFamilyCode"
+        buttonText="뒤로가기"
+        @click="goMyPage"
       ></Button>
-      <Button
-      buttonClass="small positive"
-      buttonText="확인"
-      @click="onAdd"
-      ></Button>
+      <Button buttonClass="small positive" buttonText="확인" @click="onAdd"></Button>
     </div>
 
   </div>
@@ -51,7 +46,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import Button from './common/Button.vue'
 import heic2any from 'heic2any'
 
-import { mapState, mapActions } from 'vuex'
+import { mapGetters, mapState, mapActions } from 'vuex'
 // import userStore from '../store/modules/userStore'
 const userStore = 'userStore'
 const fileList = []
@@ -60,14 +55,20 @@ export default {
   data () {
     return {
       addInfo: {
-        userId: '',
-        radioValues: '',
-        userMessage: '',
-        date: new Date()
+        userId: JSON.parse(localStorage.getItem('userInfo')).userId,
+        radioValues: JSON.parse(localStorage.getItem('userInfo')).radioValues,
+        userMessage: JSON.parse(localStorage.getItem('userInfo')).userMessage,
+        date: JSON.parse(localStorage.getItem('userInfo')).date
+
+        // userId: this.userInfo.userId,
+        // radioValues: this.userInfo.radioValues,
+        // userMessage: this.userInfo.userMessage,
+        // date: this.userInfo.date
       },
       isProfilePic: false,
       // isAddInfo: false,
       // isModifyInfo: false
+      currPic: JSON.parse(localStorage.getItem('userInfo')).userImagePath,
       srcList: [],
       fileList: []
     }
@@ -75,13 +76,15 @@ export default {
   created () {
     // 유저 정보 조회
     this.addInfo.userId = localStorage.getItem('userId')
+    console.log(this.addInfo.userId)
+    this.checkUserInfo(this.addInfo.userId)
   },
   computed: {
-    // ...mapState(userStore, [isAddInfo])
-
+    ...mapState(userStore, ['userInfo'])
+    // ...mapGetters(userStore, ['checkUserInfo'])
   },
   methods: {
-    ...mapActions(userStore, ['addUserInfo']),
+    ...mapActions(userStore, ['addUserInfo', 'checkUserInfo']),
     // 파일 처리
     fileCheck (e) {
       this.changeFile()

@@ -46,12 +46,12 @@ const albumStore = {
         })
     },
     // 앨범 생성
-    makeAlbum ({ commit }, info) {
+    makeAlbum ({ commit, dispatch }, info) {
       axios.post(api_url + '/', info)
         .then((res) => {
           console.log(res)
           if (res.status === 200) {
-            router.go()
+            dispatch('getFolderList', info.familyId)
           } else {
             console.log(res)
           }
@@ -61,12 +61,12 @@ const albumStore = {
         })
     },
     // 앨범 삭제
-    deleteAlbum ({ commit }, albumId) {
+    deleteAlbum ({ commit, dispatch }, albumId) {
       axios.delete(api_url + '/' + albumId)
         .then((res) => {
           console.log(res)
           if (res.status === 200) {
-            router.go()
+            dispatch('getFolderList', localStorage.getItem('familyId'))
           } else {
             console.log(res)
           }
@@ -75,7 +75,7 @@ const albumStore = {
           console.log(err)
         })
     },
-    // 앨범 정보 저장 (로컬스토리지)
+    // 앨범 정보 저장 후 앨범 상세 조회 페이지로 이동(로컬스토리지)
     setAlbumInfo ({ commit }, info) {
     //   commit('SET_ALBUM_ID', info.albumId)
     //   commit('SET_ALBUM_NAME', info.albumName)
@@ -99,7 +99,7 @@ const albumStore = {
         })
     },
     // 앨범 미디어 등록
-    insertMedia (context, mediaList) {
+    insertMedia ({ commit, dispatch }, mediaList) {
       const formData = new FormData()
       for (let i = 0; i < mediaList.length; i++) {
         console.log(mediaList[i])
@@ -116,7 +116,7 @@ const albumStore = {
         .then((res) => {
           console.log(res)
           if (res.status === 200) {
-            router.go()
+            dispatch('getMediaList')
           } else {
             console.log(res)
           }
@@ -126,12 +126,12 @@ const albumStore = {
         })
     },
     // 앨범 미디어 삭제
-    deleteMedia ({ commit }, albumMediaId) {
+    deleteMedia ({ commit, dispatch }, albumMediaId) {
       axios.delete(api_url + '/media/' + albumMediaId)
         .then((res) => {
           console.log(res)
           if (res.status === 200) {
-            router.go()
+            dispatch('getMediaList')
           } else {
             console.log(res)
           }

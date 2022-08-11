@@ -3,8 +3,10 @@ import AccountConfirmView from '@/views/AccountConfirmView.vue'
 import AccountManagementView from '@/views/AccountManagementView.vue'
 import FeedView from '@/views/FeedView.vue'
 import FeedCreateView from '@/views/FeedCreateView.vue'
+import FeedDetailView from '../views/FeedDetailView.vue'
 import LoginView from '../views/LoginView.vue'
 import AddInformationView from '../views/user/AddInformationView.vue'
+import ModifyInformationView from '../views/user/ModifyInformationView.vue'
 import FamilyInviteView from '@/views/FamilyInviteView.vue'
 import FamilyCodeView from '../views/FamilyCodeView.vue'
 import FamilyInformationChangeView from '../views/FamilyInformationChangeView.vue'
@@ -18,6 +20,9 @@ import AlbumPicture from '@/components/album/AlbumPicture.vue'
 import AlbumPictureDetail from '@/components/album/AlbumPictureDetail.vue'
 import JoinView from '@/views/JoinView.vue'
 import ApplyDeclineView from '@/views/ApplyDeclineView.vue'
+import MemoView from '@/views/memo/MemoView.vue'
+import MemoCreateView from '@/views/memo/MemoCreateView.vue'
+import MypageView from '@/views/user/MypageView.vue'
 // import test from '@/views/test.vue'
 
 import store from '@/store/index.js'
@@ -62,7 +67,14 @@ const routes = [
   {
     path: '/user/addinformation',
     name: 'addinformation',
-    component: AddInformationView
+    component: AddInformationView,
+    props: true
+  },
+  {
+    path: '/user/modifyinformation',
+    name: 'modifyinformation',
+    component: ModifyInformationView,
+    props: true
   },
   {
     path: '/feed',
@@ -147,6 +159,27 @@ const routes = [
     path: '/join',
     name: 'join',
     component: JoinView
+  },
+  {
+    path: '/memo',
+    name: 'memo',
+    component: MemoView
+  },
+  {
+    path: '/memoCreate',
+    name: 'memoCreate',
+    component: MemoCreateView
+  },
+  {
+    path: '/myPage',
+    name: 'myPage',
+    component: MypageView
+  },
+  {
+    path: '/feedDetail',
+    name: 'feedDetail',
+    component: FeedDetailView,
+    props: true
   },
   {
     path: '/familyInfoChange',

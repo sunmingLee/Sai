@@ -1,10 +1,9 @@
 <template>
-    <div class="feed-wrap">
-        <FeedHeader />
-        <div>
+  <FeedHeader />
+    <div style="height: 100%">
+      <div class="feed-wrap">
             <div class="feed-flex" v-if="feedList.length">
                 <div v-for="(feed, index) in feedList" :key="index" class="feed-div">
-
                     <div class="flex">
                         <div class="content-header">
                             <div v-for="(callsign, index) in familyCallsignList" :key="index" class="famliy-callsign">
@@ -15,28 +14,37 @@
                             <span>{{feed.viewBoardResponseDto.boardRegDatetime.substring(0,10)}}</span>
                         </div>
                     </div>
-                    <div class="flex">
+                    <div class="flex body">
                         <div class="content-body">
-                            <div v-if="feed.viewBoardResponseDto.pollYn">
-                                <h3>{{feed.pollResponse.question}}</h3>
+                            <div v-if="feed.viewBoardResponseDto.pollYn" class="poll-body">
+                              <table>
+                                <tr class="poll-title">
+                                  <th>{{feed.pollResponse.question}}</th>
+                                </tr>
+                                <tr class="poll-choice" v-for="(choice, index) in feed.pollResponse.choices" :key="index">
+                                  <td>{{choice.text}}</td>
+                                  <td><img class="poll-image" src="@/assets/images/person.svg" alt="user image">{{choice.voteCount}}</td>
+                                </tr>
+                              </table>
+                                <!-- <h3>{{feed.pollResponse.question}}</h3>
                                 <div v-for="(choice, index) in feed.pollResponse.choices" :key="index">
                                     <div>
                                         <span>{{choice.text}}</span>
                                         <span>{{choice.voteCount}}</span>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                             <div v-else-if="feed.viewBoardResponseDto.boardMediaYn">
                                 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
                                     <div class="carousel-inner" >
                                         <div class="carousel-item active">
                                             <!-- {{feed.viewBoardMediaResponseDto[0].boardMediaPath}} -->
-                                            <!-- <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100"> -->
+                                            <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100">
                                         </div>
                                         <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index">
                                             <!-- {{feed.viewBoardMediaResponseDto[index].boardMediaPath}} -->
                                             <div v-if="index !== 0" class="carousel-item">
-                                                <!-- <img :src="src.boardMediaPath" id="img" class="d-block w-100"> -->
+                                                <img :src="url + src.boardMediaPath" id="img" class="d-block w-100">
                                             </div>
                                         </div>
                                     </div>
@@ -55,32 +63,34 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex">
+                    <div class="flex reaction">
                         <div class="content-cnt">
                             <img v-if="feed.boardLiked" :src="like" @click="unlikeButton" class="like-icon">
-                            <img v-else :src="unlike" @click="likeButton">
+                            <img v-else :src="unlike" @click="likeButton" class="like-icon">
                             {{feed.viewBoardResponseDto.boardLikeCnt}}
                         </div>
                         <div class="content-reply">
-                            <img src="@/assets/images/comment-regular.svg" alt="calendar" style="width: 18px">
+                            <img src="@/assets/images/comment-regular.svg" alt="calendar" class="reply-icon">
                             {{feed.viewBoardResponseDto.boardReplyCnt}}
                         </div>
+                        <div class="detail-button">
+                          <Button buttonClass="small information" buttonText="상세보기" @click="goDetail(feed.viewBoardResponseDto.boardId)"></Button>
+                        </div>
                     </div>
-                    <button @click="goDetail(feed.viewBoardResponseDto.boardId)">상세보기</button>
                 </div>
             </div>
             <div v-else>
                 <h3>등록된 게시글이 없습니다</h3>
             </div>
         </div>
-        <div class="flex">
-            <button @click="goBoardCreate" style="color: red">글 작성</button>
-        </div>
-
+      <button id="btn-modal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="goBoardCreate">
+        <img style="width:25px;" src="@/assets/images/plus-lg.svg" alt="plus">
+      </button>
     </div>
 </template>
 <script>
 import { mapActions, mapState } from 'vuex'
+import Button from './common/Button.vue'
 
 const boardStore = 'boardStore'
 const userStore = 'userStore'
@@ -89,6 +99,7 @@ const familyStore = 'familyStore'
 export default {
   name: 'FeedContent',
   components: {
+    Button
   },
   created () {
     // 피드 조회
@@ -112,11 +123,11 @@ export default {
   },
   computed: {
     ...mapState(boardStore, ['feedList']),
-    ...mapState(familyStore, ['familyCallsignList'])
+    ...mapState(familyStore, ['familyCallsignList']),
   },
   methods: {
     ...mapActions(userStore, ['checkUserInfo']),
-    ...mapActions(boardStore, ['feedAllList']),
+    ...mapActions(boardStore, ['feedAllList', 'setBoardId']),
     ...mapActions(familyStore, ['callsignList', 'getFamilyInfo']),
     // 좋아요 버튼 클릭
     likeButton () {
@@ -146,11 +157,9 @@ export default {
       this.$router.push({ name: 'feedCreate' })
     },
     // 글 상세보기 페이지 이동
-    goDetail () {
-      // this.$router.push({
-      //     name: "detailvideo",
-      //     params: { videoSeq: videoSeq },
-      // });
+    goDetail (boardId) {
+    //   console.log('들어가기 전: ' + boardId)
+      this.setBoardId(boardId)
     }
   },
   data () {
@@ -164,23 +173,120 @@ export default {
 
 </script>
 <style lang="scss">
-.famliy-callsign {
-    display: inline-block;
+li {
+  list-style: none;
 }
-.feed-wrap {
-  width: 900px;
+p {
+  margin: 0;
+}
 
-  .flex{
+//콜사인과 날짜
+.content-header {
+  font-weight: bold;
+  display: flex;
+  justify-content: space-around;
+  margin: 10px 0 10px 0;
+}
+
+//글, 사진, 투표의 공간
+.flex {
+  &.body {
+    // width: 500px;
+    border: 1px solid black;
+    padding: 10px;
+    height: 250px;
+    margin: 0 auto;
     display: flex;
     justify-content: center;
-    text-align: center;
+    align-items: center;
   }
-  .feed-flex {
-    .feed-div {
-        width: 600px;
-        margin: 0 auto;
-        border: 1px solid black;
+}
+// content
+.feed-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+}
+// flexbox
+.feed-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+// item
+.feed-div {
+  min-height: 300px;
+  //항목의 초기 길이 -> 이 div의 처음 길이(너비)는 600px
+  flex-basis: 600px;
+  margin: 0 auto;
+  border-bottom: 2px solid #AE5F40;
+  border-top: 2px solid #AE5F40;
+}
+.feed-flex > *{
+    flex-grow: 0;
+}
+
+//좋아요, 댓글, 상세보기
+.flex {
+  &.reaction {
+    display: flex;
+    padding: 10px;
+    // border: 1px solid black;
+    // .detail-button {
+    //   margin-left: 375px;
+    // }
+  }
+  .content-cnt {
+    padding-right: 20px;
+    .like-icon {
+      width: 25px;
     }
   }
+  .content-reply {
+    padding-right: 20px;
+    .reply-icon {
+      width: 25px;
+    }
+  }
+} 
+//투표
+.poll-title {
+  th {
+    font-size: 23px;
+  }
+}
+.poll-choice {
+  td {
+    border: 1px solid black;
+  }
+  :nth-child(1) {
+    border-right: none;
+  }
+  :nth-child(2) {
+    border-left: none;
+  }
+}
+table {
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+//글 작성 버튼
+.btn{
+    height: 40px;
+    &-primary{
+    --bs-btn-bg: #7b371c;
+    --bs-btn-border-color: #7b371c;
+    --bs-btn-hover-bg: #54210d;
+    --bs-btn-hover-border-color: #54210d;
+    --bs-btn-focus-shadow-rgb: none;
+    }
+    &#btn-modal{
+        position: absolute;
+        right: 10%;
+        bottom: 10%;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+    }
 }
 </style>

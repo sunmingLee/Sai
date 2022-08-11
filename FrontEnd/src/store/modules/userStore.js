@@ -17,6 +17,7 @@ const userStore = {
     //   email: 'cjftn@naver.com',
     //   password: 'asdf@1234'
     // }
+    isAddInfo: true
   },
   getters: {
     checkUserInfo: function (state) {
@@ -32,7 +33,7 @@ const userStore = {
     },
     SET_USER_INFO: (state, userInfo) => {
       state.userInfo = userInfo
-    },
+    }
   },
   actions: {
     // 로그인
@@ -191,19 +192,51 @@ const userStore = {
         })
     },
     // 유저(회원) 정보 조회
-    checkUserInfo({commit}, userId) {
+    checkUserInfo ({ commit }, userId) {
       axios({
         url: api_url + '/' + userId,
         method: 'GET'
       })
-      .then((res) => {
-        commit('SET_USER_INFO', res.data)
-        localStorage.setItem('userInfo',JSON.stringify(res.data))
+        .then((res) => {
+          commit('SET_USER_INFO', res.data)
+          localStorage.setItem('userInfo', JSON.stringify(res.data))
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 회원 정보 추가 / 수정
+    addUserInfo ({ commit }, userInfo) {
+      const files = userInfo.fileList
+      const addInfo = userInfo.userInfo
+
+      const formData = new FormData()
+      if (files !== undefined) {
+        formData.append('file', files[0])
+      }
+      formData.append('addInfo', new Blob([JSON.stringify(addInfo)], { type: 'application/json' }))
+      axios({
+        url: api_url + '/addInfo',
+        method: 'POST',
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       })
-      .catch((err) => {
-        console.log(err)
-      })
+        .then((res) => {
+          alert('추가 정보가 입력되었습니다')
+          console.log(res)
+          // commit()
+          // 회원 가입 후
+          router.push({ name: 'familyCode' })
+          // 개인 페이지에서 온 경우
+          // router.push({ naem: })
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     }
+
   },
   modules: {
 

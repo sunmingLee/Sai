@@ -1,14 +1,13 @@
 <template>
   <div class="container">
-    <AddInformation></AddInformation>
+    <ModifyInformation></ModifyInformation>
   </div>
 </template>
 
 <script>
-// import HeaderTitle from '@/components/common/HeaderTitle.vue'
-import AddInformation from '@/components/AddInformation.vue'
+import ModifyInformation from '@/components/ModifyInformation.vue'
 export default {
-  components: { AddInformation }
+  components: { ModifyInformation }
 }
 </script>
 

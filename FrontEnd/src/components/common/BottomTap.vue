@@ -31,7 +31,7 @@ export default {
       this.$router.push({ name: 'feed' })
     },
     moveRefridge () {
-      this.$router.push({ name: 'refridge' })
+      this.$router.push({ name: 'memo' })
     },
     moveAlbum () {
       this.$router.push({ name: 'album' })

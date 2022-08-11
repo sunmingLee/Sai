@@ -5,6 +5,7 @@
       <img :class="data.visibilityIcon" src="@/assets/images/calendar-days-solid.svg" alt="calendar" style="width: 20px">
   </div>
 </template>
+
 <script>
 import { reactive } from 'vue'
 
@@ -39,7 +40,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style scoped lang="scss">
@@ -52,6 +52,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-top: 5%;
+  margin-bottom: 5%;
 }
 .hidden{
   visibility: hidden;
