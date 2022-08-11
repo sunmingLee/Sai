@@ -116,7 +116,7 @@ const familyStore = {
       .catch((err) => {
         console.log(err)
       })
-    }
+    },
   },
   modules: {
   }

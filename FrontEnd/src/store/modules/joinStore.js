@@ -70,7 +70,7 @@ const joinStore = {
           context.commit('SET_CHECKED', true)
         }
       }).catch((res) => {
-        alert('아이디중복 또는 이메일중복을 확인해주세요.')
+        alert('아이디중복 또는 이메일중복을 확인해주세요')
       })
     }
   },
