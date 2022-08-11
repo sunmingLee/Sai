@@ -18,13 +18,13 @@
                 <span> {{callsign.callsign}}님이 새로운 댓글을 달았습니다.</span>
                 <span style="float: right;">{{noti.notiDateTime}}</span>
               </span>
-              <!-- 가족신청 -->
-              <span v-else-if="noti.notiType === 'FAMILYREGISTER'">
-                <span style="font-weight: bold;"> 가족신청 </span>
-                <span> {{callsign.callsign}}님이 가족 신청을 요청했습니다.</span>
-                <span style="float: right;">{{noti.notiDateTime}}</span>
-              </span>
             </span>
+          </span>
+          <!-- 가족신청 -->
+          <span v-if="noti.notiType === 'FAMILYREGISTER'">
+            <span style="font-weight: bold;"> 가족신청 </span>
+            <span> {{noti.fromUser.userId}}님이 가족 신청을 요청했습니다.</span>
+            <span style="float: right;">{{noti.notiDateTime}}</span>
           </span>
         </li>
     </ul>

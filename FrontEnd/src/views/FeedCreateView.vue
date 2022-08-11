@@ -1,5 +1,7 @@
 <template>
     <div class="create-wrap">
+
+      <p>{{callsign}}</p>
         <HeaderTitle hasBack="true" title="게시글 작성" hasIcon="true"/>
         <!-- 사진 공간 -->
         <div>
@@ -185,8 +187,8 @@ export default {
     this.callsignList(userId)
     fileList = []
   },
-  mounted() {
-    
+  mounted () {
+
   },
   computed: {
     // ...mapState(userStore, ["userId", "userName"]),
@@ -205,23 +207,23 @@ export default {
       this.imageFlag = false
       //확장자 변경
       this.changeFile()
-      //미리보기
+      // 미리보기
       this.previewFile()
       if(this.srcList.length !== 0) {
         this.imageFlag = true
       }
     },
-    changeFile() {
-      const previewCount = 0;
-      const fileInput = document.getElementById("file")
-      //선택한 파일의 정보 리스트
-      let files = fileInput.files
+    changeFile () {
+      const previewCount = 0
+      const fileInput = document.getElementById('file')
+      // 선택한 파일의 정보 리스트
+      const files = fileInput.files
       // let previewCount = files.length
-      //heic 파일 확장자 변경
-      //선택한 파일의 개수만큼 돌아서 각각의 파일을 다 확인
-      for(let i = 0; i < files.length; i++) {
-        //파일 하나 선택
-        let file = files[i]
+      // heic 파일 확장자 변경
+      // 선택한 파일의 개수만큼 돌아서 각각의 파일을 다 확인
+      for (let i = 0; i < files.length; i++) {
+        // 파일 하나 선택
+        const file = files[i]
         let heicFile = ''
         // 파일의 확장자가 heic일 경우
         if (file.name.split('.')[1] === 'heic') {
@@ -239,14 +241,14 @@ export default {
         }
       }
     },
-    previewFile() {
+    previewFile () {
       console.log(fileList)
-      if(fileList.length != 0) {
-        for(let i = 0; i < fileList.length; i++) {
+      if (fileList.length != 0) {
+        for (let i = 0; i < fileList.length; i++) {
           this.srcList.push(URL.createObjectURL(fileList[i]))
         }
       }
-      console.log("안녕")
+      console.log('안녕')
       console.log(this.srcList)
     },
     // 추가기록과 투표만들기 토글
@@ -390,7 +392,7 @@ export default {
         console.log(fileList.length)
         if (fileList.length !== 0) {
           this.boardMediaYn = 1
-        }   // 투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
+        } // 투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
         // for(let i = 0; i < )
         let pollOptionCnt = 0
         for (let i = 0; i < this.pollCnt; i++) {

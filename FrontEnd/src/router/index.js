@@ -6,8 +6,10 @@ import FeedCreateView from '@/views/FeedCreateView.vue'
 import FeedDetailView from '../views/FeedDetailView.vue'
 import LoginView from '../views/LoginView.vue'
 import AddInformationView from '../views/user/AddInformationView.vue'
+import ModifyInformationView from '../views/user/ModifyInformationView.vue'
 import FamilyInviteView from '@/views/FamilyInviteView.vue'
 import FamilyCodeView from '../views/FamilyCodeView.vue'
+import FamilyInformationChangeView from '../views/FamilyInformationChangeView.vue'
 import ApplyWaitView from '../views/ApplyWaitView.vue'
 import SearchIdView from '@/views/SearchIdView.vue'
 import SearchPasswordView from '@/views/SearchPasswordView.vue'
@@ -65,7 +67,14 @@ const routes = [
   {
     path: '/user/addinformation',
     name: 'addinformation',
-    component: AddInformationView
+    component: AddInformationView,
+    props: true
+  },
+  {
+    path: '/user/modifyinformation',
+    name: 'modifyinformation',
+    component: ModifyInformationView,
+    props: true
   },
   {
     path: '/feed',
@@ -171,6 +180,11 @@ const routes = [
     name: 'feedDetail',
     component: FeedDetailView,
     props: true
+  },
+  {
+    path: '/familyInfoChange',
+    name: 'familyInfoChange',
+    component: FamilyInformationChangeView
   }
 ]
 

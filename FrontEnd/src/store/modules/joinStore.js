@@ -64,7 +64,8 @@ const joinStore = {
         if (context.state.isChecked === true) {
           alert('회원가입성공')
           console.log(res)
-          router.push({ name: 'login' })
+          localStorage.setItem('userId', userJoin.userId)
+          router.push({ name: 'addinformation' })
         } else {
           alert('아이디중복 또는 이메일중복을 확인해주세요')
           context.commit('SET_CHECKED', true)
