@@ -1,6 +1,7 @@
 <template>
-  <FeedHeader />
+ 
     <div style="height: 100%">
+       <FeedHeader />
       <div class="feed-wrap">
             <div class="feed-flex" v-if="feedList.length">
                 <div v-for="(feed, index) in feedList" :key="index" class="feed-div">
@@ -34,20 +35,22 @@
                                     </div>
                                 </div> -->
                             </div>
-                            <div v-else-if="feed.viewBoardResponseDto.boardMediaYn">
+                            <div v-else-if="feed.viewBoardResponseDto.boardMediaYn" class="media-wrap">
                                 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
                                     <div class="carousel-inner" >
+                                      <div class="carousel-inner" >
                                         <div class="carousel-item active">
-                                            <!-- {{feed.viewBoardMediaResponseDto[0].boardMediaPath}} -->
-                                            <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100">
+                                            <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100">
+                                            <!-- <img src="@/assets/images/byebye.png" class="d-block w-100"> -->
                                         </div>
-                                        <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index">
-                                            <!-- {{feed.viewBoardMediaResponseDto[index].boardMediaPath}} -->
-                                            <div v-if="index !== 0" class="carousel-item">
-                                                <img :src="url + src.boardMediaPath" id="img" class="d-block w-100">
-                                            </div>
+                                        <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index"> 
+                                          <div v-if="index !== 0" class="carousel-item">
+                                            <img :src="src.boardMediaPath" class="d-block w-100">
+                                            <!-- <img src="@/assets/images/dog2.png" class="d-block w-100"> -->
+                                          </div>
                                         </div>
                                     </div>
+                                  </div>
                                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
                                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                         <span class="visually-hidden">Previous</span>
@@ -76,6 +79,17 @@
                         <div class="detail-button">
                           <Button buttonClass="small information" buttonText="상세보기" @click="goDetail(feed.viewBoardResponseDto.boardId)"></Button>
                         </div>
+                    </div>
+                    <div v-if="feed.replyDto !== null">
+                      <div v-for="(callsign, index) in familyCallsignList" :key="index" class="famliy-callsign">
+                        <div v-if="feed.replyDto.userId === callsign.toUserId">
+                          <span>{{callsign.callsign}}</span>
+                        </div>
+                      </div>
+                      {{feed.replyDto.replyContent}}
+                    </div>
+                    <div v-else>
+                      <span>등록된 댓글이 없습니다. 첫 댓글의 주인공이 되어보세요!</span>
                     </div>
                 </div>
             </div>
@@ -179,6 +193,31 @@ li {
 p {
   margin: 0;
 }
+//캐러셀
+.carousel-inner{
+  width: auto;
+  height: 250px;
+}
+.carousel-item{
+  // width: auto;
+  // height: 100px;
+  width: 100%;
+  height: 100%;
+}
+.d-block {
+  //사진 크기를 가운데
+  margin: 0 auto;
+  // width: auto!important;
+  // height: 250px;
+  //옆으로 길게 늘리기
+  width: 100%;
+  //사진의 일부  
+  // height: 100%;
+}
+
+.media-wrap {
+  min-height: 300px;
+}
 
 //콜사인과 날짜
 .content-header {
@@ -194,13 +233,17 @@ p {
     // width: 500px;
     border: 1px solid black;
     padding: 10px;
-    height: 250px;
+    // height: 300px;
+    height: auto;
     margin: 0 auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
   }
 }
+
+
+
 // content
 .feed-wrap {
   max-width: 900px;
@@ -210,11 +253,13 @@ p {
 .feed-flex {
   display: flex;
   flex-wrap: wrap;
-  gap: 1em;
+  gap: 2em;
 }
 // item
 .feed-div {
-  min-height: 300px;
+  min-width: 300px;
+  // min-height: 300px;
+  min-height: auto;
   //항목의 초기 길이 -> 이 div의 처음 길이(너비)는 600px
   flex-basis: 600px;
   margin: 0 auto;

@@ -9,6 +9,7 @@ import AddInformationView from '../views/user/AddInformationView.vue'
 import ModifyInformationView from '../views/user/ModifyInformationView.vue'
 import FamilyInviteView from '@/views/FamilyInviteView.vue'
 import FamilyCodeView from '../views/FamilyCodeView.vue'
+import FamilyInformationChangeView from '../views/FamilyInformationChangeView.vue'
 import ApplyWaitView from '../views/ApplyWaitView.vue'
 import SearchIdView from '@/views/SearchIdView.vue'
 import SearchPasswordView from '@/views/SearchPasswordView.vue'
@@ -179,6 +180,11 @@ const routes = [
     name: 'feedDetail',
     component: FeedDetailView,
     props: true
+  },
+  {
+    path: '/familyInfoChange',
+    name: 'familyInfoChange',
+    component: FamilyInformationChangeView
   }
 ]
 
