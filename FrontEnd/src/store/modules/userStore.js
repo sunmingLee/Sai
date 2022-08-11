@@ -210,8 +210,7 @@ const userStore = {
     
       const files = userInfo.fileList
       const addInfo = userInfo.userInfo
-      
-      
+            
       const formData = new FormData()
       if (files !== undefined) {
         formData.append('file', files[0])
@@ -227,7 +226,6 @@ const userStore = {
         }
       })
       .then((res) => {
-          console.log(formData)
           alert('추가 정보가 입력되었습니다')
           console.log(res)
           // commit()
@@ -237,7 +235,6 @@ const userStore = {
           // router.push({ naem: })
         })
         .catch((err) => {
-          console.log(formData)
           console.log(err)
         })
     }

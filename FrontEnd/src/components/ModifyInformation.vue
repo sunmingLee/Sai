@@ -26,19 +26,14 @@
       <textarea v-model="addInfo.userMessage"></textarea>
     </div>
 
-    <!-- 회원 가입 직후 추가 정보 입력-->
-    <!-- <div class="button" v-if="isAddInfo"> -->
+    <!-- 개인 정보 수정 -->
     <div class="button">
       <Button
         buttonClass="small information"
-        buttonText="건너뛰기"
-        @click="goFamilyCode"
+        buttonText="뒤로가기"
+        @click="goMyPage"
       ></Button>
-      <Button
-      buttonClass="small positive"
-      buttonText="확인"
-      @click="onAdd"
-      ></Button>
+      <Button buttonClass="small positive" buttonText="확인" @click="onAdd"></Button>
     </div>
 
   </div>
