@@ -65,6 +65,7 @@ const familyStore = {
         .then((res) => {
           console.log(res)
           if (res.status === 200) {
+            localStorage.setItem('familyId', res.data.familyId)
             commit('SET_FAMILY_ID', res.data.familyId)
             router.push({ name: 'familyInvite' })
           } else {
