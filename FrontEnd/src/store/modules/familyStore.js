@@ -10,7 +10,9 @@ const familyStore = {
     familyId: '',
     familyCallsignList: [],
     familyInfo: [],
-    notificationList: []
+    notificationList: [],
+    hasAnswered: false,
+    approved: false
   },
   getters: {
   },
@@ -21,8 +23,14 @@ const familyStore = {
     CALLSIGN_LIST (state, callsign) {
       state.familyCallsignList = callsign
     },
-    SET_FAMILY_INFO(state, familyInfo) {
+    SET_FAMILY_INFO (state, familyInfo) {
       state.familyInfo = familyInfo
+    },
+    SET_HAS_ANSWERED (state, hasAnswered) {
+      state.hasAnswered = hasAnswered
+    },
+    SET_APPROVED (state, approved) {
+      state.approved = approved
     }
   },
   actions: {
@@ -65,6 +73,7 @@ const familyStore = {
         .then((res) => {
           console.log(res)
           if (res.status === 200) {
+            localStorage.setItem('familyId', res.data.familyId)
             commit('SET_FAMILY_ID', res.data.familyId)
             router.push({ name: 'familyInvite' })
           } else {
@@ -104,18 +113,45 @@ const familyStore = {
           console.log(err)
         })
     },
-    //가족 정보 조회
-    getFamilyInfo({commit}, familyId) {
+    // 가족 정보 조회
+    getFamilyInfo ({ commit }, familyId) {
       axios({
-        url: api_url + "/" + familyId,
+        url: api_url + '/' + familyId,
         method: 'GET'
       })
-      .then((res) => {
-        commit('SET_FAMILY_INFO', res.data)
+        .then((res) => {
+          commit('SET_FAMILY_INFO', res.data)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 가족 신청 수락, 거절
+    answerFamilyRegister ({ commit }, info) {
+      const data = {
+        approveYn: info.approveYn,
+        familyRegisterId: info.familyRegisterId
+      }
+      axios({
+        url: api_url + '/join/response/' + info.userId,
+        method: 'PATCH',
+        data: JSON.stringify(data),
+        headers: {
+          'Content-type': 'application/json'
+        }
       })
-      .catch((err) => {
-        console.log(err)
-      })
+        .then((res) => {
+          commit('SET_HAS_ANSWERED', true)
+
+          if (info.approveYn) { // 가족 신청 수락
+            commit('SET_APPROVED', true)
+          } else { // 가족 신청 거절
+            commit('SET_APPROVED', false)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     }
   },
   modules: {
