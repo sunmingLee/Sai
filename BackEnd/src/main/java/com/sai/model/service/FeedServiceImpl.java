@@ -56,7 +56,7 @@ import net.coobird.thumbnailator.geometry.Positions;
 public class FeedServiceImpl implements FeedService {
 
 	private String uploadPath = File.separator + "app" + File.separator + "Feed";
-	private String dbPath = File.separator + "static" + File.separator + "Feed";
+	private String dbPath = File.separator + "saimedia" + File.separator + "Feed";
 
 	@Autowired
 	UserRepository userRepository;

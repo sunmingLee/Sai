@@ -41,7 +41,7 @@ import net.coobird.thumbnailator.geometry.Positions;
 public class AlbumServiceImpl implements AlbumService {
 
 	private String uploadPath = File.separator + "app" + File.separator + "Album";
-	private String dbPath = File.separator + "static" + File.separator + "Album";
+	private String dbPath = File.separator + "saimedia" + File.separator + "Album";
 
 	@Autowired
 	AlbumRepository albumRepository;

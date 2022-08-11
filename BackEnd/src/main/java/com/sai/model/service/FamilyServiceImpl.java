@@ -45,7 +45,7 @@ import net.coobird.thumbnailator.geometry.Positions;
 public class FamilyServiceImpl implements FamilyService {
 
 	private String uploadPath = File.separator + "app" + File.separator + "FamilyImage";
-	private String dbPath = File.separator + "static" + File.separator + "FamilyImage";
+	private String dbPath = File.separator + "saimedia" + File.separator + "FamilyImage";
 
 	@Autowired
 	UserRepository userRepository;
