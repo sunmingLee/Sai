@@ -4,6 +4,8 @@
     <span>결과를 기다리는 중이에요<br/><br/>
     가족들에게 어서<br/>수락해달라고 말해보세요!</span>
     <Button class="btn-back" buttonClass="big negative" buttonText="신청 취소하기" @click="goFamilyCode"></Button>
+    <br>
+    <Button class="btn-go" buttonClass="big positive" buttonText="피드 보러가기" @click="goResult"></Button>
 </div>
 </template>
 
@@ -11,12 +13,17 @@
 import Button from '@/components/common/Button.vue'
 import { mapActions, mapState } from 'vuex'
 const familyStore = 'familyStore'
+const userStore = 'userStore'
 export default {
   components: { Button },
   methods: {
-    ...mapActions(familyStore, ['deleteFamilyApply']),
+    ...mapActions(familyStore, ['deleteFamilyApply', 'resultFamilyApply']),
+    ...mapActions(userStore, ['getUserInfo']),
     goFamilyCode () {
       this.deleteFamilyApply(localStorage.getItem('userId'))
+    },
+    goResult () {
+      this.getUserInfo(localStorage.getItem('userId'))
     }
   },
   computed: {
@@ -48,6 +55,11 @@ span{
     font-weight: bold;
 }
 .btn-back{
+    text-align: center;
+    position: relative;
+    top: 40%;
+}
+.btn-go{
     text-align: center;
     position: relative;
     top: 40%;

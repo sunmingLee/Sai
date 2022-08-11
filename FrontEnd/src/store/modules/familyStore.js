@@ -10,7 +10,8 @@ const familyStore = {
     familyId: '',
     familyCallsignList: [],
     familyInfo: [],
-    notificationList: []
+    notificationList: [],
+    familyResult: []
   },
   getters: {
   },
@@ -23,6 +24,9 @@ const familyStore = {
     },
     SET_FAMILY_INFO(state, familyInfo) {
       state.familyInfo = familyInfo
+    },
+    SET_FAMILY_RESULT(state, familyResult) {
+      state.familyResult = familyResult
     }
   },
   actions: {
@@ -117,6 +121,20 @@ const familyStore = {
         console.log(err)
       })
     },
+    // 가족 신청 결과
+    resultFamilyApply({commit}, userId) {
+      axios({
+        url: api_url + `/join/${userId}`,
+        method: 'GET'
+      })
+      .then((res) => {
+        commit('SET_FAMILY_RESULT', res.data)
+        console.log(res.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    }
   },
   modules: {
   }
