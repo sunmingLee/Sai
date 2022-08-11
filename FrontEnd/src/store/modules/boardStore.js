@@ -196,7 +196,7 @@ const boardStore = {
     // 개인페이지 피드 조회
     myFeedAllList ({ commit }, userId) {
       axios({
-        url: API_BASE_URL + '/api/user/myPage' + userId,
+        url: API_BASE_URL + '/api/user/myPage/' + userId,
         method: 'GET'
       })
         .then((res) => {

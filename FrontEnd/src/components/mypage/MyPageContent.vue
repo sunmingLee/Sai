@@ -1,22 +1,25 @@
-<template>
-    <div class="content-wrap">
-        <p>게시물 {{myFeedList.length}}개</p>
-        <div class="flex">
-            <div class="mypage-content">
-                <div class="content-wrap" v-for="(feed, index) in myFeedList" :key="index">
-                    <div></div>
-                </div>
-            </div>
-        </div>
-        <!-- <div class="memo-content">
-            <div class="content-wrap" v-for="(memo, index) in memoAllList" :key="index">
-                <div :class="memo.color">
-                    <span>{{memoAllList[index].memoContent}}</span>
-                </div>
-                <button type="button" class="btn-close" aria-label="Close" @click="removeMemo(memo.memoId)"></button>
-            </div>
-        </div> -->
+<template>  
+  <div>
+    <div class="count-wrap">
+      <p>게시물 {{myFeedList.length}}개</p>
     </div>
+    <div class="content-wrap">
+      <div class="feed-content">
+            <div class="list-wrap" v-for="(feed, index) in myFeedList" :key="index" @click="goDetail(feed.viewBoardResponseDto.boardId)">
+                <div v-if="feed.viewBoardResponseDto.pollYn" class="align" >
+                  <span>[투표]{{feed.pollResponse.question}}</span>
+                </div>
+                <div v-else-if="feed.viewBoardResponseDto.boardMediaYn" class="align">
+                  <!-- <img src="@/assets/images/byebye.png" class="d-block w-100"> -->
+                  <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100">
+                </div>
+                <div v-else class="align">
+                  <span>{{feed.viewBoardResponseDto.boardContent}}</span>
+                </div>
+            </div>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 import { mapActions, mapState } from 'vuex'
@@ -44,7 +47,13 @@ export default {
     ...mapState(boardStore, ['myFeedList'])
   },
   methods: {
-    ...mapActions(boardStore, ['myFeedAllList'])
+    ...mapActions(boardStore, ['myFeedAllList', 'setBoardId']),
+    //상세보기 이동
+    goDetail (boardId) {
+      console.log("왜 안 가")
+    //   console.log('들어가기 전: ' + boardId)
+      this.setBoardId(boardId)
+    }
   }
 }
 </script>
@@ -52,13 +61,39 @@ export default {
 p {
   margin: 0;
 }
-.content-wrap {
-  top: 0;
-  padding: 0 5%;
+.count-wrap {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 5% 0 2% 0;  
+  margin-left: 30px;
+}
+.content-wrap {
+  display: flex;
+    // .flex{
+    //     display: flex;
+    //     justify-content: center;
+    //     text-align: center;
+    // }
+    .feed-content {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin: 0 auto;
+        .list-wrap {
+            width: 235px;
+            height: 210px;
+            text-align: center;
+            margin: 20px;
+            .align {
+              border: 1px solid #A57966;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 210px;
+              .d-block {
+                height: 100%;
+              }
+            }
+        }
+    }
 }
 // .mypage-wrap {
 //   width: 900px;

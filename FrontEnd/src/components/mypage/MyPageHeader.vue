@@ -94,6 +94,10 @@ p {
     font-weight: bold;
   }
 }
+hr {
+  height: 3px;
+  background-color: #7B371C;
+}
 // .mypage-wrap {
 //   width: 900px;
 

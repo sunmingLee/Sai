@@ -20,17 +20,19 @@
                 <img src="@/assets/images/person-circle.svg" alt="user" style="width:28px">
             </div>
             <div v-else @click="dropDown"> 
-                <img src="@/assets/images/alert-on-svgrepo-com.svg" alt="calendar" style="width: 28px">
+                <img :src="userInfo.userImagePath">
             </div>
             <!-- <router-link :to="{name : 'detailreview'}">상세보기</router-link> -->
-            <div v-if="menuFlag" class="mymenu-wrap">
-                <ul>
-                    <li>{{userInfo.userName}}</li>
-                    <hr>
-                    <li @click="goMyPage">내 페이지</li>
-                    <li @click="goAccount">계정관리</li>
-                    <li @click="logout">로그아웃</li>
-                </ul>
+            <div class="drop-menu">
+                <div v-if="menuFlag" class="mymenu-wrap">
+                    <ul>
+                        <li>{{userInfo.userName}}</li>
+                        <hr>
+                        <li @click="goMyPage">내 페이지</li>
+                        <li @click="goAccount">계정관리</li>
+                        <li @click="logout">로그아웃</li>
+                    </ul>
+                </div>
             </div>
             <!-- 알림 -->
             <div v-if="notificationCount === 0" @click="goNotice">
@@ -107,9 +109,10 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-#drop {
-
+.drop-menu {
+    position: relative;
 }
+
 .header {
     top: 0;
     padding: 0 5%;
@@ -143,12 +146,23 @@ export default {
     // display: none;
     border: 1px solid #F0EAE3;
     background-color: #F0EAE3;
+    width: 86px;
+    height: 162px;
+    position: absolute;
+    top: 102%;
+    right: -30px;
+    z-index: 1;
     ul {
         margin: 0;
         padding: 0;
+        :nth-child(1) {
+            margin: 5px 0 5px 0;
+            font-weight: bold;
+        }
     }
     li {
         text-align: center;
+        margin: 13px 0 13px 0;
     }
     hr {
         margin: 0;
