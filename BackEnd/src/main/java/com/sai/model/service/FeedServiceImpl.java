@@ -261,6 +261,10 @@ public class FeedServiceImpl implements FeedService {
 				User user = userRepository.findById(inputBoardTaggedRequestDto.getUserId()).get();
 				BoardTagged boardTagged = BoardTagged.builder().board(board).user(user).build();
 
+				if (createBoardRequestDto.getInputBoardRequestDto().getUserId()
+						.equals(inputBoardTaggedRequestDto.getUserId()))
+					continue;
+
 				CreateNotificationRequestDto cnrd = CreateNotificationRequestDto.builder()
 						.notiFromUserId(board.getUser().getUserId()).notiToUserId(user.getUserId())
 						.notiContent("님이 당신을 태그했습니다 !").notiType(NotiType.TAGGED).build();
@@ -344,10 +348,12 @@ public class FeedServiceImpl implements FeedService {
 
 		board.upBoardLike();
 
-		CreateNotificationRequestDto cnrd = CreateNotificationRequestDto.builder()
-				.notiToUserId(board.getUser().getUserId()).notiFromUserId(userId).notiContent("좋아요를 눌렀습니다.")
-				.notiType(NotiType.LIKE).build();
-		notiService.createNoti(cnrd);
+		if (!userId.equals(board.getUser().getUserId())) {
+			CreateNotificationRequestDto cnrd = CreateNotificationRequestDto.builder()
+					.notiToUserId(board.getUser().getUserId()).notiFromUserId(userId).notiContent("좋아요를 눌렀습니다.")
+					.notiType(NotiType.LIKE).build();
+			notiService.createNoti(cnrd);
+		}
 
 		boardLikeRepository.save(BoardLike.builder().board(board).user(user).build());
 		boardRepository.save(board);

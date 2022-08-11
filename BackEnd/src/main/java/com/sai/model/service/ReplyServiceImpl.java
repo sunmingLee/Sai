@@ -36,14 +36,12 @@ public class ReplyServiceImpl implements ReplyService {
 
 	@Autowired
 	UserRepository userRepository;
-	
+
 	@Autowired
 	NotificationRepository notiRepository;
-	
+
 	@Autowired
 	NotificationService notiService;
-	
-	
 
 	@Override
 	public String createReply(Long boardId, CreateReplyRequestDto createReplyRequestDTO) {
@@ -52,22 +50,21 @@ public class ReplyServiceImpl implements ReplyService {
 		Reply reply = Reply.builder().replyContent(createReplyRequestDTO.getReplyContent()).board(board).user(user)
 				.replyRegDateTime(LocalDateTime.now()).build();
 		replyRepository.save(reply);
-		
+
 		// 댓글 작성 후 게시글의 댓글 수 up
 		board.upBoardReply();
 		boardRepository.save(board);
-		
+
 		// 댓글 작성 후 알림 발송
-		
-		CreateNotificationRequestDto cnrd = 
-				CreateNotificationRequestDto.builder()
-											.notiToUserId(board.getUser().getUserId())
-											.notiFromUserId(createReplyRequestDTO.getUserId())
-											.notiContent(createReplyRequestDTO.getReplyContent())
-											.notiType(NotiType.COMMENT)
-											.build();
-		
-		notiService.createNoti(cnrd);
+		if (board.getUser().getUserId().equals(createReplyRequestDTO.getUserId())) {
+			return "자기 자신에게 알림을 발송하지 않습니다.";
+		} else {
+			CreateNotificationRequestDto cnrd = CreateNotificationRequestDto.builder()
+					.notiToUserId(board.getUser().getUserId()).notiFromUserId(createReplyRequestDTO.getUserId())
+					.notiContent(createReplyRequestDTO.getReplyContent()).notiType(NotiType.COMMENT).build();
+
+			notiService.createNoti(cnrd);
+		}
 
 		return "success";
 
