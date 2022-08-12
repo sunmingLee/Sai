@@ -91,6 +91,8 @@ export default {
     },
     // 확장자 변경
     changeFile () {
+      fileList.pop()
+
       const fileInput = document.getElementById('customFile')
       // 선택한 파일의 정보
       const files = fileInput.files
@@ -105,17 +107,20 @@ export default {
         heic2any({ blob: file, toType: 'image/jpg' })
           .then(function (resultBlob) {
             heicFile = new File([resultBlob], file.name.split('.')[0] + '.jpg', { type: 'image/jpg', lastModified: new Date().getTime() })
+            // fileList.pop()
             fileList.push(heicFile)
           })
           .catch((err) => {
             console.log(err)
           })
       } else {
+        // fileList.pop()
         fileList.push(file)
       }
     },
     // 미리보기
     previewFile () {
+      this.srcList.pop()
       this.srcList.push(URL.createObjectURL(fileList[0]))
     },
 
@@ -138,7 +143,7 @@ export default {
         console.log(userInfo)
         this.modifyUserInfo({ userInfo })
       }
-      
+
       this.checkUserInfo(this.addInfo.userId)
     }
 

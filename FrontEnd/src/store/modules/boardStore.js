@@ -10,7 +10,8 @@ const boardStore = {
     feedList: [],
     replyList: [],
     feed: [],
-    myFeedList: []
+    myFeedList: [],
+    myFeedCnt: []
   },
   getters: {
 
@@ -29,6 +30,9 @@ const boardStore = {
     MY_FEED_All_LIST (state, myFeed) {
       state.myFeedList = myFeed
       console.log(state.myFeedList)
+    },
+    MY_FEED_All_LIST_COUNT(state, myFeedNum ) {
+      state.myFeedCnt = myFeedNum
     }
   },
   actions: {
@@ -226,7 +230,9 @@ const boardStore = {
         method: 'GET'
       })
         .then((res) => {
-          commit('MY_FEED_All_LIST', res.data)
+          console.log(res.data)
+          commit('MY_FEED_All_LIST', res.data.readFeedResponseDtos)
+          commit('MY_FEED_All_LIST_COUNT', res.data.userBoardNum)
         })
         .catch((err) => {
           console.log('에러')
