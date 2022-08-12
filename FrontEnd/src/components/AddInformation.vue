@@ -8,16 +8,16 @@
     <div class="date">
       <span>생일</span>
       <Datepicker
-        v-model="addInfo.date"
+        v-model="addInfo.birthday"
         format="yyyy / MM / dd"
         :enableTimePicker="false"
         :maxDate="new Date()"
       ></Datepicker>
     </div>
     <div class="left">
-      <input type="radio" id="radioSolar" value="solar" v-model="addInfo.radioValues" />
+      <input type="radio" id="radioSolar" value="false" v-model="addInfo.lunar" />
       <label for="radioSolar">양력</label>
-      <input type="radio" id="radioLunar" value="lunar" v-model="addInfo.radioValues" />
+      <input type="radio" id="radioLunar" value="true" v-model="addInfo.lunar" />
       <label for="radioLunar">음력</label>
     </div>
     <div class="user-message">
@@ -59,9 +59,9 @@ export default {
     return {
       addInfo: {
         userId: '',
-        radioValues: '',
+        lunar: '',
         userMessage: '',
-        date: new Date()
+        birthday: new Date()
       },
       isProfilePic: false,
       srcList: [],
@@ -77,7 +77,7 @@ export default {
 
   },
   methods: {
-    ...mapActions(userStore, ['addUserInfo']),
+    ...mapActions(userStore, ['addUserInfo', 'checkUserInfo']),
     // 파일 처리
     fileCheck (e) {
       this.changeFile()
@@ -131,6 +131,7 @@ export default {
       } else {
         this.addUserInfo({ userInfo })
       }
+      this.checkUserInfo(this.addInfo.userId)
     }
 
   }

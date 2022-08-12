@@ -58,7 +58,7 @@ export default {
 
     // 프로필 편집 페이지 이동
     goUpdateUser () {
-      this.$router.push({ name: 'modifyinformation' })
+      this.$router.push({ name: 'modifyInformation' })
     }
   }
 }
