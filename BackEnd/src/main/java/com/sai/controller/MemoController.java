@@ -60,6 +60,17 @@ public class MemoController {
 			return new ResponseEntity<String>("에러가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+	// 오늘의 메모 리스트 조회(가족별)
+	@GetMapping(value = "/today/{familyId}")
+	public ResponseEntity<?> getTodayMemo(@PathVariable String familyId) {
+		try {
+			List<MemoDto> list = memoService.getTodayMemo(familyId);
+			return new ResponseEntity<List<MemoDto>>(list, HttpStatus.OK);
+		} catch(Exception e) {
+			return new ResponseEntity<String>("에러가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 	
 	// 메모 리스트 일괄 읽음 처리(유저별)
 	@PutMapping

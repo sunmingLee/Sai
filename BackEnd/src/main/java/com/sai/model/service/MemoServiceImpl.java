@@ -1,6 +1,8 @@
 package com.sai.model.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -99,6 +101,29 @@ public class MemoServiceImpl implements MemoService {
 	}
 
 	@Override
+	public List<MemoDto> getTodayMemo(String familyId) {
+		// familyId에 해당하는 Memo를 찾기 위해 Family 객체를 가져옵니다.
+		Family family = familyRepository.findById(familyId).get();
+
+		// 리턴해줄 Memo 리스트스를 생성합니다.
+		List<MemoDto> resultList = new ArrayList<MemoDto>();
+
+		// 위에서 찾은 Family 객체를 이용하여 오늘 작성된 우리 가족의 메모 리스트를 모두 불러옵니다.
+		LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0, 0));
+		LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 59, 59));
+		List<Memo> memoList = memoRepository.findAllByFamilyAndMemoRegDateTimeBetween(family, startDatetime,
+				endDatetime);
+
+		// 우리 가족의 메모를 Memo 리스트에 담습니다.
+		for (Memo memo : memoList) {
+			MemoDto item = modelMapper.map(memo, MemoDto.class);
+			resultList.add(item);
+		}
+		// 결과로 메모 리스트를 반환합니다.
+		return resultList;
+	}
+
+	@Override
 	public void readMemo(String userId) {
 		Family family = userRepository.findById(userId).get().getFamily();
 		List<Memo> memoList = memoRepository.findMemosByFamily(family);
@@ -119,7 +144,6 @@ public class MemoServiceImpl implements MemoService {
 					break;
 				}
 			}
-			
 
 			// 내 아이디가 읽음 목록에 없다면, 문자열에 내 아이디를 추가해줍니다.
 			if (!flag) {
@@ -136,14 +160,9 @@ public class MemoServiceImpl implements MemoService {
 	public void createMemo(CreateMemoRequestDto createMemoRequestDto) {
 		User user = userRepository.findById(createMemoRequestDto.getUserId()).get();
 		Family family = familyRepository.findById(user.getFamily().getFamilyId()).get();
-		Memo memo = Memo.builder()
-				.family(family)
-				.user(user)
-				.memoRegDateTime(LocalDateTime.now())
-				.color(createMemoRequestDto.getColor())
-				.memoContent(createMemoRequestDto.getMemoContent())
-				.readList(createMemoRequestDto.getUserId())
-				.build();
+		Memo memo = Memo.builder().family(family).user(user).memoRegDateTime(LocalDateTime.now())
+				.color(createMemoRequestDto.getColor()).memoContent(createMemoRequestDto.getMemoContent())
+				.readList(createMemoRequestDto.getUserId()).build();
 		memoRepository.save(memo);
 	}
 
