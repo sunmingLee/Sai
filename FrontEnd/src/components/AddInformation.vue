@@ -7,18 +7,17 @@
     <input type="file" class="form-control" id="customFile" @change="fileCheck"/>
     <div class="date">
       <span>생일</span>
-      <!-- 달력으로 날짜 선택시 선택된 날짜가 뜨지 않는다. -->
       <Datepicker
-        v-model="addInfo.date"
+        v-model="addInfo.birthday"
         format="yyyy / MM / dd"
         :enableTimePicker="false"
         :maxDate="new Date()"
       ></Datepicker>
     </div>
     <div class="left">
-      <input type="radio" id="radioSolar" value="solar" v-model="addInfo.radioValues" />
+      <input type="radio" id="radioSolar" value="false" v-model="addInfo.lunar" />
       <label for="radioSolar">양력</label>
-      <input type="radio" id="radioLunar" value="lunar" v-model="addInfo.radioValues" />
+      <input type="radio" id="radioLunar" value="true" v-model="addInfo.lunar" />
       <label for="radioLunar">음력</label>
     </div>
     <div class="user-message">
@@ -27,7 +26,6 @@
     </div>
 
     <!-- 회원 가입 직후 추가 정보 입력-->
-    <!-- <div class="button" v-if="isAddInfo"> -->
     <div class="button">
       <Button
         buttonClass="small information"
@@ -51,7 +49,7 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import Button from './common/Button.vue'
 import heic2any from 'heic2any'
 
-import { mapState, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 // import userStore from '../store/modules/userStore'
 const userStore = 'userStore'
 const fileList = []
@@ -61,13 +59,11 @@ export default {
     return {
       addInfo: {
         userId: '',
-        radioValues: '',
+        lunar: '',
         userMessage: '',
-        date: new Date()
+        birthday: new Date()
       },
       isProfilePic: false,
-      // isAddInfo: false,
-      // isModifyInfo: false
       srcList: [],
       fileList: []
     }
@@ -81,7 +77,7 @@ export default {
 
   },
   methods: {
-    ...mapActions(userStore, ['addUserInfo']),
+    ...mapActions(userStore, ['addUserInfo', 'checkUserInfo']),
     // 파일 처리
     fileCheck (e) {
       this.changeFile()
@@ -117,14 +113,10 @@ export default {
       this.srcList.push(URL.createObjectURL(fileList[0]))
     },
 
-    // 추가 정보 입력시 건너뛰기
+    // 건너뛰기 버튼
     goFamilyCode () {
       this.$router.push({ name: 'familyCode' })
     },
-    // 회원 정보 수정 시 뒤로 가기
-    // goMyPage () {
-    //   this.$router.push({ name: ''})
-    // },
     // 확인버튼 눌렀을 때 추가
     onAdd () {
       const userInfo = {}
@@ -139,6 +131,7 @@ export default {
       } else {
         this.addUserInfo({ userInfo })
       }
+      this.checkUserInfo(this.addInfo.userId)
     }
 
   }

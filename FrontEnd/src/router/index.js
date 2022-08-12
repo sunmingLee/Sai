@@ -65,14 +65,14 @@ const routes = [
     component: LoginView
   },
   {
-    path: '/user/addinformation',
-    name: 'addinformation',
+    path: '/user/addInformation',
+    name: 'addInformation',
     component: AddInformationView,
     props: true
   },
   {
-    path: '/user/modifyinformation',
-    name: 'modifyinformation',
+    path: '/user/modifyInformation',
+    name: 'modifyInformation',
     component: ModifyInformationView,
     props: true
   },
