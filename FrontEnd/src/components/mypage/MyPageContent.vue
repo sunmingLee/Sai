@@ -1,7 +1,7 @@
 <template>  
   <div>
     <div class="count-wrap">
-      <p>게시물 {{myFeedList.length}}개</p>
+      <p>게시물 {{this.myFeedCnt}}개</p>
     </div>
     <div class="content-wrap">
       <div class="feed-content">
@@ -40,11 +40,12 @@ export default {
     const userId = localStorage.getItem('userId')
     // 피드 전체 리스트 조회
     this.myFeedAllList(userId)
+    console.log(this.myFeedList)
   },
   mounted() {
   },
   computed: {
-    ...mapState(boardStore, ['myFeedList'])
+    ...mapState(boardStore, ['myFeedList', 'myFeedCnt'])
   },
   methods: {
     ...mapActions(boardStore, ['myFeedAllList', 'setBoardId']),
