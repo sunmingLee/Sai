@@ -3,7 +3,7 @@ node {
     checkout scm
   }
   stage('========== Build image ==========') {
-    cd ./Backend
+    cd './Backend'
     app = docker.build("jinjordan/back")
   }
   stage('========== Push image ==========') {
