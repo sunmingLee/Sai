@@ -5,7 +5,7 @@ node {
   stage('========== Build image ==========') {
     sh 'pwd'
     sh 'cd /var/lib/jenkins/workspace/JinkinsTest/FrontEnd'
-    sh 'docker build -t jinjordan/frontend'
+    sh 'docker build -t jinjordan/frontend .'
     app = docker.build("jinjordan/frontend")
   }
   stage('========== Push image ==========') {
