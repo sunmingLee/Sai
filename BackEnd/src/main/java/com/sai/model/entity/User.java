@@ -20,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @Table(name = "user")
@@ -27,6 +28,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString
 //public class User extends DateAudit {
 public class User {
 
@@ -129,14 +131,15 @@ public class User {
 
 	// 추가정보 입력
 	public User addUserinfo(UserInfoDTO userInfoDTO) {
-		if (userInfoDTO.getBirthday() != null)
+		if (userInfoDTO.getBirthday() != null) {
 			this.birthday = userInfoDTO.getBirthday();
-
-		if (userInfoDTO.getLunar() != null)
+		}
+		if (userInfoDTO.getLunar() != null) {
 			this.lunar = userInfoDTO.getLunar();
-
-		if (userInfoDTO.getUserMessage() != null)
+		}
+		if (userInfoDTO.getUserMessage() != null) {
 			this.userMessage = userInfoDTO.getUserMessage();
+		}
 		return this;
 	}
 

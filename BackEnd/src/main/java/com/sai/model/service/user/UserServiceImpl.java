@@ -83,25 +83,21 @@ public class UserServiceImpl implements UserService {
 
 	// 회원정보 추가 혹은 수정
 	@Override
-	public String addUserInfo(UserInfoDTO addInfo, MultipartFile file) {
-
+	public String addUserInfo(UserInfoDTO addInfo, MultipartFile file) throws Exception{
+		System.out.println(addInfo);
 		User user = userRepository.findByUserId(addInfo.getUserId()).get();
-
 		user.addUserinfo(addInfo);
-
-//		UserDto userDto = modelMapper.map(user, UserDto.class);
-
-//		userDto.setBirthday(addInfo.getBirthday());
-//		userDto.setLunar(addInfo.getLunar());
-//		userDto.setUserMessage(addInfo.getUserMessage());
-//		userDto.setUserImagePath(addInfo.getUserImagePath());
-//		userDto.setUserImageName(addInfo.getUserImageName());
-//		userDto.setUserImageType(addInfo.getUserImageType());
-
-//		userRepository.save(modelMapper.map(userDto, User.class));
-
+		System.out.println(user.toString());
+//		userRepository.save(user);
+		
+		if(file == null) {
+		System.out.println("파일이 읍따");
+		}
+		
 		// 유저 이미지 업로드
-		if (!file.isEmpty()) {
+//		if (!file.isEmpty() || file != null) {
+		if (file != null) {
+			System.out.println("나야");
 			// 폴더 생성
 			File uploadPathFolder = new File(uploadPath);
 			if (!uploadPathFolder.exists()) {
@@ -124,11 +120,6 @@ public class UserServiceImpl implements UserService {
 			String dbThumbnailPath = dbPath + File.separator + saveName;
 
 			try {
-//				File convFile = new File(OriginalName);
-//				convFile.createNewFile();
-//				FileOutputStream fos = new FileOutputStream(convFile);
-//				fos.write(file.getBytes());
-//				fos.close();
 
 				InputStream in = file.getInputStream();
 				BufferedImage originalImage = ImageIO.read(in);
@@ -137,13 +128,16 @@ public class UserServiceImpl implements UserService {
 				Thumbnails.of(originalImage).size(500, 500).crop(Positions.CENTER).toFile(thumbnailFile);
 
 			} catch (IOException e) {
+				System.out.println("너니?");
 				e.printStackTrace();
 			}
-
+			System.out.println("나거든");
 			user.updateUserImage(OriginalName, dbThumbnailPath, fileType);
 		}
+		
+		System.out.println("test3");
 		userRepository.save(user);
-
+		System.out.println("test2");
 		return "유저 정보 추가 성공";
 	}
 

@@ -88,7 +88,7 @@ public class PlanServiceImpl implements PlanService {
 	// 일정 목록 조회
 	@Override
 	public List<PlanResponseDto> getPlanAll(String familyId) {
-		List<MainPlan> mainPlans = mainPlanRepository.findAllByFamilyId(familyId);
+		List<MainPlan> mainPlans = mainPlanRepository.findAllByFamilyFamilyId(familyId);
 		
 		return mainPlans.stream().map(plan -> modelMapper.map(plan, PlanResponseDto.class)).collect(Collectors.toList());
 	}

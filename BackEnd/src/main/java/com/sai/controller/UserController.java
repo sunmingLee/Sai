@@ -76,7 +76,7 @@ public class UserController {
 	
 	// 추가 정보 입력
 	@PostMapping("/addInfo")
-	public ResponseEntity<?> addUserInformation(@RequestPart UserInfoDTO addInfo, @RequestPart MultipartFile file) throws Exception {
+	public ResponseEntity<?> addUserInformation(@RequestPart UserInfoDTO addInfo, @RequestPart(required = false) MultipartFile file) throws Exception {
 		try {
 			return ResponseEntity.status(200).body(userService.addUserInfo(addInfo, file));
 		} catch (Exception e) {
@@ -198,7 +198,7 @@ public class UserController {
 	
 	// 개인 페이지(개인 피드) 조회
 	@GetMapping("/myPage/{userId}")
-	public ResponseEntity<?> readMyAllBoard(@PathVariable String userId, @PageableDefault(size = 3, sort = "boardRegDatetime", direction = Direction.DESC) Pageable pageable, @CurrentUser UserPrincipal currUser)
+	public ResponseEntity<?> readMyAllBoard(@PathVariable String userId, @PageableDefault(size = 16, sort = "boardRegDatetime", direction = Direction.DESC) Pageable pageable, @CurrentUser UserPrincipal currUser)
 			throws Exception {
 
 		try {

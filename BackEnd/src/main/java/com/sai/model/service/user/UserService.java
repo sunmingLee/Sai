@@ -19,7 +19,7 @@ public interface UserService {
 	// 직접 회원 가입
 	public String insertUser(UserDto userInfo);
 	// 회원 정보 추가
-	public String addUserInfo(UserInfoDTO addInfo,  MultipartFile file);
+	public String addUserInfo(UserInfoDTO addInfo,  MultipartFile file) throws Exception;
 	// 사용자 정보 조회
 	public UserDto getUserInfoByUserId(String userId);
 	// 사용자 비밀번호 검증
