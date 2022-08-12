@@ -3,16 +3,28 @@
 
     <HeaderTitle title="가족정보수정"></HeaderTitle>
 
-    <img v-if="familyInfo.familyImagePath == null && srcList[0] == null" src="@/assets/images/familyimg.png" alt="가족 사진" class="profile img-thumbnail rounded-circle">
+    <!-- <img v-if="familyInfo.familyImagePath == null && srcList[0] == null" src="@/assets/images/familyimg.png" alt="가족 사진" class="profile img-thumbnail rounded-circle">
     <div v-else>
       <img v-if="srcList[0] == null" class="profile img-thumbnail rounded-circle" :src="familyInfo.familyImagePath" alt="가족 사진">
       <img v-else class="profile img-thumbnail rounded-circle" :src="srcList[0]" alt="가족 사진">
+    </div> -->
+
+    <!-- 미리보기가 없으면 -->
+    <div v-if="srcList[0] == null">
+      <!-- 패밀리 이미지가 없으면 샘플 이미지 출력 -->
+      <img v-if="familyInfo.familyImagePath == null" src="@/assets/images/familyimg.png" alt="가족 사진" class="profile img-thumbnail rounded-circle">
+      <!-- 있으면 패밀리 이미지 출력 -->
+      <img v-else class="profile img-thumbnail rounded-circle" :src="familyInfo.familyImagePath" alt="가족 사진">
     </div>
+    <!-- 미리보기가 있으면 미리보기 출력 -->
+    <img v-else class="profile img-thumbnail rounded-circle" :src="srcList[0]" alt="가족 사진">
+
+
     <input type="file" class="form-control" id="customFile" @change="fileCheck"/>
     
 
     
-    <InputBox @inputCheck="changeFamilyName" :inputValue="familyInfo.familyName" ></InputBox>
+    <InputBox @inputCheck="changeFamilyName" :inputValue="familyInfo.familyName" ></InputBox><span>{{familyNameLength}}/20</span>
     <Button class="invitebtn" buttonText="가족 초대하기" buttonClass="big information" @click="goInvite"></Button>
 
     <h6>우리 가족의 애칭을 정해주세요</h6>
@@ -20,6 +32,8 @@
     <!-- <div v-for="(familyCallsign, index) in familyCallsigns" :key="index"> -->
     <div v-for="(familyCallsign, index) in familyCallsignList" :key="index">
       <div v-if="familyCallsign.toUserId!=userId">
+        <img v-if="familyCallsign.toUserImage == null" src="@/assets/images/familyimg.png" alt="프로필 사진" class="profile img-thumbnail rounded-circle">
+        <img v-else class="profile img-thumbnail rounded-circle" :src="familyCallsign.toUserImage" alt="프로필 사진">
         <p>{{familyCallsign.toUserName}} 님은</p>
         <!-- <InputBox @change="callsignChange(familyCallsign.familyCallsignId)" :inputValue="familyCallsign.callsign" :hasLabel="true" labelName="나의"></InputBox> -->
         <!-- <InputBox @inputCheck="callsignChange" :inputValue="familyCallsign.callsign" :hasLabel="true" labelName="나의"></InputBox> -->
@@ -28,9 +42,9 @@
       </div>
     </div>
     <div class="btns">
-      <Button buttonClass="small negative" buttonText="취소" @click="cancle"></Button>
+      <Button buttonClass="small negative" buttonText="돌아가기" @click="cancle"></Button>
       <Button buttonClass="small positive" buttonText="저장" @click="save"></Button>
-      <Button buttonClass="small positive" buttonText="로그" @click="mylog"></Button>
+      <!-- <Button buttonClass="small positive" buttonText="로그" @click="mylog"></Button> -->
     </div>
   </div>
 </template>
@@ -83,6 +97,12 @@ export default {
     // familyCallsigns(){
     //   return this.familyCallsignList;
     // }
+    familyNameLength(){
+      if(this.familyNameModified)
+        return this.familyName.length
+      else
+        return this.familyInfo.familyName.length
+    }
 
   },
 
@@ -107,13 +127,13 @@ export default {
 
     ...mapActions(familyStore, ["callsignList", "getFamilyInfo", "updateFamilyInfo"]),
 
-    mylog(){
-      console.log("로그");
+    // mylog(){
+    //   console.log("로그");
 
-    console.log(this.familyInfo);
+    // // console.log(this.familyInfo);
     // console.log(this.familyCallsignList);
-    // console.log(this.familyCallsigns);
-    },
+    // // console.log(this.familyCallsigns);
+    // },
 
     // 파일 처리
     fileCheck (e) {
@@ -122,6 +142,9 @@ export default {
     },
     // 확장자 변경
     changeFile () {
+
+      fileList.pop()
+
       const fileInput = document.getElementById('customFile')
       // 선택한 파일의 정보
       const files = fileInput.files
@@ -147,6 +170,7 @@ export default {
     },
     // 미리보기
     previewFile () {
+      this.srcList.pop()
       this.srcList.push(URL.createObjectURL(fileList[0]))
     },
 
@@ -154,7 +178,7 @@ export default {
     changeFamilyName(data){
       this.familyNameModified = true;
       this.familyName = data;
-      console.log(this.familyName);
+      this.familyNameLength = data.length;
     },
 
     callsignChange(){
@@ -166,11 +190,16 @@ export default {
     },
 
     cancle () {
-      alert('취소되었습니다.')
       this.$router.push('feed')
     },
 
     save () {
+
+      if(this.familyNameLength>20) {
+        alert("가족 이름 길이는 20자를 넘을 수 없습니다.");
+        return
+      }
+
       const updateFamilyRequestDto = this.updateFamilyRequestDto
 
       if(updateFamilyRequestDto.isCallsignModified)

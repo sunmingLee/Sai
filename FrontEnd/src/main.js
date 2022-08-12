@@ -9,6 +9,8 @@ import store from './store'
 
 import Datepicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
+import VCalendar from 'v-calendar'
+import 'v-calendar/dist/style.css'
 
 // createApp(App).use(store).use(router).mount('#app')
-createApp(App).use(store).use(router).use(Datepicker).mount('#app')
+createApp(App).use(store).use(router).use(Datepicker).use(VCalendar).mount('#app')
