@@ -1,5 +1,5 @@
 <template>
-    <div id="feed-tab">
+    <div>
         <FeedHeader />
         <FeedContent/>
         <BottomTap></BottomTap>
