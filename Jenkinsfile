@@ -4,7 +4,8 @@ node {
   }
   stage('========== Build image ==========') {
     sh 'pwd'
-    sh 'cd /FrontEnd'
+    sh 'cd /Frontend'
+    sh 'docker build -t jinjordan/frontend'
     app = docker.build("jinjordan/frontend")
   }
   stage('========== Push image ==========') {
