@@ -71,6 +71,7 @@ export default {
   created () {
     // 유저 정보 조회
     this.addInfo.userId = localStorage.getItem('userId')
+    // fileList: []
   },
   computed: {
     // ...mapState(userStore, [isAddInfo])
@@ -99,13 +100,17 @@ export default {
         heic2any({ blob: file, toType: 'image/jpg' })
           .then(function (resultBlob) {
             heicFile = new File([resultBlob], file.name.split('.')[0] + '.jpg', { type: 'image/jpg', lastModified: new Date().getTime() })
+            // fileList.push(heicFile)
+            fileList.pop()
             fileList.push(heicFile)
           })
           .catch((err) => {
             console.log(err)
           })
       } else {
+        fileList.pop()
         fileList.push(file)
+        // fileList.push(file)
       }
     },
     // 미리보기
