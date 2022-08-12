@@ -44,7 +44,7 @@ import net.coobird.thumbnailator.geometry.Positions;
 public class UserServiceImpl implements UserService {
 
 	private String uploadPath = File.separator + "app" + File.separator + "UserImage";
-	private String dbPath = File.separator + "static" + File.separator + "UserImage";
+	private String dbPath = File.separator + "saimedia" + File.separator + "UserImage";
 
 	private final UserRepository userRepository;
 	private final FamilyRegisterRepository familyRegisterRepository;
