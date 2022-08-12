@@ -2,7 +2,6 @@ package com.sai.model.service;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -45,7 +44,7 @@ import net.coobird.thumbnailator.geometry.Positions;
 public class FamilyServiceImpl implements FamilyService {
 
 	private String uploadPath = File.separator + "app" + File.separator + "FamilyImage";
-	private String dbPath = File.separator + "saimedia" + File.separator + "FamilyImage";
+	private String frontPath = File.separator + "saimedia" + File.separator + "FamilyImage";
 
 	@Autowired
 	UserRepository userRepository;
@@ -102,8 +101,10 @@ public class FamilyServiceImpl implements FamilyService {
 		userRepository.save(user);
 
 		// 가족이 0명이면 가족 삭제
-		if (family.getUsers().size() == 0)
+		if (family.getUsers().size() == 0) {
+			family.deleteImage();
 			familyRepository.delete(family);
+		}
 	}
 
 	@Override
@@ -114,8 +115,9 @@ public class FamilyServiceImpl implements FamilyService {
 
 //		familyRegisterRepository.save(modelMapper.map(insertFamilyRegisterRequestDto, FamilyRegister.class));
 		familyRegisterRepository.saveAndFlush(familyRegister);
-		
-		familyRegister = familyRegisterRepository.findOneByUser(userRepository.findByUserId(insertFamilyRegisterRequestDto.getUserId()).get());
+
+		familyRegister = familyRegisterRepository
+				.findOneByUser(userRepository.findByUserId(insertFamilyRegisterRequestDto.getUserId()).get());
 		System.out.println(familyRegister.getFamilyRegisterId());
 
 		List<User> userList = family.getUsers();
@@ -123,7 +125,8 @@ public class FamilyServiceImpl implements FamilyService {
 			System.out.println(familyRegister.getFamilyRegisterId());
 			CreateNotificationRequestDto cnrd = CreateNotificationRequestDto.builder()
 					.notiFromUserId(insertFamilyRegisterRequestDto.getUserId()).notiToUserId(user.getUserId())
-					.notiContent("님이 당신의 가족인가요?").notiType(NotiType.FAMILYREGISTER).notiContentId(Long.toString(familyRegister.getFamilyRegisterId())).build();
+					.notiContent("님이 당신의 가족인가요?").notiType(NotiType.FAMILYREGISTER)
+					.notiContentId(Long.toString(familyRegister.getFamilyRegisterId())).build();
 			notiService.createNoti(cnrd);
 		}
 	}
@@ -244,14 +247,9 @@ public class FamilyServiceImpl implements FamilyService {
 			String fileName = OriginalName.substring(OriginalName.lastIndexOf('\\') + 1);
 			String saveName = UUID.randomUUID().toString() + "_" + fileName;
 			String thumbnailPath = uploadPath + File.separator + saveName;
-			String dbThumbnailPath = dbPath + File.separator + saveName;
+			String frontThumbnailPath = frontPath + File.separator + saveName;
 
 			try {
-//				File convFile = new File(OriginalName);
-//				convFile.createNewFile();
-//				FileOutputStream fos = new FileOutputStream(convFile);
-//				fos.write(file.getBytes());
-//				fos.close();
 
 				InputStream in = file.getInputStream();
 				BufferedImage originalImage = ImageIO.read(in);
@@ -263,11 +261,11 @@ public class FamilyServiceImpl implements FamilyService {
 				e.printStackTrace();
 			}
 
-			family.updateFamilyImage(OriginalName, dbThumbnailPath, fileType);
+			family.updateFamilyImage(OriginalName, frontThumbnailPath, thumbnailPath, fileType);
 		}
 
 		familyRepository.save(family);
-		
+
 		// 콜사인 변경
 		if (updateFamilyRequestDto.getIsCallsignModified()) {
 

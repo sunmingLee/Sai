@@ -1,6 +1,7 @@
 
 package com.sai.model.entity;
 
+import java.io.File;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
@@ -72,6 +73,9 @@ public class User {
 	// 프로필 사진 이미지 경로
 	@Column(name = "user_image_path")
 	private String userImagePath;
+
+	@Column(name = "user_image_path_server")
+	private String userImagePathServer;
 
 	// 프로필 사진 이미지 이름
 	@Column(name = "user_image_name")
@@ -146,10 +150,17 @@ public class User {
 	}
 
 	// 프로필 사진 넣기
-	public void updateUserImage(String originalName, String thumbnailPath, String fileType) {
-		this.userImageName = originalName;
-		this.userImagePath = thumbnailPath;
-		this.userImageType = fileType;
+	public void updateUserImage(String userImageName, String userImagePath, String userImagePathServer,
+			String userImageType) {
+		this.userImageName = userImageName;
+		this.userImagePath = userImagePath;
+		this.userImagePathServer = userImagePathServer;
+		this.userImageType = userImageType;
+	}
+
+	public boolean deleteImage() {
+		File file = new File(userImagePathServer);
+		return file.delete();
 	}
 
 }

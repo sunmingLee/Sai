@@ -1,5 +1,6 @@
 package com.sai.model.entity;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,9 @@ public class Family {
 	@Column(name = "family_image_path")
 	private String familyImagePath;
 
+	@Column(name = "family_image_path_server")
+	private String familyImagePathServer;
+
 	@Column(name = "family_image_name")
 	private String familyImageName;
 
@@ -61,9 +65,11 @@ public class Family {
 			user.setFamily(this);
 	}
 
-	public void updateFamilyImage(String familyImageName, String familyImagePath, String familyImageType) {
+	public void updateFamilyImage(String familyImageName, String familyImagePath, String familyImagePathServer,
+			String familyImageType) {
 		this.familyImageName = familyImageName;
 		this.familyImagePath = familyImagePath;
+		this.familyImagePathServer = familyImagePathServer;
 		this.familyImageType = familyImageType;
 	}
 
@@ -72,5 +78,10 @@ public class Family {
 //		if (familyRegister.getFamily() != this)
 //			familyRegister.setFamily(this);
 //	}
+
+	public boolean deleteImage() {
+		File file = new File(familyImagePathServer);
+		return file.delete();
+	}
 
 }
