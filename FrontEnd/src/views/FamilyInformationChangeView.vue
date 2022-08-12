@@ -24,7 +24,7 @@
     
 
     
-    <InputBox @inputCheck="changeFamilyName" :inputValue="familyInfo.familyName" ></InputBox>
+    <InputBox @inputCheck="changeFamilyName" :inputValue="familyInfo.familyName" ></InputBox><span>{{familyNameLength}}/20</span>
     <Button class="invitebtn" buttonText="가족 초대하기" buttonClass="big information" @click="goInvite"></Button>
 
     <h6>우리 가족의 애칭을 정해주세요</h6>
@@ -97,6 +97,12 @@ export default {
     // familyCallsigns(){
     //   return this.familyCallsignList;
     // }
+    familyNameLength(){
+      if(this.familyNameModified)
+        return this.familyName.length
+      else
+        return this.familyInfo.familyName.length
+    }
 
   },
 
@@ -172,7 +178,7 @@ export default {
     changeFamilyName(data){
       this.familyNameModified = true;
       this.familyName = data;
-      console.log(this.familyName);
+      this.familyNameLength = data.length;
     },
 
     callsignChange(){
@@ -188,6 +194,12 @@ export default {
     },
 
     save () {
+
+      if(this.familyNameLength>20) {
+        alert("가족 이름 길이는 20자를 넘을 수 없습니다.");
+        return
+      }
+
       const updateFamilyRequestDto = this.updateFamilyRequestDto
 
       if(updateFamilyRequestDto.isCallsignModified)
