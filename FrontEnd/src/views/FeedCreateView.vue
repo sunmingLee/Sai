@@ -6,9 +6,13 @@
         <!-- 사진 공간 -->
         <div>
           <div class="file-wrap">
-            <input class="form-control" type="file" @change="fileCheck" id="file" multiple>
+            <!-- <div>사진 추가</div> -->
+            <div class="file-button">
+              <label calss="file-label" for="file">+</label>
+              <input class="form-control" type="file" @change="fileCheck" id="file" multiple>
+            </div>
           </div>
-            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+            <div v-if="imageFlag" id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
               <div class="carousel-inner" >
                 <div class="carousel-item active">
                   <img :src="srcList[0]" id="img" class="d-block w-100">
@@ -68,26 +72,32 @@
                   <img :class="visibilityBack" src="@/assets/images/geo-alt.svg" alt="location" style="width: 30px" @click="showApi">
                 </div>
                 <div class="record-person">
-                  <p>누구랑?</p>
-                  <img :class="visibilityIcon" src="@/assets/images/person-circle.svg" alt="calendar" style="width: 30px" @click="showFamily">
-                </div>
+                  <div class="modal-btn-box">
+                    <p>누구랑?</p>
+                    <img :class="visibilityIcon" src="@/assets/images/person-circle.svg" alt="calendar" style="width: 30px" @click="showFamily">
+                  </div>
                 <!-- 사람 선택 모달창 -->
-                <div class="person hidden">
-                  <div class="person-overlay">
-                    <div class="person-content">
-                      <p class="person-title">사람 선택</p>
-                      <div class="person-date">
-                        <div v-for="(callsign, index) in familyCallsignList" :key="index">
-                          <label for="callsign-select">{{callsign.callsign}}</label>
-                          <input type="checkbox" name="callsign" :value="callsign.callsign" class="callsign-select">
+                  <div class="popup-wrap hidden" id="popup">
+                      <div class="popup">
+                        <div class="popup-header">
+                          <span class="header-title">누구랑 함께 했나요?</span>
+                        </div>
+                        <div class="popup-content">
+                          <div class="body-content">
+                            <div class="content-callsign" >
+                              <div class="callsign-wrap" v-for="(callsign, index) in familyCallsignList" :key="index">
+                                <label for="callsign-select">{{callsign.callsign}}</label>
+                                <input type="checkbox" name="callsign" :value="callsign.callsign" class="callsign-select">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="popup-foot">
+                          <span class="pop-btn confirm" id="confirm">확인</span>
+                          <span class="pop-btn close" id="close">창 닫기</span>
                         </div>
                       </div>
-                      <div class="btn-wrap">
-                        <button class="date-cancle" @click="personCancle">취소</button>
-                        <button class="date-confirm" @click="personConfirm">확인</button>
-                      </div>
                     </div>
-                  </div>
                 </div>
               </div>
               <div>
@@ -287,7 +297,9 @@ export default {
     },
     // 누구랑?
     showFamily () {
-      const modal = document.querySelector('.person')
+      console.log("얏호")
+      const modal = document.getElementById('popup')
+      console.log(modal)
       modal.classList.remove('hidden')
     },
     // 날짜 선택 모달창에서 확인 버튼 클릭
@@ -522,18 +534,149 @@ export default {
         justify-content: space-between;
       }
     }
-    // .input-wrap{
-    //   text-align: left;
-    //   margin-bottom: 100px;
-    // }
-    // .name-wrap, .email-wrap, .id-wrap {
-    //     margin: 10px 0 10px 0;
-    //  }
   }
 }
 .record-date, .record-location, .record-person {
   display: inline-block;
 }
+//사진 추가 버튼
+.file-wrap {
+  min-width: 900px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin: auto 0;
+  .file-button {
+    label {
+      border: 1px solid #7b371c;
+      width: 150px;
+      height: 100px;
+      text-align: center;
+      line-height: 100px;
+      font-size: 50px;
+      color: white;
+      background-color: #7b371c;
+      border-radius: 10px;
+    }
+  }
+}
+.file-label {
+  
+}
+.form-control {
+  display: none;
+}
+
+//모달창
+.record-person {
+  width: 100%;
+  .modal-btn-box {
+    width: 100%;
+    text-align: center;
+  }
+  .popup-wrap {
+    background-color:rgba(0,0,0,.3);
+    justify-content:center;
+    align-items:center;
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    padding:15px;
+    display: flex;
+    &.hidden {
+      display: none;
+    }
+    .popup {
+      width:100%;
+      max-width:400px;
+      background-color:#ffffff;
+      border-radius:10px;
+      overflow:hidden;
+      // background-color:#264db5;
+      box-shadow: 5px 10px 10px 1px rgba(0,0,0,.3);
+      .popup-header {
+        width:100%;
+        height:50px;
+        align-items:center;
+        justify-content:center;
+        padding: 10px 0;
+        .header-title {
+          font-size: 25px;
+          font-weight: 700;
+          letter-spacing: -3px;
+          text-align: center;
+        }
+      }
+      .popup-content {
+        width: 100%;
+        background-color: #ffffff;
+        .body-content {
+          width: 100%;
+          padding: 30px;
+          .content-title {
+            text-align:center;
+            width:100%;
+            height:40px;
+            margin-bottom:10px;
+          }
+          .content-callsign {
+            word-break:break-word;
+            overflow-y:auto;
+            min-height:100px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-content: center;
+            justify-content: space-around;
+            .callsign-wrap {
+              border: 1px solid #A57966;
+              margin: 10px 0;
+              border-radius: 3px;
+              display: flex;
+              justify-content: space-between;
+              padding: 10px;
+              // min-width: 340px;
+              width: 340px;
+              label {
+                font-size: 17px;
+                font-weight: bold;
+                padding-left: 10px;
+              }
+              input {
+                zoom: 1.4;
+              }
+              
+            }
+          }
+        }
+      }
+      .popup-foot {
+        width: 100%;
+        height: 50px;
+        .pop-btn {
+          display:inline-flex;
+          width:50%;
+          height:100%;
+          float:left;
+          justify-content:center;
+          align-items:center;
+          color:#ffffff;
+          &.confirm {
+            background-color: #C6BFBF;
+            color: black;
+          }
+          &.close {
+            background-color: #7b371c;
+          }
+        }
+      }
+    }
+  }
+}
+
+
 //날짜 선택 모달창
 .modal, .person {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
