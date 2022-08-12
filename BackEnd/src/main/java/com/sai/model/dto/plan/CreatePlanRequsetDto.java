@@ -16,6 +16,7 @@ public class CreatePlanRequsetDto {
 	private LocalDateTime planNotiDatetime;
 	private int PlanRoutineDay;
 	private LocalDate routineEndDate;
+	private boolean planTaggedYn;
 	private List<InputPlanTaggedRequestDto> inputPlanTaggedRequestDtos;
 
 }

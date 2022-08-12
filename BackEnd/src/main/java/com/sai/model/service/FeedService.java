@@ -29,5 +29,8 @@ public interface FeedService {
 	public void upBoardLike(Long boardId, String userId);
 
 	public void downBoardLike(Long boardId, String userId);
+	
+	public Integer countAllBoard(String userId);
+
 
 }

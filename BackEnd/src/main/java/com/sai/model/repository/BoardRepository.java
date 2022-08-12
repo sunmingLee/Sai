@@ -13,4 +13,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 	List<Board> findByFamily(Family family, Pageable pageable);
 	
 	List<Board> findByUser(User user, Pageable pageable);
+	
+	Integer countByUser(User user);
 }

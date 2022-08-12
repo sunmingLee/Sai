@@ -1,6 +1,8 @@
 
 package com.sai.model.entity;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -52,7 +54,7 @@ public class User {
 	private String password;
 
 	// 유저 생일
-	private String birthday;
+	private LocalDate birthday;
 
 	// 음력 사용 여부
 	private Boolean lunar;
