@@ -1,5 +1,5 @@
 <template>
-    <div class="memo-wrap">
+    <div class="memo-wrap" id="memo-tab">
         <HeaderTitle title="냉장고"/>
         <div class="memo-content">
             <div class="content-wrap" v-for="(memo, index) in memoAllList" :key="index">
@@ -122,7 +122,7 @@ export default {
                 justify-content: center;
                 height: 210px;
                 background-color: lightgoldenrodyellow;
-                border: 1px solid rgb(188, 188, 90);
+                border: 1px solid rgb(245, 214, 178);
             }
             .PaleGreen {
                 display: flex;
@@ -155,6 +155,31 @@ export default {
                 height: 210px;
                 background-color: #F28D52;
                 border: 1px solid #ee7f3e;
+            }
+            .Purple {  
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 210px;
+                background-color: #b9b7fc;
+                border: 1px solid #9b98fd;
+            }
+            .Mint {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 210px;
+                background-color: #87fdda;
+                border: 1px solid #71dbbb;
+            }
+            .Yellow {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 210px;
+                background-color: #f5df4d;
+                outline-color: #f5ba4d;
+                border: 1px solid #f5ba4d;
             }
             span {
                 width: 235px;
