@@ -11,7 +11,7 @@ import com.sai.model.dto.plan.ViewPlanResponseDto;
 public interface PlanService {
 
 	public String createPlan(CreatePlanRequsetDto createPlanRequestDto);
-	public ViewPlanResponseDto getPlan(long mainPlanId);
+	public PlanResponseDto getPlan(long mainPlanId);
 	public List<PlanResponseDto> getPlanAll(String familyId);
 	public void deletePlan(long mainPlanId);
 	public void updatePlan(UpdatePlanRequestDto updatePlanRequestDto);
