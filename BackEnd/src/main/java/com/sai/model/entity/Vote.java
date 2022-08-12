@@ -16,7 +16,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "votes", uniqueConstraints = { @UniqueConstraint(columnNames = { "poll_id", "user_id" }) })
+@Table(name = "vote", uniqueConstraints = { @UniqueConstraint(columnNames = { "poll_id", "user_id" }) })
 public class Vote extends DateAudit {
 
 	@Id

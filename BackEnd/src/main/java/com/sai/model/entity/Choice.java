@@ -19,7 +19,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "choices")
+@Table(name = "choice")
 public class Choice {
     @Id
     @Column(name="choice_id")

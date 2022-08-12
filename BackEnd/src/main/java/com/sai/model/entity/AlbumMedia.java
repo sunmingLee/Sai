@@ -38,14 +38,17 @@ public class AlbumMedia {
 	@Column(name = "album_media_thumbnail")
 	private String albumMediaThumbnail;
 
+	@Column(name = "album_media_thumb_server")
+	private String albumMediaThumbServer;
+
 	@Column(name = "album_media_path")
 	private String albumMediaPath;
 
+	@Column(name = "album_media_path_server")
+	private String albumMediaPathServer;
+
 	@Column(name = "album_media_original_name")
 	private String albumMediaOriginalName;
-
-	@Column(name = "album_media_save_name")
-	private String albumMediaSaveName;
 
 	@Column(name = "album_media_type")
 	private String albumMediaType;
@@ -55,8 +58,8 @@ public class AlbumMedia {
 	}
 
 	public boolean delete() {
-		File file = new File(albumMediaPath);
-		File thumbnail = new File(albumMediaThumbnail);
+		File file = new File(albumMediaPathServer);
+		File thumbnail = new File(albumMediaThumbServer);
 		return file.delete() && thumbnail.delete();
 	}
 }

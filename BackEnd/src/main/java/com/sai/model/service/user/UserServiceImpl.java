@@ -2,7 +2,6 @@ package com.sai.model.service.user;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -12,7 +11,6 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,7 +42,7 @@ import net.coobird.thumbnailator.geometry.Positions;
 public class UserServiceImpl implements UserService {
 
 	private String uploadPath = File.separator + "app" + File.separator + "UserImage";
-	private String dbPath = File.separator + "saimedia" + File.separator + "UserImage";
+	private String frontPath = File.separator + "saimedia" + File.separator + "UserImage";
 
 	private final UserRepository userRepository;
 	private final FamilyRegisterRepository familyRegisterRepository;
@@ -83,17 +81,17 @@ public class UserServiceImpl implements UserService {
 
 	// 회원정보 추가 혹은 수정
 	@Override
-	public String addUserInfo(UserInfoDTO addInfo, MultipartFile file) throws Exception{
+	public String addUserInfo(UserInfoDTO addInfo, MultipartFile file) throws Exception {
 		System.out.println(addInfo);
 		User user = userRepository.findByUserId(addInfo.getUserId()).get();
 		user.addUserinfo(addInfo);
 		System.out.println(user.toString());
 //		userRepository.save(user);
-		
-		if(file == null) {
-		System.out.println("파일이 읍따");
+
+		if (file == null) {
+			System.out.println("파일이 읍따");
 		}
-		
+
 		// 유저 이미지 업로드
 //		if (!file.isEmpty() || file != null) {
 		if (file != null) {
@@ -117,7 +115,7 @@ public class UserServiceImpl implements UserService {
 			String fileName = OriginalName.substring(OriginalName.lastIndexOf('\\') + 1);
 			String saveName = UUID.randomUUID().toString() + "_" + fileName;
 			String thumbnailPath = uploadPath + File.separator + saveName;
-			String dbThumbnailPath = dbPath + File.separator + saveName;
+			String frontThumbnailPath = frontPath + File.separator + saveName;
 
 			try {
 
@@ -132,9 +130,9 @@ public class UserServiceImpl implements UserService {
 				e.printStackTrace();
 			}
 			System.out.println("나거든");
-			user.updateUserImage(OriginalName, dbThumbnailPath, fileType);
+			user.updateUserImage(OriginalName, frontThumbnailPath, thumbnailPath, fileType);
 		}
-		
+
 		System.out.println("test3");
 		userRepository.save(user);
 		System.out.println("test2");
@@ -174,6 +172,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public String deleteUser(String userId) {
 		User user = userRepository.findById(userId).get();
+		user.deleteImage();
 		userRepository.delete(user);
 		return "회원 탈퇴";
 	}
@@ -316,14 +315,6 @@ public class UserServiceImpl implements UserService {
 		});
 
 		return result;
-	}
-
-	private String makeFolder(String userId) {
-		File uploadPathFolder = new File(uploadPath, userId);
-		if (!uploadPathFolder.exists())
-			uploadPathFolder.mkdirs();
-
-		return userId;
 	}
 
 }

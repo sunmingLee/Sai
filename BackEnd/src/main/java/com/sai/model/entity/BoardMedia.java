@@ -38,14 +38,17 @@ public class BoardMedia {
 	@Column(name = "board_media_thumbnail")
 	private String boardMediaThumbnail;
 
+	@Column(name = "board_media_thumb_server")
+	private String boardMediaThumbServer;
+
 	@Column(name = "board_media_path")
 	private String boardMediaPath;
 
+	@Column(name = "board_media_path_server")
+	private String boardMediaPathServer;
+
 	@Column(name = "board_media_original_name")
 	private String boardMediaOriginalName;
-
-	@Column(name = "board_media_save_name")
-	private String boardMediaSaveName;
 
 	@Column(name = "board_media_type")
 	private String boardMediaType;
@@ -55,8 +58,8 @@ public class BoardMedia {
 	}
 
 	public boolean delete() {
-		File file = new File(boardMediaPath);
-		File thumbnail = new File(boardMediaThumbnail);
+		File file = new File(boardMediaPathServer);
+		File thumbnail = new File(boardMediaThumbServer);
 		return file.delete() && thumbnail.delete();
 	}
 }

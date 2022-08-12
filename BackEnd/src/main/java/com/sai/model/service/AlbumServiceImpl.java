@@ -41,7 +41,7 @@ import net.coobird.thumbnailator.geometry.Positions;
 public class AlbumServiceImpl implements AlbumService {
 
 	private String uploadPath = File.separator + "app" + File.separator + "Album";
-	private String dbPath = File.separator + "saimedia" + File.separator + "Album";
+	private String frontPath = File.separator + "saimedia" + File.separator + "Album";
 
 	@Autowired
 	AlbumRepository albumRepository;
@@ -124,8 +124,8 @@ public class AlbumServiceImpl implements AlbumService {
 				String saveName = UUID.randomUUID().toString() + "_" + fileName;
 				String savePath = uploadPath + File.separator + folderPath + File.separator + saveName;
 				String thumbnailPath = uploadPath + File.separator + folderPath + File.separator + "th_" + saveName;
-				String dbSavePath = dbPath + File.separator + folderPath + File.separator + saveName;
-				String dbThumbnailPath = dbPath + File.separator + folderPath + File.separator + "th_" + saveName;
+				String frontSavePath = frontPath + File.separator + folderPath + File.separator + saveName;
+				String frontThumbnailPath = frontPath + File.separator + folderPath + File.separator + "th_" + saveName;
 
 				try {
 
@@ -138,9 +138,9 @@ public class AlbumServiceImpl implements AlbumService {
 					e.printStackTrace();
 				}
 
-				AlbumMedia albumMedia = AlbumMedia.builder().album(album).albumMediaPath(dbSavePath)
-						.albumMediaOriginalName(OriginalName).albumMediaSaveName(saveName).albumMediaType(fileType)
-						.albumMediaThumbnail(dbThumbnailPath).build();
+				AlbumMedia albumMedia = AlbumMedia.builder().album(album).albumMediaPath(frontSavePath)
+						.albumMediaPathServer(savePath).albumMediaOriginalName(OriginalName).albumMediaType(fileType)
+						.albumMediaThumbnail(frontThumbnailPath).albumMediaThumbServer(thumbnailPath).build();
 				albumMediaRepository.save(albumMedia);
 
 			}

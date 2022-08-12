@@ -12,6 +12,5 @@ public class ViewAlbumMediaResponseDto {
 	private String albumMediaThumbnail;
 	private String albumMediaPath;
 	private String albumMediaOriginalName;
-	private String albumMediaSaveName;
 	private String albumMediaType;
 }

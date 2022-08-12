@@ -12,6 +12,5 @@ public class ViewBoardMediaResponseDto {
 	private String boardMediaThumbnail;
 	private String boardMediaPath;
 	private String boardMediaOriginalName;
-	private String boardMediaSaveName;
 	private String boardMediaType;
 }
