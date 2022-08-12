@@ -3,8 +3,8 @@ node {
     checkout scm
   }
   stage('========== Build image ==========') {
-    sh 'cd ./Backend'
-    app = docker.build("jinjordan/back")
+    sh 'cd ./Frontend'
+    app = docker.build("jinjordan/frontend")
   }
   stage('========== Push image ==========') {
     docker.withRegistry('https://registry.hub.docker.com', 'Jinkins_Docker') {
