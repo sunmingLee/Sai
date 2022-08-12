@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sai.jwt.JwtTokenProvider;
 import com.sai.model.dto.ReadFeedResponseDto;
+import com.sai.model.dto.board.UserReadFeedResponseDto;
 import com.sai.model.dto.user.AddUserInfoRequest;
 import com.sai.model.dto.user.InfoUserResponseDto;
 import com.sai.model.dto.user.LoginUserRequestDto;
@@ -202,10 +203,16 @@ public class UserController {
 			throws Exception {
 
 		try {
+			UserReadFeedResponseDto userReadFeedResponseDto = new UserReadFeedResponseDto();
+			
 			List<ReadFeedResponseDto> readFeedResponseDtos = feedService.readAllBoard(userId, pageable, currUser);
-
+			Integer userFeedNum = feedService.countAllBoard(userId);
+			
+			userReadFeedResponseDto.setReadFeedResponseDtos(readFeedResponseDtos);
+			userReadFeedResponseDto.setUserBoardNum(userFeedNum);
+			
 			if (readFeedResponseDtos != null) {
-				return new ResponseEntity<List<ReadFeedResponseDto>>(readFeedResponseDtos, HttpStatus.OK);
+				return new ResponseEntity<UserReadFeedResponseDto>(userReadFeedResponseDto, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 			}

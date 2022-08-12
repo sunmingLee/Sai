@@ -432,4 +432,10 @@ public class FeedServiceImpl implements FeedService {
 
 		return readFeedResponseDtos;
 	}
+
+	@Override
+	public Integer countAllBoard(String userId) {
+		User user = userRepository.findById(userId).get();
+		return boardRepository.countByUser(user);
+	}
 }
