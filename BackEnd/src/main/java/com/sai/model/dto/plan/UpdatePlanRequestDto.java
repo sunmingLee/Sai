@@ -13,10 +13,6 @@ import lombok.Data;
 public class UpdatePlanRequestDto {
 private Long mainPlanId;
 	
-	private Family family;
-	
-	private User user;
-	
 	private Boolean allDayYn;
 	
 	private String planType;
@@ -27,11 +23,8 @@ private Long mainPlanId;
 	
 	private LocalDateTime mainPlanEndDatetime;
 	
-	private LocalDateTime planNotiDatetime;
-	
 	private int planRoutineDay;
+
+	public String planPlace;
 	
-	private LocalDate routineEndDate;
-	
-	private Boolean planTaggedYn;
 }

@@ -4,8 +4,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -36,17 +39,18 @@ public class MainPlan {
 	@Column(name="main_plan_id")
 	private Long mainPlanId;
 	
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "family_id")
 	private Family family;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 	
 	@Column(name="all_day_yn", columnDefinition = "TINYINT(1)")
-	private boolean allDayYn;
+	private Boolean allDayYn;
 	
+//	@Enumerated(EnumType.STRING)
 	@Column(name = "plan_type")
 	private String planType;
 	
@@ -59,17 +63,20 @@ public class MainPlan {
 	@Column(name = "main_plan_end_datetime")
 	private LocalDateTime mainPlanEndDatetime;
 	
-	@Column(name = "plan_noti_datetime")
-	private LocalDateTime planNotiDatetime;
+//	@Column(name = "plan_noti_datetime")
+//	private LocalDateTime planNotiDatetime;
 	
 	@Column(name = "plan_routine_day")
-	private int planRoutineDay;
+	private Integer planRoutineDay;
 	
-	@Column(name = "routine_end_date")
-	private LocalDate routineEndDate;
+	@Column(name ="plan_place")
+	private String planPlace;
 	
-	@Column(name = "plan_tagged_yn", columnDefinition = "TINYINT(1)")
-	private Boolean planTaggedYn;
+//	@Column(name = "routine_end_date")
+//	private LocalDate routineEndDate;
+	
+//	@Column(name = "plan_tagged_yn", columnDefinition = "TINYINT(1)")
+//	private Boolean planTaggedYn;
 	
 	// 업데이트
 	public void update(UpdatePlanRequestDto updatePlanRequestDto) {
@@ -78,10 +85,11 @@ public class MainPlan {
 		this.planTitle = updatePlanRequestDto.getPlanTitle();
 		this.mainPlanStartDatetime = updatePlanRequestDto.getMainPlanStartDatetime();
 		this.mainPlanEndDatetime = updatePlanRequestDto.getMainPlanEndDatetime();
-		this.planNotiDatetime = updatePlanRequestDto.getPlanNotiDatetime();
+//		this.planNotiDatetime = updatePlanRequestDto.getPlanNotiDatetime();
 		this.planRoutineDay = updatePlanRequestDto.getPlanRoutineDay();
-		this.routineEndDate = updatePlanRequestDto.getRoutineEndDate();
-		this.planTaggedYn = updatePlanRequestDto.getPlanTaggedYn();
+//		this.routineEndDate = updatePlanRequestDto.getRoutineEndDate();
+//		this.planTaggedYn = updatePlanRequestDto.getPlanTaggedYn();
+		this.planPlace = updatePlanRequestDto.getPlanPlace();
 		
 	}
 	
