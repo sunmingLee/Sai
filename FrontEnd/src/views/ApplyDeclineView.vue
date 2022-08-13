@@ -8,11 +8,15 @@
 
 <script>
 import Button from '@/components/common/Button.vue'
+
+import { mapActions } from 'vuex'
+const familyStore = 'familyStore'
 export default {
   components: { Button },
   methods: {
+    ...mapActions(familyStore, ['deleteFamilyApply']),
     goFamilyCode () {
-      this.$router.push({ name: 'familyCode' })
+      this.deleteFamilyApply(localStorage.getItem('userId'))
     }
   }
 }

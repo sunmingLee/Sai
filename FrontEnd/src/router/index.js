@@ -23,6 +23,7 @@ import ApplyDeclineView from '@/views/ApplyDeclineView.vue'
 import MemoView from '@/views/memo/MemoView.vue'
 import MemoCreateView from '@/views/memo/MemoCreateView.vue'
 import MypageView from '@/views/user/MypageView.vue'
+import CalendarView from '@/views/CalendarView.vue'
 // import test from '@/views/test.vue'
 
 import store from '@/store/index.js'
@@ -185,6 +186,11 @@ const routes = [
     path: '/familyInfoChange',
     name: 'familyInfoChange',
     component: FamilyInformationChangeView
+  },
+  {
+    path: '/calendar',
+    name: 'calendar',
+    component: CalendarView
   }
 ]
 
