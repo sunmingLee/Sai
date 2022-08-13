@@ -11,5 +11,4 @@ node {
     sh 'docker push jinjordan/frontend'
     sh 'docker push jinjordan/backend'
   }
-  }
 }
