@@ -1,7 +1,5 @@
 <template>
     <div class="create-wrap">
-
-      <p>{{callsign}}</p>
         <HeaderTitle hasBack="true" title="게시글 작성" hasIcon="true"/>
         <!-- 사진 공간 -->
         <div>
@@ -87,14 +85,14 @@
                             <div class="content-callsign" >
                               <div class="callsign-wrap" v-for="(callsign, index) in familyCallsignList" :key="index">
                                 <label for="callsign-select">{{callsign.callsign}}</label>
-                                <input type="checkbox" name="callsign" :value="callsign.callsign" class="callsign-select">
+                                <input type="checkbox" name="callsign" :value="callsign.toUserId" class="callsign-select">
                               </div>
                             </div>
                           </div>
                         </div>
                         <div class="popup-foot">
-                          <span class="pop-btn confirm" id="confirm">확인</span>
-                          <span class="pop-btn close" id="close">창 닫기</span>
+                          <span class="pop-btn confirm" id="confirm" @click="personConfirm">확인</span>
+                          <span class="pop-btn close" id="close" @click="personCancle">창 닫기</span>
                         </div>
                       </div>
                     </div>
@@ -330,36 +328,35 @@ export default {
     // 사람 태그 확인
     personConfirm () {
       const test = document.getElementsByName('callsign')
-      for (let i = 0; i < test.length; i++) {
-        // 체크 했을 때
-        if (test[i].checked) {
-          if (this.peopleList.indexOf(test[i].value) < 0) {
-            this.peopleList.push(Object(test[i].value))
-            console.log("넣었따")
-            console.log(this.peopleList)
+      console.log(test)
+      for(let i = 0; i < test.length; i++) {
+        const user = test[i].value
+
+        const person = {
+          userId : user
+        }
+
+        if(test[i].checked) {
+          const find = this.peopleList.find(v => v.userId === test[i].value)
+          if(!find) {
+            this.peopleList.push(person)
           }
-        } 
+        }
         else {
-          // 체크 해제의 경우
-          if (this.peopleList.indexOf(test[i].value) > -1) {
-            const index = this.peopleList.indexOf(test[i].value)
-            console.log(this.peopleList.splice(index, 1))
-            this.peopleList.splice(index, 1)
-            
-            console.log("뺐다")
-            console.log(this.peopleList)
-          }
+          //배열에서 중복되는 값을 빼자
+          const find = this.peopleList.filter(v => v.userId !== test[i].value)
+          this.peopleList = find
         }
       }
       console.log(this.peopleList)
       // 확인 버튼을 클릭했을 경우 모달창을 끈다
-      const modal = document.querySelector('.person')
+      const modal = document.getElementById('popup')
       modal.classList.add('hidden')
     },
     // 사람 취소
     personCancle () {
-      const modal = document.querySelector('.person')
-      modal.classList.add('hidden')
+      const modal = document.getElementById('popup')
+      modal.classList.remove('hidden')
     },
     // 위치 선택
     showApi () {
@@ -456,10 +453,7 @@ export default {
         if (this.peopleList.length !== 0) {
           this.boardTaggedYn = 1
           for (let i = 0; i < this.peopleList.length; i++) {
-            const people = {
-              userId: this.peopleList[i]
-            }
-            taggedResult[i] = people
+            taggedResult[i] = this.peopleList[i]
           }
           Object.assign(createBoardRequestDto, { inputBoardTaggedRequestDtos: taggedResult })
         }
@@ -477,12 +471,12 @@ export default {
           boardReplyCnt: 0
         }
         Object.assign(createBoardRequestDto, { inputBoardRequestDto })
+        console.log(createBoardRequestDto)
         if (this.boardMediaYn === 1) {
           this.boardCreate({ createBoardRequestDto, fileList })
         } else {
           this.boardCreate({ createBoardRequestDto })
         }
-        console.log(fileList)
       }
     }
   }

@@ -4,10 +4,10 @@
         <div class="flex">
           <div class="input-disabled">
             <div class="name-wrap">
-              <InputBox inputSelect="input-underline" hasLabel=true labelName="이름" validDisabled="disabled" :inputValue="name"/>
+              <InputBox inputSelect="input-underline" hasLabel=true labelName="이름" validDisabled="disabled" :inputValue="userInfo.userName"/>
             </div>
             <div class="email-wrap">
-              <InputBox inputSelect="input-underline" hasLabel=true labelName="이메일" validDisabled="disabled" :inputValue="email"/>
+              <InputBox inputSelect="input-underline" hasLabel=true labelName="이메일" validDisabled="disabled" :inputValue="userInfo.email"/>
             </div>
           </div>
         </div>
@@ -39,7 +39,8 @@
                 <h5 class="modal-title" id="exampleModalLabel">회원탈퇴</h5>
               </div>
               <div class="modal-body">
-                정말로 탈퇴하시겠습니까? 정말? 진짜로?
+                정말로 탈퇴하시겠습니까?<br>
+                탈퇴하면 더 이상 사이를 이용하실 수 없습니다
               </div>
               <div class="modal-footer">
                 <Button buttonClass="small positive" buttonText= "취소" class="btn" data-bs-dismiss="modal"></Button>
@@ -68,16 +69,20 @@ export default {
   data () {
     return {
       // 나중에 로그인한 회원의 정보로 받아오는 것으로 수정이 필요(지금은 임의의 데이터)
-      name: '최수빈',
-      email: 'test@naver.com',
       validPassword: false,
       validPasswordConfirm: false,
       passwordCurrent: '',
-      passwordUpdate: ''
+      passwordUpdate: '',
     }
   },
+  computed: {
+    ...mapState(userStore, ['userInfo'])
+  },
+  created() {
+    this.checkUserInfo(localStorage.getItem('userId'))
+  },
   methods: {
-    ...mapActions(userStore, ['withdrawalMember', 'updatePassword']),
+    ...mapActions(userStore, ['withdrawalMember', 'updatePassword', 'checkUserInfo']),
     // 비밀번호 유효성 검사 실행
     checkPassword (password) {
       this.passwordCurrent = password
@@ -116,9 +121,6 @@ export default {
     withdrawal () {
       this.withdrawalMember(this.userInfo.userId)
     }
-  },
-  computed: {
-    ...mapState(userStore, ['userInfo'])
   }
 }
 </script>

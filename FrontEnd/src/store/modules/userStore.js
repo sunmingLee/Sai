@@ -10,13 +10,6 @@ const userStore = {
     isLogin: false,
     isLoginError: false,
     userInfo: [],
-    // userInfo: {
-    //   userId: 'cjftn',
-    //   familyId: 123456,
-    //   userName: '이철수',
-    //   email: 'cjftn@naver.com',
-    //   password: 'asdf@1234'
-    // }
     isAddInfo: true
   },
   getters: {
@@ -183,7 +176,7 @@ const userStore = {
     // 회원 탈퇴
     withdrawalMember ({ commit }, userId) {
       axios({
-        url: api_url + `/${userId.id}`,
+        url: api_url + `/${userId}`,
         method: 'DELETE'
       })
         .then((res) => {
