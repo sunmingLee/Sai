@@ -14,7 +14,7 @@
                 <img style="width:25px;" src="@/assets/images/plus-lg.svg" alt="plus">
             </button>
         </div>
-        <BottomTap></BottomTap>
+        <BottomTap feedLink="nav-link" refrideLink="nav-link active" albumLink="nav-link" calendarLink="nav-link"></BottomTap>
     </div>
 </template>
 <script>
