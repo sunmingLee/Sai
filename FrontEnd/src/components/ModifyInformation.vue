@@ -1,7 +1,8 @@
 <template>
   <div class="add-info-wrap">
      <HeaderTitle title="내 정보"></HeaderTitle>
-    <img v-if="srcList[0] == null" class="profile img-thumbnail" :src="currPic" alt="user image">
+    <img v-if="(srcList[0] == null) && (currPic != null)" class="profile img-thumbnail" :src="currPic" alt="user image">
+    <img v-else-if="srcList[0] == null" class="profile img-thumbnail" src="@/assets/images/user-solid.svg" alt="user image">
     <img v-else-if="srcList[0] !== null" class="profile img-thumbnail" :src="srcList[0]" alt="user image">
     <!-- <label class="form-label" for="customFile">Default file input example</label> -->
     <input type="file" class="form-control" id="customFile" @change="fileCheck"/>

@@ -251,7 +251,7 @@ const userStore = {
           alert('추가 정보가 입력되었습니다')
           console.log(res)
           // 개인 페이지에서 온 경우
-          router.push({ naem: 'myPage' })
+          router.push({ name: 'myPage' })
         })
         .catch((err) => {
           console.log(err)
