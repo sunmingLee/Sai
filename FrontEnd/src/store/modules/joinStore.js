@@ -35,7 +35,7 @@ const joinStore = {
         }
         // 409를 받으면 실행되는 코드
       }).catch((res) => {
-        console.log(res + '123')
+        console.log(res)
       })
     },
     checkDuplicateEmail (context, email) {

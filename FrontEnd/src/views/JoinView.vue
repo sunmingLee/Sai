@@ -103,7 +103,6 @@ export default {
       } else {
         this.validId = false
         this.userJoin.userId = userId
-
       }
     },
     // 아이디 유효성 검사
@@ -183,8 +182,6 @@ export default {
         else {
           alert('회원가입란을 다시 한번 확인해주세요.')
         }
-      // 이름, 아이디, 이메일, 비밀번호, 비밀번호 확인 모두 작성되고
-      // 유효성 검사 모두 통과되고
       } else {
         alert('개인정보 수집에 동의에 체크해주세요.')
       }
