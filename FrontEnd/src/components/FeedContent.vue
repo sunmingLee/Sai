@@ -3,7 +3,7 @@
     <div style="height: 100%">
        <FeedHeader />
       <div class="feed-wrap">
-            <div class="feed-flex" v-if="feedList.length">
+            <div class="feed-flex" v-if="this.feedList.length">
                 <div v-for="(feed, index) in feedList" :key="index" class="feed-div">
                     <div class="header-flex">
                         <div class="content-header">
@@ -91,7 +91,9 @@
                       <span>등록된 댓글이 없습니다</span>
                     </div>
                 </div>
-                
+                <div class="feed-more">
+                  <Button buttonClass="small positive" buttonText="더보기" @click="feedMore"></Button>
+                </div>
             </div>
             <div v-else>
                 <h3>등록된 게시글이 없습니다</h3>
@@ -122,8 +124,11 @@ export default {
     // 피드 조회
     const info = {
       userId: localStorage.getItem('userId'),
-      familyId: localStorage.getItem('familyId')
+      familyId: localStorage.getItem('familyId'),
+      page: this.page
     }
+    // 피드 초기화부터 때리고
+    this.feedReset()
     // 피드 전체 리스트 조회
     this.feedAllList(info)
     // 가족 콜사인 조회
@@ -132,8 +137,12 @@ export default {
     this.getFamilyInfo(info.familyId)
     // 유저 정보 조회
     this.checkUserInfo(info.userId)
-    const user = localStorage.getItem('userInfo')
-    const userInfo = JSON.parse(user)
+    // this.list = this.list.concat(this.$store.state.boardStore.feedList)
+    // console.log(this.list)
+    // console.log(this.$store.state.boardStore)
+    // console.log("얏호")
+    // console.log(this.$store.state.boardStore.feedList)
+    // console.log(this.$store.state.boardStore.feedList.length)
   },
   mounted () {
     
@@ -147,7 +156,7 @@ export default {
   },
   methods: {
     ...mapActions(userStore, ['checkUserInfo']),
-    ...mapActions(boardStore, ['feedAllList', 'setBoardId', 'upBoardLike', 'downBoardLike']),
+    ...mapActions(boardStore, ['feedAllList', 'setBoardId', 'upBoardLike', 'downBoardLike', 'feedReset']),
     ...mapActions(familyStore, ['callsignList', 'getFamilyInfo']),
     // 좋아요 버튼 클릭
     likeButton (boardId) {
@@ -181,11 +190,26 @@ export default {
     //   console.log('들어가기 전: ' + boardId)
       this.setBoardId(boardId)
     },
+    //더보기
+    feedMore() {
+      this.page++
+      const info = {
+        userId: localStorage.getItem('userId'),
+        page: this.page,
+        familyId: localStorage.getItem('familyId')
+      }
+      this.feedAllList(info)
+      
+      // this.list = this.list.push(this.$store.state.boardStore.feedList)
+      // console.log(this.list)
+      // this.list = this.list.concat(this.$store.state.boardStore.feedList)
+    }
   },
   data () {
     return {
-      test: '',
-      }
+      page: 0,
+      list: []
+    }
   }
 }
 
@@ -358,7 +382,13 @@ table {
         height: 50px;
     }
 }
-
+.feed-more {
+  min-width: 300px;
+  min-height: auto;
+  flex-basis: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
 // .feed-more {
 //   height: 30px;
 //   width: 120px;

@@ -18,7 +18,8 @@ const boardStore = {
   },
   mutations: {
     FEED_All_LIST (state, feed) {
-      state.feedList = feed
+      // state.feedList = feed
+      state.feedList = state.feedList.concat(feed)
     },
     SET_REPLY_LIST (state, replyList) {
       state.replyList = replyList
@@ -31,6 +32,9 @@ const boardStore = {
     },
     MY_FEED_All_LIST_COUNT(state, myFeedNum ) {
       state.myFeedCnt = myFeedNum
+    },
+    FEED_RESET(state) {
+      state.feedList = []
     }
   },
   actions: {
@@ -73,12 +77,20 @@ const boardStore = {
     feedAllList ({ commit }, info) {
       const familyId = info.familyId
       const userId = info.userId
+      const params = {
+        page : info.page
+      }
       axios({
         url: api_url + '/' + familyId + '/' + userId,
-        method: 'GET'
+        method: 'GET',
+        params
       })
         .then((res) => {
-          commit('FEED_All_LIST', res.data)
+          if(res.data.length === 0) {
+            alert('더 이상 불러올 게시물이 없습니다')
+          } else {
+            commit('FEED_All_LIST', res.data)
+          }
         })
         .catch((err) => {
           console.log('에러')
@@ -238,6 +250,10 @@ const boardStore = {
           console.log('에러')
           console.log(err)
         })
+    },
+    //게시글 초기화
+    feedReset({commit}) {
+      commit('FEED_RESET')
     }
   },
   modules: {
