@@ -39,11 +39,11 @@ public class MainPlan {
 	@Column(name="main_plan_id")
 	private Long mainPlanId;
 	
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "family_id")
 	private Family family;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 	
@@ -72,6 +72,9 @@ public class MainPlan {
 	@Column(name ="plan_place")
 	private String planPlace;
 	
+	@Column(name="plan_noti_yn")
+	private Boolean planNotiYn;
+	
 //	@Column(name = "routine_end_date")
 //	private LocalDate routineEndDate;
 	
@@ -90,6 +93,7 @@ public class MainPlan {
 //		this.routineEndDate = updatePlanRequestDto.getRoutineEndDate();
 //		this.planTaggedYn = updatePlanRequestDto.getPlanTaggedYn();
 		this.planPlace = updatePlanRequestDto.getPlanPlace();
+		this.planNotiYn = updatePlanRequestDto.getPlanNotiYn();
 		
 	}
 	

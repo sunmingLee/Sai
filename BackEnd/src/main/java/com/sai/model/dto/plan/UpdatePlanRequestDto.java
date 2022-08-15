@@ -27,4 +27,5 @@ private Long mainPlanId;
 
 	public String planPlace;
 	
+	private Boolean planNotiYn;
 }
