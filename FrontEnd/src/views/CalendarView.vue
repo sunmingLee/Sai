@@ -1,12 +1,15 @@
 <template>
     <div class="calendar-wrap">
-        <v-calendar is-expanded :rows="2" :attributes='attrs' ref="calendar">
+      <!-- 달력 -->
+        <v-calendar is-expanded :rows="2" :attributes='planList' ref="calendar">
              <template v-slot:footer>
                 <div class="footer-wrap">
                     <Button buttonClass="small information" buttonText="오늘로" @click="moveToToday"></Button>
                 </div>
             </template>
         </v-calendar>
+
+        <!-- 일정 작성하기 -->
         <!-- Button trigger modal -->
         <button id="btn-modal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
         <img style="width:25px;" src="@/assets/images/plus-lg.svg" alt="plus">
@@ -23,31 +26,31 @@
                 <div class="modal-body">
                     <div class="flex">
                         <span>제목</span>
-                        <input v-model="planName" type="text">
+                        <input v-model="newPlan.planTitle" type="text">
                     </div>
                     <div class="flex">
                         <span>날짜</span>
-                        <Datepicker v-model="date" format='yyyy/MM/dd' modelType="yyyy-MM-dd" range selectText="선택" cancelText="취소"></Datepicker>
+                        <Datepicker v-model="newPlan.date" format='yyyy/MM/dd' modelType="yyyy-MM-dd HH:mm:ss" range selectText="선택" cancelText="취소"></Datepicker>
                     </div>
                     <!-- Default switch -->
                     <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" v-model="newPlan.allDayYn">
                         <label class="form-check-label" for="flexSwitchCheckDefault">하루종일</label>
                     </div>
                     <div class="flex">
                         <span>장소</span>
-                        <input v-model="planPlace" type="text">
+                        <input v-model="newPlan.planPlace" type="text">
                     </div>
-                        <input type="radio" id="radioPersonal" name="planType" value="personal" />
+                        <input type="radio" id="radioPersonal" name="planType" value="personal" v-model="newPlan.planType" />
                         <label for="radioPersonal">개인</label>
-                        <input type="radio" id="radioFamily" name="planType" value="family" />
+                        <input type="radio" id="radioFamily" name="planType" value="family" v-model="newPlan.planType"/>
                         <label for="radioFamily">가족</label>
-                        <input type="radio" id="radioAnniversary" name="planType" value="anniversary" />
+                        <input type="radio" id="radioAnniversary" name="planType" value="anniversary" v-model="newPlan.planType"/>
                         <label for="radioAnniversary">기념일</label>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="createAlbum">일정추가</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="writeCreate">일정추가</button>
                 </div>
                 </div>
             </div>
@@ -62,6 +65,10 @@ import 'v-calendar/dist/style.css'
 import Datepicker from '@vuepic/vue-datepicker'
 import BottomTap from '@/components/common/BottomTap.vue'
 import Button from '@/components/common/Button.vue'
+
+import { mapActions, mapState } from 'vuex'
+const planStore = 'planStore'
+
 export default {
   components: {
     VCalendar,
@@ -69,66 +76,84 @@ export default {
     BottomTap,
     Button
   },
+  created () {
+    // 일정 조회
+    const info = {
+      userId: localStorage.getItem('userId'),
+      familyId: localStorage.getItem('familyId')
+    }
+    // 일정 전체 조회
+    this.planAllList(info)
+  },
+  computed: {
+    ...mapState(planStore, ['planList'])
+  },
   data () {
     const date = new Date()
     const year = date.getFullYear()
     const month = date.getMonth()
     return {
-      planName: '',
-      planPlace: '',
-      planType: '',
-      date: new Date(),
-      attrs: [
-        {
-          key: 'today',
-          // highlight: true,
-          dot: {
-            style: {
-              // colors available: (gray, red, orange, yellow, green, teal, blue, indigo, purple, pink).
-              backgroundColor: 'indigo'
-            }
-          },
-          dates: [
-            new Date(),
-            new Date(year, month, 20)
-          ]
-        },
-        {
-          highlight: true,
-          dates: [
-            new Date(year, month, 20)
-          ]
-        },
-        {
-          highlight: {
-            start: {
-              style: {
-                backgroundColor: '#7B371C' // blue
-              },
-              contentStyle: {
-                color: '#ffffff' // color of the text
-              }
-            },
-            base: {
-              style: {
-                backgroundColor: '#A57966' // light blue
-              }
-            },
-            end: {
-              style: {
-                backgroundColor: '#7B371C' // blue
-              },
-              contentStyle: {
-                color: '#ffffff' // color of the text
-              }
-            }
-          },
-          dates: { start: new Date(year, month, 1), end: new Date(year, month, 6) }
-        }
-      ]
+      newPlan: {
+        userId: localStorage.getItem('userId'),
+        familyId: localStorage.getItem('familyId'),
+        planTitle: '',
+        planPlace: '',
+        planType: '',
+        allDayYn: '',
+        date: new Date(),
+        planNotiYn: false
+      }
+      // attrs: [
+      //   {
+      //     highlight: {
+      //       color: 'purple',
+      //       fillMode: 'solid'
+      //     },
+      //     dates: new Date('2022-12-13T00:00:00')
+      //   }
+      // ]
+
+      // 색상 샘플
+      // {
+      //   highlight: {
+      //     start: {
+      //       style: {
+      //         backgroundColor: '#7B371C' // blue
+      //       },
+      //       contentStyle: {
+      //         color: '#ffffff' // color of the text
+      //       }
+      //     },
+      //     base: {
+      //       style: {
+      //         backgroundColor: '#A57966' // light blue
+      //       }
+      //     },
+      //     end: {
+      //       style: {
+      //         backgroundColor: '#7B371C' // blue
+      //       },
+      //       contentStyle: {
+      //         color: '#ffffff' // color of the text
+      //       }
+      //     }
+      //   },
+      //   dates: { start: new Date(year, month, 1), end: new Date(year, month, 6) }
+      // }
+
     }
   },
   methods: {
+    ...mapActions(planStore, ['planAllList', 'setPlanId', 'planCreate']),
+    // 일정 만들기
+    writeCreate () {
+      this.planCreate(this.newPlan)
+    },
+    // 일정 상세보기로 이동
+    goDetail (planId) {
+      this.setPlanId(planId)
+    },
+    // 오늘날짜로 이동
     moveToToday () {
       this.$refs.calendar.move(new Date())
     }
