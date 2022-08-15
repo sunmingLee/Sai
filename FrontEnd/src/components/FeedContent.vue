@@ -153,7 +153,8 @@ export default {
     likeButton (boardId) {
       const info = {
         userId: localStorage.getItem('userId'),
-        boardId: boardId
+        boardId: boardId,
+        familyId: localStorage.getItem('familyId')
       }
       // console.log(this.feedList)
       const boardNum = boardId - 1
@@ -249,6 +250,17 @@ p {
     // display: flex;
     // justify-content: center;
     // align-items: center;
+    .content-body {
+      .poll-body {
+        table {
+          margin: 0 auto;
+          min-width: 300px;
+          :nth:child(2) {
+
+          }
+        }
+      }
+    }
   }
 }
 
@@ -318,6 +330,8 @@ p {
   }
   :nth-child(2) {
     border-left: none;
+    text-align: right;
+    min-width: 30px;
   }
 }
 table {

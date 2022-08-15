@@ -146,6 +146,7 @@ const boardStore = {
       })
         .then((res) => {
           dispatch('getOneFeed', info)
+          dispatch('feedAllList', info)
         })
         .catch((err) => {
           console.log(err)
@@ -159,6 +160,7 @@ const boardStore = {
       })
         .then((res) => {
           dispatch('getOneFeed', info)
+          dispatch('feedAllList', info)
         })
         .catch((err) => {
           console.log(err)

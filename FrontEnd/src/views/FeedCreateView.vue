@@ -410,7 +410,7 @@ export default {
     feedCreate () {
       const createBoardRequestDto = {}
       // 미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
-      if (fileList.length === 0 && this.boardContent === '') {
+      if (fileList.length === 0 && this.boardContent === '' && this.pollYn) {
         alert('글이나 사진을 등록해야 작성이 가능합니다.')
         // this.files = test
       } else {
@@ -611,7 +611,6 @@ export default {
                 background-color:#ffffff;
                 border-radius:10px;
                 overflow:hidden;
-                // background-color:#264db5;
                 box-shadow: 5px 10px 10px 1px rgba(0,0,0,.3);
                 .popup-header {
                   width:100%;
@@ -775,50 +774,6 @@ export default {
   display: flex;
   
 }
-
-// .create-content {
-//   .content-flex {
-//     max-width: 900px;
-//     margin: 0 auto;
-//     .content-wrap {
-//       display: flex;
-//       flex-wrap: wrap;
-//       // width: 900px;
-//       .flex{
-//         min-width: 300px;
-//         flex-basis: 600px;
-//         margin: 0 auto;
-//         text-align: center;
-//         // display: flex;
-//         // justify-content: center;
-//         // text-align: center;
-//         // width: 600px;
-//         // margin: 0 auto;
-//         .media-wrap {
-//           width: 430px;
-//           height: 280px;
-//         }
-//         // textarea {
-//         //   height: 300px;
-//         //   width: 500px;
-//         // }
-//         button {
-//           margin: 0 10px 0 10px;
-//           color: black;
-//           background-color: white;
-//           text-decoration: underline;
-//         }
-//         .record-wrap {
-//           .record-flex {
-//             display: flex;
-//             justify-content: space-between;
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
-
 .carousel-inner {
   width: 50%;
 }
