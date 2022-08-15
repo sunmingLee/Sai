@@ -13,6 +13,6 @@ public class UpdateFamilyRequestDto {
 
 	private UpdateFamilyDto updatefamilyDto;
 	private List<UpdateFamilyCallsignDto> updateFamilyCallsignDtos;
-	private boolean isCallsignModified;
+	private Boolean isCallsignModified;
 
 }

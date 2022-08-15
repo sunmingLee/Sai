@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sai.jwt.JwtTokenProvider;
 import com.sai.model.dto.ReadFeedResponseDto;
+import com.sai.model.dto.board.UserReadFeedResponseDto;
 import com.sai.model.dto.user.AddUserInfoRequest;
 import com.sai.model.dto.user.InfoUserResponseDto;
 import com.sai.model.dto.user.LoginUserRequestDto;
@@ -77,7 +78,7 @@ public class UserController {
 	
 	@ApiOperation("addUserInformation: 추가 정보 입력")
 	@PostMapping("/addInfo")
-	public ResponseEntity<?> addUserInformation(@RequestPart UserInfoDTO addInfo, @RequestPart MultipartFile file) throws Exception {
+	public ResponseEntity<?> addUserInformation(@RequestPart UserInfoDTO addInfo, @RequestPart(required = false) MultipartFile file) throws Exception {
 		try {
 			return ResponseEntity.status(200).body(userService.addUserInfo(addInfo, file));
 		} catch (Exception e) {
@@ -208,13 +209,20 @@ public class UserController {
 	// 개인 페이지(개인 피드) 조회
 	@ApiOperation("readMyAllBoard: 개인 페이지 조회")
 	@GetMapping("/myPage/{userId}")
-	public ResponseEntity<?> readMyAllBoard(@PathVariable String userId, @PageableDefault(size = 3, sort = "boardRegDatetime", direction = Direction.DESC) Pageable pageable, @CurrentUser UserPrincipal currUser)
+	public ResponseEntity<?> readMyAllBoard(@PathVariable String userId, @PageableDefault(size = 16, sort = "boardRegDatetime", direction = Direction.DESC) Pageable pageable, @CurrentUser UserPrincipal currUser)
 			throws Exception {
 
 		try {
+			UserReadFeedResponseDto userReadFeedResponseDto = new UserReadFeedResponseDto();
+			
 			List<ReadFeedResponseDto> readFeedResponseDtos = feedService.readAllBoard(userId, pageable, currUser);
+			Integer userFeedNum = feedService.countAllBoard(userId);
+			
+			userReadFeedResponseDto.setReadFeedResponseDtos(readFeedResponseDtos);
+			userReadFeedResponseDto.setUserBoardNum(userFeedNum);
+			
 			if (readFeedResponseDtos != null) {
-				return new ResponseEntity<List<ReadFeedResponseDto>>(readFeedResponseDtos, HttpStatus.OK);
+				return new ResponseEntity<UserReadFeedResponseDto>(userReadFeedResponseDto, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 			}

@@ -2,7 +2,6 @@ package com.sai.model.service.user;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -12,7 +11,6 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,7 +42,7 @@ import net.coobird.thumbnailator.geometry.Positions;
 public class UserServiceImpl implements UserService {
 
 	private String uploadPath = File.separator + "app" + File.separator + "UserImage";
-	private String dbPath = File.separator + "static" + File.separator + "UserImage";
+	private String frontPath = File.separator + "saimedia" + File.separator + "UserImage";
 
 	private final UserRepository userRepository;
 	private final FamilyRegisterRepository familyRegisterRepository;
@@ -83,25 +81,21 @@ public class UserServiceImpl implements UserService {
 
 	// 회원정보 추가 혹은 수정
 	@Override
-	public String addUserInfo(UserInfoDTO addInfo, MultipartFile file) {
-
+	public String addUserInfo(UserInfoDTO addInfo, MultipartFile file) throws Exception {
+		System.out.println(addInfo);
 		User user = userRepository.findByUserId(addInfo.getUserId()).get();
-
 		user.addUserinfo(addInfo);
+		System.out.println(user.toString());
+//		userRepository.save(user);
 
-//		UserDto userDto = modelMapper.map(user, UserDto.class);
-
-//		userDto.setBirthday(addInfo.getBirthday());
-//		userDto.setLunar(addInfo.getLunar());
-//		userDto.setUserMessage(addInfo.getUserMessage());
-//		userDto.setUserImagePath(addInfo.getUserImagePath());
-//		userDto.setUserImageName(addInfo.getUserImageName());
-//		userDto.setUserImageType(addInfo.getUserImageType());
-
-//		userRepository.save(modelMapper.map(userDto, User.class));
+		if (file == null) {
+			System.out.println("파일이 읍따");
+		}
 
 		// 유저 이미지 업로드
-		if (!file.isEmpty()) {
+//		if (!file.isEmpty() || file != null) {
+		if (file != null) {
+			System.out.println("나야");
 			// 폴더 생성
 			File uploadPathFolder = new File(uploadPath);
 			if (!uploadPathFolder.exists()) {
@@ -121,14 +115,9 @@ public class UserServiceImpl implements UserService {
 			String fileName = OriginalName.substring(OriginalName.lastIndexOf('\\') + 1);
 			String saveName = UUID.randomUUID().toString() + "_" + fileName;
 			String thumbnailPath = uploadPath + File.separator + saveName;
-			String dbThumbnailPath = dbPath + File.separator + saveName;
+			String frontThumbnailPath = frontPath + File.separator + saveName;
 
 			try {
-//				File convFile = new File(OriginalName);
-//				convFile.createNewFile();
-//				FileOutputStream fos = new FileOutputStream(convFile);
-//				fos.write(file.getBytes());
-//				fos.close();
 
 				InputStream in = file.getInputStream();
 				BufferedImage originalImage = ImageIO.read(in);
@@ -137,13 +126,16 @@ public class UserServiceImpl implements UserService {
 				Thumbnails.of(originalImage).size(500, 500).crop(Positions.CENTER).toFile(thumbnailFile);
 
 			} catch (IOException e) {
+				System.out.println("너니?");
 				e.printStackTrace();
 			}
-
-			user.updateUserImage(OriginalName, dbThumbnailPath, fileType);
+			System.out.println("나거든");
+			user.updateUserImage(OriginalName, frontThumbnailPath, thumbnailPath, fileType);
 		}
-		userRepository.save(user);
 
+		System.out.println("test3");
+		userRepository.save(user);
+		System.out.println("test2");
 		return "유저 정보 추가 성공";
 	}
 
@@ -180,6 +172,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public String deleteUser(String userId) {
 		User user = userRepository.findById(userId).get();
+		user.deleteImage();
 		userRepository.delete(user);
 		return "회원 탈퇴";
 	}
@@ -322,14 +315,6 @@ public class UserServiceImpl implements UserService {
 		});
 
 		return result;
-	}
-
-	private String makeFolder(String userId) {
-		File uploadPathFolder = new File(uploadPath, userId);
-		if (!uploadPathFolder.exists())
-			uploadPathFolder.mkdirs();
-
-		return userId;
 	}
 
 }

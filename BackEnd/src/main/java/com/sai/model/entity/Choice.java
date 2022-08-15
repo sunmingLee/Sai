@@ -2,6 +2,7 @@ package com.sai.model.entity;
 
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,7 +19,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "choices")
+@Table(name = "choice")
 public class Choice {
     @Id
     @Column(name="choice_id")
@@ -29,7 +30,7 @@ public class Choice {
     @Size(max = 40)
     private String text;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "poll_id", nullable = false)
     private Poll poll;
 
