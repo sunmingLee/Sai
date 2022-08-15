@@ -1,6 +1,6 @@
 <template>
     <div class="family-wrap">
-        <HeaderTitle hasBack=true title="가족들을 불러볼까요?"/>
+        <HeaderTitle title="가족들을 불러볼까요?"/>
         <div class="flex">
             <GuideMessage guide="회원님의 가족 코드입니다." guide2="가족들과 사이를 함께하세요."/>
         </div>
@@ -12,9 +12,9 @@
         <div class="flex">
             <Button buttonText="코드복사" buttonClass="small information" @click="copyCode"/>
         </div>
-        <div class="flex">
-            <Button buttonText="메인으로" buttonClass="small positive" @click="goMain"/>
-        </div>
+          <!-- <div class="flex">
+              <Button buttonText="메인으로" buttonClass="small positive" @click="goMain"/>
+          </div> -->
     </div>
 </template>
 <script>
@@ -45,10 +45,12 @@ export default {
 
       document.execCommand('copy')
       sel.removeRange(range)
-    },
-    goMain () {
+      alert('가족 코드가 복사되었습니다')
       this.$router.push({ name: 'feed' })
-    }
+    },
+    // goMain () {
+    //   this.$router.push({ name: 'feed' })
+    // }
   },
   computed: {
   }

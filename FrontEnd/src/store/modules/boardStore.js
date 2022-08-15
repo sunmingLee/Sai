@@ -19,7 +19,6 @@ const boardStore = {
   mutations: {
     FEED_All_LIST (state, feed) {
       state.feedList = feed
-      console.log(state.feedList)
     },
     SET_REPLY_LIST (state, replyList) {
       state.replyList = replyList
@@ -29,7 +28,6 @@ const boardStore = {
     },
     MY_FEED_All_LIST (state, myFeed) {
       state.myFeedList = myFeed
-      console.log(state.myFeedList)
     },
     MY_FEED_All_LIST_COUNT(state, myFeedNum ) {
       state.myFeedCnt = myFeedNum
@@ -231,8 +229,8 @@ const boardStore = {
       })
         .then((res) => {
           console.log(res.data)
-          commit('MY_FEED_All_LIST', res.data.readFeedResponseDtos)
-          commit('MY_FEED_All_LIST_COUNT', res.data.userBoardNum)
+          commit('MY_FEED_All_LIST', res.data)
+          commit('MY_FEED_All_LIST_COUNT', res.data.length)
         })
         .catch((err) => {
           console.log('에러')

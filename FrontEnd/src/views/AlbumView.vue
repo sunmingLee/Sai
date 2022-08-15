@@ -1,7 +1,7 @@
 <template>
     <div class="album-wrap">
         <router-view></router-view>
-        <BottomTap></BottomTap>
+        <BottomTap feedLink="nav-link" refrideLink="nav-link" albumLink="nav-link active" calendarLink="nav-link"></BottomTap>
     </div>
 </template>
 
