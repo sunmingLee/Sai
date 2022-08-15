@@ -5,14 +5,17 @@
       <div class="feed-wrap">
             <div class="feed-flex" v-if="feedList.length">
                 <div v-for="(feed, index) in feedList" :key="index" class="feed-div">
-                    <div class="flex">
+                    <div class="header-flex">
                         <div class="content-header">
                             <div v-for="(callsign, index) in familyCallsignList" :key="index" class="famliy-callsign">
                                 <div v-if="feed.viewBoardResponseDto.userId === callsign.toUserId">
                                     <span>{{callsign.callsign}}</span>
                                 </div>
+                                <div v-else style="display: none"></div>
                             </div>
-                            <span>{{feed.viewBoardResponseDto.boardRegDatetime.substring(0,10)}}</span>
+                        </div>
+                        <div class="header-date">
+                          <span>{{feed.viewBoardResponseDto.boardRegDatetime.substring(0,10)}}</span>
                         </div>
                     </div>
                     <div class="flex body">
@@ -84,15 +87,19 @@
                       </div>
                       {{feed.replyDto.replyContent}}
                     </div>
-                    <div v-else>
-                      <span>등록된 댓글이 없습니다. 첫 댓글의 주인공이 되어보세요!</span>
+                    <div v-else style="padding:2px 20px">
+                      <span>등록된 댓글이 없습니다</span>
                     </div>
                 </div>
+                
             </div>
             <div v-else>
                 <h3>등록된 게시글이 없습니다</h3>
             </div>
         </div>
+        <!-- <div class="feed-more">
+                  <button>더보기</button>
+                </div> -->
       <button id="btn-modal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="goBoardCreate">
         <img style="width:25px;" src="@/assets/images/plus-lg.svg" alt="plus">
       </button>
@@ -127,13 +134,6 @@ export default {
     this.checkUserInfo(info.userId)
     const user = localStorage.getItem('userInfo')
     const userInfo = JSON.parse(user)
-
-
-    //좋아요가 눌린 상태면
-    // if(feedList.boardLiked) {
-    //   const likeImage = document.querySelector('.like-icon')
-    //   console.log(likeImage)
-    // }
   },
   mounted () {
     
@@ -179,7 +179,7 @@ export default {
     goDetail (boardId) {
     //   console.log('들어가기 전: ' + boardId)
       this.setBoardId(boardId)
-    }
+    },
   },
   data () {
     return {
@@ -223,12 +223,19 @@ p {
 }
 
 //콜사인과 날짜
-.content-header {
-  font-weight: bold;
+.header-flex {
   display: flex;
   justify-content: space-around;
+  .header-date {
+    font-weight: bold;
+    margin: 10px 0 10px 0;
+  }
+}
+.content-header {
+  font-weight: bold;
   margin: 10px 0 10px 0;
 }
+
 
 //글, 사진, 투표의 공간
 .flex {
@@ -238,7 +245,7 @@ p {
     padding: 10px;
     // height: 300px;
     height: auto;
-    margin: 0 auto;
+    margin: 0 10px;
     // display: flex;
     // justify-content: center;
     // align-items: center;
@@ -337,4 +344,17 @@ table {
         height: 50px;
     }
 }
+
+// .feed-more {
+//   height: 30px;
+//   width: 120px;
+//   color: white;
+//   margin: 20px auto;
+//   text-align: center;
+//   button {
+//     background-color: #7b371c;
+//     height: 30px;
+//     width: 120px;
+//   }
+// }
 </style>

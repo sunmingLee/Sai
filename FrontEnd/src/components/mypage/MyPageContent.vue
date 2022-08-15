@@ -40,7 +40,6 @@ export default {
     const userId = localStorage.getItem('userId')
     // 피드 전체 리스트 조회
     this.myFeedAllList(userId)
-    console.log(this.myFeedList)
   },
   mounted() {
   },
@@ -51,7 +50,6 @@ export default {
     ...mapActions(boardStore, ['myFeedAllList', 'setBoardId']),
     //상세보기 이동
     goDetail (boardId) {
-      console.log("왜 안 가")
     //   console.log('들어가기 전: ' + boardId)
       this.setBoardId(boardId)
     }

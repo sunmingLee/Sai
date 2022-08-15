@@ -12,9 +12,9 @@
         <div class="flex">
             <Button buttonText="코드복사" buttonClass="small information" @click="copyCode"/>
         </div>
-        <div class="flex">
-            <Button buttonText="메인으로" buttonClass="small positive" @click="goMain"/>
-        </div>
+          <!-- <div class="flex">
+              <Button buttonText="메인으로" buttonClass="small positive" @click="goMain"/>
+          </div> -->
     </div>
 </template>
 <script>
@@ -45,10 +45,12 @@ export default {
 
       document.execCommand('copy')
       sel.removeRange(range)
-    },
-    goMain () {
+      alert('가족 코드가 복사되었습니다')
       this.$router.push({ name: 'feed' })
-    }
+    },
+    // goMain () {
+    //   this.$router.push({ name: 'feed' })
+    // }
   },
   computed: {
   }
