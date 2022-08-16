@@ -11,12 +11,11 @@ const planStore = {
     plan: []
   },
   getters: {
-
   },
   mutations: {
     PLAN_All_LIST (state, planList) {
       state.planList = planList
-      console.log(state.planList)
+      // console.log(state.planList)
     },
     SET_FEED (state, plan) {
       state.plan = plan
@@ -36,7 +35,7 @@ const planStore = {
           if (res.status === 200) {
             alert('작성이 완료되었습니다')
           } else {
-            alert('안됐지롱')
+            alert('일정 등록 중 문제가 생겼습니다.')
             console.log(res)
           }
         })
@@ -57,25 +56,44 @@ const planStore = {
           console.log(res.data)
           const attrs = []
           for (let i = 0; i < res.data.length; i++) {
-            if (res.data[i].allDayYn) {
-              const plan = {
-                highlight: 'red',
-                date: new Date(res.data[i].mainPlanStartDatetime)
-              }
-              attrs.push(plan)
-            } else {
-              const plan = {
-                highlight: {
-                  color: 'red',
-                  fillMode: 'light'
-                },
-                dates: {
-                  start: new Date(res.data[i].mainPlanStartDatetime),
-                  end: new Date(res.data[i].mainPlanEndDatetime)
-                }
-              }
-              attrs.push(plan)
+            const plan = {
+              planId: res.data[i].mainPlanId
             }
+            // 하루 일정
+            if (res.data[i].mainPlanEndDatetime == null || res.data[i].mainPlanStartDatetime.slice(0, 10) === res.data[i].mainPlanEndDatetime.slice(0, 10)) {
+              const year = res.data[i].mainPlanStartDatetime.slice(0, 4)
+              const month = res.data[i].mainPlanStartDatetime.slice(5, 7) - 1
+              const date = res.data[i].mainPlanStartDatetime.slice(8, 10)
+              // console.log(year + ' ' + month + ' ' + date)
+              plan.dates = new Date(year, month, date)
+              if (res.data[i].planType === 'personal') {
+                plan.dot = 'red'
+              } else if (res.data[i].planType === 'family') {
+                plan.dot = 'green'
+              } else {
+                plan.dot = 'blue'
+              }
+            } else { // 기간 일정
+              plan.dates = {
+                start: new Date(res.data[i].mainPlanStartDatetime),
+                end: new Date(res.data[i].mainPlanEndDatetime)
+              }
+              plan.highlight = {
+                fillMode: 'light'
+              }
+              if (res.data[i].planType === 'personal') {
+                plan.highlight.color = 'red'
+              } else if (res.data[i].planType === 'family') {
+                plan.highlight.color = 'green'
+              } else {
+                plan.highlight.color = 'blue'
+              }
+            }
+            plan.popover = {
+              slot: 'todo-row', // Matches slot from above
+              label: res.data[i].planTitle
+            }
+            attrs.push(plan)
           }
           // commit('PLAN_All_LIST', res.data)
           commit('PLAN_All_LIST', attrs)
