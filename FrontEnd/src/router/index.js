@@ -24,6 +24,7 @@ import MemoView from '@/views/memo/MemoView.vue'
 import MemoCreateView from '@/views/memo/MemoCreateView.vue'
 import MypageView from '@/views/user/MypageView.vue'
 import CalendarView from '@/views/CalendarView.vue'
+import FeedUpdateView from '@/views/FeedUpdateView.vue'
 // import test from '@/views/test.vue'
 
 import store from '@/store/index.js'
@@ -191,6 +192,11 @@ const routes = [
     path: '/calendar',
     name: 'calendar',
     component: CalendarView
+  },
+  {
+    path: '/feedUpdate',
+    name: 'feedUpdate',
+    component: FeedUpdateView
   }
 ]
 

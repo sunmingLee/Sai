@@ -18,7 +18,6 @@ const boardStore = {
   },
   mutations: {
     FEED_All_LIST (state, feed) {
-      // state.feedList = feed
       state.feedList = state.feedList.concat(feed)
     },
     SET_REPLY_LIST (state, replyList) {
@@ -158,7 +157,7 @@ const boardStore = {
       })
         .then((res) => {
           dispatch('getOneFeed', info)
-          dispatch('feedAllList', info)
+          // dispatch('feedAllList', info)
         })
         .catch((err) => {
           console.log(err)
@@ -172,7 +171,7 @@ const boardStore = {
       })
         .then((res) => {
           dispatch('getOneFeed', info)
-          dispatch('feedAllList', info)
+          // dispatch('feedAllList', info)
         })
         .catch((err) => {
           console.log(err)

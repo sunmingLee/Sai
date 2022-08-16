@@ -79,10 +79,10 @@
                         </div>
                     </div>
                     <!-- 첫번째 댓글 -->
-                    <div v-if="feed.replyDto !== null">
+                    <div v-if="feed.replyDto !== null" style="padding:2px 20px">
                       <div v-for="(callsign, index) in familyCallsignList" :key="index" class="famliy-callsign">
                         <div v-if="feed.replyDto.userId === callsign.toUserId">
-                          <span>{{callsign.callsign}}</span>
+                          <span style="font-weight: bold">{{callsign.callsign}}</span>
                         </div>
                       </div>
                       {{feed.replyDto.replyContent}}
@@ -163,7 +163,8 @@ export default {
       const info = {
         userId: localStorage.getItem('userId'),
         boardId: boardId,
-        familyId: localStorage.getItem('familyId')
+        familyId: localStorage.getItem('familyId'),
+        page: this.page
       }
       // console.log(this.feedList)
       const boardNum = boardId - 1
@@ -266,7 +267,7 @@ p {
 .flex {
   &.body {
     // width: 500px;
-    border: 1px solid black;
+    border: 1px solid #7b371c;
     padding: 10px;
     // height: 300px;
     height: auto;
