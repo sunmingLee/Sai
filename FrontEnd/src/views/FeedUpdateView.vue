@@ -148,13 +148,18 @@
             <div v-else class="poll-wrap">
               <!-- 투표 제목 -->
               <div calss="poll-title-wrap">
-                <input type="text" v-model="feed.pollResponse.question" placeholder="투표 제목" class="poll-title-input">
+                <input v-if="this.question !== ''" type="text" v-model="this.question" placeholder="투표 제목" class="poll-title-input" disabled>
+                <input v-else type="text" v-model="this.question" placeholder="투표 제목" class="poll-title-input" >
               </div>
               <!-- 투표 항목 -->
               <p class="option-title">항목 입력</p>
               <div class="poll-item-wrap">
-                <div v-for="(option, index) in feed.pollResponse.choices" :key="index">
-                  <input class="poll-option-input" name="option" v-model="option.text" placeholder="항목을 입력하세요">
+                <div v-for="(choice, index) in this.choices" :key="index">
+                  <div>
+                    <input v-if="choice.text !== ''" class="poll-option-input" name="option" v-model="choice.text" placeholder="항목을 입력하세요" disabled>
+                    <input v-else class="poll-option-input" name="option" v-model="choice.text" placeholder="항목을 입력하세요">
+                    <span v-if="choice.text === '' && this.choices.length > 2 && index > 1" @click="pollDelete(index)">X</span>
+                  </div>
                 </div>
               </div>
               <!-- 투표 항목 추가 버튼 -->
@@ -174,7 +179,7 @@
             </div>
           </div>
           <div class="button-wrap">
-            <Button buttonClass="small positive" buttonText="작성" @click="feedCreate"/>
+            <Button buttonClass="small positive" buttonText="수정" @click="feedUpdate"/>
           </div>
         </div>
       </div>
@@ -207,37 +212,36 @@ export default {
   },
   data () {
     return {
+      boardDate : '', //언제?(날짜)
+      boardContent  : '', //글
+      boardLocation : '', //어디서?(위치)
+      boardTaggedYn : false, //태그 여부
+      boardMediaYn  : false, //미디어 여부
+      pollYn  : false, //투표 여부
+      question : '', //투표 제목
+      expirationDateTime : '', //투표 마감 날짜
+      choices : [], //투표 항목
+      originMediaList : [], //기존 미디어 목록
+      peopleList : [], //태그 목록
+      boardModified: false, //게시글 수정 여부
+      boardTaggedModified: false, //태그 수정 여부
+      deleteBoardMediaIds: [], //미디어에서 수정되어 사라지는 파일들
+      pollModified: false, //투표 수정 여부
+      originBoardDate : '',
       dateValid: false,
-      boardContent: '', // 글
-      boardRegDatetime: '', // 등록 시간
-      boardMediaYn: 0, // 미디어 파일 등록 여부
-      pollYn: 0, // 투표 등록 여부
-      boardDate: '', // 추가 기록 - 날짜
-      boardLocation: '', // 추가 기록 - 위치
-      boardTaggedYn: 0, // 추가 기록 - 태그 여부
+
       changeBoardDate: '', // 추가 기록(날짜) 선택했을 때 화면에 보여질 날짜
-      toggle: true, // 추가 기록과 투표 만들기를 토글하기 위함
-      pollTitle: '', // 투표 제목
+      toggle: true, // true: 추가기록 , false : 투표
       // 투표 항목들
       pollDatePicker: '', // 투표 마감 날짜로 선택한 날(보내는 데이터 값은 아님)
       pollDateDisabled: true, // 투표 마감 날짜 지정 여부..
-      pollEndDate: '', // 투표 마감 날짜
       // 태그 리스트
-      peopleList: [],
       peopleNameList: [],
-      disabledDates: '',
-      preventDisableDateSelection: true,
-      format: '',
-      pollCnt: 2,
       srcList: [],
       fileList: [],
       imageFlag : false,
-      boardModeified: false,
-      boardTaggedModified: false,
-      deleteBoardMediaIds: [],
-      pollModified: false,
-      choices: [],
-      dateFlag: false
+      dateFlag: false,
+      pollCheck: false
     }
   },
   created () {
@@ -273,37 +277,15 @@ export default {
         this.boardTaggedYn = this.feed.viewBoardResponseDto.boardTaggedYn
         this.boardMediaYn = this.feed.viewBoardResponseDto.boardMediaYn
         this.pollYn = this.feed.viewBoardResponseDto.pollYn
-        this.pollTitle = this.feed.pollResponse.question
+        this.question = this.feed.pollResponse.question
         this.choices = this.feed.pollResponse.choices
     },
     //글 수정
     updateText() {
         this.boardModeified = true
     },
-    //날짜 수정
-    updateDate() {
-        this.boardModeified = true
-        const year = this.boardDate.getFullYear()
-        console.log(year)
-        let month = (1 + this.boardDate.getMonth())
-        let day = this.boardDate.getDate()
-        console.log(month)
-        console.log(day)
-        // MM-DD의 형태로 만들기 위해 10보다 적은 경우 0을 붙이게 함 (예 : 1일이면 01)
-        month = month >= 10 ? month : `0${month}`
-        day = day >= 10 ? day : `0${day}`
-        this.changeBoardDate = `${year}-${month}-${day}`
-        this.dateFlag = false
-    },
-    //투표 초기화
-    pollReset() {
-        
-    },
     //파일 처리
     fileCheck(e) {
-      //파일을 다시 선택한다고 했을 때 이미 선택했던 파일을 다 없앤다
-      //fileList -> 담아서 전송해줄 파일 데이터를 담는 배열
-      //srcList -> 사진 미리보기를 보여주는 배열
       fileList = []
       this.srcList = []
       this.imageFlag = false
@@ -313,14 +295,13 @@ export default {
       this.previewFile()
       if(this.srcList.length !== 0) {
         this.imageFlag = true
+        this.boardModeified = true
       }
     },
     changeFile () {
-      const previewCount = 0
       const fileInput = document.getElementById('file')
       // 선택한 파일의 정보 리스트
       const files = fileInput.files
-      // let previewCount = files.length
       // heic 파일 확장자 변경
       // 선택한 파일의 개수만큼 돌아서 각각의 파일을 다 확인
       for (let i = 0; i < files.length; i++) {
@@ -350,8 +331,6 @@ export default {
           this.srcList.push(URL.createObjectURL(fileList[i]))
         }
       }
-      console.log('안녕')
-      console.log(this.srcList)
     },
     // 추가기록과 투표만들기 토글
     record () {
@@ -364,14 +343,32 @@ export default {
         this.toggle = false
       }
     },
+    //투표 초기화
+    pollReset() {
+      //제목과 항목 초기화
+      this.question = ''
+      this.choices = [
+        {text : ''},
+        {text : ''}
+      ]
+      this.pollCheck = true
+      this.pollYn = 0
+    },
     // 투표 항목 추가하기
     addPollItem () {
-      if (this.pollOptions.length < 5) {
-        this.pollCnt = this.pollCnt + 1
-        this.pollOptions.push({ pollOption: '' })
+      if(!this.pollCheck) {
+        alert('원래 있던 투표는 수정하실 수 없습니다. 초기화 버튼으로 새로 만들어주세요!')
       } else {
-        alert('투표 항목은 5개까지 가능합니다.')
+        if (this.choices.length < 5) {
+          this.choices.push({ text: '' })
+        } else {
+          alert('투표 항목은 5개까지 가능합니다.')
+        }
       }
+    },
+    //투표 항목 삭제
+    pollDelete(index) {
+      this.choices.splice(index, 1)
     },
     // 투표 마감 시간 설정
     pollTimeCheck () {
@@ -386,6 +383,21 @@ export default {
     showDate () {
       const modal = document.getElementById('date-popup')
       modal.classList.remove('hidden')
+    },
+    //날짜 수정
+    updateDate() {
+        this.boardModeified = true
+        const year = this.boardDate.getFullYear()
+        console.log(year)
+        let month = (1 + this.boardDate.getMonth())
+        let day = this.boardDate.getDate()
+        console.log(month)
+        console.log(day)
+        // MM-DD의 형태로 만들기 위해 10보다 적은 경우 0을 붙이게 함 (예 : 1일이면 01)
+        month = month >= 10 ? month : `0${month}`
+        day = day >= 10 ? day : `0${day}`
+        this.changeBoardDate = `${year}-${month}-${day}`
+        this.dateFlag = false
     },
     // 누구랑?
     showFamily () {
@@ -415,6 +427,7 @@ export default {
     deleteDate () {
         const date = document.querySelector('.record-time')
         date.classList.add('hidden')
+        this.boardModeified = true
         this.boardDate = ''
     },
     // 사람 태그 확인
@@ -423,7 +436,6 @@ export default {
       console.log(test)
       for(let i = 0; i < test.length; i++) {
         const user = test[i].value
-
         const person = {
           userId : user
         }
@@ -484,6 +496,9 @@ export default {
         this.boardModeified = true
       }
       this.boardLocation = ''
+    },
+    feedUpdate() {
+      console.log(this.boardDate)
     },
     // 게시글 작성
     feedCreate () {
@@ -863,7 +878,18 @@ export default {
     display: flex;
     justify-content: center;
 }
+.poll-item-wrap {
+  div {
+    position: relative;
+    span {
+      position: absolute;
+      right: 160px;
+      top: 13px;
+    }
+  }
+}
 .carousel-inner {
   width: 50%;
 }
+
 </style>
