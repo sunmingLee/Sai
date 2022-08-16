@@ -1,6 +1,7 @@
 package com.sai.jwt;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -11,6 +12,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.sai.security.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,16 +27,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 
+		System.out.println("나는 filter야");
 		// 헤더에서 JWT를 받아온다
 		  String token = jwtTokenProvider.resolveToken(request);
 
+		  System.out.println(token);
 		// 토큰 유효성 검사
 	      if(token != null && jwtTokenProvider.checkClaim(token)){
 	    	  // 토큰이 유효하면 토큰으로부터 유저 정보 받아오기
 	            Authentication authentication = jwtTokenProvider.getAuthentication(token);
 	          // SecurityContext에 Authentication 객체를 저장
 	            SecurityContextHolder.getContext().setAuthentication(authentication);
-	        }
+	            // 로그용
+	            UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
+	    		System.out.println(userDetails.getUserId());
+	    		
+	    		System.out.println(userDetails.getAuthorities());
+	      }
 
 	        filterChain.doFilter(request, response);
 	    }

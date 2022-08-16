@@ -47,12 +47,13 @@ public class FeedController {
 			throws Exception {
 
 		try {
+			
+			System.out.println("나 여기있어요");
 			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			
 			System.out.println(principal.toString());
 
-//			String username = userPrincipal.getUsername();
-//			System.out.println(username);
+//			System.out.println(currUser.getUserId());
 			
 			List<ReadFeedResponseDto> readFeedResponseDtos = feedService.readAllBoard(familyId, userId, pageable, currUser);
 

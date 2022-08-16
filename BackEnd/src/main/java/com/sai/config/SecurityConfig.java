@@ -8,10 +8,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.sai.jwt.JwtAuthenticationEntryPoint;
 import com.sai.jwt.JwtAuthenticationFilter;
@@ -46,6 +48,21 @@ public class SecurityConfig {
 		return authenticationConfiguration.getAuthenticationManager();
 	}
 
+//	@Bean
+//	public CorsConfigurationSource configurationSource() {
+//		CorsConfiguration corsConfiguration = new CorsConfiguration();
+//		
+//		corsConfiguration.addAllowedOrigin("http://localhost:8081");
+//		corsConfiguration.addAllowedHeader("*");
+//		corsConfiguration.addAllowedMethod("*");
+//		corsConfiguration.setAllowCredentials(true);
+//		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//		source.registerCorsConfiguration("/**", corsConfiguration);
+//		return source;
+//		
+//	}
+	
+	
 	// 인증 또는 인가에 대한 설정
 	@Bean
 	protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -53,6 +70,7 @@ public class SecurityConfig {
 		// 로그인
 		http
 			.httpBasic().disable()
+			.cors().and()
 			.csrf().disable(); // post 방식으로 값을 전송할 때 token을 사용해야 하는 보안 설정을 해제
 //			.formLogin()
 //			.loginPage("/api/user/login") // 인증되지 않은 사용자가 인증을 필요로 하는 endpoint에 접근했을 때 이동하는 페이지
@@ -89,9 +107,9 @@ public class SecurityConfig {
                     "/**/*.js" ).permitAll() // 특정 URL을 설정하며, permitAll은 해당 URL의 접근을 인증없이 허용한다는 의미
 			.antMatchers("/auth/**").permitAll()
 			// user - 로그인, 회원가입, 아이디 찾기, 비밀번호 찾기
-			.antMatchers("/", "/api/user/**").permitAll()
-			.antMatchers("/api/poll/**").permitAll()
-			.antMatchers("/**").permitAll()	// 개발 기간 동안 모든 사이트 허용
+//			.antMatchers("/**").permitAll()	// 개발 기간 동안 모든 사이트 허용
+			.antMatchers("/", "/api/user/login", "api/user/join").permitAll()
+//			.antMatchers("/api/poll/**").permitAll()
 			.antMatchers("/v2/api-docs", "/swagger*/**").permitAll()
 			.anyRequest().authenticated();
 
@@ -100,10 +118,10 @@ public class SecurityConfig {
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.maximumSessions(1)
 			.maxSessionsPreventsLogin(true);
-		http
-			.oauth2Login()
-			.userInfoEndpoint()
-			.userService(oAuth2UserServiceImpl);
+//		http
+//			.oauth2Login()
+//			.userInfoEndpoint()
+//			.userService(oAuth2UserServiceImpl);
 
 		http
 			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
