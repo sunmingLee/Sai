@@ -1,7 +1,7 @@
 <template>
   <ul class="nav nav-pills nav-fill" id="pills-tab" role="tablist">
     <li class="nav-item" role="presentation">
-      <button :class="feedLink" id="feed-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true" aria-current="page" @click="moveFeed">피드</button>
+      <button :class="feedLink" id="feed-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true" aria-current="page" @click="moveFeed">거실</button>
     </li>
     <li class="nav-item" role="presentation">
       <button :class="refrideLink" id="refride-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false" @click="moveRefridge">냉장고</button>

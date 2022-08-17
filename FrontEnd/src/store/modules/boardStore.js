@@ -19,7 +19,7 @@ const boardStore = {
   },
   mutations: {
     FEED_All_LIST (state, feed) {
-      state.feedList = feed
+      state.feedList = state.feedList.concat(feed)
     },
     SET_REPLY_LIST (state, replyList) {
       state.replyList = replyList
@@ -30,8 +30,11 @@ const boardStore = {
     MY_FEED_All_LIST (state, myFeed) {
       state.myFeedList = myFeed
     },
-    MY_FEED_All_LIST_COUNT(state, myFeedNum ) {
+    MY_FEED_All_LIST_COUNT (state, myFeedNum) {
       state.myFeedCnt = myFeedNum
+    },
+    FEED_RESET (state) {
+      state.feedList = []
     }
   },
   actions: {
@@ -74,12 +77,20 @@ const boardStore = {
     feedAllList ({ commit }, info) {
       const familyId = info.familyId
       const userId = info.userId
+      const params = {
+        page: info.page
+      }
       instance({
         url: api_url + '/' + familyId + '/' + userId,
-        method: 'GET'
+        method: 'GET',
+        params
       })
         .then((res) => {
-          commit('FEED_All_LIST', res.data)
+          if (res.data.length === 0) {
+            alert('더 이상 불러올 게시물이 없습니다')
+          } else {
+            commit('FEED_All_LIST', res.data)
+          }
         })
         .catch((err) => {
           console.log('에러')
@@ -119,6 +130,25 @@ const boardStore = {
           console.log(err)
         })
     },
+    // 게시글 수정
+    boardUpdate ({ commit }, updateBoardRequestDto) {
+      axios({
+        url: api_url + '/board',
+        method: 'PUT',
+        data: JSON.stringify(updateBoardRequestDto),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => {
+          console.log('수정이 됐어요')
+          alert("수정되었습니다.")
+          router.push({ name: 'feed' })
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
     // 투표 선택 (임시 / 쿠키 세팅 이슈)
     chooseVote ({ commit }, info) {
       const data = {
@@ -147,6 +177,7 @@ const boardStore = {
       })
         .then((res) => {
           dispatch('getOneFeed', info)
+          // dispatch('feedAllList', info)
         })
         .catch((err) => {
           console.log(err)
@@ -160,6 +191,7 @@ const boardStore = {
       })
         .then((res) => {
           dispatch('getOneFeed', info)
+          // dispatch('feedAllList', info)
         })
         .catch((err) => {
           console.log(err)
@@ -237,6 +269,10 @@ const boardStore = {
           console.log('에러')
           console.log(err)
         })
+    },
+    // 게시글 초기화
+    feedReset ({ commit }) {
+      commit('FEED_RESET')
     }
   },
   modules: {

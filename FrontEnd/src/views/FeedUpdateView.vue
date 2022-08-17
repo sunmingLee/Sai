@@ -6,17 +6,20 @@
           <div class="content-wrap">
             <!-- 글(텍스트)-->
             <div class="textarea-wrap">
-              <textarea v-model="boardContent" name="" id="" cols="30" rows="10"></textarea>
+              <textarea v-model="this.boardContent" name="" id="" cols="30" rows="10" @change="updateText"></textarea>
             </div>
             <!-- 캐러셀 -->
+            <!-- 사진을 새로 담으면 -->
             <div v-if="imageFlag" id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
               <div class="carousel-inner" >
                 <div class="carousel-item active">
                   <img :src="srcList[0]" id="img" class="d-block w-100">
+                  <button type="button" class="btn-close" aria-label="Close" @click="removeMemo(memo.memoId)"></button>
                 </div>
                 <div v-for="(src, index) in srcList" :key="index">
                   <div v-if="index !== 0" class="carousel-item">
                     <img :src="src" id="img" class="d-block w-100">
+                    <button type="button" class="btn-close" aria-label="Close" @click="removeMemo(memo.memoId)"></button>
                   </div>
                 </div>
               </div>
@@ -29,12 +32,29 @@
                   <span class="visually-hidden">Next</span>
               </button>
             </div>
-            <div class="file-wrap">
-              <span>사진 추가</span>
-              <div class="file-button">
-                <label calss="file-label" for="file">+</label>
-                <input class="form-control" type="file" @change="fileCheck" id="file" multiple>
+            <!-- 기존 사진 -->
+            <div v-else-if="feed.viewBoardMediaResponseDto.length > 0" id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+              <div class="carousel-inner" >
+                <div class="carousel-item active">
+                  <!-- <img :src="srcList[0]" id="img" class="d-block w-100"> -->
+                  <img src="@/assets/images/여행1.jpg" class="d-block w-100">
+                  <!-- <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100"> -->
+                </div>
+                <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index">
+                  <div v-if="index !== 0" class="carousel-item">
+                    <img src="@/assets/images/여행2.jpg" class="d-block w-100">
+                    <!-- <img :src="src.boardMediaPath" id="img" class="d-block w-100"> -->
+                  </div>
+                </div>
               </div>
+              <button v-if="feed.viewBoardMediaResponseDto.length > 0" class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+              </button>
+              <button v-if="feed.viewBoardMediaResponseDto.length > 0" class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+              </button>
             </div>
           <!-- 추가기록과 투표만들기 토글 -->
           <div class="toggle-flex">
@@ -57,13 +77,13 @@
                   <div class="popup-wrap hidden" id="date-popup">
                       <div class="popup">
                         <div class="popup-header">
-                          <span class="header-title">누구랑 함께 했나요?</span>
+                          <span class="header-title">원하시는 날짜를 고르세요</span>
                         </div>
                         <div class="popup-content">
                           <div class="body-content">
                             <div class="content-callsign" >
                               <div class="modal-date">
-                                <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" :enableTimePicker="false" v-model="boardDate"/>
+                                <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" @cleared="removeDate" :enableTimePicker="false" v-model="this.boardDate" @closed="updateDate"/>
                               </div>
                             </div>
                           </div>
@@ -95,7 +115,7 @@
                             <div class="content-callsign" >
                               <div class="callsign-wrap" v-for="(callsign, index) in familyCallsignList" :key="index">
                                 <label for="callsign-select">{{callsign.callsign}}</label>
-                                <input type="checkbox" name="callsign" :value="callsign.toUserId" class="callsign-select">
+                                <input type="checkbox" name="callsign" :value="callsign.toUserId" class="callsign-select" :checked="this.callsignCheck[index]">
                               </div>
                             </div>
                           </div>
@@ -109,31 +129,42 @@
                 </div>
               </div>
               <div class="record-confirm">
-                <span v-if="date !== ''">시간 : {{date}}</span>
-                <Button v-if="date !== ''" buttonClass="small negative" buttonText="삭제" @click="deleteDate"/>
-                <span v-if="boardLocation !== ''">위치 : {{boardLocation}}</span>
-                <Button v-if="boardLocation !== ''" buttonClass="small negative" buttonText="삭제" @click="deleteLocation"/>
+                <div class="record-time">
+                    <span v-if="this.date !== '' && this.date !== null">시간 : {{this.date}}</span>
+                    <Button v-if="this.date !== '' && this.date !== null" buttonClass="small negative" buttonText="삭제" @click="deleteDate"/>
+                </div>
+                <span v-if="this.boardLocation !== ''">위치 : {{this.boardLocation}}</span>
+                <Button v-if="this.boardLocation !== ''" buttonClass="small negative" buttonText="삭제" @click="deleteLocation"/>
               </div>
             </div>
             <!-- 투표 만들기 -->
             <div v-else class="poll-wrap">
               <!-- 투표 제목 -->
               <div calss="poll-title-wrap">
-                <input type="text" v-model="pollTitle" placeholder="투표 제목" class="poll-title-input">
+                <input v-if="this.pollFlag" type="text" v-model="this.question" placeholder="투표 제목" class="poll-title-input" disabled>
+                <input v-else type="text" v-model="this.question" placeholder="투표 제목" class="poll-title-input" >
               </div>
               <!-- 투표 항목 -->
               <p class="option-title">항목 입력</p>
               <div class="poll-item-wrap">
-                <div v-for="(option, index) in pollOptions" :key="index">
-                  <input class="poll-option-input" name="option" v-model="option.pollOption" placeholder="항목을 입력하세요">
+                <div v-for="(choice, index) in this.choices" :key="index">
+                  <div>
+                    <input v-if="this.pollFlag" class="poll-option-input" name="option" v-model="choice.text" placeholder="항목을 입력하세요" disabled>
+                    <input v-else class="poll-option-input" name="option" v-model="choice.text" placeholder="항목을 입력하세요">
+                    <span v-if="choice.text === '' && this.choices.length > 2 && index > 1" @click="pollDelete(index)">X</span>
+                  </div>
                 </div>
               </div>
               <!-- 투표 항목 추가 버튼 -->
-              <Button buttonClass="small information" buttonText="항목 추가" @click="addPollItem" style="margin: 10px 0"/>
+              <div class="poll-button">
+                <Button buttonClass="small information" buttonText="항목 추가" @click="addPollItem" style="margin: 10px 5px"/>
+                <Button buttonClass="big negative" buttonText="투표 초기화" @click="pollReset" style="margin: 10px 5px"/>
+              </div>
               <div class="poll-time">
                 <div calss="poll-time-title" style="display: flex">
                   <span style="line-height:35px">마감시간 설정</span>
-                  <input style="padding-left:10px" type="checkbox" class="poll-time" @click="pollTimeCheck">
+                  <input v-if="this.pollFlag" style="padding-left:10px" type="checkbox" class="poll-time" @click="pollTimeCheck" disabled>
+                  <input v-else style="padding-left:10px" type="checkbox" class="poll-time" @click="pollTimeCheck">
                 </div>
                 <div class="poll-time-date">
                   <Datepicker style="max-width:200px" placeholder="날짜를 선택해주세요." class="datepicker" :minDate="new Date()" v-model="pollDatePicker" :disabled="pollDateDisabled"/>
@@ -142,7 +173,7 @@
             </div>
           </div>
           <div class="button-wrap">
-            <Button buttonClass="small positive" buttonText="작성" @click="feedCreate"/>
+            <Button buttonClass="small positive" buttonText="수정" @click="feedUpdate"/>
           </div>
         </div>
       </div>
@@ -164,7 +195,7 @@ const userStore = 'userStore'
 const familyStore = 'familyStore'
 
 // 파일 리스트
-let fileList = []
+const fileList = []
 export default {
   name: 'FeedCreateView',
   components: {
@@ -175,105 +206,97 @@ export default {
   },
   data () {
     return {
-      dateValid: false,
+      boardDate: '', // 언제?(날짜)
       boardContent: '', // 글
-      boardRegDatetime: '', // 등록 시간
-      boardMediaYn: 0, // 미디어 파일 등록 여부
-      pollYn: 0, // 투표 등록 여부
-      boardDate: '', // 추가 기록 - 날짜
-      boardLocation: '', // 추가 기록 - 위치
-      boardTaggedYn: 0, // 추가 기록 - 태그 여부
-      date: '', // 추가 기록(날짜) 선택했을 때 화면에 보여질 날짜
-      toggle: true, // 추가 기록과 투표 만들기를 토글하기 위함
-      pollTitle: '', // 투표 제목
+      boardLocation: '', // 어디서?(위치)
+      boardTaggedYn: false, // 태그 여부
+      boardMediaYn: false, // 미디어 여부
+      pollYn: false, // 투표 여부
+      question: '', // 투표 제목
+      expirationDateTime: '', // 투표 마감 날짜
+      choices: [
+        {text: ''},
+        {text: ''}
+      ], // 투표 항목
+      originMediaList: [], // 기존 미디어 목록
+      peopleList: [], // 태그 목록
+      boardModified: false, // 게시글 수정 여부
+      boardTaggedModified: false, // 태그 수정 여부
+      deleteBoardMediaIds: [], // 미디어에서 수정되어 사라지는 파일들
+      pollModified: false, // 투표 수정 여부
+      originBoardDate: '',
+      dateValid: false,
+      date: '',
+      changeBoardDate: '', // 추가 기록(날짜) 선택했을 때 화면에 보여질 날짜
+      toggle: true, // true: 추가기록 , false : 투표
       // 투표 항목들
-      pollOptions: [
-        { pollOption: '' },
-        { pollOption: '' }
-      ],
       pollDatePicker: '', // 투표 마감 날짜로 선택한 날(보내는 데이터 값은 아님)
       pollDateDisabled: true, // 투표 마감 날짜 지정 여부..
-      pollEndDate: '', // 투표 마감 날짜
       // 태그 리스트
-      peopleList: [],
       peopleNameList: [],
-      disabledDates: '',
-      preventDisableDateSelection: true,
-      format: '',
-      pollCnt: 2,
       srcList: [],
       fileList: [],
-      imageFlag: false
+      imageFlag: false,
+      pollCheck: false,
+      pollFlag: false,
+      pollRequest: {},
+      callsignCheck: [],
+      callsign : []
     }
   },
   created () {
+    const boardId = localStorage.getItem('boardId')
     const userId = localStorage.getItem('userId')
+    // 게시글 상세보기
+    const info = {
+      boardId: boardId,
+      userId: userId
+    }
     this.callsignList(userId)
-    fileList = []
+    this.getOneFeed(info)
   },
   mounted () {
-
+    this.check()
   },
   computed: {
     // ...mapState(userStore, ["userId", "userName"]),
-    ...mapState(familyStore, ['familyCallsignList'])
+    ...mapState(familyStore, ['familyCallsignList']),
+    ...mapState(boardStore, ['feed'])
   },
   methods: {
-    ...mapActions(boardStore, ['boardCreate']),
+    ...mapActions(boardStore, ['boardCreate', 'getOneFeed', 'boardUpdate']),
     ...mapActions(familyStore, ['callsignList']),
-    // 파일 처리
-    fileCheck (e) {
-      // 파일을 다시 선택한다고 했을 때 이미 선택했던 파일을 다 없앤다
-      // fileList -> 담아서 전송해줄 파일 데이터를 담는 배열
-      // srcList -> 사진 미리보기를 보여주는 배열
-      fileList = []
-      this.srcList = []
-      this.imageFlag = false
-      // 확장자 변경
-      this.changeFile()
-      // 미리보기
-      this.previewFile()
-      if (this.srcList.length !== 0) {
-        this.imageFlag = true
+    check () {
+      this.callsign = this.familyCallsignList
+      this.boardDate = this.feed.viewBoardResponseDto.boardDate
+      this.dateChange()
+      this.originBoardDate = this.feed.viewBoardResponseDto.boardDate
+      this.boardContent = this.feed.viewBoardResponseDto.boardContent
+      this.boardLocation = this.feed.viewBoardResponseDto.boardLocation
+      this.boardTaggedYn = this.feed.viewBoardResponseDto.boardTaggedYn
+      this.boardMediaYn = this.feed.viewBoardResponseDto.boardMediaYn
+      this.pollYn = this.feed.viewBoardResponseDto.pollYn
+      this.date = this.feed.viewBoardResponseDto.boardDate
+      if (this.pollYn) {
+        this.pollFlag = true
+        this.question = this.feed.pollResponse.question
+        this.choices = this.feed.pollResponse.choices
       }
-    },
-    changeFile () {
-      const previewCount = 0
-      const fileInput = document.getElementById('file')
-      // 선택한 파일의 정보 리스트
-      const files = fileInput.files
-      // let previewCount = files.length
-      // heic 파일 확장자 변경
-      // 선택한 파일의 개수만큼 돌아서 각각의 파일을 다 확인
-      for (let i = 0; i < files.length; i++) {
-        // 파일 하나 선택
-        const file = files[i]
-        let heicFile = ''
-        // 파일의 확장자가 heic일 경우
-        if (file.name.split('.')[1] === 'heic') {
-          // file의 타입을 "image/jpg"로 바꾸고 이름 뒤에 확장자도 .jpg로 바꾼다
-          heic2any({ blob: file, toType: 'image/jpg' })
-            .then(function (resultBlob) {
-              heicFile = new File([resultBlob], file.name.split('.')[0] + '.jpg', { type: 'image/jpg', lastModified: new Date().getTime() })
-              fileList.push(heicFile)
-            })
-            .catch((err) => {
-              console.log(err)
-            })
-        } else {
-          fileList.push(file)
+      this.peopleList = this.feed.viewBoardTaggedResponseDto
+      console.log(this.callsign.length)
+      if(this.callsign.length > 0) {
+        for(let i = 0; i < this.callsign.length; i++) {
+          if(this.peopleList.some(v => v.userId === this.callsign[i].toUserId)) {
+            this.callsignCheck.push(true)
+          } else {
+            this.callsignCheck.push(false)
+          }
         }
       }
     },
-    previewFile () {
-      console.log(fileList)
-      if (fileList.length != 0) {
-        for (let i = 0; i < fileList.length; i++) {
-          this.srcList.push(URL.createObjectURL(fileList[i]))
-        }
-      }
-      console.log('안녕')
-      console.log(this.srcList)
+    // 글 수정
+    updateText () {
+      this.boardModified = true
     },
     // 추가기록과 투표만들기 토글
     record () {
@@ -286,14 +309,36 @@ export default {
         this.toggle = false
       }
     },
+    // 투표 초기화
+    pollReset () {
+      this.boardModified = true
+      // 제목과 항목 초기화
+      this.question = ''
+      this.choices = [
+        { text: '' },
+        { text: '' }
+      ]
+      this.pollFlag = false
+      this.pollCheck = true
+      this.pollYn = 0
+      this.pollModified = true
+    },
     // 투표 항목 추가하기
     addPollItem () {
-      if (this.pollOptions.length < 5) {
-        this.pollCnt = this.pollCnt + 1
-        this.pollOptions.push({ pollOption: '' })
+      if (!this.pollCheck && this.pollYn) {
+        alert('원래 있던 투표는 수정하실 수 없습니다. 초기화 버튼으로 새로 만들어주세요!')
       } else {
-        alert('투표 항목은 5개까지 가능합니다.')
+        this.boardModified = true
+        if (this.choices.length < 5) {
+          this.choices.push({ text: '' })
+        } else {
+          alert('투표 항목은 5개까지 가능합니다.')
+        }
       }
+    },
+    // 투표 항목 삭제
+    pollDelete (index) {
+      this.choices.splice(index, 1)
     },
     // 투표 마감 시간 설정
     pollTimeCheck () {
@@ -309,18 +354,19 @@ export default {
       const modal = document.getElementById('date-popup')
       modal.classList.remove('hidden')
     },
-    // 누구랑?
-    showFamily () {
-      const modal = document.getElementById('popup')
-      modal.classList.remove('hidden')
+    // 화면에 보이는 날짜
+    dateChange () {
+      const date = new Date(this.boardDate)
+      const year = date.getFullYear()
+      let month = (1 + date.getMonth())
+      let day = date.getDate()
+      month = month >= 10 ? month : `0${month}`
+      day = day >= 10 ? day : `0${day}`
+      this.date = `${year}-${month}-${day}`
     },
-    // 날짜 선택 모달창에서 확인 버튼 클릭
-    dateConfirm () {
-      if (this.boardDate === '') {
-        alert('날짜를 선택해주세요')
-      }
-      const modal = document.getElementById('date-popup')
-      // year = 년 , month = 월 , day = 일
+    // 날짜 수정
+    updateDate () {
+      this.boardModified = true
       const year = this.boardDate.getFullYear()
       let month = (1 + this.boardDate.getMonth())
       let day = this.boardDate.getDate()
@@ -328,19 +374,44 @@ export default {
       month = month >= 10 ? month : `0${month}`
       day = day >= 10 ? day : `0${day}`
       this.date = `${year}-${month}-${day}`
+    },
+    // 날짜 제거 했을때
+    removeDate () {
+      console.log('안녕' + this.boardModified)
+      this.boardModified = true
+      console.log(this.boardDate)
+      this.date = ''
+    },
+    // 날짜 선택 모달창에서 확인 버튼 클릭
+    dateConfirm () {
+      if (this.boardDate === '') {
+        alert('날짜를 선택해주세요')
+      }
+      const modal = document.getElementById('date-popup')
       // 모달창 숨기기
       modal.classList.add('hidden')
+      console.log(this.boardDate)
     },
     // 날짜 선택 모달창에서 취소 버튼 클릭
     dateCancle () {
+      console.log(this.originBoardDate)
+      this.boardDate = this.originBoardDate
       const modal = document.getElementById('date-popup')
-      this.boardDate = ''
+      this.date = this.boardDate
       modal.classList.add('hidden')
     },
     // 날짜 삭제
     deleteDate () {
+      console.log('안녕' + this.boardModified)
+      this.boardModified = true
       this.date = ''
+      this.originBoardDate = ''
       this.boardDate = ''
+    },
+    // 누구랑?
+    showFamily () {
+      const modal = document.getElementById('popup')
+      modal.classList.remove('hidden')
     },
     // 사람 태그 확인
     personConfirm () {
@@ -348,7 +419,6 @@ export default {
       console.log(test)
       for (let i = 0; i < test.length; i++) {
         const user = test[i].value
-
         const person = {
           userId: user
         }
@@ -397,102 +467,133 @@ export default {
           if (fullRoadAddr !== '') {
             fullRoadAddr += extraRoadAddr
           }
+          console.log('안녕' + this.boardModified)
+          this.boardModified = true
           this.boardLocation = fullRoadAddr
         }
       }).open()
     },
     // 위치 삭제
     deleteLocation () {
+      if (this.boardLocation !== '') {
+        console.log('안녕' + this.boardModified)
+        this.boardModified = true
+      }
       this.boardLocation = ''
     },
     // 게시글 작성
-    feedCreate () {
-      const createBoardRequestDto = {}
+    feedUpdate () {
       // 미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
-      if (fileList.length === 0 && this.boardContent === '' && this.pollYn) {
-        alert('글이나 사진을 등록해야 작성이 가능합니다.')
+      if (fileList.length === 0 && this.boardContent === '' && !this.pollYn) {
+        alert('글이나 사진이나 투표를 등록해야 작성이 가능합니다.')
         // this.files = test
       } else {
-        // 미디어 파일이 있다!
-        console.log(fileList.length)
-        if (fileList.length !== 0) {
-          this.boardMediaYn = 1
-        } // 투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
-        // for(let i = 0; i < )
+        // 투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
         let pollOptionCnt = 0
-        for (let i = 0; i < this.pollCnt; i++) {
-          if (this.pollOptions[i].pollOption !== '') {
+        for (let i = 0; i < this.choices.length; i++) {
+          if (this.choices[i].text !== '') {
             pollOptionCnt = pollOptionCnt + 1
           }
         }
         // 작성한 항목이 있는데
         if (pollOptionCnt !== 0) {
           // 제목이 없으면
-          if (this.pollTitle === '') {
+          if (this.question === '') {
             alert('투표 제목을 입력해주세요')
-          } else if (this.pollTitle === '' && pollOptionCnt < 2) {
+          } else if (this.question !== '' && pollOptionCnt < 2) {
+            console.log('두번째')
             alert('투표 항목은 최소한 두 개 이상이어야 합니다')
           } else {
-            this.pollYn = 1
+            console.log('마지막')
+            for (let i = 0; i < this.choices.length; i++) {
+              if (this.choices[i].text === '') {
+                alert('아무 것도 입력하지 않은 투표 항목이 있습니다')
+              } else {
+                if (this.pollCheck) {
+                  this.boardModified = true
+                  this.pollModified = true
+                  this.pollYn = 1
+                }
+              }
+            }
           }
         }
-        // 투표가 있을 경우
-        if (this.pollYn === 1) {
+        // 투표가 있고 그게 지금 수정한 경우
+        if (this.pollYn && this.boardModified) {
+          console.log('안녕' + this.boardModified)
           if (this.pollDateDisabled) {
             const timeOff = new Date().getTimezoneOffset() * 60000
             const timeZone = new Date(Date.now() - timeOff) // 현재 시간
-            this.pollEndDate = new Date(timeZone.setDate(timeZone.getDate() + 3)).toISOString()
+            this.expirationDateTime = new Date(timeZone.setDate(timeZone.getDate() + 3)).toISOString()
           } else {
             const timeOff = new Date(this.pollDatePicker).getTimezoneOffset() * 60000
             const timeZone = new Date(this.pollDatePicker - timeOff)
-            this.pollEndDate = timeZone.toISOString()
+            this.expirationDateTime = timeZone.toISOString()
           }
-          const pollChoice = []
-          for (let i = 0; i < this.pollOptions.length; i++) {
-            const option = {
-              text: this.pollOptions[i].pollOption
-            }
-            pollChoice[i] = option
+        }
+        // if (this.boardTaggedModified) {
+        // }
+        // 투표가 있을 경우
+        if (this.pollModified) {
+          this.pollRequest = {
+            question: this.question,
+            expirationDateTime: this.expirationDateTime,
+            choices: this.choices,
+            boardId: localStorage.getItem('boardId')
           }
-          const pollResult = {
-            // boardId: 0,
-            question: this.pollTitle,
-            expirationDateTime: this.pollEndDate,
-            choices: pollChoice
+        }
+        console.log(this.boardModified)
+        if (this.boardModified) {
+          const updateBoardRequestDto = {
+            boardModified: this.boardModified,
+            boardTaggedModified: this.boardTaggedModified,
+            modifyBoardRequestDto: {
+              boardContent: this.boardContent,
+              boardDate: this.boardDate,
+              boardId: localStorage.getItem('boardId'),
+              boardLocation: this.boardLocation,
+              boardMediaYn: this.boardMediaYn,
+              boardTaggedYn: this.boardTaggedYn,
+              pollYn: this.pollYn
+            },
+            pollModified: this.pollModified,
+            pollRequest: this.pollRequest
           }
-          Object.assign(createBoardRequestDto, { pollRequest: pollResult })
+          console.log(updateBoardRequestDto)
+          this.boardUpdate(updateBoardRequestDto)
+        } else {
+          alert('수정한 것이 없습니다')
         }
 
-        // 추가 정보에서 사람 태그 여부
-        const taggedResult = []
-        // 태그한 사람이 있을 경우
-        if (this.peopleList.length !== 0) {
-          this.boardTaggedYn = 1
-          for (let i = 0; i < this.peopleList.length; i++) {
-            taggedResult[i] = this.peopleList[i]
-          }
-          Object.assign(createBoardRequestDto, { inputBoardTaggedRequestDtos: taggedResult })
-        }
-        const inputBoardRequestDto = {
-          familyId: localStorage.getItem('familyId'),
-          userId: localStorage.getItem('userId'),
-          boardRegDatetime: new Date(),
-          boardContent: this.boardContent,
-          boardDate: this.boardDate,
-          boardLocation: this.boardLocation,
-          boardTaggedYn: this.boardTaggedYn,
-          boardMediaYn: this.boardMediaYn,
-          pollYn: this.pollYn,
-          boardLikeCnt: 0,
-          boardReplyCnt: 0
-        }
-        Object.assign(createBoardRequestDto, { inputBoardRequestDto })
-        console.log(createBoardRequestDto)
-        if (this.boardMediaYn === 1) {
-          this.boardCreate({ createBoardRequestDto, fileList })
-        } else {
-          this.boardCreate({ createBoardRequestDto })
-        }
+        // // 추가 정보에서 사람 태그 여부
+        // const taggedResult = []
+        // // 태그한 사람이 있을 경우
+        // if (this.peopleList.length !== 0) {
+        //   this.boardTaggedYn = 1
+        //   for (let i = 0; i < this.peopleList.length; i++) {
+        //     taggedResult[i] = this.peopleList[i]
+        //   }
+        //   Object.assign(createBoardRequestDto, { inputBoardTaggedRequestDtos: taggedResult })
+        // }
+        // const inputBoardRequestDto = {
+        //   familyId: localStorage.getItem('familyId'),
+        //   userId: localStorage.getItem('userId'),
+        //   boardContent: this.boardContent,
+        //   boardDate: this.boardDate,
+        //   boardLocation: this.boardLocation,
+        //   boardTaggedYn: this.boardTaggedYn,
+        //   boardMediaYn: this.boardMediaYn,
+        //   pollYn: this.pollYn,
+        //   boardLikeCnt: 0,
+        //   boardReplyCnt: 0
+        // }
+        // Object.assign(createBoardRequestDto, { inputBoardRequestDto })
+        // console.log(createBoardRequestDto)
+        // if (this.boardMediaYn === 1) {
+        //   this.boardCreate({ createBoardRequestDto, fileList })
+        // } else {
+        //   this.boardCreate({ createBoardRequestDto })
+        // }
       }
     }
   }
@@ -500,6 +601,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.record-time {
+    &.hidden {
+        display: none;
+    }
+}
 //반응형을 위해 전체 공간
 .create-content {
   margin-top: 20px;
@@ -559,9 +665,10 @@ export default {
       margin: 0 auto;
       display: flex;
       justify-content: center;
+      margin-top: 10px;
       .toggle-wrap {
         button {
-          background-color: white;
+          background-color: #fafafa;
           color: black;
           padding: 0 10px;
           text-decoration: underline;
@@ -726,6 +833,8 @@ export default {
   }
 }
 .carousel-inner{
+  min-width: 300px;
+  height: 90%;
   width: 40%!important;
   margin: 0 auto;
 }
@@ -773,7 +882,22 @@ export default {
   display: flex;
 
 }
+.poll-button {
+    display: flex;
+    justify-content: center;
+}
+.poll-item-wrap {
+  div {
+    position: relative;
+    span {
+      position: absolute;
+      right: 160px;
+      top: 13px;
+    }
+  }
+}
 .carousel-inner {
   width: 50%;
 }
+
 </style>
