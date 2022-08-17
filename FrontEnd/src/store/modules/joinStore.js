@@ -27,14 +27,13 @@ const joinStore = {
         url: api_url + '/user/duplication/id',
         params
       }).then(res => {
+        console.log(res)
         if (res.data === true) {
           alert('중복된 아이디입니다!')
           context.commit('SET_CHECKED', false)
-          console.log(context.state.isChecked)
         } else {
           alert('사용가능한 아이디입니다!')
           context.commit('SET_CHECKED', true)
-          console.log(context.state.isChecked)
         }
         // 409를 받으면 실행되는 코드
       }).catch((res) => {
@@ -65,7 +64,6 @@ const joinStore = {
       }).then(res => {
         if (context.state.isChecked === true) {
           alert('회원가입성공')
-          console.log(res)
           localStorage.setItem('userId', userJoin.userId)
           router.push({ name: 'addInformation' })
         } else {

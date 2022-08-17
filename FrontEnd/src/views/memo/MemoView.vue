@@ -1,18 +1,20 @@
 <template>
     <div class="memo-wrap" id="memo-tab">
-        <HeaderTitle title="냉장고"/>
-        <div class="memo-content">
-            <div class="content-wrap" v-for="(memo, index) in memoAllList" :key="index">
-                <div :class="memo.color">
-                    <span>{{memoAllList[index].memoContent}}</span>
+        <div class="height-wrap">
+            <HeaderTitle title="냉장고"/>
+            <div class="memo-content">
+                <div class="content-wrap" v-for="(memo, index) in memoAllList" :key="index">
+                    <div :class="memo.color">
+                        <span>{{memoAllList[index].memoContent}}</span>
+                    </div>
+                    <button type="button" class="btn-close" aria-label="Close" @click="removeMemo(memo.memoId)"></button>
                 </div>
-                <button type="button" class="btn-close" aria-label="Close" @click="removeMemo(memo.memoId)"></button>
             </div>
+            <button id="btn-modal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="goMemoCreate">
+                <img style="width:25px;" src="@/assets/images/plus-lg.svg" alt="plus">
+            </button>
         </div>
-        <button id="btn-modal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="goMemoCreate">
-            <img style="width:25px;" src="@/assets/images/plus-lg.svg" alt="plus">
-        </button>
-        <BottomTap></BottomTap>
+        <BottomTap feedLink="nav-link" refrideLink="nav-link active" albumLink="nav-link" calendarLink="nav-link"></BottomTap>
     </div>
 </template>
 <script>
@@ -95,6 +97,9 @@ export default {
 }
 .memo-wrap {
   width: 900px;
+    .height-wrap{
+        height: 100%;
+    }
 
     li {
         list-style: none;

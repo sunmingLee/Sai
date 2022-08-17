@@ -2,7 +2,7 @@
   <div class="join-wrap">
     <HeaderTitle hasBack="true" class="header" title="회원가입"/>
     <br>
-    <form id="join-form">
+    <form id="join-form" @submit.prevent="onJoin">
       <div class="input-wrap">
         <InputBox :hasLabel="true" labelName="이름" @inputCheck="checkName"></InputBox>
         <p v-if="validName" class="valid-error">이름을 2자 이상으로 입력하세요.</p>
@@ -37,7 +37,7 @@
       </div>
       <br>
       <div>
-        <Button type="submit" buttonText="회원가입" buttonClass="small disabled" v-if="checked === false"></Button>
+        <Button buttonText="회원가입" buttonClass="small disabled" v-if="checked === false"></Button>
         <Button type="submit" buttonText="회원가입" buttonClass="small positive" v-else @click.prevent="onJoin"></Button>
       </div>
     </form>
@@ -69,6 +69,8 @@ export default {
       },
       passwordConfirm: '',
       checked: false,
+      dupcheck1: false,
+      dupcheck2: false,
       validName: true,
       validId: true,
       validEmail: true,
@@ -88,13 +90,14 @@ export default {
         this.userJoin.userName = userName
       }
     },
-    // 이름 유효성 검사sdf
+    // 이름 유효성 검사
     isValidName (userName) {
       const re = /^[가-힣a-zA-Z]{2,}/
       return re.test(userName)
     },
     // 아이디 유효성을 검사하고 문구를 출력 판단
     checkId (userId) {
+      this.dupcheck1 = false
       if (this.userJoin.userId.length >= 0 && !this.isValidId(userId)) {
         this.validId = true
       } else {
@@ -109,6 +112,7 @@ export default {
     },
     // 이메일 유효성을 검사하고 문구를 출력 판단
     checkEmail (email) {
+      this.dupcheck2 = false
       if (this.userJoin.email.length >= 0 && !this.isValidEmail(email)) {
         this.validEmail = true
       } else {
@@ -146,11 +150,11 @@ export default {
     },
     // 중복검사
     duplicateId () {
-      // 유효성 검사 통과된 아이디면
+      // 유효성 검사 통과된 아이디면 => 중복검사의 무조건 하게.
       // 유효성 검사 통과가 안된 아이디이면 store못가게
       if (!this.validId) {
         this.checkDuplicateId(this.userJoin.userId)
-        // mapActions(joinStore, ['checkDuplicateId'])
+        this.dupcheck1 = true
       } else {
         alert('아이디는 4자 이상 16자 이하로 입력하세요.')
       }
@@ -158,23 +162,29 @@ export default {
     duplicateEmail () {
       if (!this.validEmail) {
         this.checkDuplicateEmail(this.userJoin.email)
-        //this.$store.dispatch('checkDuplicateEmail', this.userJoin.email)
+        this.dupcheck2 = true
       } else {
         alert('이메일 형식으로 입력하세요.')
       }
     },
     onJoin () {
+      console.log(this.checked)
       if (this.checked === true) {
-        if (!this.validName && !this.validId && !this.validEmail && !this.validPassword && !this.validPasswordConfirm) {
+        if (!this.validName && !this.validId && !this.validEmail && !this.validPassword && !this.validPasswordConfirm 
+        && this.dupcheck1 && this.dupcheck2) {
           this.checkJoin(this.userJoin)
           //this.$store.dispatch('join', this.userJoin)
-        } else {
-          alert('회원가입란은 다시 한번 확인해주세요.')
+        } else if (!this.dupcheck1) {
+          alert('아이디 중복확인은 필수입니다.')
+        } else if (!this.dupcheck2) {
+          alert('이메일 중복확인은 필수입니다.')
         }
-      // 이름, 아이디, 이메일, 비밀번호, 비밀번호 확인 모두 작성되고
-      // 유효성 검사 모두 통과되고
+        else {
+          alert('회원가입란을 다시 한번 확인해주세요.')
+        }
+      } else {
+        alert('개인정보 수집에 동의에 체크해주세요.')
       }
-    // 중복확인 모두 통과되면
     }
   }
 }
