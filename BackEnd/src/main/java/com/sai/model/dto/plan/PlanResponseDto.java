@@ -28,9 +28,9 @@ public class PlanResponseDto {
 	
 	private LocalDateTime planNotiDatetime;
 	
-	private int planRoutineDay;
+	private Integer planRoutineDay;
 	
-	private LocalDate routineEndDate;
+	private String planPlace;
 	
 	private Boolean allDayYn; 
 	
