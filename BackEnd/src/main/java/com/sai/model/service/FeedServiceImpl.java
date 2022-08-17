@@ -304,43 +304,49 @@ public class FeedServiceImpl implements FeedService {
 			}
 		}
 
+		if (modifyBoardRequestDto.getPollYn()) {
+
 			// 투표 삭제 후 재생성
-		if (updateBoardRequestDto.isPollModified()) {
-			// 삭제
-			Poll poll = pollRepository.findByBoardBoardId(board.getBoardId());
+			if (updateBoardRequestDto.isPollModified()) {
+				// 삭제
+				Poll poll = pollRepository.findByBoardBoardId(board.getBoardId());
 
-			// 투표가 있는 경우
-			if (poll != null) {
-				pollRepository.delete(poll);
+				// 투표가 있는 경우
+				if (poll != null) {
+					pollRepository.delete(poll);
 
-				// 재생성
-				PollRequest pollRequest = updateBoardRequestDto.getPollRequest();
-				if (pollRequest != null)
-					pollService.createPoll(pollRequest);
-			}
-		}
-		// 투표가 없는 경우 새로 만들기
-		else {
-			PollRequest pollRequest = updateBoardRequestDto.getPollRequest();
-			if (pollRequest != null) {
-				pollService.createPoll(pollRequest);
-			}
-		}
-
-		// 태그 삭제 후 재생성
-		if (updateBoardRequestDto.isBoardTaggedModified()) {
-			boardTaggedRepository.deleteByBoard(board);
-
-			List<InputBoardTaggedRequestDto> inputBoardTaggedRequestDtos = updateBoardRequestDto
-					.getInputBoardTaggedRequestDtos();
-
-			if (inputBoardTaggedRequestDtos != null)
-				for (InputBoardTaggedRequestDto inputBoardTaggedRequestDto : inputBoardTaggedRequestDtos) {
-					User user = userRepository.findById(inputBoardTaggedRequestDto.getUserId()).get();
-					BoardTagged boardTagged = BoardTagged.builder().board(board).user(user).build();
-
-					boardTaggedRepository.save(boardTagged);
+					// 재생성
+					PollRequest pollRequest = updateBoardRequestDto.getPollRequest();
+					if (pollRequest != null) {
+						System.out.println("투표가 있을 때 재생성할 거야");
+						pollService.createPoll(pollRequest);
+					}
 				}
+			}
+			// 투표가 없는 경우 새로 만들기
+			else {
+				System.out.println("투표가 없어서 만들거야");
+				PollRequest pollRequest = updateBoardRequestDto.getPollRequest();
+				if (pollRequest != null) {
+					pollService.createPoll(pollRequest);
+				}
+			}
+
+			// 태그 삭제 후 재생성
+			if (updateBoardRequestDto.isBoardTaggedModified()) {
+				boardTaggedRepository.deleteByBoard(board);
+
+				List<InputBoardTaggedRequestDto> inputBoardTaggedRequestDtos = updateBoardRequestDto
+						.getInputBoardTaggedRequestDtos();
+
+				if (inputBoardTaggedRequestDtos != null)
+					for (InputBoardTaggedRequestDto inputBoardTaggedRequestDto : inputBoardTaggedRequestDtos) {
+						User user = userRepository.findById(inputBoardTaggedRequestDto.getUserId()).get();
+						BoardTagged boardTagged = BoardTagged.builder().board(board).user(user).build();
+
+						boardTaggedRepository.save(boardTagged);
+					}
+			}
 		}
 	}
 

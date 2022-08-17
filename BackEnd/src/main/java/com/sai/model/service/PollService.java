@@ -43,6 +43,7 @@ public class PollService {
 	// 투표 만들기
 	public Poll createPoll(PollRequest pollRequest) {
 		Poll poll = new Poll();
+		System.out.println(pollRequest.getBoardId());
 		
 		poll.setBoard(boardRepository.findById(pollRequest.getBoardId()).get());		
 		poll.setPollTitle(pollRequest.getQuestion());
