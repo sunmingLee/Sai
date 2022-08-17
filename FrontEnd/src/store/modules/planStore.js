@@ -2,6 +2,8 @@
 import axios from 'axios'
 import router from '@/router/index.js'
 import { API_BASE_URL } from '@/config'
+import { instance } from '@/api/index.js'
+
 
 const api_url = API_BASE_URL + '/plan'
 const planStore = {
@@ -27,7 +29,7 @@ const planStore = {
     // 일정 작성
     planCreate ({ commit }, planInfo) {
       console.log(planInfo)
-      axios({
+      instance({
         url: api_url,
         method: 'POST',
         data: planInfo

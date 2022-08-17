@@ -5,14 +5,17 @@
       <div class="feed-wrap">
             <div class="feed-flex" v-if="feedList.length">
                 <div v-for="(feed, index) in feedList" :key="index" class="feed-div">
-                    <div class="flex">
+                    <div class="header-flex">
                         <div class="content-header">
                             <div v-for="(callsign, index) in familyCallsignList" :key="index" class="famliy-callsign">
                                 <div v-if="feed.viewBoardResponseDto.userId === callsign.toUserId">
                                     <span>{{callsign.callsign}}</span>
                                 </div>
+                                <div v-else style="display: none"></div>
                             </div>
-                            <span>{{feed.viewBoardResponseDto.boardRegDatetime.substring(0,10)}}</span>
+                        </div>
+                        <div class="header-date">
+                          <span>{{feed.viewBoardResponseDto.boardRegDatetime.substring(0,10)}}</span>
                         </div>
                     </div>
                     <div class="flex body">
@@ -27,13 +30,6 @@
                                   <td><img class="poll-image" src="@/assets/images/person.svg" alt="user image">{{choice.voteCount}}</td>
                                 </tr>
                               </table>
-                                <!-- <h3>{{feed.pollResponse.question}}</h3>
-                                <div v-for="(choice, index) in feed.pollResponse.choices" :key="index">
-                                    <div>
-                                        <span>{{choice.text}}</span>
-                                        <span>{{choice.voteCount}}</span>
-                                    </div>
-                                </div> -->
                             </div>
                             <div v-else-if="feed.viewBoardResponseDto.boardMediaYn" class="media-wrap">
                                 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
@@ -67,11 +63,13 @@
                         </div>
                     </div>
                     <div class="flex reaction">
+                      <!-- 좋아요 -->
                         <div class="content-cnt">
-                            <img v-if="feed.boardLiked" :src="like" @click="unlikeButton" class="like-icon">
-                            <img v-else :src="unlike" @click="likeButton" class="like-icon">
+                            <img v-if="feed.boardLiked" src="@/assets/images/suit-heart-fill.svg" @click="likeButton(feed.viewBoardResponseDto.boardId)" class="like-icon">
+                            <img v-else src="@/assets/images/suit-heart.svg" @click="likeButton(feed.viewBoardResponseDto.boardId)" class="like-icon">
                             {{feed.viewBoardResponseDto.boardLikeCnt}}
                         </div>
+                        <!-- 댓글 -->
                         <div class="content-reply">
                             <img src="@/assets/images/comment-regular.svg" alt="calendar" class="reply-icon">
                             {{feed.viewBoardResponseDto.boardReplyCnt}}
@@ -80,6 +78,7 @@
                           <Button buttonClass="small information" buttonText="상세보기" @click="goDetail(feed.viewBoardResponseDto.boardId)"></Button>
                         </div>
                     </div>
+                    <!-- 첫번째 댓글 -->
                     <div v-if="feed.replyDto !== null">
                       <div v-for="(callsign, index) in familyCallsignList" :key="index" class="famliy-callsign">
                         <div v-if="feed.replyDto.userId === callsign.toUserId">
@@ -88,15 +87,19 @@
                       </div>
                       {{feed.replyDto.replyContent}}
                     </div>
-                    <div v-else>
-                      <span>등록된 댓글이 없습니다. 첫 댓글의 주인공이 되어보세요!</span>
+                    <div v-else style="padding:2px 20px">
+                      <span>등록된 댓글이 없습니다</span>
                     </div>
                 </div>
+                
             </div>
             <div v-else>
                 <h3>등록된 게시글이 없습니다</h3>
             </div>
         </div>
+        <!-- <div class="feed-more">
+                  <button>더보기</button>
+                </div> -->
       <button id="btn-modal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="goBoardCreate">
         <img style="width:25px;" src="@/assets/images/plus-lg.svg" alt="plus">
       </button>
@@ -133,38 +136,40 @@ export default {
     const userInfo = JSON.parse(user)
   },
   mounted () {
-
+    
   },
   computed: {
     ...mapState(boardStore, ['feedList']),
     ...mapState(familyStore, ['familyCallsignList']),
+    image() {
+      return feedList.boardLiked
+    }
   },
   methods: {
     ...mapActions(userStore, ['checkUserInfo']),
-    ...mapActions(boardStore, ['feedAllList', 'setBoardId']),
+    ...mapActions(boardStore, ['feedAllList', 'setBoardId', 'upBoardLike', 'downBoardLike']),
     ...mapActions(familyStore, ['callsignList', 'getFamilyInfo']),
     // 좋아요 버튼 클릭
-    likeButton () {
+    likeButton (boardId) {
       const info = {
-        userId: this.$store.state.userId,
-        familyId: this.$store.state.familyId
+        userId: localStorage.getItem('userId'),
+        boardId: boardId
       }
-      const icon = document.querySelector('.like-icon')
-      console.log(icon)
-      this.unlike = require('@/assets/images/heart-fill.svg')
-      if (this.$store.state.feedAllList.boardLiked) {
-        console.log('좋아요')
-        // console.log(document.querySelector('.like-icon'))
-        // this.$store.dispatch('likeClick', info)
-      } else {
-        console.log('좋아요 취소')
-        this.unlike = require('@/assets/images/heart.svg')
-        // this.$store.dispatch('unlikeClick', info)
+      // console.log(this.feedList)
+      const boardNum = boardId - 1
+      console.log(this.feedList)
+      console.log(this.feedList[0].boardLiked)
+      for(let i = 0; i < this.feedList.length; i++) {
+        if(this.feedList[i].viewBoardResponseDto.boardId === boardId) {
+          if(!this.feedList[i].boardLiked) {
+            console.log("좋아요")
+            this.upBoardLike(info)
+          } else {
+            console.log("좋아요 취소")
+            this.downBoardLike(info)
+          }
+        }
       }
-    },
-    // 좋아요 취소
-    unlikeButton () {
-
     },
     // 글 작성 페이지 이동
     goBoardCreate () {
@@ -174,14 +179,12 @@ export default {
     goDetail (boardId) {
     //   console.log('들어가기 전: ' + boardId)
       this.setBoardId(boardId)
-    }
+    },
   },
   data () {
     return {
       test: '',
-      like: require('@/assets/images/heart-fill.svg'),
-      unlike: require('@/assets/images/heart.svg')
-    }
+      }
   }
 }
 
@@ -220,12 +223,19 @@ p {
 }
 
 //콜사인과 날짜
-.content-header {
-  font-weight: bold;
+.header-flex {
   display: flex;
   justify-content: space-around;
+  .header-date {
+    font-weight: bold;
+    margin: 10px 0 10px 0;
+  }
+}
+.content-header {
+  font-weight: bold;
   margin: 10px 0 10px 0;
 }
+
 
 //글, 사진, 투표의 공간
 .flex {
@@ -235,7 +245,7 @@ p {
     padding: 10px;
     // height: 300px;
     height: auto;
-    margin: 0 auto;
+    margin: 0 10px;
     // display: flex;
     // justify-content: center;
     // align-items: center;
@@ -274,7 +284,7 @@ p {
 .flex {
   &.reaction {
     display: flex;
-    padding: 10px;
+    padding: 10px 24px;
     // border: 1px solid black;
     // .detail-button {
     //   margin-left: 375px;
@@ -334,4 +344,17 @@ table {
         height: 50px;
     }
 }
+
+// .feed-more {
+//   height: 30px;
+//   width: 120px;
+//   color: white;
+//   margin: 20px auto;
+//   text-align: center;
+//   button {
+//     background-color: #7b371c;
+//     height: 30px;
+//     width: 120px;
+//   }
+// }
 </style>

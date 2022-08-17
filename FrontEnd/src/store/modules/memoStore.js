@@ -2,6 +2,8 @@
 import axios from 'axios'
 import router from '@/router/index.js'
 import { API_BASE_URL } from '@/config'
+import { instance } from '@/api/index.js'
+
 
 const api_url = API_BASE_URL + '/memo'
 const albumStore = {
@@ -24,7 +26,7 @@ const albumStore = {
   actions: {
     //메모 생성
     async createMemo({commit}, createMemoRequestDto) {
-      await axios({
+      await instance({
         url: api_url,
         method: 'POST',
         data: JSON.stringify(createMemoRequestDto),
@@ -43,7 +45,7 @@ const albumStore = {
     },
     //전체 메모 리스트 조회(냉장고 페이지에서 보여질 것)
     async getMemoAllList({commit}, familyId) {
-      await axios({
+      await instance({
         url: api_url + `/list/${familyId}`,
         method: 'GET',
       })
@@ -56,7 +58,7 @@ const albumStore = {
     },
     //메모 삭제
     async deleteMemo({commit}, memoId) {
-      await axios({
+      await instance({
         url: api_url + `/${memoId}`,
         method: 'DELETE'
       })
