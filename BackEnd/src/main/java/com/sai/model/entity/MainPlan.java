@@ -86,15 +86,15 @@ public class MainPlan {
 		this.allDayYn = updatePlanRequestDto.getAllDayYn();
 		this.planType = updatePlanRequestDto.getPlanType();
 		this.planTitle = updatePlanRequestDto.getPlanTitle();
-		this.mainPlanStartDatetime = updatePlanRequestDto.getMainPlanStartDatetime();
-		this.mainPlanEndDatetime = updatePlanRequestDto.getMainPlanEndDatetime();
+		this.mainPlanStartDatetime = updatePlanRequestDto.getDate().get(0);
+		this.mainPlanEndDatetime = updatePlanRequestDto.getDate().get(1);
 //		this.planNotiDatetime = updatePlanRequestDto.getPlanNotiDatetime();
 		this.planRoutineDay = updatePlanRequestDto.getPlanRoutineDay();
 //		this.routineEndDate = updatePlanRequestDto.getRoutineEndDate();
 //		this.planTaggedYn = updatePlanRequestDto.getPlanTaggedYn();
 		this.planPlace = updatePlanRequestDto.getPlanPlace();
 		this.planNotiYn = updatePlanRequestDto.getPlanNotiYn();
-		
+		System.out.println("업데이트");
 	}
 	
 	

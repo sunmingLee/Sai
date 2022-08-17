@@ -12,6 +12,10 @@ import javax.imageio.ImageIO;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +35,7 @@ import com.sai.model.repository.BoardRepository;
 import com.sai.model.repository.FamilyRegisterRepository;
 import com.sai.model.repository.UserRepository;
 import com.sai.model.service.MailService;
+import com.sai.security.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
@@ -51,7 +56,8 @@ public class UserServiceImpl implements UserService {
 	private final JwtTokenProvider jwtTokenProvider;
 	private final PasswordEncoder passwordEncoder;
 	private final ModelMapper modelMapper;
-
+	private final AuthenticationManager authenticationManager;
+	
 	// 아이디 중복 체크
 	@Override
 	public boolean checkUserIdDuplicate(String userId) {
@@ -181,6 +187,14 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public String login(LoginUserRequestDto user) {
 //		LoginUserResponseDto loginUserResponseDto = new LoginUserResponseDto();
+		
+//		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword()));
+//		SecurityContextHolder.getContext().setAuthentication(authentication);
+//		UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
+		
+		System.out.println("여긴 로그인이야");
+//		System.out.println(userDetails.getUserId());
+		
 		User loginUser = userRepository.findByUserId(user.getUserId())
 				.orElseThrow(() -> new ResourceNotFoundException("User", "userId", user.getUserId()));
 		if (!passwordEncoder.matches(user.getPassword(), loginUser.getPassword())) {
@@ -226,7 +240,7 @@ public class UserServiceImpl implements UserService {
 		} else {
 			infoUserResponseDto.setFamilyId(loginUser.getFamily().getFamilyId());
 		}
-
+		System.out.println("가족정보 서비스 끝이야");
 		return infoUserResponseDto;
 	}
 

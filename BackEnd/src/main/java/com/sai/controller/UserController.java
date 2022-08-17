@@ -6,12 +6,14 @@ import java.util.Map;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.catalina.security.SecurityUtil;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -43,6 +45,7 @@ import com.sai.model.service.user.UserServiceImpl;
 import com.sai.security.CurrentUser;
 import com.sai.security.UserPrincipal;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
 @CrossOrigin(origins = "*")
@@ -56,26 +59,27 @@ public class UserController {
 	private final OAuth2UserService oAuth2UserService;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
+//	private final UserPrincipal userPrincipal;
 
-	// 아이디 중복 검사
+	@ApiOperation(value = "checkUserIdDuplicate: 아이디 중복 검사")
 	@GetMapping("/duplication/id")
 	public ResponseEntity<Boolean> checkUserIdDuplicate(@RequestParam String userId) {
 		return ResponseEntity.ok(userService.checkUserIdDuplicate(userId));
 	}
 
-	// 이메일 중복 검사
+	@ApiOperation(value = "checkUserEmailDuplicate: 이메일 중복 검사")
 	@GetMapping("/duplication/email")
 	public ResponseEntity<Boolean> checkUserEmailDuplicate(@RequestParam String email) {
 		return ResponseEntity.ok(userService.checkUserEmailDuplicate(email));
 	}
 
-	// 직접 회원가입
+	@ApiOperation(value = "join: 직접 회원가입")
 	@PostMapping("/join")
 	public ResponseEntity<String> join(@RequestBody UserDto userInfo) {
 		return ResponseEntity.status(200).body(userService.insertUser(userInfo));
 	}
 	
-	// 추가 정보 입력
+	@ApiOperation(value = "addUserInformation: 추가 정보 입력")
 	@PostMapping("/addInfo")
 	public ResponseEntity<?> addUserInformation(@RequestPart UserInfoDTO addInfo, @RequestPart(required = false) MultipartFile file) throws Exception {
 		try {
@@ -86,7 +90,7 @@ public class UserController {
 		
 	}
 
-	// 사용자 정보 조회
+	@ApiOperation(value = "getUserInfoByUserId: 사용자 정보 조회")
 	@GetMapping("/{userId}")
 	public ResponseEntity<UserDto> getUserInfoByUserId(@PathVariable String userId) throws JsonProcessingException {
 		UserDto getUser = userService.getUserInfoByUserId(userId);
@@ -94,6 +98,7 @@ public class UserController {
 	}
 
 	// 개인정보 수정 전 사용자 확인
+	@ApiOperation(value = "verifyUser: 개인정보 수정 전 사용자 확인")
 	@PostMapping("/verify/{userId}")
 	public ResponseEntity<?> verifyUser(@PathVariable String userId, @RequestBody String password) {
 		try {
@@ -107,35 +112,39 @@ public class UserController {
 	}
 	
 	// 비밀번호 변경
+	@ApiOperation(value = "changePassword: 비밀번호 변경")
 	@PatchMapping("/profile/{userId}")
 	public ResponseEntity<String> changePassword(@PathVariable String userId, @RequestParam String password) {
 		return ResponseEntity.status(200).body(userService.changePassword(userId, password));
 	}
 
 	// 회원 탈퇴
+	@ApiOperation(value = "deleteUser: 회원 탈퇴")
 	@DeleteMapping("/{userId}")
 	public ResponseEntity<String> deleteUser(@PathVariable String userId) {
 		return ResponseEntity.ok(userService.deleteUser(userId));
 	}
 
 	// 로그인
+	@ApiOperation(value = "login: 로그인")
 	@PostMapping("/login")
-	public ResponseEntity<LoginUserResponseDto> login(@RequestBody LoginUserRequestDto user, HttpServletResponse response) throws Exception {
+	public ResponseEntity<?> login(@RequestBody LoginUserRequestDto user, HttpServletResponse response) throws Exception {
 		
 		LoginUserResponseDto loginUserResponseDto = new LoginUserResponseDto();
 		try {
 			String JWT = userService.login(user);
-			response.setHeader("X-AUTH-TOKEN", JWT);
-			Cookie cookie = new Cookie("X-AUTH-TOKEN", JWT);
-			cookie.setPath("/");
-			cookie.setHttpOnly(true);
-			cookie.setSecure(true);
-			response.addCookie(cookie);
-			loginUserResponseDto.setMsg("로그인 성공");
-			return ResponseEntity.status(200).body(loginUserResponseDto);
+//			response.setHeader("X-AUTH-TOKEN", JWT);
+//			Cookie cookie = new Cookie("X-AUTH-TOKEN", JWT);
+//			cookie.setPath("/");
+//			cookie.setHttpOnly(true);
+//			cookie.setSecure(true);
+//			response.addCookie(cookie);
+//			loginUserResponseDto.setMsg("로그인 성공");
+			System.out.println("로그인 끝");
+			return ResponseEntity.status(200).body(JWT);
 		} catch (Exception e) {
 			loginUserResponseDto.setMsg("로그인 에러");
-			return ResponseEntity.status(400).body(loginUserResponseDto);
+			return ResponseEntity.status(400).body("에러가 발생했습니다.");
 		}
 	}
 
@@ -154,10 +163,11 @@ public class UserController {
 //	}
 	
 	// 로그인 후 회원정보 요청
+	@ApiOperation(value = "loginUserInfo: 로그인 후 회원정보 요청")
 	@PostMapping("/login/info")
 	public ResponseEntity<InfoUserResponseDto> loginUserInfo(@RequestBody LoginUserRequestDto loginUserRequestDto){
-		
 		try {
+			System.out.println("여긴 회원정보야");
 			return ResponseEntity.ok(userService.loginUserInfo(loginUserRequestDto));
 		} catch (Exception e) {
 			return ResponseEntity.status(404).body(userService.loginUserInfo(loginUserRequestDto));
@@ -166,6 +176,7 @@ public class UserController {
 	
 	
 	// 로그아웃
+	@ApiOperation(value = "logout: 로그아웃")
 	@PostMapping("/logout")
 	public void logout(HttpServletResponse response) {
 		
@@ -178,6 +189,7 @@ public class UserController {
 	}
 
 	// 아이디 찾기
+	@ApiOperation(value = "findUserId: 아이디 찾기")
 	@GetMapping("/findId")
 	public ResponseEntity<Map<String, Object>> findUserId(UserDto user) throws Exception {
 
@@ -189,6 +201,7 @@ public class UserController {
 	}
 
 	// 비밀번호 찾기
+	@ApiOperation(value = "findUserPw: 비밀번호 찾기")
 	@GetMapping("/findPw")
 	public ResponseEntity<Map<String, Object>> findUserPw(UserDto user) throws Exception {
 
@@ -198,6 +211,7 @@ public class UserController {
 	}
 	
 	// 개인 페이지(개인 피드) 조회
+	@ApiOperation(value = "readMyAllBoard: 개인 페이지 조회")
 	@GetMapping("/myPage/{userId}")
 	public ResponseEntity<?> readMyAllBoard(@PathVariable String userId, @PageableDefault(size = 16, sort = "boardRegDatetime", direction = Direction.DESC) Pageable pageable, @CurrentUser UserPrincipal currUser)
 			throws Exception {

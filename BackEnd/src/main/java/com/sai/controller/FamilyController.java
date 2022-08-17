@@ -145,7 +145,7 @@ public class FamilyController {
 
 		try {
 			FamilyDto familyDto = familyService.searchFamily(familyId);
-
+			System.out.println("이것도 string을 넣으면 되려나?");
 			if (familyDto != null) {
 				return new ResponseEntity<FamilyDto>(familyDto, HttpStatus.OK);
 			} else {
