@@ -8,12 +8,17 @@ const api_url = API_BASE_URL + '/api'
 const joinStore = {
   namespaced: true,
   state: {
-    isChecked: true
+    isChecked: true,
+    accessToken: ''
   },
   getters: {
   },
   mutations: {
-    SET_CHECKED: (state, isChecked) => { state.isChecked = isChecked }
+    SET_CHECKED: (state, isChecked) => { state.isChecked = isChecked },
+    SET_ACCESSTOKEN: (state, accessToken) => {
+      state.accessToken = accessToken
+      // axios.defaults.headers.common.Authorization = 'Bearer accessToken'
+    }
   },
   actions: {
     // 중복체크
@@ -59,12 +64,14 @@ const joinStore = {
       }).catch((res) => {
       })
     },
-    checkJoin (context, userJoin) {
+    checkJoin (context, { commit }, userJoin) {
       instance.post(api_url + '/user/join', userJoin, {
       }).then(res => {
         if (context.state.isChecked === true) {
           alert('회원가입성공')
           localStorage.setItem('userId', userJoin.userId)
+          localStorage.setItem('accessToken', res.data)
+          commit('SET_ACCESSTOKEN', res.data)
           router.push({ name: 'addInformation' })
         } else {
           alert('아이디중복 또는 이메일중복을 확인해주세요')
