@@ -2,6 +2,8 @@
 import axios from 'axios'
 import router from '@/router/index.js'
 import { API_BASE_URL } from '@/config'
+import { instance } from '@/api/index.js'
+
 
 const api_url = API_BASE_URL + '/plan'
 const planStore = {
@@ -26,7 +28,7 @@ const planStore = {
     // 일정 작성
     planCreate ({ commit }, planInfo) {
       console.log(planInfo)
-      axios({
+      instance({
         url: api_url,
         method: 'POST',
         data: planInfo
@@ -49,7 +51,7 @@ const planStore = {
     planAllList ({ commit }, info) {
       const familyId = info.familyId
       // const userId = info.userId
-      axios({
+      instance({
         url: api_url + '/' + familyId,
         method: 'GET'
       })
@@ -92,7 +94,7 @@ const planStore = {
     },
     // 일정 상세보기
     getOneFeed ({ commit }, info) {
-      axios({
+      instance({
         url: api_url + `/${info.boardId}/${info.userId}`,
         method: 'GET'
       })
@@ -106,7 +108,7 @@ const planStore = {
     },
     // 일정 삭제
     deleteFeed ({ commit }, boardId) {
-      axios({
+      instance({
         url: api_url + `/board/${boardId}`,
         method: 'DELETE'
       })

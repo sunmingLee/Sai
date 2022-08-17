@@ -1,6 +1,8 @@
 import axios from 'axios'
 import router from '@/router/index.js'
 import { API_BASE_URL } from '@/config'
+import { instance } from '@/api/index.js'
+
 
 const api_url = API_BASE_URL + '/api'
 const joinStore = {
@@ -19,7 +21,7 @@ const joinStore = {
       const params = {
         userId: id
       }
-      axios({
+      instance({
         method: 'get',
         // eslint-disable-next-line camelcase
         url: api_url + '/user/duplication/id',
@@ -43,7 +45,7 @@ const joinStore = {
       const params = {
         email: email
       }
-      axios({
+      instance({
         method: 'get',
         url: api_url + '/user/duplication/email',
         params
@@ -59,7 +61,7 @@ const joinStore = {
       })
     },
     checkJoin (context, userJoin) {
-      axios.post(api_url + '/user/join', userJoin, {
+      instance.post(api_url + '/user/join', userJoin, {
       }).then(res => {
         if (context.state.isChecked === true) {
           alert('회원가입성공')

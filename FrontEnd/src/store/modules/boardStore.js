@@ -2,6 +2,7 @@
 import axios from 'axios'
 import router from '@/router/index.js'
 import { API_BASE_URL } from '@/config'
+import { instance } from '@/api/index.js'
 
 const api_url = API_BASE_URL + '/feed'
 const boardStore = {
@@ -48,7 +49,7 @@ const boardStore = {
         }
       }
       formData.append('createBoardRequestDto', new Blob([JSON.stringify(createBoardRequestDto)], { type: 'application/json' }))
-      axios({
+      instance({
         url: api_url + '/board',
         method: 'POST',
         data: formData,
@@ -75,7 +76,7 @@ const boardStore = {
     feedAllList ({ commit }, info) {
       const familyId = info.familyId
       const userId = info.userId
-      axios({
+      instance({
         url: api_url + '/' + familyId + '/' + userId,
         method: 'GET'
       })
@@ -94,7 +95,7 @@ const boardStore = {
     },
     // 게시글 상세보기
     getOneFeed ({ commit }, info) {
-      axios({
+      instance({
         url: api_url + `/board/${info.boardId}/${info.userId}`,
         method: 'GET'
       })
@@ -108,7 +109,7 @@ const boardStore = {
     },
     // 게시글 삭제
     deleteFeed ({ commit }, boardId) {
-      axios({
+      instance({
         url: api_url + `/board/${boardId}`,
         method: 'DELETE'
       })
@@ -125,7 +126,7 @@ const boardStore = {
       const data = {
         choiceId: info.choiceId
       }
-      axios({
+      instance({
         url: API_BASE_URL + `/api/poll/${info.pollId}/votes`,
         method: 'POST',
         data: JSON.stringify(data),
@@ -142,7 +143,7 @@ const boardStore = {
     },
     // 좋아요 등록
     upBoardLike ({ commit, dispatch }, info) {
-      axios({
+      instance({
         url: api_url + `/board/${info.boardId}/like/${info.userId}`,
         method: 'POST'
       })
@@ -155,7 +156,7 @@ const boardStore = {
     },
     // 좋아요 취소
     downBoardLike ({ commit, dispatch }, info) {
-      axios({
+      instance({
         url: api_url + `/board/${info.boardId}/like/${info.userId}`,
         method: 'DELETE'
       })
@@ -168,7 +169,7 @@ const boardStore = {
     },
     // 댓글 조회
     getReplyList ({ commit }, boardId) {
-      axios({
+      instance({
         url: api_url + `/${boardId}` + '/reply',
         method: 'GET'
       })
@@ -186,7 +187,7 @@ const boardStore = {
         userId: info.userId,
         replyContent: info.replyContent
       }
-      axios({
+      instance({
         url: api_url + `/${info.boardId}` + '/reply',
         method: 'POST',
         data: JSON.stringify(data),
@@ -208,7 +209,7 @@ const boardStore = {
         replyId: info.replyId,
         userId: info.userId
       }
-      axios({
+      instance({
         url: api_url + `/${info.boardId}` + '/reply',
         method: 'DELETE',
         data: JSON.stringify(data),
@@ -225,7 +226,7 @@ const boardStore = {
     },
     // 개인페이지 피드 조회
     myFeedAllList ({ commit }, userId) {
-      axios({
+      instance({
         url: API_BASE_URL + '/api/user/myPage/' + userId,
         method: 'GET'
       })
