@@ -12,11 +12,12 @@ const boardStore = {
     replyList: [],
     feed: [],
     myFeedList: [],
-    myFeedCnt: [],
-    likeList: []
+    myFeedCnt: 0,
+    likeList: [],
+    myFeedPagenationCnt: 0
   },
   getters: {
-
+    
   },
   mutations: {
     FEED_All_LIST (state, feed) {
@@ -39,6 +40,9 @@ const boardStore = {
     },
     LIKE_All_LIST(state, likeList) {
       state.likeList = likeList
+    },
+    MY_FEED_PAGINATION(state, myFeedNum) {
+      state.myFeedPagenationCnt = Math.ceil(myFeedNum / 3) 
     }
   },
   actions: {
@@ -283,15 +287,19 @@ const boardStore = {
         })
     },
     // 개인페이지 피드 조회
-    myFeedAllList ({ commit }, userId) {
+    myFeedAllList ({ commit }, info) {
+      const params = info.page
+      console.log(params)
       instance({
-        url: API_BASE_URL + '/api/user/myPage/' + userId,
-        method: 'GET'
+        url: API_BASE_URL + '/api/user/myPage/' + info.userId,
+        method: 'GET',
+        params
       })
         .then((res) => {
           console.log(res.data)
-          commit('MY_FEED_All_LIST', res.data)
-          commit('MY_FEED_All_LIST_COUNT', res.data.length)
+          commit('MY_FEED_All_LIST', res.data.readFeedResponseDtos)
+          commit('MY_FEED_All_LIST_COUNT', res.data.userBoardNum)
+          commit('MY_FEED_PAGINATION', res.data.userBoardNum)
         })
         .catch((err) => {
           console.log('에러')

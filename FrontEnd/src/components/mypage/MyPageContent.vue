@@ -19,6 +19,13 @@
             </div>
       </div>
     </div>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li class="page-item" ><a class="page-link" href="#">이전</a></li>
+        <li class="page-item" v-for="(feed, index) in myFeedPagenationCnt" :key="index" ><a @click="pagination(index)" class="page-link" href="#">{{index+1}}</a></li>
+        <li class="page-item"><a class="page-link" href="#">다음</a></li>
+      </ul>
+    </nav>
   </div>
 </template>
 <script>
@@ -32,26 +39,36 @@ export default {
   },
   data () {
     return {
-        feedCount: 0
+        feedCount: 0,
+        pageNum: 1
     }
   },
   created() {
     // 피드 조회
-    const userId = localStorage.getItem('userId')
+    const info = {
+      userId: localStorage.getItem('userId'),
+      page : 0
+    }
     // 피드 전체 리스트 조회
-    this.myFeedAllList(userId)
+    this.myFeedAllList(info)
   },
   mounted() {
   },
   computed: {
-    ...mapState(boardStore, ['myFeedList', 'myFeedCnt'])
+    ...mapState(boardStore, ['myFeedList', 'myFeedCnt', 'myFeedPagenationCnt'])
   },
   methods: {
     ...mapActions(boardStore, ['myFeedAllList', 'setBoardId']),
     //상세보기 이동
     goDetail (boardId) {
-    //   console.log('들어가기 전: ' + boardId)
       this.setBoardId(boardId)
+    },
+    pagination(index) {
+      const info = {
+        userId: localStorage.getItem('userId'),
+        page: index
+      }
+      this.myFeedAllList(info)
     }
   }
 }
