@@ -34,7 +34,8 @@ public class Poll extends UserDateAudit {
 	@Column(name = "poll_id")
 	private Long pollId;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "board_id")
 	private Board board;
 
