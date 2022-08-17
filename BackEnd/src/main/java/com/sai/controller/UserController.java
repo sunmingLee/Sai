@@ -133,13 +133,6 @@ public class UserController {
 		LoginUserResponseDto loginUserResponseDto = new LoginUserResponseDto();
 		try {
 			String JWT = userService.login(user);
-//			response.setHeader("X-AUTH-TOKEN", JWT);
-//			Cookie cookie = new Cookie("X-AUTH-TOKEN", JWT);
-//			cookie.setPath("/");
-//			cookie.setHttpOnly(true);
-//			cookie.setSecure(true);
-//			response.addCookie(cookie);
-//			loginUserResponseDto.setMsg("로그인 성공");
 			System.out.println("로그인 끝");
 			return ResponseEntity.status(200).body(JWT);
 		} catch (Exception e) {
