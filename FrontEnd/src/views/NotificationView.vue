@@ -11,19 +11,31 @@
         <li class="list-group-item" v-for="(noti, index) in notificationList" :key="index" @change="getNotiList">
           <button type="button" class="btn-close" aria-label="Close" @click="deleteNoti(noti.notiId)"></button>
           <span v-for="(callsign, index) in familyCallsignList" :key="index">
-            <!-- 댓글 -->
-            <span v-if="noti.notiType === 'COMMENT'">
-              <span style="font-weight: bold;"> 댓글 </span>
-              <span v-if="noti.fromUser.userId === callsign.toUserId"> {{callsign.callsign}}님이 새로운 댓글을 달았습니다.</span>
-              <span style="float: right;">{{noti.notiDateTime}}</span>
-            </span>
-            <!-- 가족신청 -->
-            <span v-else-if="noti.notiType === 'FAMILYREGISTER'">
-              <span style="font-weight: bold;"> 가족신청 </span>
-              <span v-if="noti.fromUser.userId === callsign.toUserId"> {{callsign.callsign}}님이 가족 신청을 요청했습니다.</span>
-              <span style="float: right;">{{noti.notiDateTime}}</span>
+            <span v-if="noti.fromUser.userId === callsign.toUserId">
+              <!-- 댓글 -->
+              <span v-if="noti.notiType === 'COMMENT'">
+                <span style="font-weight: bold;"> 댓글 </span>
+                <span> {{callsign.callsign}}님이 새로운 댓글을 달았습니다.</span>
+              </span>
+              <!-- 좋아요 -->
+              <span v-else-if="noti.notiType === 'LIKE'">
+                <span style="font-weight: bold;"> 좋아요 </span>
+                <span> {{callsign.callsign}}님이 {{noti.notiContent}}</span>
+              </span>
             </span>
           </span>
+          <!-- 가족신청 -->
+          <span v-if="noti.notiType === 'FAMILYREGISTER'">
+            <span style="font-weight: bold;"> 신청 </span>
+            <span v-if="!hasAnswered">
+              <span> {{noti.fromUser.userId}}님이 가족 신청을 요청했습니다.</span>
+              <span class="button-accept-wrap">
+                <Button buttonClass="small positive" buttonText="수락" @click="acceptRegister(noti.notiContentId, noti.fromUser.userId, noti.notiId)"></Button>
+                <Button buttonClass="small negative" buttonText="거절" @click="declineRegister(noti.notiContentId, noti.fromUser.userId, noti.notiId)"></Button>
+              </span>
+            </span>
+          </span>
+          <!-- <span style="float: right;">{{noti.notiDateTime}}</span> -->
         </li>
     </ul>
     <ul class="list-group list-group-flush" v-else>
@@ -68,16 +80,22 @@ export default {
     }
   },
   created () {
-    // this.$store.dispatch('notificationStore/readNotification', localStorage.getItem('userId'))
+    // 알림 읽음 처리
     this.readNotification(localStorage.getItem('userId'))
+
+    // 가족 콜사인 찾기
+    this.callsignList(localStorage.getItem('userId'))
+
+    // 알림 리스트 조회
     this.listNotification(this.pageInfo)
   },
   computed: {
     ...mapState(notificationStore, ['notificationList']),
-    ...mapState(familyStore, ['familyCallsignList'])
+    ...mapState(familyStore, ['familyCallsignList', 'hasAnswered', 'approved'])
   },
   methods: {
     ...mapActions(notificationStore, ['deleteNotification', 'deleteAllNotification', 'listNotification', 'readNotification', 'listNotification']),
+    ...mapActions(familyStore, ['callsignList', 'answerFamilyRegister']),
     // 알림 하나 삭제
     deleteNoti (notiId) {
       const info = {
@@ -89,6 +107,26 @@ export default {
     // 알림 전체 삭제
     deleteAllNoti () {
       this.deleteAllNotification(this.pageInfo)
+    },
+    // 가족 신청 수락
+    acceptRegister (familyRegisterId, userId, notiId) {
+      const info = {
+        userId: userId,
+        approveYn: true,
+        familyRegisterId: familyRegisterId
+      }
+      this.answerFamilyRegister(info)
+      this.deleteNoti(notiId)
+    },
+    // 가족 신청 거절
+    declineRegister (familyRegisterId, userId, notiId) {
+      const info = {
+        userId: userId,
+        approveYn: false,
+        familyRegisterId: familyRegisterId
+      }
+      this.answerFamilyRegister(info)
+      this.deleteNoti(notiId)
     },
     // 이전 알림 목록 받아오기
     previousList () {
@@ -143,5 +181,12 @@ export default {
 .button-wrap{
     text-align: right;
     margin-bottom: 3%;
+}
+.button-accept-wrap{
+  display: flex;
+  justify-content: right;
+  div{
+    margin-left: 10px;
+  }
 }
 </style>

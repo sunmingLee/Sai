@@ -13,7 +13,6 @@
     <button id="btn-modal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
     <img style="width:25px;" src="@/assets/images/plus-lg.svg" alt="plus">
     </button>
-
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -23,7 +22,9 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <input type="file" class="form-control" id="customFile" @change="fileCheck" multiple />
+          <form action="">
+            <input ref="imageUploader" type="file" class="form-control" id="customFile" @change="fileCheck" multiple />
+          </form>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
@@ -44,7 +45,7 @@ import { mapState, mapActions } from 'vuex'
 const albumStore = 'albumStore'
 
 // 파일 리스트
-const fileList = []
+let fileList = []
 export default {
   components: { HeaderTitle },
   data () {
@@ -63,6 +64,9 @@ export default {
     ...mapActions(albumStore, ['getMediaList', 'insertMedia', 'deleteMedia']),
     // 파일 처리
     fileCheck (e) {
+      // 파일을 다시 선택한다고 했을 때 이미 선택했던 파일을 다 없앤다
+      // fileList -> 담아서 전송해줄 파일 데이터를 담는 배열
+      fileList = []
       const fileInput = document.getElementById('customFile')
       // 선택한 파일의 정보 리스트
       const files = fileInput.files
@@ -92,6 +96,9 @@ export default {
     addMedia () {
       // console.log(fileList)
       this.insertMedia(fileList)
+      // 선택했던 파일 없애기
+      this.$refs.imageUploader.value = null
+      fileList = []
     },
     // 미디어 삭제
     eraseMedia (albumMediaId) {

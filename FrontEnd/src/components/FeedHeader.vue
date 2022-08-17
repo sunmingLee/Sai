@@ -1,7 +1,5 @@
 <template>
     <div class="header">
-        <div>
-        </div>
         <div class="flex" style="width: 200px">
             <div class="family-image" v-if="familyInfo.familyImagePath !== null">
                 <img :src="familyInfo.familyImagePath">
@@ -16,24 +14,28 @@
                 </div>
             </div>
         </div>
-        <div class="flex">
+        <div class="flex right">
             <!-- 유저 사진 -->
-            <div v-if="userInfo.userImagePath === null" id="drop">
+            <div v-if="userInfo.userImagePath === null" @click="dropDown">
                 <img src="@/assets/images/person-circle.svg" alt="user" style="width:28px">
             </div>
-            <div v-else id="drop"> 
-                <img src="@/assets/images/alert-on-svgrepo-com.svg" alt="calendar" style="width: 28px">
+            <div v-else @click="dropDown"> 
+                <img :src="userInfo.userImagePath">
             </div>
             <!-- <router-link :to="{name : 'detailreview'}">상세보기</router-link> -->
-            <div>
-                <ul>
-                    <li @click="goMyPage">내 페이지</li>
-                    <li @click="goAccount">계정관리</li>
-                    <li @clcick="logout">로그아웃</li>
-                </ul>
+            <div class="drop-menu">
+                <div v-if="menuFlag" class="mymenu-wrap">
+                    <ul>
+                        <li>{{userInfo.userName}}</li>
+                        <hr>
+                        <li @click="goMyPage">내 페이지</li>
+                        <li @click="goAccount">계정관리</li>
+                        <li @click="logout">로그아웃</li>
+                    </ul>
+                </div>
             </div>
             <!-- 알림 -->
-            <div v-if="notificationList.length === 0" @click="goNotice">
+            <div v-if="notificationCount === 0" @click="goNotice">
                 <img src="@/assets/images/alert-svgrepo-com.svg" alt="calendar" style="width: 28px">
             </div>
             <div v-else @click="goNotice">
@@ -43,15 +45,16 @@
     </div>
 </template>
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 
 const familyStore = 'familyStore'
 const notificationStore = 'notificationStore'
 const userStore = 'userStore'
 export default {
     name: 'FeedHeader',
-    date () {
+    data () {
         return {
+            menuFlag: false
         }
     },
     created() {
@@ -65,7 +68,8 @@ export default {
     computed: {
         ...mapState(userStore, ['userInfo']),
         ...mapState(familyStore, ['familyInfo']),
-        ...mapState(notificationStore, ['notificationList'])
+        ...mapState(notificationStore, ['notificationList']),
+        ...mapGetters(notificationStore, ['notificationCount'])
     },
     methods: {
         ...mapActions(familyStore, ['getFamilyInfo']),
@@ -73,6 +77,15 @@ export default {
         //가족 정보 수정 페이지로 이동
         goFamilyUpdate() {
             this.$router.push({ name: "familyInfoChange" });
+        },
+        //드롭다운
+        dropDown() {
+            console.log(this.menuFlag)
+            if(this.menuFlag) {
+                this.menuFlag = false
+            } else {
+                this.menuFlag = true
+            }
         },
         //알림함 이동
         goNotice() {
@@ -96,17 +109,23 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.drop-menu {
+    position: relative;
+}
+
 .header {
     top: 0;
-    padding-left: 5%;
-    padding-right: 5%;
+    padding: 0 5%;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 5%;
+    margin: 5% 0 2% 0;
     .flex {
         display: flex;
         justify-content: space-evenly;
+        &.right {
+            justify-content: flex-end
+        }
     }
 }
 .family-image {
@@ -121,5 +140,32 @@ export default {
   color: #7B371C;
   font-size: 20px;
   font-weight: bold;
+}
+//유저 메뉴
+.mymenu-wrap {
+    // display: none;
+    border: 1px solid #F0EAE3;
+    background-color: #F0EAE3;
+    width: 86px;
+    height: 162px;
+    position: absolute;
+    top: 102%;
+    right: -30px;
+    z-index: 1;
+    ul {
+        margin: 0;
+        padding: 0;
+        :nth-child(1) {
+            margin: 5px 0 5px 0;
+            font-weight: bold;
+        }
+    }
+    li {
+        text-align: center;
+        margin: 13px 0 13px 0;
+    }
+    hr {
+        margin: 0;
+    }
 }
 </style>

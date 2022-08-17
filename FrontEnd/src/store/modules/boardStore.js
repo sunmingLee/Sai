@@ -2,6 +2,7 @@
 import axios from 'axios'
 import router from '@/router/index.js'
 import { API_BASE_URL } from '@/config'
+import { instance } from '@/api/index.js'
 
 const api_url = API_BASE_URL + '/feed'
 const boardStore = {
@@ -9,21 +10,31 @@ const boardStore = {
   state: {
     feedList: [],
     replyList: [],
-    feed: []
+    feed: [],
+    myFeedList: [],
+    myFeedCnt: []
   },
   getters: {
 
   },
   mutations: {
     FEED_All_LIST (state, feed) {
-      state.feedList = feed
-      console.log(state.feedList)
+      state.feedList = state.feedList.concat(feed)
     },
     SET_REPLY_LIST (state, replyList) {
       state.replyList = replyList
     },
     SET_FEED (state, feed) {
       state.feed = feed
+    },
+    MY_FEED_All_LIST (state, myFeed) {
+      state.myFeedList = myFeed
+    },
+    MY_FEED_All_LIST_COUNT (state, myFeedNum) {
+      state.myFeedCnt = myFeedNum
+    },
+    FEED_RESET (state) {
+      state.feedList = []
     }
   },
   actions: {
@@ -39,7 +50,7 @@ const boardStore = {
         }
       }
       formData.append('createBoardRequestDto', new Blob([JSON.stringify(createBoardRequestDto)], { type: 'application/json' }))
-      axios({
+      instance({
         url: api_url + '/board',
         method: 'POST',
         data: formData,
@@ -66,12 +77,20 @@ const boardStore = {
     feedAllList ({ commit }, info) {
       const familyId = info.familyId
       const userId = info.userId
-      axios({
+      const params = {
+        page: info.page
+      }
+      instance({
         url: api_url + '/' + familyId + '/' + userId,
-        method: 'GET'
+        method: 'GET',
+        params
       })
         .then((res) => {
-          commit('FEED_All_LIST', res.data)
+          if (res.data.length === 0) {
+            alert('더 이상 불러올 게시물이 없습니다')
+          } else {
+            commit('FEED_All_LIST', res.data)
+          }
         })
         .catch((err) => {
           console.log('에러')
@@ -85,7 +104,7 @@ const boardStore = {
     },
     // 게시글 상세보기
     getOneFeed ({ commit }, info) {
-      axios({
+      instance({
         url: api_url + `/board/${info.boardId}/${info.userId}`,
         method: 'GET'
       })
@@ -99,7 +118,7 @@ const boardStore = {
     },
     // 게시글 삭제
     deleteFeed ({ commit }, boardId) {
-      axios({
+      instance({
         url: api_url + `/board/${boardId}`,
         method: 'DELETE'
       })
@@ -111,12 +130,31 @@ const boardStore = {
           console.log(err)
         })
     },
+    // 게시글 수정
+    boardUpdate ({ commit }, updateBoardRequestDto) {
+      axios({
+        url: api_url + '/board',
+        method: 'PUT',
+        data: JSON.stringify(updateBoardRequestDto),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => {
+          console.log('수정이 됐어요')
+          alert("수정되었습니다.")
+          router.push({ name: 'feed' })
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
     // 투표 선택 (임시 / 쿠키 세팅 이슈)
     chooseVote ({ commit }, info) {
       const data = {
         choiceId: info.choiceId
       }
-      axios({
+      instance({
         url: API_BASE_URL + `/api/poll/${info.pollId}/votes`,
         method: 'POST',
         data: JSON.stringify(data),
@@ -131,9 +169,37 @@ const boardStore = {
           console.log(err)
         })
     },
+    // 좋아요 등록
+    upBoardLike ({ commit, dispatch }, info) {
+      instance({
+        url: api_url + `/board/${info.boardId}/like/${info.userId}`,
+        method: 'POST'
+      })
+        .then((res) => {
+          dispatch('getOneFeed', info)
+          // dispatch('feedAllList', info)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 좋아요 취소
+    downBoardLike ({ commit, dispatch }, info) {
+      instance({
+        url: api_url + `/board/${info.boardId}/like/${info.userId}`,
+        method: 'DELETE'
+      })
+        .then((res) => {
+          dispatch('getOneFeed', info)
+          // dispatch('feedAllList', info)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
     // 댓글 조회
     getReplyList ({ commit }, boardId) {
-      axios({
+      instance({
         url: api_url + `/${boardId}` + '/reply',
         method: 'GET'
       })
@@ -151,7 +217,7 @@ const boardStore = {
         userId: info.userId,
         replyContent: info.replyContent
       }
-      axios({
+      instance({
         url: api_url + `/${info.boardId}` + '/reply',
         method: 'POST',
         data: JSON.stringify(data),
@@ -173,7 +239,7 @@ const boardStore = {
         replyId: info.replyId,
         userId: info.userId
       }
-      axios({
+      instance({
         url: api_url + `/${info.boardId}` + '/reply',
         method: 'DELETE',
         data: JSON.stringify(data),
@@ -187,6 +253,26 @@ const boardStore = {
         .catch((err) => {
           console.log(err)
         })
+    },
+    // 개인페이지 피드 조회
+    myFeedAllList ({ commit }, userId) {
+      instance({
+        url: API_BASE_URL + '/api/user/myPage/' + userId,
+        method: 'GET'
+      })
+        .then((res) => {
+          console.log(res.data)
+          commit('MY_FEED_All_LIST', res.data)
+          commit('MY_FEED_All_LIST_COUNT', res.data.length)
+        })
+        .catch((err) => {
+          console.log('에러')
+          console.log(err)
+        })
+    },
+    // 게시글 초기화
+    feedReset ({ commit }) {
+      commit('FEED_RESET')
     }
   },
   modules: {

@@ -1,122 +1,152 @@
 <template>
     <div class="create-wrap">
-      
-      <p>{{callsign}}</p>
         <HeaderTitle hasBack="true" title="게시글 작성" hasIcon="true"/>
-        <!-- 사진 공간 -->
-        <input type="file" @change="fileCheck" id="file" multiple>
-        <div class="flex">
-          <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner" >
-              <div class="carousel-item active">
-                <img :src="srcList[0]" id="img" class="d-block w-100">
-              </div>
-              <div v-for="(src, index) in srcList" :key="index">
-                <div v-if="index !== 0" class="carousel-item">
-                  <img :src="src" id="img" class="d-block w-100">
-                </div>
-              </div>
+        <div class="create-content">
+          <div class="content-flex">
+          <div class="content-wrap">
+            <!-- 글(텍스트)-->
+            <div class="textarea-wrap">
+              <textarea v-model="boardContent" name="" id="" cols="30" rows="10"></textarea>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-          </div>
-        </div>
-        <!-- 글(텍스트) 공간 -->
-        <div class="flex">
-          <textarea v-model="boardContent" name="" id="" cols="30" rows="10"></textarea>
-        </div>
-        <!-- 추가기록과 투표만들기 토글 -->
-        <div class="flex">
-          <div class="toggle-wrap">
-            <button @click="record">추가 기록</button>
-            <button @click="poll">투표 만들기</button>
-          </div>
-        </div>
-        <div class="flex">
-          <!-- 추가 기록 -->
-          <div class="record-wrap" v-if="toggle">
-            <p>기록하고 싶은 시간, 장소, 사람이 있나요?</p>
-            <div class="record-flex">
-              <div class="record-date">
-                <p>언제?</p>
-                <img :class="visibilityIcon" src="@/assets/images/calendar-check.svg" alt="calendar" style="width: 30px" @click="showDate">
-              </div>
-              <!-- 날짜 모달창 -->
-              <div class="modal hidden" id="size">
-                <div class="modal-overlay">
-                  <div class="modal-content">
-                    <p class="modal-title">날짜 선택</p>
-                    <div class="modal-date">
-                      <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" :enableTimePicker="false" v-model="boardDate"/>
-                    </div>
-                    <div class="btn-wrap">
-                      <button class="date-cancle" @click="dateCancle">취소</button>
-                      <button class="date-confirm" @click="dateConfirm">확인</button>
-                    </div>
+            <!-- 캐러셀 -->
+            <div v-if="imageFlag" id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+              <div class="carousel-inner" >
+                <div class="carousel-item active">
+                  <img :src="srcList[0]" id="img" class="d-block w-100">
+                </div>
+                <div v-for="(src, index) in srcList" :key="index">
+                  <div v-if="index !== 0" class="carousel-item">
+                    <img :src="src" id="img" class="d-block w-100">
                   </div>
                 </div>
               </div>
-              <div class="record-location">
-                <p>어디서?</p>
-                <img :class="visibilityBack" src="@/assets/images/geo-alt.svg" alt="location" style="width: 30px" @click="showApi">
+              <button v-if="imageFlag" class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+              </button>
+              <button v-if="imageFlag" class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+            <div class="file-wrap">
+              <span>사진 추가</span>
+              <div class="file-button">
+                <label calss="file-label" for="file">+</label>
+                <input class="form-control" type="file" @change="fileCheck" id="file" multiple>
               </div>
-              <div class="record-person">
-                <p>누구랑?</p>
-                <img :class="visibilityIcon" src="@/assets/images/person-circle.svg" alt="calendar" style="width: 30px" @click="showFamily">
-              </div>
-              <!-- 사람 선택 모달창 -->
-              <div class="person hidden">
-                <div class="person-overlay">
-                  <div class="person-content">
-                    <p class="person-title">사람 선택</p>
-                    <div class="person-date">
-                      <div v-for="(callsign, index) in familyCallsignList" :key="index">
-                        <label for="callsign-select">{{callsign.callsign}}</label>
-                        <input type="checkbox" name="callsign" :value="family" class="callsign-select">
+            </div>
+          <!-- 추가기록과 투표만들기 토글 -->
+          <div class="toggle-flex">
+            <div class="toggle-wrap">
+              <button @click="record">추가 기록</button>
+              <button @click="poll">투표 만들기</button>
+            </div>
+          </div>
+          <div class="record-flex">
+            <!-- 추가 기록 -->
+            <div class="record-wrap" v-if="toggle">
+              <p class="record-title">기록하고 싶은 시간, 장소, 사람이 있나요?</p>
+              <div class="record-flex">
+                <div class="record-date">
+                  <div class="modal-btn-box">
+                    <p>언제?</p>
+                    <img :class="visibilityIcon" src="@/assets/images/calendar-check.svg" alt="calendar" style="width: 30px" @click="showDate">
+                  </div>
+                  <!-- 날짜 모달창 -->
+                  <div class="popup-wrap hidden" id="date-popup">
+                      <div class="popup">
+                        <div class="popup-header">
+                          <span class="header-title">누구랑 함께 했나요?</span>
+                        </div>
+                        <div class="popup-content">
+                          <div class="body-content">
+                            <div class="content-callsign" >
+                              <div class="modal-date">
+                                <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" :enableTimePicker="false" v-model="boardDate"/>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="popup-foot">
+                          <span class="pop-btn confirm" id="confirm" @click="dateCancle">취소</span>
+                          <span class="pop-btn close" id="close" @click="dateConfirm">확인</span>
+                        </div>
                       </div>
-                    </div>
-                    <div class="btn-wrap">
-                      <button class="date-cancle" @click="personCancle">취소</button>
-                      <button class="date-confirm" @click="personConfirm">확인</button>
-                    </div>
+                  </div>
+                </div>
+                <div class="record-location">
+                  <p>어디서?</p>
+                  <img :class="visibilityBack" src="@/assets/images/geo-alt.svg" alt="location" style="width: 30px" @click="showApi">
+                </div>
+                <div class="record-person">
+                  <div class="modal-btn-box">
+                    <p>누구랑?</p>
+                    <img :class="visibilityIcon" src="@/assets/images/person-circle.svg" alt="calendar" style="width: 30px" @click="showFamily">
+                  </div>
+                <!-- 사람 선택 모달창 -->
+                  <div class="popup-wrap hidden" id="popup">
+                      <div class="popup">
+                        <div class="popup-header">
+                          <span class="header-title">누구랑 함께 했나요?</span>
+                        </div>
+                        <div class="popup-content">
+                          <div class="body-content">
+                            <div class="content-callsign" >
+                              <div class="callsign-wrap" v-for="(callsign, index) in familyCallsignList" :key="index">
+                                <label for="callsign-select">{{callsign.callsign}}</label>
+                                <input type="checkbox" name="callsign" :value="callsign.toUserId" class="callsign-select">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="popup-foot">
+                          <span class="pop-btn confirm" id="confirm" @click="personCancle">취소</span>
+                          <span class="pop-btn close" id="close" @click="personConfirm">확인</span>
+                        </div>
+                      </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div>
-              <p v-if="date !== ''">시간 : {{date}}</p>
-              <button class="delete-date" @click="deleteDate" v-if="date !== ''">삭제</button>
-              <p>위치 : {{boardLocation}}</p>
-              <button class="delete-date" @click="deleteLocation" v-if="boardLocation !== ''">삭제</button>
-            </div>
-          </div>
-          <!-- 투표 만들기 -->
-          <div v-else class="poll-wrap">
-            <!-- 투표 제목 -->
-            <div calss="poll-title-wrap">
-              <input type="text" v-model="pollTitle" placeholder="투표 제목" class="poll-title-input">
-            </div>
-            <!-- 투표 항목 -->
-            <p style="font-weight: bold">항목 입력</p>
-            <div class="poll-item-wrap">
-              <div v-for="(option, index) in pollOptions" :key="index">
-                <input name="option" v-model="option.pollOption" placeholder="항목을 입력하세요">
+              <div class="record-confirm">
+                <span v-if="date !== ''">시간 : {{date}}</span>
+                <Button v-if="date !== ''" buttonClass="small negative" buttonText="삭제" @click="deleteDate"/>
+                <span v-if="boardLocation !== ''">위치 : {{boardLocation}}</span>
+                <Button v-if="boardLocation !== ''" buttonClass="small negative" buttonText="삭제" @click="deleteLocation"/>
               </div>
             </div>
-            <!-- 투표 항목 추가 버튼 -->
-            <button @click="addPollItem">항목 추가</button>
-            <p>마감시간 설정</p>
-            <input type="checkbox" class="poll-time" @click="pollTimeCheck">
-            <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" :minDate="new Date()" v-model="pollDatePicker" :disabled="pollDateDisabled"/>
+            <!-- 투표 만들기 -->
+            <div v-else class="poll-wrap">
+              <!-- 투표 제목 -->
+              <div calss="poll-title-wrap">
+                <input type="text" v-model="pollTitle" placeholder="투표 제목" class="poll-title-input">
+              </div>
+              <!-- 투표 항목 -->
+              <p class="option-title">항목 입력</p>
+              <div class="poll-item-wrap">
+                <div v-for="(option, index) in pollOptions" :key="index">
+                  <input class="poll-option-input" name="option" v-model="option.pollOption" placeholder="항목을 입력하세요">
+                </div>
+              </div>
+              <!-- 투표 항목 추가 버튼 -->
+              <Button buttonClass="small information" buttonText="항목 추가" @click="addPollItem" style="margin: 10px 0"/>
+              <div class="poll-time">
+                <div calss="poll-time-title" style="display: flex">
+                  <span style="line-height:35px">마감시간 설정</span>
+                  <input style="padding-left:10px" type="checkbox" class="poll-time" @click="pollTimeCheck">
+                </div>
+                <div class="poll-time-date">
+                  <Datepicker style="max-width:200px" placeholder="날짜를 선택해주세요." class="datepicker" :minDate="new Date()" v-model="pollDatePicker" :disabled="pollDateDisabled"/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="button-wrap">
+            <Button buttonClass="small positive" buttonText="작성" @click="feedCreate"/>
           </div>
         </div>
-        <button @click="feedCreate" style="color: blue">작성</button>
+      </div>
+      </div>
     </div>
 </template>
 <script>
@@ -134,7 +164,7 @@ const userStore = 'userStore'
 const familyStore = 'familyStore'
 
 // 파일 리스트
-const fileList = []
+let fileList = []
 export default {
   name: 'FeedCreateView',
   components: {
@@ -165,23 +195,24 @@ export default {
       pollDateDisabled: true, // 투표 마감 날짜 지정 여부..
       pollEndDate: '', // 투표 마감 날짜
       // 태그 리스트
-      peopleList: [
-
-      ],
+      peopleList: [],
+      peopleNameList: [],
       disabledDates: '',
       preventDisableDateSelection: true,
       format: '',
       pollCnt: 2,
       srcList: [],
-      fileList: []
+      fileList: [],
+      imageFlag: false
     }
   },
   created () {
     const userId = localStorage.getItem('userId')
     this.callsignList(userId)
+    fileList = []
   },
-  mounted() {
-    
+  mounted () {
+
   },
   computed: {
     // ...mapState(userStore, ["userId", "userName"]),
@@ -190,24 +221,33 @@ export default {
   methods: {
     ...mapActions(boardStore, ['boardCreate']),
     ...mapActions(familyStore, ['callsignList']),
-    //파일 처리
-    fileCheck(e) {
-      //확장자 변경
+    // 파일 처리
+    fileCheck (e) {
+      // 파일을 다시 선택한다고 했을 때 이미 선택했던 파일을 다 없앤다
+      // fileList -> 담아서 전송해줄 파일 데이터를 담는 배열
+      // srcList -> 사진 미리보기를 보여주는 배열
+      fileList = []
+      this.srcList = []
+      this.imageFlag = false
+      // 확장자 변경
       this.changeFile()
-      //미리보기
+      // 미리보기
       this.previewFile()
+      if (this.srcList.length !== 0) {
+        this.imageFlag = true
+      }
     },
-    changeFile() {
-      const previewCount = 0;
-      const fileInput = document.getElementById("file")
-      //선택한 파일의 정보 리스트
-      let files = fileInput.files
+    changeFile () {
+      const previewCount = 0
+      const fileInput = document.getElementById('file')
+      // 선택한 파일의 정보 리스트
+      const files = fileInput.files
       // let previewCount = files.length
-      //heic 파일 확장자 변경
-      //선택한 파일의 개수만큼 돌아서 각각의 파일을 다 확인
-      for(let i = 0; i < files.length; i++) {
-        //파일 하나 선택
-        let file = files[i]
+      // heic 파일 확장자 변경
+      // 선택한 파일의 개수만큼 돌아서 각각의 파일을 다 확인
+      for (let i = 0; i < files.length; i++) {
+        // 파일 하나 선택
+        const file = files[i]
         let heicFile = ''
         // 파일의 확장자가 heic일 경우
         if (file.name.split('.')[1] === 'heic') {
@@ -225,14 +265,14 @@ export default {
         }
       }
     },
-    previewFile() {
+    previewFile () {
       console.log(fileList)
-      if(fileList.length != 0) {
-        for(let i = 0; i < fileList.length; i++) {
+      if (fileList.length != 0) {
+        for (let i = 0; i < fileList.length; i++) {
           this.srcList.push(URL.createObjectURL(fileList[i]))
         }
       }
-      console.log("안녕")
+      console.log('안녕')
       console.log(this.srcList)
     },
     // 추가기록과 투표만들기 토글
@@ -266,17 +306,20 @@ export default {
     },
     // 날짜 선택 모달창 출력
     showDate () {
-      const modal = document.querySelector('.modal')
+      const modal = document.getElementById('date-popup')
       modal.classList.remove('hidden')
     },
     // 누구랑?
     showFamily () {
-      const modal = document.querySelector('.person')
+      const modal = document.getElementById('popup')
       modal.classList.remove('hidden')
     },
     // 날짜 선택 모달창에서 확인 버튼 클릭
     dateConfirm () {
-      const modal = document.querySelector('.modal')
+      if (this.boardDate === '') {
+        alert('날짜를 선택해주세요')
+      }
+      const modal = document.getElementById('date-popup')
       // year = 년 , month = 월 , day = 일
       const year = this.boardDate.getFullYear()
       let month = (1 + this.boardDate.getMonth())
@@ -290,7 +333,7 @@ export default {
     },
     // 날짜 선택 모달창에서 취소 버튼 클릭
     dateCancle () {
-      const modal = document.querySelector('.modal')
+      const modal = document.getElementById('date-popup')
       this.boardDate = ''
       modal.classList.add('hidden')
     },
@@ -302,27 +345,33 @@ export default {
     // 사람 태그 확인
     personConfirm () {
       const test = document.getElementsByName('callsign')
+      console.log(test)
       for (let i = 0; i < test.length; i++) {
-        // 체크 했을 때
+        const user = test[i].value
+
+        const person = {
+          userId: user
+        }
+
         if (test[i].checked) {
-          if (this.peopleList.indexOf(test[i].value) < 0) {
-            this.peopleList.push(Object(test[i].value))
+          const find = this.peopleList.find(v => v.userId === test[i].value)
+          if (!find) {
+            this.peopleList.push(person)
           }
         } else {
-          // 체크 해제의 경우
-          if (this.peopleList.indexOf(test[i].value) > -1) {
-            const index = this.peopleList.indexOf(test[i].value)
-            this.peopleList.splice(index, 1)
-          }
+          // 배열에서 중복되는 값을 빼자
+          const find = this.peopleList.filter(v => v.userId !== test[i].value)
+          this.peopleList = find
         }
       }
+      console.log(this.peopleList)
       // 확인 버튼을 클릭했을 경우 모달창을 끈다
-      const modal = document.querySelector('.person')
+      const modal = document.getElementById('popup')
       modal.classList.add('hidden')
     },
     // 사람 취소
     personCancle () {
-      const modal = document.querySelector('.person')
+      const modal = document.getElementById('popup')
       modal.classList.add('hidden')
     },
     // 위치 선택
@@ -360,7 +409,7 @@ export default {
     feedCreate () {
       const createBoardRequestDto = {}
       // 미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
-      if (fileList.length === 0 && this.boardContent === '') {
+      if (fileList.length === 0 && this.boardContent === '' && this.pollYn) {
         alert('글이나 사진을 등록해야 작성이 가능합니다.')
         // this.files = test
       } else {
@@ -368,7 +417,7 @@ export default {
         console.log(fileList.length)
         if (fileList.length !== 0) {
           this.boardMediaYn = 1
-        }   // 투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
+        } // 투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
         // for(let i = 0; i < )
         let pollOptionCnt = 0
         for (let i = 0; i < this.pollCnt; i++) {
@@ -420,10 +469,7 @@ export default {
         if (this.peopleList.length !== 0) {
           this.boardTaggedYn = 1
           for (let i = 0; i < this.peopleList.length; i++) {
-            const people = {
-              userId: this.peopleList[i]
-            }
-            taggedResult[i] = people
+            taggedResult[i] = this.peopleList[i]
           }
           Object.assign(createBoardRequestDto, { inputBoardTaggedRequestDtos: taggedResult })
         }
@@ -441,6 +487,7 @@ export default {
           boardReplyCnt: 0
         }
         Object.assign(createBoardRequestDto, { inputBoardRequestDto })
+        console.log(createBoardRequestDto)
         if (this.boardMediaYn === 1) {
           this.boardCreate({ createBoardRequestDto, fileList })
         } else {
@@ -453,162 +500,278 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.create-wrap {
-  width: 900px;
-  .flex{
+//반응형을 위해 전체 공간
+.create-content {
+  margin-top: 20px;
+}
+.content-flex {
+  max-width: 900px;
+  margin: 0 auto;
+  .content-wrap {
     display: flex;
-    justify-content: center;
-    text-align: center;
-    width: 600px;
-    margin: 0 auto;
-    .media-wrap {
-      width: 430px;
-      height: 280px;
-    }
-    textarea {
-      height: 300px;
-      width: 500px;
-    }
-    button {
-      margin: 0 10px 0 10px;
-      color: black;
-      background-color: white;
-      text-decoration: underline;
-    }
-    .record-wrap {
-      .record-flex {
-        display: flex;
-        justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1em;
+    padding: 15px;
+    //글 쓰기
+    .textarea-wrap {
+      min-width: 300px;
+      flex-basis: 600px;
+      margin: 0 auto;
+      textarea {
+        width: 100%;
       }
     }
-    // .input-wrap{
-    //   text-align: left;
-    //   margin-bottom: 100px;
-    // }
-    // .name-wrap, .email-wrap, .id-wrap {
-    //     margin: 10px 0 10px 0;
-    //  }
+    //사진 추가
+    .file-wrap {
+      min-width: 300px;
+      flex-basis: 600px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: flex-end;
+      //사진 추가(문구)
+      span {
+        line-height: 30px;
+        padding-right: 10px;
+      }
+      // +버튼
+      .file-button {
+        label {
+          border: 1px solid #A57966;
+          width: 40px;
+          height: 35px;
+          text-align: center;
+          line-height: 30px;
+          font-size: 30px;
+          color: white;
+          background-color: #A57966;
+          border-radius: 10px;
+        }
+        //원래 보이던 input file의 css 숨기기
+        .form-control {
+          display: none;
+        }
+      }
+    }
+    //토글
+    .toggle-flex {
+      min-width: 300px;
+      flex-basis: 600px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      .toggle-wrap {
+        button {
+          background-color: white;
+          color: black;
+          padding: 0 10px;
+          text-decoration: underline;
+        }
+      }
+    }
+    //추가 기록
+    .record-flex, .button-wrap {
+      min-width: 300px;
+      flex-basis: 600px;
+      margin: 0 auto;
+
+      .record-wrap {
+        .record-title {
+          text-align: center;
+        }
+        .record-flex {
+          margin: 20px 0;
+          display: flex;
+          //사람 모달창
+          .record-person, .record-date {
+            width: 100%;
+            flex-basis: 590px;
+            text-align: center;
+            .modal-btn-box {
+              width: 100%;
+              text-align: center;
+            }
+            .popup-wrap {
+              background-color:rgba(0,0,0,.3);
+              justify-content:center;
+              align-items:center;
+              position:fixed;
+              top:0;
+              left:0;
+              right:0;
+              bottom:0;
+              padding:15px;
+              display: flex;
+              &.hidden {
+                display: none;
+              }
+              .popup {
+                width:100%;
+                max-width:400px;
+                background-color:#ffffff;
+                border-radius:10px;
+                overflow:hidden;
+                box-shadow: 5px 10px 10px 1px rgba(0,0,0,.3);
+                .popup-header {
+                  width:100%;
+                  height:50px;
+                  align-items:center;
+                  justify-content:center;
+                  padding: 10px 0;
+                  .header-title {
+                    font-size: 25px;
+                    font-weight: 700;
+                    letter-spacing: -3px;
+                    text-align: center;
+                  }
+                }
+                .popup-content {
+                  width: 100%;
+                  background-color: #ffffff;
+                  .body-content {
+                    width: 100%;
+                    padding: 30px;
+                    .content-title {
+                      text-align:center;
+                      width:100%;
+                      height:40px;
+                      margin-bottom:10px;
+                    }
+                    .content-callsign {
+                      word-break:break-word;
+                      overflow-y:auto;
+                      min-height:100px;
+                      display: flex;
+                      flex-wrap: wrap;
+                      justify-content: center;
+                      align-content: center;
+                      justify-content: space-around;
+                      .callsign-wrap {
+                        border: 1px solid #A57966;
+                        margin: 10px 0;
+                        border-radius: 3px;
+                        display: flex;
+                        justify-content: space-between;
+                        padding: 10px;
+                        // min-width: 340px;
+                        width: 340px;
+                        label {
+                          font-size: 17px;
+                          font-weight: bold;
+                          padding-left: 10px;
+                        }
+                        input {
+                          zoom: 1.4;
+                        }
+
+                      }
+                    }
+                  }
+                }
+                .popup-foot {
+                  width: 100%;
+                  height: 50px;
+                  .pop-btn {
+                    display:inline-flex;
+                    width:50%;
+                    height:100%;
+                    float:left;
+                    justify-content:center;
+                    align-items:center;
+                    color:#ffffff;
+                    &.confirm {
+                      background-color: #C6BFBF;
+                      color: black;
+                    }
+                    &.close {
+                      background-color: #7b371c;
+                    }
+                  }
+                }
+              }
+            }
+          }
+          .record-location {
+            flex-basis: 600px;
+            text-align: center;
+          }
+        }
+        .record-confirm {
+          text-align: center;
+          // display: flex;
+          // justify-content: center;
+          span {
+            margin-right: 10px;
+          }
+        }
+      }
+    }
+    .button-wrap {
+      text-align: center;
+      max-width: 50px;
+      margin-top: 20px;
+      button {
+        width: 30%;
+        background-color: #7b371c;
+        color: white;
+      }
+    }
   }
 }
-.record-date, .record-location, .record-person {
+//사진 공간
+.carousel {
+  &.slide {
+    flex-basis: 600px;
+    margin: 0 auto;
+    text-align: center;
+  }
+}
+.carousel-inner{
+  width: 40%!important;
+  margin: 0 auto;
+}
+.carousel-control-prev {
+  position: unset;
+  background-color: #A57966;
+  width: 30px;
   display: inline-block;
 }
-//날짜 선택 모달창
-.modal, .person {
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+.carousel-control-next {
+  position: unset;
+  background-color: #A57966;
+  width: 30px;
+  display: inline-block;
+}
+
+//투표
+
+.poll-wrap {
+  text-align: center;
+}
+.poll-title-input, .poll-option-input {
+  min-width: 300px;
+  min-height: 40px;
+  border-radius: 3px;
+}
+.poll-option-input {
+  margin: 5px 0;
+}
+.option-title {
+  font-weight: bold;
+  margin: 10px 0;
+}
+.dp__input_wrap {
+  max-width: 220px;
+}
+.poll-time {
   display: flex;
-  justify-content: center;
-  align-content: center;
-  &.hidden {
-    display: none
-  }
-  .modal-overlay, person-overlay {
-    background-color: rgba(0, 0, 0, 0.6);
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    .modal-content, .person-content {
-      margin: 0 auto;
-      top: 40%;
-      background-color: white;
-      // padding: 50px 100px;
-      text-align: center;
-      position: relative;
-      width: 17%;
-      height: 200px;
-      border-radius: 10px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-      .modal-date, .person-date {
-        margin: 20px auto 35px auto;
-        width: 250px;
-      }
-      .modal-title, .person-title {
-        font-weight: bold;
-        font-size: 18px;
-        text-align: left;
-        padding: 15px;
-      }
-      .btn-wrap {
-        display: flex;
-        justify-content: space-evenly;
-        .date-confirm {
-          width: 80px;
-          color: white;
-          background-color: #7b371c;
-          text-decoration: none;
-        }
-        .date-cancle {
-          width: 80px;
-          background-color: #C6BFBF;
-          color: black;
-          text-decoration: none;
-        }
-      }
-    }
+  justify-content: space-evenly;
+  .poll-time-title {
+    display: flex;
   }
 }
-.person {
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+.poll-time-title {
   display: flex;
-  justify-content: center;
-  align-content: center;
-  &.hidden {
-    display: none
-  }
-  .person-overlay {
-    background-color: rgba(0, 0, 0, 0.6);
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    .person-content {
-      margin: 0 auto;
-      top: 40%;
-      background-color: white;
-      // padding: 50px 100px;
-      text-align: center;
-      position: relative;
-      width: 17%;
-      height: 200px;
-      border-radius: 10px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-      .person-date {
-        margin: 20px auto 35px auto;
-        width: 250px;
-      }
-      .person-title {
-        font-weight: bold;
-        font-size: 18px;
-        text-align: left;
-        padding: 15px;
-      }
-      .btn-wrap {
-        display: flex;
-        justify-content: space-evenly;
-        .date-confirm {
-          width: 80px;
-          color: white;
-          background-color: #7b371c;
-          text-decoration: none;
-        }
-        .date-cancle {
-          width: 80px;
-          background-color: #C6BFBF;
-          color: black;
-          text-decoration: none;
-        }
-      }
-    }
-  }
+
 }
 .carousel-inner {
   width: 50%;

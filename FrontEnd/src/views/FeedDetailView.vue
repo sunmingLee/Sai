@@ -4,13 +4,13 @@
     <!-- 글 작성자 & 버튼 -->
     <div class="feed-head-wrap">
       <div v-for="(callsign, index) in familyCallsignList" :key="index">
-        <div v-if="this.userId === callsign.toUserId">
+        <div v-if="feed.viewBoardResponseDto.userId === callsign.toUserId">
           <FeedUser :name="callsign.callsign"></FeedUser>
         </div>
       </div>
-      <Button buttonClass="small information" buttonText="수정" @click="goUpdate"></Button>
+      <Button v-if="this.feed.viewBoardResponseDto.userId === this.userId" buttonClass="small information" buttonText="수정" @click="goUpdate"></Button>
       <span style="width: 5px"></span>
-      <Button style="margin-right:5%" buttonClass="small negative" buttonText="삭제" @click="eraseFeed"></Button>
+      <Button v-if="this.feed.viewBoardResponseDto.userId === this.userId" style="margin-right:5%" buttonClass="small negative" buttonText="삭제" @click="eraseFeed"></Button>
     </div>
     <!-- 투표 -->
     <div class="poll-wrap" v-if="feed.viewBoardResponseDto.pollYn">
@@ -58,11 +58,11 @@
     </div>
     <!-- 좋아요 & 댓글 개수 -->
     <div class="reaction-wrap">
-      <img v-if="!onHeart && !feed.boardLiked" src="@/assets/images/suit-heart.svg" alt="empty heart" @click="changeHeart">
+      <img v-if="!feed.boardLiked" src="@/assets/images/suit-heart.svg" alt="empty heart" @click="changeHeart">
       <img v-else src="@/assets/images/suit-heart-fill.svg" alt="fill heart" @click="changeHeart">
       <span>{{feed.viewBoardResponseDto.boardLikeCnt}}</span>
       <img src="@/assets/images/chat-right.svg" alt="reply">
-      <span>{{feed.viewBoardResponseDto.boardReplyCnt}}</span>
+      <span>{{replyList.length}}</span>
     </div>
     <div style="border-bottom: 1px solid black; margin:10px; position: relative; top: 25%;"></div>
     <!-- 댓글 목록 -->
@@ -109,8 +109,7 @@ export default {
     return {
       boardId: '',
       userId: '',
-      message: '',
-      onHeart: false
+      message: ''
     }
   },
   created () {
@@ -126,7 +125,7 @@ export default {
     this.getOneFeed(info)
 
     // 댓글 목록 조회
-    this.getReplyList(this.$route.params.boardId)
+    this.getReplyList(this.boardId)
 
     // 가족 콜사인 찾기
     this.callsignList(localStorage.getItem('userId'))
@@ -136,7 +135,7 @@ export default {
     ...mapState(familyStore, ['familyCallsignList'])
   },
   methods: {
-    ...mapActions(boardStore, ['getOneFeed', 'deleteFeed', 'getReplyList', 'createReply', 'updateReply', 'deleteReply', 'chooseVote']),
+    ...mapActions(boardStore, ['getOneFeed', 'deleteFeed', 'getReplyList', 'createReply', 'updateReply', 'deleteReply', 'chooseVote', 'upBoardLike', 'downBoardLike']),
     ...mapActions(familyStore, ['callsignList']),
     // 게시글 수정
     goUpdate () {
@@ -182,10 +181,17 @@ export default {
       }
       this.deleteReply(info)
     },
-    // 하트 변경
+    // 좋아요 변경
     changeHeart () {
-      this.onHeart = !this.onHeart
-      console.log(this.onHeart)
+      const info = {
+        boardId: this.boardId,
+        userId: this.userId
+      }
+      if (!this.feed.boardLiked) { // 좋아요 등록
+        this.upBoardLike(info)
+      } else { // 좋아요 취소
+        this.downBoardLike(info)
+      }
     }
   },
   changeReplyList () {
@@ -267,6 +273,11 @@ export default {
     width: 70%;
     border-radius: 5px;
     border: 1px solid #ae5f40;
+  }
+}
+.button-wrap{
+  div{
+
   }
 }
 </style>

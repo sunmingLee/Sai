@@ -50,7 +50,6 @@ export default {
         // this.$router.push({ name: 'about' })
       }
     }
-
   }
 }
 </script>

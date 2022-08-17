@@ -1,8 +1,8 @@
 <template>
-    <div>
+    <div class="view-wrap">
         <MyPageHeader />
         <MyPageContent/>
-        <BottomTap></BottomTap>
+        <BottomTap feedLink="nav-link" refrideLink="nav-link" albumLink="nav-link" calendarLink="nav-link"></BottomTap>
     </div>
 </template>
 <script>
@@ -30,5 +30,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-
+.view-wrap {
+  width: 900px;
+}
 </style>

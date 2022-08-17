@@ -2,7 +2,7 @@
     <div>
         <FeedHeader />
         <FeedContent/>
-        <BottomTap></BottomTap>
+        <BottomTap feedLink="nav-link active" refrideLink="nav-link" albumLink="nav-link" calendarLink="nav-link"></BottomTap>
     </div>
 </template>
 <script>

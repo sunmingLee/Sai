@@ -6,15 +6,15 @@
         </div>
         <div class="color-select">
             <button class="lightgoldenrodyellow-button" value="LightGoldenRodYellow" @click="colorChange"/>
-            <button class="palegreen-button" value="PaleGreen" @click="colorChange"/>
+            <button class="yellow-button" value="Yellow" @click="colorChange"/>
             <button class="lightpink-button" value="LightPink" @click="colorChange"/>
-            <button class="lightblue-button" value="LightBlue" @click="colorChange"/>
+            <button class="orange-button" value="Orange" @click="colorChange"/>
         </div>
         <div class="color-select">
-            <button class="purple-button" value="Purple" @click="colorChange"/>
-            <button class="orange-button" value="Orange" @click="colorChange"/>
-            <button class="lightpink-button" value="LightPink" @click="colorChange"/>
+            <button class="palegreen-button" value="PaleGreen" @click="colorChange"/>
+            <button class="mint-button" value="Mint" @click="colorChange"/>
             <button class="lightblue-button" value="LightBlue" @click="colorChange"/>
+            <button class="purple-button" value="Purple" @click="colorChange"/>
         </div>
         <Button buttonClass="small positive" buttonText="등록" @click="addMeMo"/>
         <!-- <input type="button" id="clear_button" value="스티키 노트 전부 삭제"> --> 
@@ -85,11 +85,12 @@ export default {
         width: 50px;
         height: 47px;
         border-radius: 27px;
+        margin: 1%;
     }
     .lightgoldenrodyellow-button {
         // #FFC24B;
-        background-color: moccasin;
-        border: 1px solid rgb(248, 203, 125);
+        background-color: lightgoldenrodyellow;
+        border: 1px solid rgb(245, 214, 178);
     }
     .palegreen-button {
         background-color: palegreen;
@@ -111,15 +112,23 @@ export default {
         background-color: #F28D52;
         border: 1px solid #ee7f3e
     }
+    .mint-button {
+        background-color: #87fdda;
+        border: 1px solid #71dbbb;  
+    }
+    .yellow-button {
+        background-color: #f5df4d;
+        border: 1px solid #f5ba4d;
+    }
 }
 textarea {
     border: none;
     resize: none;
     text-align: center;
     &.LightGoldenRodYellow {
-        background-color: moccasin;
-        border: 1px solid rgb(248, 203, 125);
-        outline-color: rgb(248, 203, 125);
+        background-color: lightgoldenrodyellow;
+        border: 1px solid rgb(245, 214, 178);
+        outline-color: rgb(245, 214, 178);
     }
     &.PaleGreen {
         background-color: palegreen;
@@ -145,6 +154,16 @@ textarea {
         background-color: #F28D52;
         outline-color: #ee7f3e;
         border: 1px solid #ee7f3e;
+    }
+    &.Mint {
+        background-color: #87fdda;
+        outline-color: #71dbbb;
+        border: 1px solid #71dbbb;
+    }
+    &.Yellow {
+        background-color: #f5df4d;
+        outline-color: #f5ba4d;
+        border: 1px solid #f5ba4d;
     }
 }
 

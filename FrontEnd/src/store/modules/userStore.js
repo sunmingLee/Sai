@@ -2,7 +2,18 @@
 import axios from 'axios'
 import router from '@/router/index.js'
 import { API_BASE_URL } from '@/config'
+import { instance } from '@/api/index.js'
 
+// import vueCookies from 'vue-cookies'
+
+// axios.defaults.withCredentials = true
+// const instance = axios.create({
+//   headers: {
+//     Authorization: this.state.accessToken
+//   }
+// })
+
+// const { cookies } = VueCookies()
 const api_url = API_BASE_URL + '/api/user'
 const userStore = {
   namespaced: true,
@@ -10,6 +21,7 @@ const userStore = {
     isLogin: false,
     isLoginError: false,
     userInfo: [],
+    accessToken: '',
     // userInfo: {
     //   userId: 'cjftn',
     //   familyId: 123456,
@@ -33,6 +45,10 @@ const userStore = {
     },
     SET_USER_INFO: (state, userInfo) => {
       state.userInfo = userInfo
+    },
+    SET_ACCESSTOKEN: (state, accessToken) => {
+      state.accessToken = accessToken
+      // axios.defaults.headers.common.Authorization = 'Bearer accessToken'
     }
   },
   actions: {
@@ -42,18 +58,21 @@ const userStore = {
         userId: user.userId,
         password: user.password
       }
-      axios.post(api_url + '/login', data, {
+      instance.post(api_url + '/login', data, {
       })
         .then((res) => {
-          // console.log(res)
+          console.log(res)
           // console.log(res.headers)
           if (res.status === 200) {
             // const jwtToken = res.headers['Set-Cookie']
             // console.log(jwtToken)
+            // vueCookies.set('accessToken', res.data) // return this
             localStorage.setItem('userId', data.userId)
+            localStorage.setItem('accessToken', res.data)
+            commit('SET_ACCESSTOKEN', res.data)
             commit('SET_IS_LOGIN', true)
             commit('SET_IS_LOGIN_ERROR', false)
-            dispatch('getUserInfo', data)
+            dispatch('getUserInfo', data.userId)
           }
         })
         .catch((err) => {
@@ -64,23 +83,26 @@ const userStore = {
     // 로그인 후 회원정보 요청
     getUserInfo ({ commit }, user) {
       const data = {
-        userId: user.userId,
-        password: user.password
+        userId: user
+        // password: user.password
       }
       // console.log(user)
-      axios.post(api_url + '/login/info', data)
+      instance.post(api_url + '/login/info', data)
         .then((res) => {
           // console.log(res)
           // familyId가 있는 경우, 메인으로 이동
           if (res.status === 200 & res.data.familyId != null) {
             localStorage.setItem('familyId', res.data.familyId)
+            alert('환영합니다! 가족들의 피드를 보러갈까요!')
             router.push({ name: 'feed' })
           } else { // familyId가 없는 경우
             if (!res.data.familyRegYN) { // 가족 미신청
               router.push({ name: 'familyCode' })
             } else if (res.data.familyRegYN && res.data.approvedYN === null) { // 가족 신청 후 대기
+              alert('아직 가족 신청이 수락되지 않았습니다.')
               router.push({ name: 'applywait' })
             } else if (res.data.familyRegYN && !res.data.approvedYN) { // 가족 신청 후 거절당함
+              alert('가족 신청이 거절되었습니다.')
               router.push({ name: 'applyDecline' })
             }
           }
@@ -96,7 +118,7 @@ const userStore = {
         userName: userInfo.userName,
         email: userInfo.email
       }
-      axios({
+      instance({
         url: api_url + '/findId',
         method: 'GET',
         params
@@ -120,7 +142,7 @@ const userStore = {
         userId: userInfo.userId,
         email: userInfo.email
       }
-      axios({
+      instance({
         url: api_url + '/findPw',
         method: 'GET',
         params
@@ -140,7 +162,7 @@ const userStore = {
     // 비밀번호 확인
     checkPassword ({ commit }, userInfo) {
       const params = userInfo.password
-      axios({
+      instance({
         url: api_url + '/verify/' + userInfo.userId,
         method: 'POST',
         data: params,
@@ -164,7 +186,7 @@ const userStore = {
         password: userInfo.password
       }
       // const password = userInfo.password
-      axios({
+      instance({
         url: api_url + `/profile/${userInfo.id}`,
         method: 'PATCH',
         params
@@ -179,7 +201,7 @@ const userStore = {
     },
     // 회원 탈퇴
     withdrawalMember ({ commit }, userId) {
-      axios({
+      instance({
         url: api_url + `/${userId.id}`,
         method: 'DELETE'
       })
@@ -193,7 +215,7 @@ const userStore = {
     },
     // 유저(회원) 정보 조회
     checkUserInfo ({ commit }, userId) {
-      axios({
+      instance({
         url: api_url + '/' + userId,
         method: 'GET'
       })
@@ -205,14 +227,17 @@ const userStore = {
           console.log(err)
         })
     },
-    // 회원 정보 추가 / 수정
+    // 회원 정보 추가
     addUserInfo ({ commit }, userInfo) {
-      const file = userInfo.fileList[0]
-      const addInfo = userInfo.addInfo
+      const files = userInfo.fileList
+      const addInfo = userInfo.userInfo
+
       const formData = new FormData()
-      formData.append('file', file)
+      if (files !== undefined) {
+        formData.append('file', files[0])
+      }
       formData.append('addInfo', new Blob([JSON.stringify(addInfo)], { type: 'application/json' }))
-      axios({
+      instance({
         url: api_url + '/addInfo',
         method: 'POST',
         data: formData,
@@ -223,11 +248,36 @@ const userStore = {
         .then((res) => {
           alert('추가 정보가 입력되었습니다')
           console.log(res)
-          // commit()
           // 회원 가입 후
           router.push({ name: 'familyCode' })
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 회원정보 수정
+    modifyUserInfo ({ commit }, userInfo) {
+      const files = userInfo.fileList
+      const addInfo = userInfo.userInfo
+      const formData = new FormData()
+      if (files !== undefined) {
+        formData.append('file', files[0])
+      }
+      formData.append('addInfo', new Blob([JSON.stringify(addInfo)], { type: 'application/json' }))
+      console.log(formData)
+      instance({
+        url: api_url + '/addInfo',
+        method: 'POST',
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+        .then((res) => {
+          alert('추가 정보가 입력되었습니다')
+          console.log(res)
           // 개인 페이지에서 온 경우
-          // router.push({ naem: })
+          router.push({ name: 'myPage' })
         })
         .catch((err) => {
           console.log(err)
