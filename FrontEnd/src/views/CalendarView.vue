@@ -7,24 +7,34 @@
       <span class="anniversary">파랑: 기념일</span>
     </div>
     <!-- 달력 -->
-    <v-calendar is-expanded :rows="2" :attributes='planList' ref="calendar" @dayclick="goDetail">
-      <!-- <template #day-popover="{ day, dayTitle, planList }">
-        <div class="text-xs text-gray-300 font-semibold text-center">
-          {{ dayTitle }}
-        </div>
-        <popover-row
-          v-for="plan in planList"
-          :key="plan.planId"
-          :attribute="plan">
-          {{ plan.popover.label }}
-        </popover-row>
-      </template> -->
+    <v-calendar @update:from-page="pageChange" is-expanded :rows="1" :attributes='planList' ref="calendar" :masks="{ dayPopover: ['YYYY MM DD, WWWW']}">
         <template v-slot:footer>
             <div class="footer-wrap">
                 <Button buttonClass="small information" buttonText="오늘로" @click="moveToToday"></Button>
             </div>
         </template>
     </v-calendar>
+    <!-- 일정 상세보기 -->
+    <ul class="plan-list">
+      <div v-for="plan in planDetail" :key="plan.mainPlanId">
+        <li v-if="plan.mainPlanStartDatetime.slice(0, 4) == currentYear && plan.mainPlanStartDatetime.slice(5, 7) == currentMonth">
+          <div v-if="plan.mainPlanEndDatetime == null || plan.mainPlanStartDatetime.slice(0, 10) === plan.mainPlanEndDatetime.slice(0, 10)">
+            <span class="date">{{plan.mainPlanStartDatetime.slice(8, 10)}}</span>
+            <span>{{plan.planTitle}}</span>
+            <span class="place" v-if="plan.planPlace != ''">(장소: {{plan.planPlace}})</span>
+            <button class="edit" data-bs-toggle="modal" data-bs-target="#editModal"><img src="@/assets/images/pencil-fill.svg" alt="edit" @click="setPlan(plan)"></button>
+            <button type="button" class="btn-close" aria-label="Close" @click="erasePlan(plan.mainPlanId)"></button>
+          </div>
+          <div v-else>
+            <span class="date">{{plan.mainPlanStartDatetime.slice(8, 10)}} ~ {{plan.mainPlanEndDatetime.slice(8, 10)}}</span>
+            <span>{{plan.planTitle}}</span>
+            <span class="place" v-if="plan.planPlace != ''">{{plan.planPlace}}</span>
+            <button class="edit" data-bs-toggle="modal" data-bs-target="#editModal"><img src="@/assets/images/pencil-fill.svg" alt="edit" @click="setPlan(plan)"></button>
+            <button type="button" class="btn-close" aria-label="Close" @click="erasePlan(plan.mainPlanId)"></button>
+          </div>
+        </li>
+      </div>
+    </ul>
 
     <!-- 일정 작성하기 -->
     <!-- Button trigger modal -->
@@ -47,7 +57,7 @@
                 </div>
                 <div class="flex">
                     <span>날짜</span>
-                    <Datepicker v-model="newPlan.date" format='yyyy/MM/dd' modelType="yyyy-MM-dd HH:mm:ss" :enableTimePicker="false" range selectText="선택" cancelText="취소"></Datepicker>
+                    <Datepicker v-model="newPlan.date" format='yyyy/MM/dd' modelType="yyyy-MM-dd HH:mm:ss" :enableTimePicker="false" range :placeholder="newPlan.date" selectText="선택" cancelText="취소"></Datepicker>
                 </div>
                 <div class="flex">
                     <span>장소</span>
@@ -60,15 +70,62 @@
                     <label for="radioFamily">가족</label>
                     <input type="radio" id="radioAnniversary" name="planType" value="anniversary" v-model="newPlan.planType"/>
                     <label for="radioAnniversary">기념일</label>
-                    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top">
-                      Tooltip on top
-                    </button>
-                    <img class="info" src="@/assets/images/circle-info-solid.svg" alt="information">
+                    <img class="info" src="@/assets/images/circle-info-solid.svg" alt="information" @click="showInfo">
+                </div>
+                <div class="type-info" v-if="hasInfo">
+                  개인 : 개인 약속 및 일정<br/>
+                  가족 : 가족 여행, 제사 등 가족 행사<br/>
+                  기념일 : 생일, 결혼기념일 등 축하 일정
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="hideInfo">취소</button>
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="writeCreate">일정추가</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 일정 수정하기 -->
+    <!-- Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">일정 수정</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="flex">
+                    <span>제목</span>
+                    <input v-model="modifiedPlan.planTitle" type="text">
+                </div>
+                <div class="flex">
+                    <span>날짜</span>
+                    <Datepicker v-model="modifiedPlan.date" format='yyyy/MM/dd' modelType="yyyy-MM-dd HH:mm:ss" :enableTimePicker="false" :placeholder="modifiedPlan.date" range selectText="선택" cancelText="취소"></Datepicker>
+                </div>
+                <div class="flex">
+                    <span>장소</span>
+                    <input v-model="modifiedPlan.planPlace" type="text">
+                </div>
+                <div>
+                    <input type="radio" id="radioPersonal" name="planType" value="personal" v-model="modifiedPlan.planType" />
+                    <label for="radioPersonal">개인</label>
+                    <input type="radio" id="radioFamily" name="planType" value="family" v-model="modifiedPlan.planType"/>
+                    <label for="radioFamily">가족</label>
+                    <input type="radio" id="radioAnniversary" name="planType" value="anniversary" v-model="modifiedPlan.planType"/>
+                    <label for="radioAnniversary">기념일</label>
+                    <img class="info" src="@/assets/images/circle-info-solid.svg" alt="information" @click="showInfo">
+                </div>
+                <div class="type-info" v-if="hasInfo">
+                  개인 : 개인 약속 및 일정<br/>
+                  가족 : 가족 여행, 제사 등 가족 행사<br/>
+                  기념일 : 생일, 결혼기념일 등 축하 일정
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="hideInfo">취소</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="editPlan">일정수정</button>
             </div>
             </div>
         </div>
@@ -85,10 +142,6 @@ import BottomTap from '@/components/common/BottomTap.vue'
 import Button from '@/components/common/Button.vue'
 
 import { mapActions, mapState } from 'vuex'
-history.pushState(null, null, location.href)
-window.onpopstate = function (event) {
-  history.go(1)
-}
 const planStore = 'planStore'
 
 export default {
@@ -108,18 +161,7 @@ export default {
     this.planAllList(info)
   },
   computed: {
-    ...mapState(planStore, ['planList'])
-  },
-  watch: {
-    planList () {
-      // console.log('watch : ')
-      // const info = {
-      //   userId: localStorage.getItem('userId'),
-      //   familyId: localStorage.getItem('familyId')
-      // }
-      // // 일정 전체 조회
-      // this.planAllList(info)
-    }
+    ...mapState(planStore, ['planList', 'planDetail'])
   },
   data () {
     return {
@@ -131,58 +173,76 @@ export default {
         planType: '',
         date: new Date(),
         planNotiYn: false
-      }
-
-      // 색상 샘플
-      // {
-      //   highlight: {
-      //     start: {
-      //       style: {
-      //         backgroundColor: '#7B371C' // blue
-      //       },
-      //       contentStyle: {
-      //         color: '#ffffff' // color of the text
-      //       }
-      //     },
-      //     base: {
-      //       style: {
-      //         backgroundColor: '#A57966' // light blue
-      //       }
-      //     },
-      //     end: {
-      //       style: {
-      //         backgroundColor: '#7B371C' // blue
-      //       },
-      //       contentStyle: {
-      //         color: '#ffffff' // color of the text
-      //       }
-      //     }
-      //   },
-      //   dates: { start: new Date(year, month, 1), end: new Date(year, month, 6) }
-      // }
-
+      },
+      modifiedPlan: {
+        userId: localStorage.getItem('userId'),
+        familyId: localStorage.getItem('familyId'),
+        planTitle: '',
+        planPlace: '',
+        planType: '',
+        date: '',
+        planNotiYn: false
+      },
+      currentYear: '',
+      currentMonth: '',
+      hasInfo: false,
+      planId: ''
     }
   },
   methods: {
-    ...mapActions(planStore, ['planAllList', 'setPlanId', 'planCreate']),
+    ...mapActions(planStore, ['planAllList', 'planCreate', 'getOnePlan', 'planModify', 'planDelete']),
+    // 설명 보여주기
+    showInfo () {
+      this.hasInfo = true
+    },
+    // 설명 숨기기
+    hideInfo () {
+      this.hasInfo = false
+    },
     // 일정 만들기
     writeCreate () {
-      this.planCreate(this.newPlan)
-    },
-    // 일정 상세보기로 이동
-    goDetail (day) {
-      // console.log(day.id)
-      for (let i = 0; i < this.planList.length; i++) {
-        // console.log(this.planList[i].dates)
-        // if (this.planList[i].dates.year === day.id) {
-        //   console.log(day.id)
-        // }
-      }
-      // this.setPlanId(day)
+      console.log(this.newPlan.date)
+      // if (this.newPlan.planTitle === '' || this.newPlan.date ===) {
+      //   alert('')
+      // }
+      // this.planCreate(this.newPlan)
     },
     // 오늘날짜로 이동
     moveToToday () {
       this.$refs.calendar.move(new Date())
+    },
+    // 현재 보고있는 연도, 월 받아오기
+    pageChange (page) {
+      this.currentYear = page.year
+      this.currentMonth = page.month
+    },
+    // 수정할 일정값 data에 넣기
+    setPlan (plan) {
+      this.planId = plan.mainPlanId
+      this.modifiedPlan.planTitle = plan.planTitle
+      this.modifiedPlan.planPlace = plan.planPlace
+      this.modifiedPlan.planType = plan.planType
+      const startDate = plan.mainPlanStartDatetime.slice(0, 10) + ' ' + plan.mainPlanStartDatetime.slice(11)
+      let endDate = ''
+      if (plan.mainPlanEndDatetime == null) {
+        endDate = plan.mainPlanStartDatetime.slice(0, 10) + ' ' + plan.mainPlanStartDatetime.slice(11)
+      } else {
+        endDate = plan.mainPlanEndDatetime.slice(0, 10) + ' ' + plan.mainPlanEndDatetime.slice(11)
+      }
+      this.modifiedPlan.date = [{ 0: startDate, 1: endDate }]
+    },
+    // 일정 수정하기
+    editPlan () {
+      console.log('edit: ' + this.modifiedPlan.date)
+      // const info = {
+      //   plan: this.modifiedPlan,
+      //   planId: this.planId
+      // }
+      // this.planModify(info)
+    },
+    // 일정 삭제하기
+    erasePlan (planId) {
+      this.planDelete(planId)
     }
   }
 }
@@ -258,5 +318,37 @@ label{
   width: 20px;
   height: 20px;
   float: right;
+}
+.plan-list{
+  position: relative;
+  top: 12%;
+  height: 33vh;
+  overflow-y: scroll;
+  background-color: #F0EAE3;
+  padding: 0;
+  li{
+    padding: 10px;
+  }
+}
+.date{
+  font-size: large;
+  font-weight: bold;
+  margin-right: 15px;
+}
+.place{
+  font-size: small;
+  margin-left: 15px;
+}
+.btn-close{
+  float: right;
+}
+.edit{
+  margin-left: 15px;
+  background-color: inherit;
+}
+.type-info{
+  background-color: #F0EAE3;
+  margin-top: 20px;
+  padding: 15px;
 }
 </style>

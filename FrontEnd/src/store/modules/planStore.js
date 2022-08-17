@@ -8,7 +8,8 @@ const planStore = {
   namespaced: true,
   state: {
     planList: [],
-    plan: []
+    plan: [],
+    planDetail: []
   },
   getters: {
   },
@@ -16,6 +17,10 @@ const planStore = {
     PLAN_All_LIST (state, planList) {
       state.planList = planList
       // console.log(state.planList)
+    },
+    SET_PLAN_DETAIL (state, planDetail) {
+      state.planDetail = planDetail
+      console.log(state.planDetail)
     },
     SET_FEED (state, plan) {
       state.plan = plan
@@ -34,6 +39,7 @@ const planStore = {
           // console.log(res)
           if (res.status === 200) {
             alert('작성이 완료되었습니다')
+            router.go()
           } else {
             alert('일정 등록 중 문제가 생겼습니다.')
             console.log(res)
@@ -53,12 +59,11 @@ const planStore = {
         method: 'GET'
       })
         .then((res) => {
-          console.log(res.data)
+          // console.log(res.data)
+          commit('SET_PLAN_DETAIL', res.data)
           const attrs = []
           for (let i = 0; i < res.data.length; i++) {
-            const plan = {
-              planId: res.data[i].mainPlanId
-            }
+            const plan = {}
             // 하루 일정
             if (res.data[i].mainPlanEndDatetime == null || res.data[i].mainPlanStartDatetime.slice(0, 10) === res.data[i].mainPlanEndDatetime.slice(0, 10)) {
               const year = res.data[i].mainPlanStartDatetime.slice(0, 4)
@@ -90,7 +95,6 @@ const planStore = {
               }
             }
             plan.popover = {
-              slot: 'todo-row', // Matches slot from above
               label: res.data[i].planTitle
             }
             attrs.push(plan)
@@ -103,34 +107,37 @@ const planStore = {
           console.log(err)
         })
     },
-    setPlanId ({ commit }, planId) {
-      // console.log('boardId: ' + boardId)
-      localStorage.setItem('planId', planId)
-      router.push({ name: 'planDetail' })
-    },
-    // 일정 상세보기
-    getOneFeed ({ commit }, info) {
+    // 일정 수정하기
+    planModify ({ commit }, info) {
+      // console.log(info.plan)
       axios({
-        url: api_url + `/${info.boardId}/${info.userId}`,
-        method: 'GET'
+        url: api_url + `/${info.planId}`,
+        method: 'PUT',
+        data: info.plan
       })
         .then((res) => {
-          console.log(res)
-          commit('SET_FEED', res.data)
+          // console.log(res)
+          if (res.status === 200) {
+            alert('수정이 완료되었습니다')
+            // router.go()
+          } else {
+            alert('일정 수정 중 문제가 생겼습니다.')
+            console.log(res)
+          }
         })
         .catch((err) => {
           console.log(err)
+          alert('잘못된 코드입니다')
         })
     },
     // 일정 삭제
-    deleteFeed ({ commit }, boardId) {
+    planDelete ({ commit }, planId) {
       axios({
-        url: api_url + `/board/${boardId}`,
+        url: api_url + `/${planId}`,
         method: 'DELETE'
       })
         .then((res) => {
-          alert('게시글이 삭제되었습니다.')
-          router.push({ name: 'feed' })
+          router.go()
         })
         .catch((err) => {
           console.log(err)
