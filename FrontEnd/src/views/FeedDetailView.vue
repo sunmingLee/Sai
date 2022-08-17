@@ -8,9 +8,9 @@
           <FeedUser :name="callsign.callsign"></FeedUser>
         </div>
       </div>
-      <Button buttonClass="small information" buttonText="수정" @click="goUpdate"></Button>
+      <Button v-if="this.feed.viewBoardResponseDto.userId === this.userId" buttonClass="small information" buttonText="수정" @click="goUpdate"></Button>
       <span style="width: 5px"></span>
-      <Button style="margin-right:5%" buttonClass="small negative" buttonText="삭제" @click="eraseFeed"></Button>
+      <Button v-if="this.feed.viewBoardResponseDto.userId === this.userId" style="margin-right:5%" buttonClass="small negative" buttonText="삭제" @click="eraseFeed"></Button>
     </div>
     <!-- 투표 -->
     <div class="poll-wrap" v-if="feed.viewBoardResponseDto.pollYn">
@@ -273,6 +273,11 @@ export default {
     width: 70%;
     border-radius: 5px;
     border: 1px solid #ae5f40;
+  }
+}
+.button-wrap{
+  div{
+
   }
 }
 </style>
