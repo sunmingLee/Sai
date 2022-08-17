@@ -21,9 +21,6 @@ const planStore = {
     SET_PLAN_DETAIL (state, planDetail) {
       state.planDetail = planDetail
       console.log(state.planDetail)
-    },
-    SET_FEED (state, plan) {
-      state.plan = plan
     }
   },
   actions: {
@@ -51,9 +48,7 @@ const planStore = {
         })
     },
     // 일정 조회
-    planAllList ({ commit }, info) {
-      const familyId = info.familyId
-      // const userId = info.userId
+    planAllList ({ commit }, familyId) {
       axios({
         url: api_url + '/' + familyId,
         method: 'GET'
@@ -108,18 +103,18 @@ const planStore = {
         })
     },
     // 일정 수정하기
-    planModify ({ commit }, info) {
+    planModify ({ commit, dispatch }, info) {
       // console.log(info.plan)
       axios({
-        url: api_url + `/${info.planId}`,
+        url: api_url + `/${info.mainPlanId}`,
         method: 'PUT',
-        data: info.plan
+        data: info
       })
         .then((res) => {
-          // console.log(res)
+          console.log(res)
           if (res.status === 200) {
             alert('수정이 완료되었습니다')
-            // router.go()
+            dispatch('planAllList', info.familyId)
           } else {
             alert('일정 수정 중 문제가 생겼습니다.')
             console.log(res)
@@ -131,13 +126,13 @@ const planStore = {
         })
     },
     // 일정 삭제
-    planDelete ({ commit }, planId) {
+    planDelete ({ commit, dispatch }, planId) {
       axios({
         url: api_url + `/${planId}`,
         method: 'DELETE'
       })
         .then((res) => {
-          router.go()
+          dispatch('planAllList', localStorage.getItem('familyId'))
         })
         .catch((err) => {
           console.log(err)

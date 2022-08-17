@@ -57,7 +57,7 @@
                 </div>
                 <div class="flex">
                     <span>날짜</span>
-                    <Datepicker v-model="newPlan.date" format='yyyy/MM/dd' modelType="yyyy-MM-dd HH:mm:ss" :enableTimePicker="false" range :placeholder="newPlan.date" selectText="선택" cancelText="취소"></Datepicker>
+                    <Datepicker v-model="newPlan.date" format='yyyy/MM/dd' modelType="yyyy-MM-dd HH:mm:ss" :enableTimePicker="false" range selectText="선택" cancelText="취소"></Datepicker>
                 </div>
                 <div class="flex">
                     <span>장소</span>
@@ -102,7 +102,7 @@
                 </div>
                 <div class="flex">
                     <span>날짜</span>
-                    <Datepicker v-model="modifiedPlan.date" format='yyyy/MM/dd' modelType="yyyy-MM-dd HH:mm:ss" :enableTimePicker="false" :placeholder="modifiedPlan.date" range selectText="선택" cancelText="취소"></Datepicker>
+                    <Datepicker v-model="modifiedPlan.date" format='yyyy/MM/dd' modelType="yyyy-MM-dd HH:mm:ss" :enableTimePicker="false" range selectText="선택" cancelText="취소"></Datepicker>
                 </div>
                 <div class="flex">
                     <span>장소</span>
@@ -153,12 +153,9 @@ export default {
   },
   created () {
     // 일정 조회
-    const info = {
-      userId: localStorage.getItem('userId'),
-      familyId: localStorage.getItem('familyId')
-    }
+    const familyId = localStorage.getItem('familyId')
     // 일정 전체 조회
-    this.planAllList(info)
+    this.planAllList(familyId)
   },
   computed: {
     ...mapState(planStore, ['planList', 'planDetail'])
@@ -181,12 +178,13 @@ export default {
         planPlace: '',
         planType: '',
         date: '',
-        planNotiYn: false
+        planNotiYn: false,
+        mainPlanId: ''
+
       },
       currentYear: '',
       currentMonth: '',
-      hasInfo: false,
-      planId: ''
+      hasInfo: false
     }
   },
   methods: {
@@ -201,11 +199,11 @@ export default {
     },
     // 일정 만들기
     writeCreate () {
-      console.log(this.newPlan.date)
-      // if (this.newPlan.planTitle === '' || this.newPlan.date ===) {
-      //   alert('')
-      // }
-      // this.planCreate(this.newPlan)
+      if (this.newPlan.planTitle === '') {
+        alert('제목을 작성해주세요.')
+      } else {
+        this.planCreate(this.newPlan)
+      }
     },
     // 오늘날짜로 이동
     moveToToday () {
@@ -218,7 +216,7 @@ export default {
     },
     // 수정할 일정값 data에 넣기
     setPlan (plan) {
-      this.planId = plan.mainPlanId
+      this.modifiedPlan.mainPlanId = plan.mainPlanId
       this.modifiedPlan.planTitle = plan.planTitle
       this.modifiedPlan.planPlace = plan.planPlace
       this.modifiedPlan.planType = plan.planType
@@ -229,16 +227,15 @@ export default {
       } else {
         endDate = plan.mainPlanEndDatetime.slice(0, 10) + ' ' + plan.mainPlanEndDatetime.slice(11)
       }
-      this.modifiedPlan.date = [{ 0: startDate, 1: endDate }]
+      this.modifiedPlan.date = { 0: startDate, 1: endDate }
     },
     // 일정 수정하기
     editPlan () {
-      console.log('edit: ' + this.modifiedPlan.date)
-      // const info = {
-      //   plan: this.modifiedPlan,
-      //   planId: this.planId
-      // }
-      // this.planModify(info)
+      if (this.modifiedPlan.planTitle === '') {
+        alert('제목을 작성해주세요.')
+      } else {
+        this.planModify(this.modifiedPlan)
+      }
     },
     // 일정 삭제하기
     erasePlan (planId) {
