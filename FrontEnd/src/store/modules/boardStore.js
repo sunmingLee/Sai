@@ -29,10 +29,10 @@ const boardStore = {
     MY_FEED_All_LIST (state, myFeed) {
       state.myFeedList = myFeed
     },
-    MY_FEED_All_LIST_COUNT(state, myFeedNum ) {
+    MY_FEED_All_LIST_COUNT (state, myFeedNum) {
       state.myFeedCnt = myFeedNum
     },
-    FEED_RESET(state) {
+    FEED_RESET (state) {
       state.feedList = []
     }
   },
@@ -77,7 +77,7 @@ const boardStore = {
       const familyId = info.familyId
       const userId = info.userId
       const params = {
-        page : info.page
+        page: info.page
       }
       axios({
         url: api_url + '/' + familyId + '/' + userId,
@@ -85,7 +85,7 @@ const boardStore = {
         params
       })
         .then((res) => {
-          if(res.data.length === 0) {
+          if (res.data.length === 0) {
             alert('더 이상 불러올 게시물이 없습니다')
           } else {
             commit('FEED_All_LIST', res.data)
@@ -123,6 +123,25 @@ const boardStore = {
       })
         .then((res) => {
           alert('게시글이 삭제되었습니다.')
+          router.push({ name: 'feed' })
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 게시글 수정
+    boardUpdate ({ commit }, updateBoardRequestDto) {
+      axios({
+        url: api_url + '/board',
+        method: 'PUT',
+        data: JSON.stringify(updateBoardRequestDto),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => {
+          console.log('수정이 됐어요')
+          alert("수정되었습니다.")
           router.push({ name: 'feed' })
         })
         .catch((err) => {
@@ -250,8 +269,8 @@ const boardStore = {
           console.log(err)
         })
     },
-    //게시글 초기화
-    feedReset({commit}) {
+    // 게시글 초기화
+    feedReset ({ commit }) {
       commit('FEED_RESET')
     }
   },

@@ -1,7 +1,6 @@
 <template>
     <div class="create-wrap">
         <HeaderTitle hasBack="true" title="게시글 작성" hasIcon="true"/>
-        {{feed}}
         <div class="create-content">
           <div class="content-flex">
           <div class="content-wrap">
@@ -131,8 +130,8 @@
               </div>
               <div class="record-confirm">
                 <div class="record-time">
-                    <span v-if="this.date !== ''">시간 : {{this.date}}</span>
-                    <Button v-if="this.date !== ''" buttonClass="small negative" buttonText="삭제" @click="deleteDate"/>
+                    <span v-if="this.date !== '' && this.date !== null">시간 : {{this.date}}</span>
+                    <Button v-if="this.date !== '' && this.date !== null" buttonClass="small negative" buttonText="삭제" @click="deleteDate"/>
                 </div>
                 <span v-if="this.boardLocation !== ''">위치 : {{this.boardLocation}}</span>
                 <Button v-if="this.boardLocation !== ''" buttonClass="small negative" buttonText="삭제" @click="deleteLocation"/>
@@ -215,7 +214,10 @@ export default {
       pollYn: false, // 투표 여부
       question: '', // 투표 제목
       expirationDateTime: '', // 투표 마감 날짜
-      choices: [], // 투표 항목
+      choices: [
+        {text: ''},
+        {text: ''}
+      ], // 투표 항목
       originMediaList: [], // 기존 미디어 목록
       peopleList: [], // 태그 목록
       boardModified: false, // 게시글 수정 여부
@@ -236,7 +238,8 @@ export default {
       fileList: [],
       imageFlag: false,
       pollCheck: false,
-      pollFlag: false
+      pollFlag: false,
+      pollRequest: {}
     }
   },
   created () {
@@ -252,6 +255,10 @@ export default {
   },
   mounted () {
     this.check()
+    console.log('얏호')
+    console.log(this.date === null)
+    console.log(this.date === '')
+    console.log(this.date)
   },
   computed: {
     // ...mapState(userStore, ["userId", "userName"]),
@@ -259,7 +266,7 @@ export default {
     ...mapState(boardStore, ['feed'])
   },
   methods: {
-    ...mapActions(boardStore, ['boardCreate', 'getOneFeed']),
+    ...mapActions(boardStore, ['boardCreate', 'getOneFeed', 'boardUpdate']),
     ...mapActions(familyStore, ['callsignList']),
     check () {
       this.boardDate = this.feed.viewBoardResponseDto.boardDate
@@ -270,15 +277,17 @@ export default {
       this.boardTaggedYn = this.feed.viewBoardResponseDto.boardTaggedYn
       this.boardMediaYn = this.feed.viewBoardResponseDto.boardMediaYn
       this.pollYn = this.feed.viewBoardResponseDto.pollYn
+      this.date = this.feed.viewBoardResponseDto.boardDate
       if (this.pollYn) {
         this.pollFlag = true
+        this.question = this.feed.pollResponse.question
+        this.choices = this.feed.pollResponse.choices
       }
-      this.question = this.feed.pollResponse.question
-      this.choices = this.feed.pollResponse.choices
     },
     // 글 수정
     updateText () {
-      this.boardModeified = true
+      console.log('안녕' + this.boardModified)
+      this.boardModified = true
     },
     // 추가기록과 투표만들기 토글
     record () {
@@ -293,7 +302,8 @@ export default {
     },
     // 투표 초기화
     pollReset () {
-      this.boardModeified = true
+      console.log('안녕' + this.boardModified)
+      this.boardModified = true
       // 제목과 항목 초기화
       this.question = ''
       this.choices = [
@@ -307,9 +317,11 @@ export default {
     },
     // 투표 항목 추가하기
     addPollItem () {
-      if (!this.pollCheck) {
+      if (!this.pollCheck && this.pollYn) {
         alert('원래 있던 투표는 수정하실 수 없습니다. 초기화 버튼으로 새로 만들어주세요!')
       } else {
+        console.log('안녕' + this.boardModified)
+        this.boardModified = true
         if (this.choices.length < 5) {
           this.choices.push({ text: '' })
         } else {
@@ -347,7 +359,8 @@ export default {
     },
     // 날짜 수정
     updateDate () {
-      this.boardModeified = true
+      console.log('안녕' + this.boardModified)
+      this.boardModified = true
       const year = this.boardDate.getFullYear()
       let month = (1 + this.boardDate.getMonth())
       let day = this.boardDate.getDate()
@@ -358,7 +371,8 @@ export default {
     },
     // 날짜 제거 했을때
     removeDate () {
-      this.boardModeified = true
+      console.log('안녕' + this.boardModified)
+      this.boardModified = true
       console.log(this.boardDate)
       this.date = ''
     },
@@ -387,6 +401,7 @@ export default {
     },
     // 날짜 삭제
     deleteDate () {
+      console.log('안녕' + this.boardModified)
       this.boardModified = true
       this.date = ''
       this.originBoardDate = ''
@@ -446,6 +461,7 @@ export default {
           if (fullRoadAddr !== '') {
             fullRoadAddr += extraRoadAddr
           }
+          console.log('안녕' + this.boardModified)
           this.boardModified = true
           this.boardLocation = fullRoadAddr
         }
@@ -454,20 +470,16 @@ export default {
     // 위치 삭제
     deleteLocation () {
       if (this.boardLocation !== '') {
+        console.log('안녕' + this.boardModified)
         this.boardModified = true
       }
       this.boardLocation = ''
     },
-    feedUpdate () {
-      console.log(this.boardDate)
-      console.log(this.question)
-      console.log(this.choices)
-    },
     // 게시글 작성
     feedUpdate () {
       // 미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
-      if (fileList.length === 0 && this.boardContent === '' && this.pollYn) {
-        alert('글이나 사진을 등록해야 작성이 가능합니다.')
+      if (fileList.length === 0 && this.boardContent === '' && !this.pollYn) {
+        alert('글이나 사진이나 투표를 등록해야 작성이 가능합니다.')
         // this.files = test
       } else {
         // 투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
@@ -491,23 +503,40 @@ export default {
               if (this.choices[i].text === '') {
                 alert('아무 것도 입력하지 않은 투표 항목이 있습니다')
               } else {
-                this.pollYn = 1
+                if (this.pollCheck) {
+                  this.boardModified = true
+                  this.pollModified = true
+                  this.pollYn = 1
+                }
               }
             }
           }
         }
         // 투표가 있고 그게 지금 수정한 경우
-        if (this.pollYn === 1 && this.boardModified === 1) {
+        if (this.pollYn && this.boardModified) {
+          console.log('안녕' + this.boardModified)
           if (this.pollDateDisabled) {
             const timeOff = new Date().getTimezoneOffset() * 60000
             const timeZone = new Date(Date.now() - timeOff) // 현재 시간
-            this.pollEndDate = new Date(timeZone.setDate(timeZone.getDate() + 3)).toISOString()
+            this.expirationDateTime = new Date(timeZone.setDate(timeZone.getDate() + 3)).toISOString()
           } else {
             const timeOff = new Date(this.pollDatePicker).getTimezoneOffset() * 60000
             const timeZone = new Date(this.pollDatePicker - timeOff)
-            this.pollEndDate = timeZone.toISOString()
+            this.expirationDateTime = timeZone.toISOString()
           }
         }
+        // if (this.boardTaggedModified) {
+        // }
+        // 투표가 있을 경우
+        if (this.pollModified) {
+          this.pollRequest = {
+            question: this.question,
+            expirationDateTime: this.expirationDateTime,
+            choices: this.choices,
+            boardId: localStorage.getItem('boardId')
+          }
+        }
+        console.log(this.boardModified)
         if (this.boardModified) {
           const updateBoardRequestDto = {
             boardModified: this.boardModified,
@@ -521,34 +550,13 @@ export default {
               boardTaggedYn: this.boardTaggedYn,
               pollYn: this.pollYn
             },
-            pollModified: this.pollModified
+            pollModified: this.pollModified,
+            pollRequest: this.pollRequest
           }
-        }
-        // // 투표가 있을 경우
-        if (this.pollYn === 1) {
-          if (this.pollDateDisabled) {
-            const timeOff = new Date().getTimezoneOffset() * 60000
-            const timeZone = new Date(Date.now() - timeOff) // 현재 시간
-            this.pollEndDate = new Date(timeZone.setDate(timeZone.getDate() + 3)).toISOString()
-          } else {
-            const timeOff = new Date(this.pollDatePicker).getTimezoneOffset() * 60000
-            const timeZone = new Date(this.pollDatePicker - timeOff)
-            this.pollEndDate = timeZone.toISOString()
-          }
-          const pollChoice = []
-          for (let i = 0; i < this.pollOptions.length; i++) {
-            const option = {
-              text: this.pollOptions[i].pollOption
-            }
-            pollChoice[i] = option
-          }
-          const pollResult = {
-            // boardId: 0,
-            question: this.pollTitle,
-            expirationDateTime: this.pollEndDate,
-            choices: pollChoice
-          }
-          Object.assign(createBoardRequestDto, { pollRequest: pollResult })
+          console.log(updateBoardRequestDto)
+          this.boardUpdate(updateBoardRequestDto)
+        } else {
+          alert('수정한 것이 없습니다')
         }
 
         // // 추가 정보에서 사람 태그 여부
@@ -654,7 +662,7 @@ export default {
       margin-top: 10px;
       .toggle-wrap {
         button {
-          background-color: white;
+          background-color: #fafafa;
           color: black;
           padding: 0 10px;
           text-decoration: underline;
