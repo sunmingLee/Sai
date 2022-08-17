@@ -1,6 +1,5 @@
 package com.sai.model.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,24 +8,14 @@ import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import com.sai.model.dto.boardTagged.InputBoardTaggedRequestDto;
-import com.sai.model.dto.boardTagged.ViewBoardTaggedResponseDto;
 import com.sai.model.dto.notification.CreateNotificationRequestDto;
 import com.sai.model.dto.plan.CreatePlanRequsetDto;
-import com.sai.model.dto.plan.InputPlanTaggedRequestDto;
-import com.sai.model.dto.plan.PlanRequestDto;
 import com.sai.model.dto.plan.PlanResponseDto;
 import com.sai.model.dto.plan.UpdatePlanRequestDto;
-import com.sai.model.dto.plan.ViewPlanResponseDto;
-import com.sai.model.dto.plan.ViewPlanTaggedResponseDto;
-import com.sai.model.entity.BoardTagged;
 import com.sai.model.entity.MainPlan;
 import com.sai.model.entity.NotiType;
-import com.sai.model.entity.User;
-import com.sai.model.entity.PlanTagged;
 import com.sai.model.repository.FamilyRepository;
 import com.sai.model.repository.MainPlanRepository;
-import com.sai.model.repository.PlanTaggedRepository;
 import com.sai.model.repository.PollRepository;
 import com.sai.model.repository.UserRepository;
 
@@ -42,7 +31,6 @@ public class PlanServiceImpl implements PlanService {
 	private final UserRepository userRepository;
 	private final FamilyRepository familyRepository;
 	private final MainPlanRepository mainPlanRepository;
-	private final PlanTaggedRepository planTaggedRepository;
 	private final NotificationService notificationService;
 
 	

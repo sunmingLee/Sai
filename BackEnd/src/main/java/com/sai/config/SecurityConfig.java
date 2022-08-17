@@ -108,8 +108,10 @@ public class SecurityConfig {
 				.anyRequest().hasAnyAuthority("ROLE_USER");
 //			.anyRequest().authenticated();
 
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).maximumSessions(1)
-				.maxSessionsPreventsLogin(true);
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		// stateless일 때는 설정하지 말 것
+//		.maximumSessions(1)
+//				.maxSessionsPreventsLogin(true);
 //		http
 //			.oauth2Login()
 //			.userInfoEndpoint()

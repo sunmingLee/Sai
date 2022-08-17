@@ -46,7 +46,7 @@ public class FeedController {
             @PageableDefault(size = 10, sort = "boardRegDatetime", direction = Direction.DESC) Pageable pageable, @CurrentUser UserPrincipal currUser)
 			throws Exception {
 
-		System.out.println("나는 피드 조회야");
+		System.err.println("피드");
 		try {
 			// userprincipal 있는지 확인
 			UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
