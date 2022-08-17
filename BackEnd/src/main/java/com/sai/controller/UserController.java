@@ -76,7 +76,11 @@ public class UserController {
 	@ApiOperation(value = "join: 직접 회원가입")
 	@PostMapping("/join")
 	public ResponseEntity<String> join(@RequestBody UserDto userInfo) {
-		return ResponseEntity.status(200).body(userService.insertUser(userInfo));
+		try {
+			return ResponseEntity.status(200).body(userService.insertUser(userInfo));
+		} catch (Exception e) {
+			return ResponseEntity.status(409).body("중복이 발생했습니다.");
+		}
 	}
 	
 	@ApiOperation(value = "addUserInformation: 추가 정보 입력")

@@ -16,10 +16,10 @@ import com.sai.model.entity.Vote;
 @Repository
 public interface VoteRepository extends JpaRepository<Vote, Long>{
 	  @Query("SELECT NEW com.sai.model.entity.ChoiceVoteCount(v.choice.choiceId, count(v.voteId)) FROM Vote v WHERE v.poll.pollId in :pollIds GROUP BY v.choice.choiceId")
-	    List<ChoiceVoteCount> countByPollIdInGroupByChoiceId(@Param("pollIds") List<Long> pollIds);
+		List<ChoiceVoteCount> countByPollIdInGroupByChoiceId(@Param("pollIds") List<Long> pollIds);
 
-	  @Query(value = "SELECT NEW com.sai.model.entity.ChoiceVoteCount(v.choice.choiceId, count(v.voteId)) FROM Vote v WHERE v.poll.pollId = :pollId GROUP BY v.choice.choiceId ", nativeQuery = true)
-//	    @Query(value = "SELECT (v.choice_id or v.choice_id is null), (count(v.vote_id) or v.vote_id is null) FROM Votes v WHERE v.poll_id = :pollId GROUP BY (v.choice_id or v.choice_id is null)", nativeQuery = true)
+//	  @Query(value = "SELECT NEW com.sai.model.entity.ChoiceVoteCount(v.choice.choiceId, count(v.voteId)) FROM Vote v WHERE v.poll.pollId = :pollId GROUP BY v.choice.choiceId ", nativeQuery = true)
+	    @Query(value = "SELECT (v.choice_id or v.choice_id is null), (count(v.vote_id) or v.vote_id is null) FROM Votes v WHERE v.poll_id = :pollId GROUP BY (v.choice_id or v.choice_id is null)", nativeQuery = true)
 	    List<ChoiceVoteCount> countByPollIdGroupByChoiceId(@Param("pollId") Long pollId);
 
 	    @Query("SELECT v FROM Vote v where v.user.userId = :userId and v.poll.pollId in :pollIds")

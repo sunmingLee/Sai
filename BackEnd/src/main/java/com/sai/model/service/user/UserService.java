@@ -17,7 +17,7 @@ public interface UserService {
 	// 이메일 중복 체크
 	public boolean checkUserEmailDuplicate(String email);
 	// 직접 회원 가입
-	public String insertUser(UserDto userInfo);
+	public String insertUser(UserDto userInfo) throws Exception;
 	// 회원 정보 추가
 	public String addUserInfo(UserInfoDTO addInfo,  MultipartFile file) throws Exception;
 	// 사용자 정보 조회
