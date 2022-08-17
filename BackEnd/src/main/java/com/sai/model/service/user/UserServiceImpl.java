@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
 		User user = User.builder().userId(userId).email(email).password(passwordEncoder.encode(password))
 				.role(UserRole.USER).userName(userName).build();
 		userRepository.save(user);
-		return "회원가입 성공";
+		return jwtTokenProvider.createToken(user.getUserId());
 	}
 
 	// 회원정보 추가 혹은 수정
@@ -186,19 +186,12 @@ public class UserServiceImpl implements UserService {
 	// 로그인
 	@Override
 	public String login(LoginUserRequestDto user) {
-//		LoginUserResponseDto loginUserResponseDto = new LoginUserResponseDto();
-		
-//		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword()));
-//		SecurityContextHolder.getContext().setAuthentication(authentication);
-//		UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
 		
 		System.out.println("여긴 로그인이야");
-//		System.out.println(userDetails.getUserId());
 		
 		User loginUser = userRepository.findByUserId(user.getUserId())
 				.orElseThrow(() -> new ResourceNotFoundException("User", "userId", user.getUserId()));
 		if (!passwordEncoder.matches(user.getPassword(), loginUser.getPassword())) {
-//			loginUserResponseDto.setJWT(jwtTokenProvider.createToken(loginUser.getUserId()));
 			throw new IllegalArgumentException("잘못된 비밀번호입니다.");
 		}
 		return jwtTokenProvider.createToken(user.getUserId());
