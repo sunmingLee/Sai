@@ -203,7 +203,7 @@ export default {
       pollCnt: 2,
       srcList: [],
       fileList: [],
-      imageFlag : false
+      imageFlag: false
     }
   },
   created () {
@@ -221,19 +221,19 @@ export default {
   methods: {
     ...mapActions(boardStore, ['boardCreate']),
     ...mapActions(familyStore, ['callsignList']),
-    //파일 처리
-    fileCheck(e) {
-      //파일을 다시 선택한다고 했을 때 이미 선택했던 파일을 다 없앤다
-      //fileList -> 담아서 전송해줄 파일 데이터를 담는 배열
-      //srcList -> 사진 미리보기를 보여주는 배열
+    // 파일 처리
+    fileCheck (e) {
+      // 파일을 다시 선택한다고 했을 때 이미 선택했던 파일을 다 없앤다
+      // fileList -> 담아서 전송해줄 파일 데이터를 담는 배열
+      // srcList -> 사진 미리보기를 보여주는 배열
       fileList = []
       this.srcList = []
       this.imageFlag = false
-      //확장자 변경
+      // 확장자 변경
       this.changeFile()
       // 미리보기
       this.previewFile()
-      if(this.srcList.length !== 0) {
+      if (this.srcList.length !== 0) {
         this.imageFlag = true
       }
     },
@@ -316,7 +316,7 @@ export default {
     },
     // 날짜 선택 모달창에서 확인 버튼 클릭
     dateConfirm () {
-      if(this.boardDate === '') {
+      if (this.boardDate === '') {
         alert('날짜를 선택해주세요')
       }
       const modal = document.getElementById('date-popup')
@@ -346,21 +346,20 @@ export default {
     personConfirm () {
       const test = document.getElementsByName('callsign')
       console.log(test)
-      for(let i = 0; i < test.length; i++) {
+      for (let i = 0; i < test.length; i++) {
         const user = test[i].value
 
         const person = {
-          userId : user
+          userId: user
         }
 
-        if(test[i].checked) {
+        if (test[i].checked) {
           const find = this.peopleList.find(v => v.userId === test[i].value)
-          if(!find) {
+          if (!find) {
             this.peopleList.push(person)
           }
-        }
-        else {
-          //배열에서 중복되는 값을 빼자
+        } else {
+          // 배열에서 중복되는 값을 빼자
           const find = this.peopleList.filter(v => v.userId !== test[i].value)
           this.peopleList = find
         }
@@ -574,7 +573,7 @@ export default {
       min-width: 300px;
       flex-basis: 600px;
       margin: 0 auto;
-      
+
       .record-wrap {
         .record-title {
           text-align: center;
@@ -663,7 +662,7 @@ export default {
                         input {
                           zoom: 1.4;
                         }
-                        
+
                       }
                     }
                   }
@@ -739,7 +738,7 @@ export default {
 .carousel-control-next {
   position: unset;
   background-color: #A57966;
-  width: 30px;  
+  width: 30px;
   display: inline-block;
 }
 
@@ -772,7 +771,7 @@ export default {
 }
 .poll-time-title {
   display: flex;
-  
+
 }
 .carousel-inner {
   width: 50%;

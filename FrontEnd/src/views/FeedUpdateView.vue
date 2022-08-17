@@ -15,10 +15,12 @@
               <div class="carousel-inner" >
                 <div class="carousel-item active">
                   <img :src="srcList[0]" id="img" class="d-block w-100">
+                  <button type="button" class="btn-close" aria-label="Close" @click="removeMemo(memo.memoId)"></button>
                 </div>
                 <div v-for="(src, index) in srcList" :key="index">
                   <div v-if="index !== 0" class="carousel-item">
                     <img :src="src" id="img" class="d-block w-100">
+                    <button type="button" class="btn-close" aria-label="Close" @click="removeMemo(memo.memoId)"></button>
                   </div>
                 </div>
               </div>
@@ -55,13 +57,6 @@
                   <span class="visually-hidden">Next</span>
               </button>
             </div>
-            <div class="file-wrap">
-              <span>사진 추가</span>
-              <div class="file-button">
-                <label calss="file-label" for="file">+</label>
-                <input class="form-control" type="file" @change="fileCheck" id="file" multiple>
-              </div>
-            </div>
           <!-- 추가기록과 투표만들기 토글 -->
           <div class="toggle-flex">
             <div class="toggle-wrap">
@@ -89,7 +84,7 @@
                           <div class="body-content">
                             <div class="content-callsign" >
                               <div class="modal-date">
-                                <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" :enableTimePicker="false" v-model="this.boardDate" @closed="updateDate"/>
+                                <Datepicker placeholder="날짜를 선택해주세요." class="datepicker" @cleared="removeDate" :enableTimePicker="false" v-model="this.boardDate" @closed="updateDate"/>
                               </div>
                             </div>
                           </div>
@@ -136,8 +131,7 @@
               </div>
               <div class="record-confirm">
                 <div class="record-time">
-                    <span v-if="!this.dateFlag">시간 : {{this.changeBoardDate}}</span>
-                    <span v-else-if="this.dateFlag">시간 : {{this.originBoardDate}}</span>
+                    <span v-if="this.date !== ''">시간 : {{this.date}}</span>
                     <Button v-if="this.date !== ''" buttonClass="small negative" buttonText="삭제" @click="deleteDate"/>
                 </div>
                 <span v-if="this.boardLocation !== ''">위치 : {{this.boardLocation}}</span>
@@ -148,7 +142,7 @@
             <div v-else class="poll-wrap">
               <!-- 투표 제목 -->
               <div calss="poll-title-wrap">
-                <input v-if="this.question !== ''" type="text" v-model="this.question" placeholder="투표 제목" class="poll-title-input" disabled>
+                <input v-if="this.pollFlag" type="text" v-model="this.question" placeholder="투표 제목" class="poll-title-input" disabled>
                 <input v-else type="text" v-model="this.question" placeholder="투표 제목" class="poll-title-input" >
               </div>
               <!-- 투표 항목 -->
@@ -156,7 +150,7 @@
               <div class="poll-item-wrap">
                 <div v-for="(choice, index) in this.choices" :key="index">
                   <div>
-                    <input v-if="choice.text !== ''" class="poll-option-input" name="option" v-model="choice.text" placeholder="항목을 입력하세요" disabled>
+                    <input v-if="this.pollFlag" class="poll-option-input" name="option" v-model="choice.text" placeholder="항목을 입력하세요" disabled>
                     <input v-else class="poll-option-input" name="option" v-model="choice.text" placeholder="항목을 입력하세요">
                     <span v-if="choice.text === '' && this.choices.length > 2 && index > 1" @click="pollDelete(index)">X</span>
                   </div>
@@ -170,7 +164,8 @@
               <div class="poll-time">
                 <div calss="poll-time-title" style="display: flex">
                   <span style="line-height:35px">마감시간 설정</span>
-                  <input style="padding-left:10px" type="checkbox" class="poll-time" @click="pollTimeCheck">
+                  <input v-if="this.pollFlag" style="padding-left:10px" type="checkbox" class="poll-time" @click="pollTimeCheck" disabled>
+                  <input v-else style="padding-left:10px" type="checkbox" class="poll-time" @click="pollTimeCheck">
                 </div>
                 <div class="poll-time-date">
                   <Datepicker style="max-width:200px" placeholder="날짜를 선택해주세요." class="datepicker" :minDate="new Date()" v-model="pollDatePicker" :disabled="pollDateDisabled"/>
@@ -201,7 +196,7 @@ const userStore = 'userStore'
 const familyStore = 'familyStore'
 
 // 파일 리스트
-let fileList = []
+const fileList = []
 export default {
   name: 'FeedCreateView',
   components: {
@@ -212,24 +207,24 @@ export default {
   },
   data () {
     return {
-      boardDate : '', //언제?(날짜)
-      boardContent  : '', //글
-      boardLocation : '', //어디서?(위치)
-      boardTaggedYn : false, //태그 여부
-      boardMediaYn  : false, //미디어 여부
-      pollYn  : false, //투표 여부
-      question : '', //투표 제목
-      expirationDateTime : '', //투표 마감 날짜
-      choices : [], //투표 항목
-      originMediaList : [], //기존 미디어 목록
-      peopleList : [], //태그 목록
-      boardModified: false, //게시글 수정 여부
-      boardTaggedModified: false, //태그 수정 여부
-      deleteBoardMediaIds: [], //미디어에서 수정되어 사라지는 파일들
-      pollModified: false, //투표 수정 여부
-      originBoardDate : '',
+      boardDate: '', // 언제?(날짜)
+      boardContent: '', // 글
+      boardLocation: '', // 어디서?(위치)
+      boardTaggedYn: false, // 태그 여부
+      boardMediaYn: false, // 미디어 여부
+      pollYn: false, // 투표 여부
+      question: '', // 투표 제목
+      expirationDateTime: '', // 투표 마감 날짜
+      choices: [], // 투표 항목
+      originMediaList: [], // 기존 미디어 목록
+      peopleList: [], // 태그 목록
+      boardModified: false, // 게시글 수정 여부
+      boardTaggedModified: false, // 태그 수정 여부
+      deleteBoardMediaIds: [], // 미디어에서 수정되어 사라지는 파일들
+      pollModified: false, // 투표 수정 여부
+      originBoardDate: '',
       dateValid: false,
-
+      date: '',
       changeBoardDate: '', // 추가 기록(날짜) 선택했을 때 화면에 보여질 날짜
       toggle: true, // true: 추가기록 , false : 투표
       // 투표 항목들
@@ -239,9 +234,9 @@ export default {
       peopleNameList: [],
       srcList: [],
       fileList: [],
-      imageFlag : false,
-      dateFlag: false,
-      pollCheck: false
+      imageFlag: false,
+      pollCheck: false,
+      pollFlag: false
     }
   },
   created () {
@@ -257,9 +252,6 @@ export default {
   },
   mounted () {
     this.check()
-    if(this.originBoardDate !== null) {
-        this.dateFlag = true
-    }
   },
   computed: {
     // ...mapState(userStore, ["userId", "userName"]),
@@ -269,68 +261,24 @@ export default {
   methods: {
     ...mapActions(boardStore, ['boardCreate', 'getOneFeed']),
     ...mapActions(familyStore, ['callsignList']),
-    check() {
-        this.boardDate = this.feed.viewBoardResponseDto.boardDate
-        this.originBoardDate = this.feed.viewBoardResponseDto.boardDate
-        this.boardContent = this.feed.viewBoardResponseDto.boardContent
-        this.boardLocation = this.feed.viewBoardResponseDto.boardLocation
-        this.boardTaggedYn = this.feed.viewBoardResponseDto.boardTaggedYn
-        this.boardMediaYn = this.feed.viewBoardResponseDto.boardMediaYn
-        this.pollYn = this.feed.viewBoardResponseDto.pollYn
-        this.question = this.feed.pollResponse.question
-        this.choices = this.feed.pollResponse.choices
-    },
-    //글 수정
-    updateText() {
-        this.boardModeified = true
-    },
-    //파일 처리
-    fileCheck(e) {
-      fileList = []
-      this.srcList = []
-      this.imageFlag = false
-      //확장자 변경
-      this.changeFile()
-      // 미리보기
-      this.previewFile()
-      if(this.srcList.length !== 0) {
-        this.imageFlag = true
-        this.boardModeified = true
+    check () {
+      this.boardDate = this.feed.viewBoardResponseDto.boardDate
+      this.dateChange()
+      this.originBoardDate = this.feed.viewBoardResponseDto.boardDate
+      this.boardContent = this.feed.viewBoardResponseDto.boardContent
+      this.boardLocation = this.feed.viewBoardResponseDto.boardLocation
+      this.boardTaggedYn = this.feed.viewBoardResponseDto.boardTaggedYn
+      this.boardMediaYn = this.feed.viewBoardResponseDto.boardMediaYn
+      this.pollYn = this.feed.viewBoardResponseDto.pollYn
+      if (this.pollYn) {
+        this.pollFlag = true
       }
+      this.question = this.feed.pollResponse.question
+      this.choices = this.feed.pollResponse.choices
     },
-    changeFile () {
-      const fileInput = document.getElementById('file')
-      // 선택한 파일의 정보 리스트
-      const files = fileInput.files
-      // heic 파일 확장자 변경
-      // 선택한 파일의 개수만큼 돌아서 각각의 파일을 다 확인
-      for (let i = 0; i < files.length; i++) {
-        // 파일 하나 선택
-        const file = files[i]
-        let heicFile = ''
-        // 파일의 확장자가 heic일 경우
-        if (file.name.split('.')[1] === 'heic') {
-          // file의 타입을 "image/jpg"로 바꾸고 이름 뒤에 확장자도 .jpg로 바꾼다
-          heic2any({ blob: file, toType: 'image/jpg' })
-            .then(function (resultBlob) {
-              heicFile = new File([resultBlob], file.name.split('.')[0] + '.jpg', { type: 'image/jpg', lastModified: new Date().getTime() })
-              fileList.push(heicFile)
-            })
-            .catch((err) => {
-              console.log(err)
-            })
-        } else {
-          fileList.push(file)
-        }
-      }
-    },
-    previewFile () {
-      console.log(fileList)
-      if (fileList.length != 0) {
-        for (let i = 0; i < fileList.length; i++) {
-          this.srcList.push(URL.createObjectURL(fileList[i]))
-        }
-      }
+    // 글 수정
+    updateText () {
+      this.boardModeified = true
     },
     // 추가기록과 투표만들기 토글
     record () {
@@ -343,20 +291,23 @@ export default {
         this.toggle = false
       }
     },
-    //투표 초기화
-    pollReset() {
-      //제목과 항목 초기화
+    // 투표 초기화
+    pollReset () {
+      this.boardModeified = true
+      // 제목과 항목 초기화
       this.question = ''
       this.choices = [
-        {text : ''},
-        {text : ''}
+        { text: '' },
+        { text: '' }
       ]
+      this.pollFlag = false
       this.pollCheck = true
       this.pollYn = 0
+      this.pollModified = true
     },
     // 투표 항목 추가하기
     addPollItem () {
-      if(!this.pollCheck) {
+      if (!this.pollCheck) {
         alert('원래 있던 투표는 수정하실 수 없습니다. 초기화 버튼으로 새로 만들어주세요!')
       } else {
         if (this.choices.length < 5) {
@@ -366,8 +317,8 @@ export default {
         }
       }
     },
-    //투표 항목 삭제
-    pollDelete(index) {
+    // 투표 항목 삭제
+    pollDelete (index) {
       this.choices.splice(index, 1)
     },
     // 투표 마감 시간 설정
@@ -384,20 +335,32 @@ export default {
       const modal = document.getElementById('date-popup')
       modal.classList.remove('hidden')
     },
-    //날짜 수정
-    updateDate() {
-        this.boardModeified = true
-        const year = this.boardDate.getFullYear()
-        console.log(year)
-        let month = (1 + this.boardDate.getMonth())
-        let day = this.boardDate.getDate()
-        console.log(month)
-        console.log(day)
-        // MM-DD의 형태로 만들기 위해 10보다 적은 경우 0을 붙이게 함 (예 : 1일이면 01)
-        month = month >= 10 ? month : `0${month}`
-        day = day >= 10 ? day : `0${day}`
-        this.changeBoardDate = `${year}-${month}-${day}`
-        this.dateFlag = false
+    // 화면에 보이는 날짜
+    dateChange () {
+      const date = new Date(this.boardDate)
+      const year = date.getFullYear()
+      let month = (1 + date.getMonth())
+      let day = date.getDate()
+      month = month >= 10 ? month : `0${month}`
+      day = day >= 10 ? day : `0${day}`
+      this.date = `${year}-${month}-${day}`
+    },
+    // 날짜 수정
+    updateDate () {
+      this.boardModeified = true
+      const year = this.boardDate.getFullYear()
+      let month = (1 + this.boardDate.getMonth())
+      let day = this.boardDate.getDate()
+      // MM-DD의 형태로 만들기 위해 10보다 적은 경우 0을 붙이게 함 (예 : 1일이면 01)
+      month = month >= 10 ? month : `0${month}`
+      day = day >= 10 ? day : `0${day}`
+      this.date = `${year}-${month}-${day}`
+    },
+    // 날짜 제거 했을때
+    removeDate () {
+      this.boardModeified = true
+      console.log(this.boardDate)
+      this.date = ''
     },
     // 누구랑?
     showFamily () {
@@ -406,7 +369,7 @@ export default {
     },
     // 날짜 선택 모달창에서 확인 버튼 클릭
     dateConfirm () {
-      if(this.boardDate === '') {
+      if (this.boardDate === '') {
         alert('날짜를 선택해주세요')
       }
       const modal = document.getElementById('date-popup')
@@ -416,38 +379,36 @@ export default {
     },
     // 날짜 선택 모달창에서 취소 버튼 클릭
     dateCancle () {
-        this.dateFlag = true
-        console.log(this.originBoardDate)
-        this.boardDate = this.originBoardDate
-        const modal = document.getElementById('date-popup')
-        this.date = this.boardDate
-        modal.classList.add('hidden')
+      console.log(this.originBoardDate)
+      this.boardDate = this.originBoardDate
+      const modal = document.getElementById('date-popup')
+      this.date = this.boardDate
+      modal.classList.add('hidden')
     },
     // 날짜 삭제
     deleteDate () {
-        const date = document.querySelector('.record-time')
-        date.classList.add('hidden')
-        this.boardModeified = true
-        this.boardDate = ''
+      this.boardModified = true
+      this.date = ''
+      this.originBoardDate = ''
+      this.boardDate = ''
     },
     // 사람 태그 확인
     personConfirm () {
       const test = document.getElementsByName('callsign')
       console.log(test)
-      for(let i = 0; i < test.length; i++) {
+      for (let i = 0; i < test.length; i++) {
         const user = test[i].value
         const person = {
-          userId : user
+          userId: user
         }
 
-        if(test[i].checked) {
+        if (test[i].checked) {
           const find = this.peopleList.find(v => v.userId === test[i].value)
-          if(!find) {
+          if (!find) {
             this.peopleList.push(person)
           }
-        }
-        else {
-          //배열에서 중복되는 값을 빼자
+        } else {
+          // 배열에서 중복되는 값을 빼자
           const find = this.peopleList.filter(v => v.userId !== test[i].value)
           this.peopleList = find
         }
@@ -485,53 +446,85 @@ export default {
           if (fullRoadAddr !== '') {
             fullRoadAddr += extraRoadAddr
           }
-          this.boardModeified = true
+          this.boardModified = true
           this.boardLocation = fullRoadAddr
         }
       }).open()
     },
     // 위치 삭제
     deleteLocation () {
-      if(this.boardLocation !== '') {
-        this.boardModeified = true
+      if (this.boardLocation !== '') {
+        this.boardModified = true
       }
       this.boardLocation = ''
     },
-    feedUpdate() {
+    feedUpdate () {
       console.log(this.boardDate)
+      console.log(this.question)
+      console.log(this.choices)
     },
     // 게시글 작성
-    feedCreate () {
-      const createBoardRequestDto = {}
+    feedUpdate () {
       // 미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
       if (fileList.length === 0 && this.boardContent === '' && this.pollYn) {
         alert('글이나 사진을 등록해야 작성이 가능합니다.')
         // this.files = test
       } else {
-        // 미디어 파일이 있다!
-        console.log(fileList.length)
-        if (fileList.length !== 0) {
-          this.boardMediaYn = 1
-        } // 투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
-        // for(let i = 0; i < )
+        // 투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
         let pollOptionCnt = 0
-        for (let i = 0; i < this.pollCnt; i++) {
-          if (this.pollOptions[i].pollOption !== '') {
+        for (let i = 0; i < this.choices.length; i++) {
+          if (this.choices[i].text !== '') {
             pollOptionCnt = pollOptionCnt + 1
           }
         }
         // 작성한 항목이 있는데
         if (pollOptionCnt !== 0) {
           // 제목이 없으면
-          if (this.pollTitle === '') {
+          if (this.question === '') {
             alert('투표 제목을 입력해주세요')
-          } else if (this.pollTitle === '' && pollOptionCnt < 2) {
+          } else if (this.question !== '' && pollOptionCnt < 2) {
+            console.log('두번째')
             alert('투표 항목은 최소한 두 개 이상이어야 합니다')
           } else {
-            this.pollYn = 1
+            console.log('마지막')
+            for (let i = 0; i < this.choices.length; i++) {
+              if (this.choices[i].text === '') {
+                alert('아무 것도 입력하지 않은 투표 항목이 있습니다')
+              } else {
+                this.pollYn = 1
+              }
+            }
           }
         }
-        // 투표가 있을 경우
+        // 투표가 있고 그게 지금 수정한 경우
+        if (this.pollYn === 1 && this.boardModified === 1) {
+          if (this.pollDateDisabled) {
+            const timeOff = new Date().getTimezoneOffset() * 60000
+            const timeZone = new Date(Date.now() - timeOff) // 현재 시간
+            this.pollEndDate = new Date(timeZone.setDate(timeZone.getDate() + 3)).toISOString()
+          } else {
+            const timeOff = new Date(this.pollDatePicker).getTimezoneOffset() * 60000
+            const timeZone = new Date(this.pollDatePicker - timeOff)
+            this.pollEndDate = timeZone.toISOString()
+          }
+        }
+        if (this.boardModified) {
+          const updateBoardRequestDto = {
+            boardModified: this.boardModified,
+            boardTaggedModified: this.boardTaggedModified,
+            modifyBoardRequestDto: {
+              boardContent: this.boardContent,
+              boardDate: this.boardDate,
+              boardId: localStorage.getItem('boardId'),
+              boardLocation: this.boardLocation,
+              boardMediaYn: this.boardMediaYn,
+              boardTaggedYn: this.boardTaggedYn,
+              pollYn: this.pollYn
+            },
+            pollModified: this.pollModified
+          }
+        }
+        // // 투표가 있을 경우
         if (this.pollYn === 1) {
           if (this.pollDateDisabled) {
             const timeOff = new Date().getTimezoneOffset() * 60000
@@ -558,30 +551,30 @@ export default {
           Object.assign(createBoardRequestDto, { pollRequest: pollResult })
         }
 
-        // 추가 정보에서 사람 태그 여부
-        const taggedResult = []
-        // 태그한 사람이 있을 경우
-        if (this.peopleList.length !== 0) {
-          this.boardTaggedYn = 1
-          for (let i = 0; i < this.peopleList.length; i++) {
-            taggedResult[i] = this.peopleList[i]
-          }
-          Object.assign(createBoardRequestDto, { inputBoardTaggedRequestDtos: taggedResult })
-        }
-        const inputBoardRequestDto = {
-          familyId: localStorage.getItem('familyId'),
-          userId: localStorage.getItem('userId'),
-          boardContent: this.boardContent,
-          boardDate: this.boardDate,
-          boardLocation: this.boardLocation,
-          boardTaggedYn: this.boardTaggedYn,
-          boardMediaYn: this.boardMediaYn,
-          pollYn: this.pollYn,
-          boardLikeCnt: 0,
-          boardReplyCnt: 0
-        }
-        Object.assign(createBoardRequestDto, { inputBoardRequestDto })
-        console.log(createBoardRequestDto)
+        // // 추가 정보에서 사람 태그 여부
+        // const taggedResult = []
+        // // 태그한 사람이 있을 경우
+        // if (this.peopleList.length !== 0) {
+        //   this.boardTaggedYn = 1
+        //   for (let i = 0; i < this.peopleList.length; i++) {
+        //     taggedResult[i] = this.peopleList[i]
+        //   }
+        //   Object.assign(createBoardRequestDto, { inputBoardTaggedRequestDtos: taggedResult })
+        // }
+        // const inputBoardRequestDto = {
+        //   familyId: localStorage.getItem('familyId'),
+        //   userId: localStorage.getItem('userId'),
+        //   boardContent: this.boardContent,
+        //   boardDate: this.boardDate,
+        //   boardLocation: this.boardLocation,
+        //   boardTaggedYn: this.boardTaggedYn,
+        //   boardMediaYn: this.boardMediaYn,
+        //   pollYn: this.pollYn,
+        //   boardLikeCnt: 0,
+        //   boardReplyCnt: 0
+        // }
+        // Object.assign(createBoardRequestDto, { inputBoardRequestDto })
+        // console.log(createBoardRequestDto)
         // if (this.boardMediaYn === 1) {
         //   this.boardCreate({ createBoardRequestDto, fileList })
         // } else {
@@ -658,6 +651,7 @@ export default {
       margin: 0 auto;
       display: flex;
       justify-content: center;
+      margin-top: 10px;
       .toggle-wrap {
         button {
           background-color: white;
@@ -672,7 +666,7 @@ export default {
       min-width: 300px;
       flex-basis: 600px;
       margin: 0 auto;
-      
+
       .record-wrap {
         .record-title {
           text-align: center;
@@ -761,7 +755,7 @@ export default {
                         input {
                           zoom: 1.4;
                         }
-                        
+
                       }
                     }
                   }
@@ -825,8 +819,8 @@ export default {
   }
 }
 .carousel-inner{
-    min-width: 300px;
-    height: 100%;
+  min-width: 300px;
+  height: 90%;
   width: 40%!important;
   margin: 0 auto;
 }
@@ -839,7 +833,7 @@ export default {
 .carousel-control-next {
   position: unset;
   background-color: #A57966;
-  width: 30px;  
+  width: 30px;
   display: inline-block;
 }
 
@@ -872,7 +866,7 @@ export default {
 }
 .poll-time-title {
   display: flex;
-  
+
 }
 .poll-button {
     display: flex;
