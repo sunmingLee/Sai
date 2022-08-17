@@ -119,6 +119,7 @@ export default {
     },
     // 회원탈퇴
     withdrawal () {
+      console.log(this.userInfo.userId)
       this.withdrawalMember(this.userInfo.userId)
     }
   }

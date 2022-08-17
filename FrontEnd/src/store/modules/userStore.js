@@ -148,6 +148,7 @@ const userStore = {
         params
       })
         .then((res) => {
+          console.log(res.data)
           if (res.data.msg.indexOf('입력하신 이메일로 임시 비밀번호가 전송되었습니다.') != -1) {
             alert(res.data.msg)
             router.push({ name: 'home' })
@@ -202,7 +203,7 @@ const userStore = {
     // 회원 탈퇴
     withdrawalMember ({ commit }, userId) {
       instance({
-        url: api_url + `/${userId.id}`,
+        url: api_url + `/${userId}`,
         method: 'DELETE'
       })
         .then((res) => {

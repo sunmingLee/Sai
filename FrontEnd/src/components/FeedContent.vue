@@ -137,12 +137,6 @@ export default {
     this.getFamilyInfo(info.familyId)
     // 유저 정보 조회
     this.checkUserInfo(info.userId)
-    // this.list = this.list.concat(this.$store.state.boardStore.feedList)
-    // console.log(this.list)
-    // console.log(this.$store.state.boardStore)
-    // console.log("얏호")
-    // console.log(this.$store.state.boardStore.feedList)
-    // console.log(this.$store.state.boardStore.feedList.length)
   },
   mounted () {
     
@@ -173,10 +167,8 @@ export default {
       for(let i = 0; i < this.feedList.length; i++) {
         if(this.feedList[i].viewBoardResponseDto.boardId === boardId) {
           if(!this.feedList[i].boardLiked) {
-            console.log("좋아요")
             this.upBoardLike(info)
           } else {
-            console.log("좋아요 취소")
             this.downBoardLike(info)
           }
         }
@@ -200,10 +192,6 @@ export default {
         familyId: localStorage.getItem('familyId')
       }
       this.feedAllList(info)
-      
-      // this.list = this.list.push(this.$store.state.boardStore.feedList)
-      // console.log(this.list)
-      // this.list = this.list.concat(this.$store.state.boardStore.feedList)
     }
   },
   data () {
@@ -224,7 +212,7 @@ p {
 }
 //캐러셀
 .carousel-inner{
-  width: auto;
+  width: 80%!important;
   height: 250px;
 }
 .carousel-item{
@@ -236,10 +224,10 @@ p {
 .d-block {
   //사진 크기를 가운데
   margin: 0 auto;
-  // width: auto!important;
-  // height: 250px;
+  width: auto!important;
+  height: 250px;
   //옆으로 길게 늘리기
-  width: 100%;
+  // width: 100%;
   //사진의 일부  
   // height: 100%;
 }

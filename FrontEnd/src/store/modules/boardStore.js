@@ -12,7 +12,8 @@ const boardStore = {
     replyList: [],
     feed: [],
     myFeedList: [],
-    myFeedCnt: []
+    myFeedCnt: [],
+    likeList: []
   },
   getters: {
 
@@ -35,6 +36,9 @@ const boardStore = {
     },
     FEED_RESET (state) {
       state.feedList = []
+    },
+    LIKE_All_LIST(state, likeList) {
+      state.likeList = likeList
     }
   },
   actions: {
@@ -86,6 +90,7 @@ const boardStore = {
         params
       })
         .then((res) => {
+          console.log(res.data)
           if (res.data.length === 0) {
             alert('더 이상 불러올 게시물이 없습니다')
           } else {
@@ -132,7 +137,7 @@ const boardStore = {
     },
     // 게시글 수정
     boardUpdate ({ commit }, updateBoardRequestDto) {
-      axios({
+      instance({
         url: api_url + '/board',
         method: 'PUT',
         data: JSON.stringify(updateBoardRequestDto),
@@ -177,9 +182,32 @@ const boardStore = {
       })
         .then((res) => {
           dispatch('getOneFeed', info)
-          // dispatch('feedAllList', info)
+          dispatch('likeAllList', info)
         })
         .catch((err) => {
+          console.log(err)
+        })
+    },
+    likeAllList({commit}, info) {
+      const familyId = info.familyId
+      const userId = info.userId
+      const params = {
+        page: info.page
+      }
+      instance({
+        url: api_url + '/' + familyId + '/' + userId,
+        method: 'GET',
+        params
+      })
+        .then((res) => {
+          if (res.data.length === 0) {
+            alert('더 이상 불러올 게시물이 없습니다')
+          } else {
+            commit('LIKE_All_LIST', res.data)
+          }
+        })
+        .catch((err) => {
+          console.log('에러')
           console.log(err)
         })
     },
