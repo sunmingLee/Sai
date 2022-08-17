@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import axios from 'axios'
+import instance from 'instance'
 import router from '@/router/index.js'
 import { API_BASE_URL } from '@/config'
 import { instance } from '@/api/index.js'
@@ -51,7 +51,7 @@ const planStore = {
     },
     // 일정 조회
     planAllList ({ commit }, familyId) {
-      axios({
+      instance({
         url: api_url + '/' + familyId,
         method: 'GET'
       })
@@ -107,7 +107,7 @@ const planStore = {
     // 일정 수정하기
     planModify ({ commit, dispatch }, info) {
       // console.log(info.plan)
-      axios({
+      instance({
         url: api_url + `/${info.mainPlanId}`,
         method: 'PUT',
         data: info
@@ -129,7 +129,7 @@ const planStore = {
     },
     // 일정 삭제
     planDelete ({ commit, dispatch }, planId) {
-      axios({
+      instance({
         url: api_url + `/${planId}`,
         method: 'DELETE'
       })
