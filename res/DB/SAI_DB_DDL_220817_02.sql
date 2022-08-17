@@ -163,6 +163,8 @@ CREATE TABLE IF NOT EXISTS `sai`.`board_like` (
   PRIMARY KEY (`board_like_id`),
   INDEX `FK_BOARD_TO_REACTION_1` (`board_id` ASC),
   INDEX `fk_board_like_user1_idx` (`user_id` ASC),
+  CONSTRAINT `unique_boardId_userId`
+    unique (board_id, user_id),
   CONSTRAINT `FK_BOARD_TO_REACTION_1`
     FOREIGN KEY (`board_id`)
     REFERENCES `sai`.`board` (`board_id`)
@@ -333,7 +335,7 @@ DEFAULT CHARACTER SET = utf8mb4;
 DROP TABLE IF EXISTS `sai`.`main_plan` ;
 
 CREATE TABLE IF NOT EXISTS `sai`.`main_plan` (
-  `main_plan_id` BIGINT(20) NOT NULL,
+  `main_plan_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `family_id` VARCHAR(10) NOT NULL,
   `user_id` VARCHAR(20) NOT NULL,
   `plan_title` VARCHAR(255) NULL DEFAULT NULL,
