@@ -266,7 +266,8 @@ public class FeedServiceImpl implements FeedService {
 
 				CreateNotificationRequestDto cnrd = CreateNotificationRequestDto.builder()
 						.notiFromUserId(board.getUser().getUserId()).notiToUserId(user.getUserId())
-						.notiContent("님이 당신을 태그했습니다 !").notiType(NotiType.TAGGED).build();
+						.notiContent("님이 당신을 태그했습니다 !").notiContentId(Long.toString(board.getBoardId()))
+						.notiType(NotiType.TAGGED).build();
 				notiService.createNoti(cnrd);
 
 //				BoardTagged boardTagged = modelMapper.map(inputBoardTaggedRequestDto, BoardTagged.class);
@@ -350,7 +351,7 @@ public class FeedServiceImpl implements FeedService {
 		if (!userId.equals(board.getUser().getUserId())) {
 			CreateNotificationRequestDto cnrd = CreateNotificationRequestDto.builder()
 					.notiToUserId(board.getUser().getUserId()).notiFromUserId(userId).notiContent("좋아요를 눌렀습니다.")
-					.notiType(NotiType.LIKE).build();
+					.notiContentId(Long.toString(boardId)).notiType(NotiType.LIKE).build();
 			notiService.createNoti(cnrd);
 		}
 

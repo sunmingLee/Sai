@@ -61,7 +61,8 @@ public class ReplyServiceImpl implements ReplyService {
 		} else {
 			CreateNotificationRequestDto cnrd = CreateNotificationRequestDto.builder()
 					.notiToUserId(board.getUser().getUserId()).notiFromUserId(createReplyRequestDTO.getUserId())
-					.notiContent(createReplyRequestDTO.getReplyContent()).notiType(NotiType.COMMENT).build();
+					.notiContent(createReplyRequestDTO.getReplyContent()).notiContentId(Long.toString(boardId))
+					.notiType(NotiType.COMMENT).build();
 
 			notiService.createNoti(cnrd);
 		}
