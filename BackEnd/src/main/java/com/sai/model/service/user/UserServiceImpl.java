@@ -72,13 +72,14 @@ public class UserServiceImpl implements UserService {
 
 	// 직접 회원 가입
 	@Override
-	public String insertUser(UserDto userInfo) {
+	public String insertUser(UserDto userInfo) throws Exception{
 		String userId = userInfo.getUserId();
 		String email = userInfo.getEmail();
 		String password = userInfo.getPassword();
 		String userName = userInfo.getUserName();
 		String role = userInfo.getRole();
-
+		
+		
 		User user = User.builder().userId(userId).email(email).password(passwordEncoder.encode(password))
 				.role(UserRole.USER).userName(userName).build();
 		userRepository.save(user);
