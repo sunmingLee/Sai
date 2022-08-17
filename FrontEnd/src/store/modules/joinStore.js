@@ -64,14 +64,14 @@ const joinStore = {
       }).catch((res) => {
       })
     },
-    checkJoin (context, { commit }, userJoin) {
+    checkJoin (context, userJoin) {
       instance.post(api_url + '/user/join', userJoin, {
       }).then(res => {
         if (context.state.isChecked === true) {
           alert('회원가입성공')
           localStorage.setItem('userId', userJoin.userId)
           localStorage.setItem('accessToken', res.data)
-          commit('SET_ACCESSTOKEN', res.data)
+          context.commit('SET_ACCESSTOKEN', res.data)
           router.push({ name: 'addInformation' })
         } else {
           alert('아이디중복 또는 이메일중복을 확인해주세요')
@@ -79,6 +79,7 @@ const joinStore = {
         }
       }).catch((res) => {
         alert('아이디중복 또는 이메일중복을 확인해주세요')
+        console.log(res)
       })
     }
   },
