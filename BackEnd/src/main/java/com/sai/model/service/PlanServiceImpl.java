@@ -73,19 +73,6 @@ public class PlanServiceImpl implements PlanService {
 //		MainPlan mainPlan = modelMapper.map(createPlanRequestDto, MainPlan.class);
 		mainPlanRepository.save(mainPlan);
 		
-//		// 태그한 사람이 있는 경우
-//		if(mainPlan.getPlanTaggedYn()) {
-//			List<InputPlanTaggedRequestDto> inputPlanTaggedRequestDtos = 
-//					createPlanRequestDto.getInputPlanTaggedRequestDtos();
-//			for (InputPlanTaggedRequestDto inputPlanTaggedRequestDto : inputPlanTaggedRequestDtos) {
-//				User user = userRepository.findById(inputPlanTaggedRequestDto.getUserId()).get();
-//				PlanTagged planTagged = PlanTagged.builder().mainPlan(mainPlan).user(user).build();
-//				
-//				planTaggedRepository.save(planTagged);
-//			}
-//			
-//		}
-		
 		return "success";
 	}
 
@@ -96,19 +83,6 @@ public class PlanServiceImpl implements PlanService {
 //		ViewPlanResponseDto viewPlanResponseDto = new ViewPlanResponseDto();
 		
 		MainPlan mainPlan = mainPlanRepository.findById(mainPlanId).get();
-
-//		// 태그된 사람 세팅
-//		if(mainPlan.getPlanTaggedYn()) {
-//			List<ViewPlanTaggedResponseDto> viewPlanTaggedResponseDtos = new ArrayList<>();
-//			List<PlanTagged> planTaggeds = planTaggedRepository.findByMainPlan(mainPlan);
-//			for (PlanTagged planTagged : planTaggeds) {
-//				viewPlanTaggedResponseDtos.add(modelMapper.map(planTagged, ViewPlanTaggedResponseDto.class));
-//			}
-//			viewPlanResponseDto.setViewPlanTaggedResponseDtos(viewPlanTaggedResponseDtos);
-//		}
-//		
-//		viewPlanResponseDto.setPlanResponseDto(modelMapper.map(mainPlan, PlanResponseDto.class));
-		
 		return modelMapper.map(mainPlan, PlanResponseDto.class);
 	}
 
@@ -132,17 +106,6 @@ public class PlanServiceImpl implements PlanService {
 	// 일정 수정
 	@Override
 	public void updatePlan(UpdatePlanRequestDto updatePlanRequestDto) {
-		// 알림 설정한 경우 알림 보내기 - 언제 보낼 것인가?
-//				if(updatePlanRequestDto.getPlanNotiYn()) {
-//					CreateNotificationRequestDto cnrd = CreateNotificationRequestDto.builder()
-//							.notiToUserId(updatePlanRequestDto.getUserId())
-//							.notiFromUserId(updatePlanRequestDto.getUserId())
-//							.notiContent("오늘은 "+updatePlanRequestDto.getPlanTitle()+" 입니다.")
-//							.notiType(NotiType.PLAN)
-//							.build();
-//					notificationService.createNoti(cnrd);
-//				}
-		
 		MainPlan mainPlan = mainPlanRepository.findById(updatePlanRequestDto.getMainPlanId()).get();
 		mainPlan.update(updatePlanRequestDto);
 		mainPlanRepository.save(mainPlan);

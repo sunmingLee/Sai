@@ -1,11 +1,13 @@
 package com.sai.security;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
@@ -28,17 +30,17 @@ public class UserPrincipal implements UserDetails, OAuth2User{
 	@JsonIgnore
 	private String password;
 
-	private Collection<? extends GrantedAuthority> authorities;
-
+//	private Collection<? extends GrantedAuthority> authorities;
+	private String userAuth;
+	
 	public static UserPrincipal create(User user) {
-		Collection<GrantedAuthority> authorities = new HashSet<>();
-		authorities.add(new GrantedAuthority() {
-			
-			@Override
-			public String getAuthority() {
-				return user.getRoleKey();
-			}
-		});
+//		Collection<GrantedAuthority> authorities = new HashSet<>();
+//		authorities.add(new GrantedAuthority() {
+//			@Override
+//			public String getAuthority() {
+//				return user.getRoleKey();
+//			}
+//		});
 		
 //		List<GrantedAuthority> authorities = user.getRoles().stream().map(role ->
 //		new SimpleGrantedAuthority(role.getName().name())).collect(Collectors.toList());
@@ -48,7 +50,8 @@ public class UserPrincipal implements UserDetails, OAuth2User{
                 user.getUserName(),
                 user.getEmail(),
                 user.getPassword(),
-                authorities
+                user.getRoleKey()
+//                authorities
         );
 
 	}
@@ -56,8 +59,8 @@ public class UserPrincipal implements UserDetails, OAuth2User{
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return authorities;
+		
+		return Collections.singletonList(new SimpleGrantedAuthority(this.userAuth));
 	}
 
 	@Override

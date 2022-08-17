@@ -188,11 +188,12 @@ public class UserServiceImpl implements UserService {
 	public String login(LoginUserRequestDto user) {
 //		LoginUserResponseDto loginUserResponseDto = new LoginUserResponseDto();
 		
-		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword()));
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
+//		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword()));
+//		SecurityContextHolder.getContext().setAuthentication(authentication);
+//		UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
 		
-		System.out.println(userDetails.getUserId());
+		System.out.println("여긴 로그인이야");
+//		System.out.println(userDetails.getUserId());
 		
 		User loginUser = userRepository.findByUserId(user.getUserId())
 				.orElseThrow(() -> new ResourceNotFoundException("User", "userId", user.getUserId()));
@@ -239,7 +240,7 @@ public class UserServiceImpl implements UserService {
 		} else {
 			infoUserResponseDto.setFamilyId(loginUser.getFamily().getFamilyId());
 		}
-
+		System.out.println("가족정보 서비스 끝이야");
 		return infoUserResponseDto;
 	}
 

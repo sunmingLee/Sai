@@ -59,9 +59,11 @@ public class JwtTokenProvider {
 	        return true;
 
 	    }catch(ExpiredJwtException e) {   //Token이 만료된 경우 Exception이 발생한다.
+	    	System.out.println("토큰 만료지롱");
 	        return false;
 
 	    }catch(JwtException e) {        //Token이 변조된 경우 Exception이 발생한다.
+	    	System.out.println("변조된 토큰이지롱");
 	        return false;
 	    }
 	}
@@ -85,9 +87,7 @@ public class JwtTokenProvider {
 	 // Request의 Header에서 token 값을 가져옵니다. "accessToken" : "TOKEN값'
     public String resolveToken(HttpServletRequest request) {
         String token = null;
-        System.out.println("쿠키말고 헤더에서 받아오지");
-//        System.out.println(request.getServerPort());
-        System.out.println(request.getHeader("Authorization"));
+        System.out.println("토큰 프로바이더");
         if(request.getHeader("Authorization") != null) token = request.getHeader("Authorization");
 //        Cookie cookie = WebUtils.getCookie(request, "accessToken");
 //        if(cookie != null) token = cookie.getValue();
@@ -97,7 +97,7 @@ public class JwtTokenProvider {
     // JWT 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
-        
+        System.out.println(userDetails.getAuthorities().toString());
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 

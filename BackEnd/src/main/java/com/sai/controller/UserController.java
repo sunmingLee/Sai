@@ -6,12 +6,14 @@ import java.util.Map;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.catalina.security.SecurityUtil;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -57,6 +59,7 @@ public class UserController {
 	private final OAuth2UserService oAuth2UserService;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
+//	private final UserPrincipal userPrincipal;
 
 	@ApiOperation(value = "checkUserIdDuplicate: 아이디 중복 검사")
 	@GetMapping("/duplication/id")
@@ -137,6 +140,7 @@ public class UserController {
 //			cookie.setSecure(true);
 //			response.addCookie(cookie);
 //			loginUserResponseDto.setMsg("로그인 성공");
+			System.out.println("로그인 끝");
 			return ResponseEntity.status(200).body(JWT);
 		} catch (Exception e) {
 			loginUserResponseDto.setMsg("로그인 에러");
@@ -162,8 +166,8 @@ public class UserController {
 	@ApiOperation(value = "loginUserInfo: 로그인 후 회원정보 요청")
 	@PostMapping("/login/info")
 	public ResponseEntity<InfoUserResponseDto> loginUserInfo(@RequestBody LoginUserRequestDto loginUserRequestDto){
-		
 		try {
+			System.out.println("여긴 회원정보야");
 			return ResponseEntity.ok(userService.loginUserInfo(loginUserRequestDto));
 		} catch (Exception e) {
 			return ResponseEntity.status(404).body(userService.loginUserInfo(loginUserRequestDto));
