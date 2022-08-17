@@ -26,6 +26,7 @@ import com.sai.model.dto.boardMedia.ViewBoardMediaResponseDto;
 import com.sai.model.dto.boardTagged.InputBoardTaggedRequestDto;
 import com.sai.model.dto.boardTagged.ViewBoardTaggedResponseDto;
 import com.sai.model.dto.notification.CreateNotificationRequestDto;
+import com.sai.model.dto.poll.PollRequest;
 import com.sai.model.dto.poll.PollResponse;
 import com.sai.model.dto.reply.ReplyDto;
 import com.sai.model.entity.Board;
@@ -310,7 +311,9 @@ public class FeedServiceImpl implements FeedService {
 			pollRepository.delete(poll);
 
 			// 재생성
-			pollService.createPoll(updateBoardRequestDto.getPollRequest());
+			PollRequest pollRequest = updateBoardRequestDto.getPollRequest();
+			if (pollRequest != null)
+				pollService.createPoll(pollRequest);
 		}
 
 		// 태그 삭제 후 재생성
