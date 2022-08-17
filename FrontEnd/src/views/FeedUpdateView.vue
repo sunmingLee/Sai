@@ -115,7 +115,7 @@
                             <div class="content-callsign" >
                               <div class="callsign-wrap" v-for="(callsign, index) in familyCallsignList" :key="index">
                                 <label for="callsign-select">{{callsign.callsign}}</label>
-                                <input type="checkbox" name="callsign" :value="callsign.toUserId" class="callsign-select">
+                                <input type="checkbox" name="callsign" :value="callsign.toUserId" class="callsign-select" :checked="this.callsignCheck[index]">
                               </div>
                             </div>
                           </div>
@@ -239,7 +239,9 @@ export default {
       imageFlag: false,
       pollCheck: false,
       pollFlag: false,
-      pollRequest: {}
+      pollRequest: {},
+      callsignCheck: [],
+      callsign : []
     }
   },
   created () {
@@ -255,10 +257,6 @@ export default {
   },
   mounted () {
     this.check()
-    console.log('얏호')
-    console.log(this.date === null)
-    console.log(this.date === '')
-    console.log(this.date)
   },
   computed: {
     // ...mapState(userStore, ["userId", "userName"]),
@@ -269,6 +267,7 @@ export default {
     ...mapActions(boardStore, ['boardCreate', 'getOneFeed', 'boardUpdate']),
     ...mapActions(familyStore, ['callsignList']),
     check () {
+      this.callsign = this.familyCallsignList
       this.boardDate = this.feed.viewBoardResponseDto.boardDate
       this.dateChange()
       this.originBoardDate = this.feed.viewBoardResponseDto.boardDate
@@ -283,10 +282,20 @@ export default {
         this.question = this.feed.pollResponse.question
         this.choices = this.feed.pollResponse.choices
       }
+      this.peopleList = this.feed.viewBoardTaggedResponseDto
+      console.log(this.callsign.length)
+      if(this.callsign.length > 0) {
+        for(let i = 0; i < this.callsign.length; i++) {
+          if(this.peopleList.some(v => v.userId === this.callsign[i].toUserId)) {
+            this.callsignCheck.push(true)
+          } else {
+            this.callsignCheck.push(false)
+          }
+        }
+      }
     },
     // 글 수정
     updateText () {
-      console.log('안녕' + this.boardModified)
       this.boardModified = true
     },
     // 추가기록과 투표만들기 토글
@@ -302,7 +311,6 @@ export default {
     },
     // 투표 초기화
     pollReset () {
-      console.log('안녕' + this.boardModified)
       this.boardModified = true
       // 제목과 항목 초기화
       this.question = ''
@@ -320,7 +328,6 @@ export default {
       if (!this.pollCheck && this.pollYn) {
         alert('원래 있던 투표는 수정하실 수 없습니다. 초기화 버튼으로 새로 만들어주세요!')
       } else {
-        console.log('안녕' + this.boardModified)
         this.boardModified = true
         if (this.choices.length < 5) {
           this.choices.push({ text: '' })
@@ -359,7 +366,6 @@ export default {
     },
     // 날짜 수정
     updateDate () {
-      console.log('안녕' + this.boardModified)
       this.boardModified = true
       const year = this.boardDate.getFullYear()
       let month = (1 + this.boardDate.getMonth())
@@ -375,11 +381,6 @@ export default {
       this.boardModified = true
       console.log(this.boardDate)
       this.date = ''
-    },
-    // 누구랑?
-    showFamily () {
-      const modal = document.getElementById('popup')
-      modal.classList.remove('hidden')
     },
     // 날짜 선택 모달창에서 확인 버튼 클릭
     dateConfirm () {
@@ -406,6 +407,11 @@ export default {
       this.date = ''
       this.originBoardDate = ''
       this.boardDate = ''
+    },
+    // 누구랑?
+    showFamily () {
+      const modal = document.getElementById('popup')
+      modal.classList.remove('hidden')
     },
     // 사람 태그 확인
     personConfirm () {
