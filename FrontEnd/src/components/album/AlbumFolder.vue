@@ -1,15 +1,19 @@
 <template>
-  <div>
+  <div style="height: 90%">
     <HeaderTitle title="앨범"></HeaderTitle>
     <ul class="list-group list-group-flush" v-if="folderList.length">
         <li class="list-group-item" v-for="(folder, index) in folderList" :key="index">
-            <img v-if="folder.thumbnailPath" :src="folder.thumbnailPath" class="img-fluid" alt="thumbnail">
-            <img v-else src="@/assets/images/여행1.jpg" class="img-fluid" alt="empty thumbnail">
+          <div style="position: relative">
             <div @click="seeFolder(folder.albumId, folder.albumName)">
-                <div class="travel-date-wrap">{{ folder.albumStartDate }} ~ {{ folder.albumEndDate }}</div>
-                <div class="folder-name">{{ folder.albumName }}</div>
+              <img v-if="folder.thumbnailPath" :src="folder.thumbnailPath" class="img-fluid" alt="thumbnail">
+              <img v-else src="@/assets/images/여행1.jpg" class="img-fluid" alt="empty thumbnail">
+              <div >
+                  <div class="travel-date-wrap">{{ folder.albumStartDate }} ~ {{ folder.albumEndDate }}</div>
+                  <div class="folder-name">{{ folder.albumName }}</div>
+              </div>
             </div>
             <button type="button" class="btn-close" aria-label="Close" @click="eraseAlbum(folder.albumId)"></button>
+          </div>
         </li>
     </ul>
     <div class="nothing-wrap" v-else>등록된 앨범이 없습니다.</div>
@@ -77,6 +81,8 @@ export default {
         familyId: localStorage.familyId
       }
       this.makeAlbum(info)
+      this.folderName = ''
+      this.date = []
     },
     // 앨범 삭제
     eraseAlbum (albumId) {
@@ -103,7 +109,7 @@ export default {
     margin-bottom: 5%;
 }
 ul{
-    height: 91%;
+    height: 100%;
     li{
         min-height: 20vh;
         height: 20%;
@@ -120,6 +126,8 @@ ul{
     position: absolute;
     top: 5%;
     right: 5%;
+    border: 1px solid black;
+    background-color: white;
 }
 .travel-date-wrap{
     font-size: small;
@@ -162,5 +170,10 @@ input {
   width: -webkit-fill-available;
   border-radius: 5px;
   border: 1px solid #ae5f40;
+}
+.list-group-item{
+  min-width: 300px;
+  height: auto;
+  margin-bottom: 30px;
 }
 </style>

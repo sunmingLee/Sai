@@ -39,7 +39,7 @@
             <div v-if="notificationCount === 0" @click="goNotice" style="display: flex">
                 <img src="@/assets/images/alert-svgrepo-com.svg" alt="calendar" style="width: 28px">
             </div>
-            <div v-else @click="goNotice">
+            <div v-else @click="goNotice" style="display: flex">
                 <img src="@/assets/images/alert-on-svgrepo-com.svg" alt="calendar" style="width: 28px">
             </div>
         </div>
