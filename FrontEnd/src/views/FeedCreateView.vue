@@ -293,6 +293,7 @@ export default {
           } else {
             fileList.push(file)
           }
+        }
       }
     },
     previewFile () {
@@ -437,14 +438,7 @@ export default {
     // 게시글 작성
     feedCreate () {
       const createBoardRequestDto = {}
-      // 미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
-      if (fileList.length === 0 && this.boardContent === '' && !this.pollYn) {
-        alert('글이나 사진 또는 투표를 등록해야 작성이 가능합니다.')
-        // this.files = test
-      } else {
-        // 미디어 파일이 있다!
-        console.log(fileList.length)
-        if (fileList.length !== 0) {
+      if (fileList.length !== 0) {
           this.boardMediaYn = 1
         } // 투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
         // for(let i = 0; i < )
@@ -454,17 +448,25 @@ export default {
             pollOptionCnt = pollOptionCnt + 1
           }
         }
+        console.log(this.pollOption)
         // 작성한 항목이 있는데
         if (pollOptionCnt !== 0) {
           // 제목이 없으면
           if (this.pollTitle === '') {
             alert('투표 제목을 입력해주세요')
-          } else if (this.pollTitle === '' && pollOptionCnt < 2) {
+          } else if (pollOptionCnt < 2) {
             alert('투표 항목은 최소한 두 개 이상이어야 합니다')
           } else {
             this.pollYn = 1
           }
         }
+      // 미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
+      if (fileList.length === 0 && this.boardContent === '' && !this.pollYn) {
+        alert('글이나 사진 또는 투표를 등록해야 작성이 가능합니다.')
+        // this.files = test
+      } else {
+        // 미디어 파일이 있다!
+        console.log(fileList.length)
         // 투표가 있을 경우
         if (this.pollYn === 1) {
           if (this.pollDateDisabled) {

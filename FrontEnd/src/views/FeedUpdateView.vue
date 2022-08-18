@@ -328,7 +328,6 @@ export default {
       if (!this.pollCheck && this.pollYn) {
         alert('원래 있던 투표는 수정하실 수 없습니다. 투표를 삭제하고 새로 만들어주세요!')
       } else {
-        this.boardModified = true
         if (this.choices.length < 5) {
           this.choices.push({ text: '' })
         } else {
@@ -483,12 +482,7 @@ export default {
     },
     // 게시글 작성
     feedUpdate () {
-      // 미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
-      if (fileList.length === 0 && this.boardContent === '' && !this.pollYn) {
-        alert('글이나 사진이나 투표를 등록해야 작성이 가능합니다.')
-        // this.files = test
-      } else {
-        // 투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
+      // 투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
         let pollOptionCnt = 0
         for (let i = 0; i < this.choices.length; i++) {
           if (this.choices[i].text !== '') {
@@ -496,26 +490,35 @@ export default {
           }
         }
         // 작성한 항목이 있는데
+        let pollValid = true
         if (pollOptionCnt !== 0) {
-          // 제목이 없으면
+            // 제목이 없으면
           if (this.question === '') {
             alert('투표 제목을 입력해주세요')
-          } else if (this.question !== '' && pollOptionCnt < 2) {
-            console.log('두번째')
+          } else if (pollOptionCnt < 2) {
             alert('투표 항목은 최소한 두 개 이상이어야 합니다')
+            this.pollYn = false
           } else {
-            console.log('마지막')
             for (let i = 0; i < this.choices.length; i++) {
+              console.log(this.choices[i].text === '')
               if (this.choices[i].text === '') {
-                alert('아무 것도 입력하지 않은 투표 항목이 있습니다')
-              } else {
-                  this.boardModified = true
-                  this.pollModified = true
-                  this.pollYn = 1
+                pollValid = false
               }
+            }
+            if(pollValid) {
+              this.boardModified = true
+              this.pollModified = true
+              this.pollYn = 1
+            } else {
+              alert('아무 것도 입력하지 않은 투표 항목이 있습니다')
             }
           }
         }
+      // 미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
+      if (fileList.length === 0 && this.boardContent === '' && !this.pollYn) {
+        alert('글이나 사진이나 투표를 등록해야 작성이 가능합니다.')
+        // this.files = test
+      } else {
         // 투표가 있고 그게 지금 수정한 경우
         if (this.pollYn && this.boardModified) {
           console.log('안녕' + this.boardModified)
@@ -560,7 +563,7 @@ export default {
           console.log(updateBoardRequestDto)
           this.boardUpdate(updateBoardRequestDto)
         } else {
-          alert('수정한 것이 없습니다')
+          alert('수정한 것이 없거나 제대로 작성되지 않은 부분이 있습니다')
         }
 
         // // 추가 정보에서 사람 태그 여부
