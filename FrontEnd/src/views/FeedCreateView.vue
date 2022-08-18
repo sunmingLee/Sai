@@ -293,7 +293,6 @@ export default {
           } else {
             fileList.push(file)
           }
-        }
       }
     },
     previewFile () {
@@ -756,7 +755,7 @@ export default {
   }
 }
 .carousel-inner{
-  width: 40%!important;
+  width: 100%!important;
   margin: 0 auto;
 }
 .carousel-control-prev {

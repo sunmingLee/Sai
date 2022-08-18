@@ -218,7 +218,7 @@ p {
 }
 //캐러셀
 .carousel-inner{
-  width: 80%!important;
+  width: 100%!important;
   height: 250px;
 }
 .carousel-item{
