@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
+import javax.persistence.EntityExistsException;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -79,6 +80,13 @@ public class UserServiceImpl implements UserService {
 		String userName = userInfo.getUserName();
 		String role = userInfo.getRole();
 		
+		if(userRepository.existsById(userId)) {
+			throw new EntityExistsException("아이디가 이미 존재합니다!");
+		}
+		
+		if(userRepository.existsByEmail(email)) {
+			throw new EntityExistsException("이메일이 이미 등록되었습니다!");
+		}
 		
 		User user = User.builder().userId(userId).email(email).password(passwordEncoder.encode(password))
 				.role(UserRole.USER).userName(userName).build();

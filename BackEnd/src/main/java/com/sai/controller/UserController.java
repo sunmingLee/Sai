@@ -79,7 +79,7 @@ public class UserController {
 		try {
 			return ResponseEntity.status(200).body(userService.insertUser(userInfo));
 		} catch (Exception e) {
-			return ResponseEntity.status(409).body("중복이 발생했습니다.");
+			return ResponseEntity.status(409).body(e.getMessage());
 		}
 	}
 	
