@@ -132,10 +132,14 @@ export default {
 .family-image {
     display: inline-block;
     > img {
-        width: 33px;
-        border: 1px solid black;
+        width: 39px;
+        // border: 1px solid black;
         border-radius: 30px;
     }
+}
+.family-title {
+    display: flex;
+    align-items: center;
 }
 .user-image {
     width: 34px;

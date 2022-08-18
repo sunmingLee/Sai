@@ -67,7 +67,7 @@
                   <div class="popup-wrap hidden" id="date-popup">
                       <div class="popup">
                         <div class="popup-header">
-                          <span class="header-title">누구랑 함께 했나요?</span>
+                          <span class="header-title">언제인가요?</span>
                         </div>
                         <div class="popup-content">
                           <div class="body-content">
@@ -225,7 +225,7 @@ export default {
       srcList: [],
       fileList: [],
       imageFlag: false,
-      fileFlag: true,
+      fileFlag: true
     }
   },
   created () {
@@ -254,7 +254,7 @@ export default {
       // 확장자 변경
       this.changeFile()
       // 미리보기
-      if(this.fileFlag) {
+      if (this.fileFlag) {
         this.previewFile()
         if (this.srcList.length !== 0) {
           this.imageFlag = true
@@ -273,8 +273,9 @@ export default {
         // 파일 하나 선택
         const file = files[i]
         let heicFile = ''
-        if(file.name.split('.')[1] !== 'jpg' && file.name.split('.')[1] !== 'png'
-          && file.name.split('.')[1] !== 'heic' && file.name.split('.')[1] !== 'mp4') {
+        const lowerName = file.name.toLowerCase()
+        if (lowerName.split('.')[1] !== 'jpg' && lowerName.split('.')[1] !== 'png' &&
+          lowerName.split('.')[1] !== 'heic' && lowerName.split('.')[1] !== 'mp4') {
           alert('지원하는 확장자가 아닙니다')
           this.fileFlag = false
         } else {
@@ -339,7 +340,7 @@ export default {
       const modal = document.getElementById('date-popup')
       modal.classList.remove('hidden')
     },
-    
+
     // 날짜 선택 모달창에서 확인 버튼 클릭
     dateConfirm () {
       if (this.boardDate === '') {
@@ -437,14 +438,7 @@ export default {
     // 게시글 작성
     feedCreate () {
       const createBoardRequestDto = {}
-      // 미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
-      if (fileList.length === 0 && this.boardContent === '' && !this.pollYn) {
-        alert('글이나 사진 또는 투표를 등록해야 작성이 가능합니다.')
-        // this.files = test
-      } else {
-        // 미디어 파일이 있다!
-        console.log(fileList.length)
-        if (fileList.length !== 0) {
+      if (fileList.length !== 0) {
           this.boardMediaYn = 1
         } // 투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
         // for(let i = 0; i < )
@@ -454,17 +448,25 @@ export default {
             pollOptionCnt = pollOptionCnt + 1
           }
         }
+        console.log(this.pollOption)
         // 작성한 항목이 있는데
         if (pollOptionCnt !== 0) {
           // 제목이 없으면
           if (this.pollTitle === '') {
             alert('투표 제목을 입력해주세요')
-          } else if (this.pollTitle === '' && pollOptionCnt < 2) {
+          } else if (pollOptionCnt < 2) {
             alert('투표 항목은 최소한 두 개 이상이어야 합니다')
           } else {
             this.pollYn = 1
           }
         }
+      // 미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
+      if (fileList.length === 0 && this.boardContent === '' && !this.pollYn) {
+        alert('글이나 사진 또는 투표를 등록해야 작성이 가능합니다.')
+        // this.files = test
+      } else {
+        // 미디어 파일이 있다!
+        console.log(fileList.length)
         // 투표가 있을 경우
         if (this.pollYn === 1) {
           if (this.pollDateDisabled) {
@@ -755,7 +757,7 @@ export default {
   }
 }
 .carousel-inner{
-  width: 40%!important;
+  width: 100%!important;
   margin: 0 auto;
 }
 .carousel-control-prev {
