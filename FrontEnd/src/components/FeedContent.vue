@@ -33,8 +33,8 @@
                             </div>
                             <div v-else-if="feed.viewBoardResponseDto.boardMediaYn" class="media-wrap">
                                 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-                                    <div class="carousel-inner" >
-                                      <div class="carousel-inner" >
+                                    <div class="carousel-inner" style="margin: 0 auto">
+                                      <div class="carousel-inner" style="margin: 0 auto">
                                         <div class="carousel-item active">
                                             <div v-if="feed.viewBoardMediaResponseDto[0].boardMediaType.includes('video')">
                                             <video autoplay playsinline loop muted :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100"/>
