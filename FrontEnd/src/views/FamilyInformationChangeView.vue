@@ -54,9 +54,9 @@
 import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import InputBox from '@/components/common/InputBox.vue'
 import Button from '@/components/common/Button.vue'
-import { mapState, mapActions } from "vuex"
+import { mapState, mapActions } from 'vuex'
 
-const familyStore = "familyStore"
+const familyStore = 'familyStore'
 const userStore = 'userStore'
 const fileList = []
 
@@ -67,57 +67,52 @@ export default {
   components: { HeaderTitle, InputBox, Button },
 
   data () {
-
     return {
 
       familyId: null,
       userId: null,
 
-      familyNameModified:false,
-      familyName:null,
+      familyNameModified: false,
+      familyName: null,
 
       updateFamilyRequestDto: {
         isCallsignModified: false,
-        updateFamilyCallsignDtos : [],
-        updatefamilyDto:{
-        "familyId": null,
-        "familyName": null
+        updateFamilyCallsignDtos: [],
+        updatefamilyDto: {
+          familyId: null,
+          familyName: null
         }
       },
 
-      srcList: [],  
-      fileList: [],
+      srcList: [],
+      fileList: []
 
     }
-
   },
 
   computed: {
 
-    ...mapState(familyStore, ["familyInfo", "familyCallsignList"]),
-    ...mapState(userStore, ["userInfo"]),
+    ...mapState(familyStore, ['familyInfo', 'familyCallsignList']),
+    ...mapState(userStore, ['userInfo']),
     // familyCallsigns(){
     //   return this.familyCallsignList;
     // }
-    familyNameLength(){
-      if(this.familyNameModified)
-        return this.familyName.length
-      else
-        return this.familyInfo.familyName.length
+    familyNameLength () {
+      if (this.familyNameModified) { return this.familyName.length } else { return this.familyInfo.familyName.length }
     }
 
   },
 
-  created() {
-    this.familyId = localStorage.getItem('familyId');
-    this.userId = localStorage.getItem('userId');
+  created () {
+    this.familyId = localStorage.getItem('familyId')
+    this.userId = localStorage.getItem('userId')
 
-    this.callsignList(this.userId);
-    this.getFamilyInfo(this.familyId);
+    this.callsignList(this.userId)
+    this.getFamilyInfo(this.familyId)
   },
   methods: {
 
-    ...mapActions(familyStore, ["callsignList", "getFamilyInfo", "updateFamilyInfo"]),
+    ...mapActions(familyStore, ['callsignList', 'getFamilyInfo', 'updateFamilyInfo']),
     // 파일 처리
     fileCheck (e) {
       this.changeFile()
@@ -153,14 +148,14 @@ export default {
       this.srcList.push(URL.createObjectURL(fileList[0]))
     },
 
-    changeFamilyName(data){
-      this.familyNameModified = true;
-      this.familyName = data;
-      this.familyNameLength = data.length;
+    changeFamilyName (data) {
+      this.familyNameModified = true
+      this.familyName = data
+      this.familyNameLength = data.length
     },
 
-    callsignChange(){
-      this.updateFamilyRequestDto.isCallsignModified = true;
+    callsignChange () {
+      this.updateFamilyRequestDto.isCallsignModified = true
     },
 
     goInvite () {
@@ -172,27 +167,22 @@ export default {
     },
 
     save () {
-
-      if(this.familyNameLength>20) {
-        alert("가족 이름 길이는 20자를 넘을 수 없습니다.");
+      if (this.familyNameLength > 20) {
+        alert('가족 이름 길이는 20자를 넘을 수 없습니다.')
         return
       }
 
       const updateFamilyRequestDto = this.updateFamilyRequestDto
 
-      if(updateFamilyRequestDto.isCallsignModified)
-        updateFamilyRequestDto.updateFamilyCallsignDtos = this.familyCallsignList;
+      if (updateFamilyRequestDto.isCallsignModified) { updateFamilyRequestDto.updateFamilyCallsignDtos = this.familyCallsignList }
 
-      updateFamilyRequestDto.updatefamilyDto.familyId = this.familyId;
-      if(this.familyNameModified)
-        updateFamilyRequestDto.updatefamilyDto.familyName = this.familyName;
-      else
-        updateFamilyRequestDto.updatefamilyDto.familyName = this.familyInfo.familyName;
+      updateFamilyRequestDto.updatefamilyDto.familyId = this.familyId
+      if (this.familyNameModified) { updateFamilyRequestDto.updatefamilyDto.familyName = this.familyName } else { updateFamilyRequestDto.updatefamilyDto.familyName = this.familyInfo.familyName }
 
-      if(fileList.length !== 0){
-        this.updateFamilyInfo( { updateFamilyRequestDto, fileList } );
-      } else{
-        this.updateFamilyInfo( { updateFamilyRequestDto } );
+      if (fileList.length !== 0) {
+        this.updateFamilyInfo({ updateFamilyRequestDto, fileList })
+      } else {
+        this.updateFamilyInfo({ updateFamilyRequestDto })
       }
     }
   }
@@ -286,12 +276,11 @@ export default {
       margin-left: 5px;
     }
   }
-  
+
 }
 
 hr {
   border-top: 3px solid #7b371c;
 }
-
 
 </style>
