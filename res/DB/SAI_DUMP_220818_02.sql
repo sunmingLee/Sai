@@ -104,13 +104,12 @@ INSERT INTO `family_callsign` (`family_callsign_id`, `from_user_id`, `to_user_id
 /*!40000 ALTER TABLE `family_register` DISABLE KEYS */;
 /*!40000 ALTER TABLE `family_register` ENABLE KEYS */;
 
--- 테이블 데이터 sai.main_plan:~4 rows (대략적) 내보내기
+-- 테이블 데이터 sai.main_plan:~3 rows (대략적) 내보내기
 /*!40000 ALTER TABLE `main_plan` DISABLE KEYS */;
 INSERT INTO `main_plan` (`main_plan_id`, `family_id`, `user_id`, `plan_title`, `plan_type`, `all_day_yn`, `main_plan_start_datetime`, `main_plan_end_datetime`, `plan_place`, `plan_noti_yn`, `plan_routine_day`) VALUES
 	(1, '305305', 'boyy', '엄마 생일', 'anniversary', NULL, '2022-08-16 15:17:00', NULL, '', NULL, NULL),
 	(2, '305305', 'boyy', '여름 휴가', 'family', NULL, '2022-08-12 15:18:00', '2022-08-14 15:18:00', '동해', NULL, NULL),
-	(3, '305305', 'boyy', '미애 발표일', 'personal', NULL, '2022-08-19 15:19:00', '2022-08-19 15:19:00', '멀티캠퍼스', NULL, NULL),
-	(4, '305305', 'boyy', '군선이 집에 오는 날', 'personal', NULL, '2022-08-01 15:21:00', '2022-08-03 15:21:00', '', NULL, NULL);
+	(3, '305305', 'boyy', '군선이 집에 오는 날', 'personal', NULL, '2022-08-01 15:21:00', '2022-08-03 15:21:00', '', NULL, NULL);
 /*!40000 ALTER TABLE `main_plan` ENABLE KEYS */;
 
 -- 테이블 데이터 sai.memo:~4 rows (대략적) 내보내기
@@ -122,7 +121,7 @@ INSERT INTO `memo` (`memo_id`, `family_id`, `user_id`, `memo_reg_datetime`, `col
 	(4, '305305', 'boyy', '2022-08-18 06:17:00', 'PaleGreen', '엄마 미용실 다녀올게 반찬 꺼내 먹어', 'boyy');
 /*!40000 ALTER TABLE `memo` ENABLE KEYS */;
 
--- 테이블 데이터 sai.notification:~15 rows (대략적) 내보내기
+-- 테이블 데이터 sai.notification:~14 rows (대략적) 내보내기
 /*!40000 ALTER TABLE `notification` DISABLE KEYS */;
 INSERT INTO `notification` (`noti_id`, `noti_to_user_id`, `noti_from_user_id`, `noti_content`, `noti_type`, `noti_datetime`, `noti_read_yn`, `noti_content_id`) VALUES
 	(3, 'dadd', 'boyy', '님이 당신의 가족인가요?', 'FAMILYREGISTER', '2022-08-18 06:12:26', 1, 3),
@@ -134,7 +133,6 @@ INSERT INTO `notification` (`noti_id`, `noti_to_user_id`, `noti_from_user_id`, `
 	(10, 'momm', 'boyy', '아빠랑 같이 가셨어요?', 'COMMENT', '2022-08-18 06:43:12', 0, 3),
 	(11, 'boyy', 'momm', '좋아요를 눌렀습니다.', 'LIKE', '2022-08-18 06:44:34', 1, 4),
 	(12, 'boyy', 'momm', '아들 집에는 언제 오니?', 'COMMENT', '2022-08-18 06:44:44', 1, 4),
-	(13, 'boyy', 'dadd', '좋아요를 눌렀습니다.', 'LIKE', '2022-08-18 06:44:54', 1, 4),
 	(14, 'momm', 'boyy', '님이 당신을 태그했습니다 !', 'TAGGED', '2022-08-18 06:48:06', 0, 6),
 	(15, 'boyy', 'momm', '좋아요를 눌렀습니다.', 'LIKE', '2022-08-18 06:48:17', 1, 6),
 	(16, 'boyy', 'momm', '그럼, 엄청 맛있었지', 'COMMENT', '2022-08-18 06:48:23', 1, 6),
@@ -157,7 +155,7 @@ INSERT INTO `reply` (`reply_id`, `board_id`, `reply_user_id`, `reply_content`, `
 	(4, 6, 'momm', '그럼, 엄청 맛있었지', '2022-08-18 06:48:23');
 /*!40000 ALTER TABLE `reply` ENABLE KEYS */;
 
--- 테이블 데이터 sai.user:~4 rows (대략적) 내보내기
+-- 테이블 데이터 sai.user:~5 rows (대략적) 내보내기
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` (`user_id`, `family_id`, `user_name`, `email`, `password`, `user_type`, `birthday`, `lunar`, `user_image_path`, `user_image_path_server`, `user_image_name`, `user_image_type`, `user_message`, `role`) VALUES
 	('boyy', '305305', '이군선', 'boyy@ssafy.com', '$2a$10$.8TvU4IOi2JuHVmP8nLIH.D6uHBY8cb6.03zx8c8BZrcB.sU/DXzi', NULL, '1994-08-19', 0, '/saimedia/UserImage/9abcbcbb-c480-40a9-be80-d32a1ca77856_아들프사.jpg', '/app/UserImage/9abcbcbb-c480-40a9-be80-d32a1ca77856_아들프사.jpg', '아들프사.jpg', 'image/jpeg', '', 'USER'),
