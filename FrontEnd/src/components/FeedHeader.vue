@@ -95,9 +95,6 @@ export default {
         //로그아웃
         logout() {
             this.out()
-            //로컬 스토리지에 있는 값을 모두 지우고 로그인 페이지로 이동
-            window.localStorage.clear();
-            this.$router.push({name: 'login'})
         },
         //마이 페이지 이동
         goMyPage() {
