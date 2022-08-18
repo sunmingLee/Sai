@@ -12,62 +12,78 @@
       <span style="width: 5px"></span>
       <Button v-if="this.feed.viewBoardResponseDto.userId === this.userId" style="margin-right:5%" buttonClass="small negative" buttonText="삭제" @click="eraseFeed"></Button>
     </div>
-    <!-- 투표 -->
-    <div class="poll-body" v-if="feed.viewBoardResponseDto.pollYn">
-      <table>
-        <tr class="poll-title">
-          <th>{{feed.pollResponse.question}}</th>
-        </tr>
-        <tr class="poll-choice" v-for="(choice, index) in feed.pollResponse.choices" :key="index">
-          <!-- <div @click="choose(choice.id)"> -->
-          <td>{{choice.text}}</td>
-          <td><img class="poll-image" src="@/assets/images/person.svg" alt="user image">
-            <span>{{choice.voteCount}}</span>
-          </td>
-          <input type="radio" :id="choice.key" v-model="picked" :value="choice">
-        </tr>
-      </table>
-      <Button buttonText="투표하기" buttonClass="small positive" @click="choose(picked.id)"></Button>
-    </div>
-
-    <!-- 캐러셀 -->
-    <div v-if="feed.viewBoardResponseDto.boardMediaYn" id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-      <div class="carousel-inner">
-        <div class="carousel-item active">
-          <div v-if="feed.viewBoardMediaResponseDto[0].boardMediaType.includes('video')">
-              <video autoplay playsinline loop muted :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100"/>
-          </div>
-          <div v-else>
-          <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100" alt="...">
-          <!-- <img src="@/assets/images/여행3.jpg" id="img" class="d-block w-100" alt="..."> -->
-          </div>
+    <div class="flex body">
+      <div class="content-body">
+        <!-- 투표 -->
+        <div v-if="feed.viewBoardResponseDto.pollYn" class="poll-body">
+          <table>
+            <colgroup>
+              <col width="20%">
+              <col width="30%">
+              <col width="30%">
+              <col width="5%">
+            </colgroup>
+            <tr class="poll-title">
+              <th>{{feed.pollResponse.question}}</th>
+            </tr>
+            <tr class="poll-choice" v-for="(choice, index) in feed.pollResponse.choices" :key="index">
+              <td><input type="radio" :id="choice.key" v-model="picked" :value="choice"/></td>
+              <td>{{choice.text}}</td>
+              <td><img class="poll-image" src="@/assets/images/person.svg" alt="user image">{{choice.voteCount}}</td>
+              <td></td>
+            </tr>
+          </table>
+          <Button buttonText="투표하기" buttonClass="small positive" @click="choose(picked.id)"></Button>
         </div>
-        <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index">
-          <div v-if="index !== 0" class="carousel-item">
-            <div v-if="src.boardMediaType.includes('video')">
-              <video autoplay playsinline loop muted :src="src.boardMediaPath" class="d-block w-100"/>
-          </div>
-          <div v-else>
-            <img :src="src.boardMediaPath" id="img" class="d-block w-100">
+        <!-- 미디어 -->
+        <div v-if="feed.viewBoardResponseDto.boardMediaYn" class="media-wrap">
+            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner" style="margin: 0 auto">
+                  <div class="carousel-inner" style="margin: 0 auto">
+                    <div class="carousel-item active">
+                        <div v-if="feed.viewBoardMediaResponseDto[0].boardMediaType.includes('video')">
+                        <video autoplay playsinline loop muted :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100"/>
+                      </div>
+                      <div v-else>
+                        <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100">
+                        <!-- <img src="@/assets/images/byebye.png" class="d-block w-100"> -->
+                        </div>
+                    </div>
+                    <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index"> 
+                      <div v-if="index !== 0" class="carousel-item">
+                        <div v-if="src.boardMediaType.includes('video')">
+                          <video autoplay playsinline loop muted :src="src.boardMediaPath" class="d-block w-100"/>
+                        </div>
+                        <div v-else>
+                        <img :src="src.boardMediaPath" class="d-block w-100">
+                        <!-- <img src="@/assets/images/dog2.png" class="d-block w-100"> -->
+                        </div>
+                      </div>
+                    </div>
+                </div>
+              </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
             </div>
-          </div>
         </div>
       </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-      </button>
     </div>
     <!-- 추가기록  -->
     <div class="tag-wrap">
       <div v-if="feed.viewBoardResponseDto.boardDate">{{feed.viewBoardResponseDto.boardDate}}</div>
       <div v-if="feed.viewBoardResponseDto.boardLocation">{{feed.viewBoardResponseDto.boardLocation}}</div>
       <div v-if="feed.viewBoardResponseDto.boardTaggedYn">
-        <span v-for="(user, index) in feed.viewBoardTaggedResponseDto" :key="index">{{user}}</span>
+        <span v-for="(user, index) in feed.viewBoardTaggedResponseDto" :key="index">
+          <span v-for="(callsign, index) in familyCallsignList" :key="index">
+            <span v-if="user.userId === callsign.toUserId" class="tagged-user">{{callsign.callsign}}</span>
+          </span>
+        </span>
       </div>
     </div>
     <!-- 본문 -->
@@ -82,21 +98,15 @@
       <img src="@/assets/images/chat-right.svg" alt="reply">
       <span>{{replyList.length}}</span>
     </div>
-    <div style="border-bottom: 1px solid black; margin:10px; position: relative; top: 25%;"></div>
+    <div style="border-bottom: 1px solid black; margin:10px; position: relative; top: 11%;"></div>
     <!-- 댓글 목록 -->
     <table class="reply-wrap" v-if="replyList.length">
       <tbody>
-    <!-- <colgroup>
-      <col width=40%>
-      <col width=60%>
-      <col width=100%>
-      <col width=100%>
-    </colgroup> -->
         <tr v-for="reply in replyList" :key="reply.replyId" @change="changeReplyList">
           <div v-for="(callsign, index) in familyCallsignList" :key="index" >
             <div v-if="reply.userId === callsign.toUserId">
               <td><button type="button" class="btn-close" aria-label="Close" @click="eraseReply(reply.replyId, reply.userId)"></button></td>
-              <td><span style="font-weight: bold;">{{ callsign.callsign }}</span></td>
+              <td style="padding-right: 15px"><span style="font-weight: bold;">{{ callsign.callsign }}</span></td>
               <td>{{ reply.replyContent }}</td>
               <!-- <td><img src="@/assets/images/pencil-fill.svg" alt="pencil" @click="changeReply(reply.replyId)"></td> -->
             </div>
@@ -237,11 +247,7 @@ export default {
   display: flex;
 }
 #carouselExampleIndicators{
-  // max-width: ;
-  // width: 60%;
-  width: 40vh;
-  top: 5%;
-  left: 9%;
+  height: 300px;
 }
 .carousel-control{
   &-prev, &-next{
@@ -255,11 +261,36 @@ export default {
   top: 50%;
   background-image: url('@/assets/images/angle-left-solid.svg');
 }
+//캐러셀
+.carousel-inner{
+  width: 100%!important;
+  height: 100%;
+}
+.carousel-item{
+  // width: auto;
+  // height: 100px;
+  width: 100%;
+  height: 100%;
+}
+.d-block {
+  //사진 크기를 가운데
+  margin: 0 auto;
+  width: auto!important;
+  height: 250px;
+  //옆으로 길게 늘리기
+  // width: 100%;
+  //사진의 일부  
+  // height: 100%;
+}
+
+.media-wrap {
+  min-height: 300px;
+}
 .tag-wrap{
   position: relative;
   text-align: right;
-  top: 15%;
-  right: 10%;
+  top: 2%;
+  right: 3%;
   &span{
     font-weight: 2px;
   }
@@ -267,25 +298,25 @@ export default {
 .content-wrap{
   position: relative;
   text-align: left;
-  top: 20%;
-  left: 10%;
+  top: 5%;
+  left: 3%;
 }
 .reaction-wrap{
   position: relative;
   text-align: left;
-  top: 25%;
-  left: 10%;
+  top: 10%;
+  left: 3%;
   img, span{
     margin-right: 3px;
   }
 }
 .reply-wrap{
   position: relative;
-  top: 24%;
+  top: 10%;
 }
 .reply-write-wrap{
   position: relative;
-  top: 28%;
+  top: 12%;
   // left: 10%;
   // bottom: 5%;
   .reply{
@@ -297,39 +328,63 @@ export default {
     border: 1px solid #ae5f40;
   }
 }
-.poll-body {
-  table {
-    margin: 0 auto;
-    min-width: 300px;
-    border-collapse: separate;
-    border-spacing: 0 10px;
-    :nth:child(2) {
+//글, 사진, 투표의 공간
+.flex {
+  &.body {
+    // width: 500px;
+    border: 1px solid #7b371c;
+    padding: 10px;
+    // height: 300px;
+    height: auto;
+    margin: 0 10px;
+    margin-top: 5%;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    .content-body {
+      div {
+        padding: 1%;
+        // margin-bottom: 5%;
+      }
+      .poll-body {
+        table {
+          margin: 0 auto;
+          min-width: 300px;
+        }
+      }
     }
   }
 }
-//투표
-.poll-title {
-  th {
-    font-size: 23px;
+.poll-title{
+  th{
     text-align: left;
   }
 }
-.poll-choice {
-  td {
-    border: 1px solid black;
-    text-align: left;
-  }
+.poll-choice{
   :nth-child(1) {
     border-right: none;
+    text-align: center;
   }
   :nth-child(2) {
     border-left: none;
+    border-right: none;
+    // min-width: 30px;
+    text-align: left;
+  }
+  :nth-child(3) {
+    border-left: none;
+    border-right: none;
     text-align: right;
-    min-width: 30px;
+  }
+  :nth-child(4) {
+    border-left: none;
   }
 }
 table {
   border-collapse: separate;
   border-spacing: 0 10px;
+}
+.tagged-user{
+  margin-left: 8px;
 }
 </style>
