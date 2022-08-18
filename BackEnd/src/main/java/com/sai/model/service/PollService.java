@@ -72,18 +72,21 @@ public class PollService {
 		Poll poll = pollRepository.findById(pollId)
 				.orElseThrow(() -> new ResourceNotFoundException("Poll", "id", pollId));
 
-		Vote vote = voteRepository.findByPoll(poll);
+//		Vote vote = voteRepository.findByPoll(poll);
 		
 //		System.out.println(vote.getVoteId());
 		
-		if(vote != null) {
+//		Map<Long, Long> choiceVotesMap = new HashMap<>();
+//		if(vote != null) {
 		// Retrieve Vote Counts of every choice belonging to the current poll
 		List<ChoiceVoteCount> votes = voteRepository.countByPollIdGroupByChoiceId(pollId);
+		System.out.println(votes);
 		
 		Map<Long, Long> choiceVotesMap = votes.stream()
 				.collect(Collectors.toMap(ChoiceVoteCount::getChoiceId, ChoiceVoteCount::getVoteCount));
-		}
-		Map<Long, Long> choiceVotesMap = new HashMap<>();
+//		} 
+		System.out.println("지금 투표 서비스야");
+		System.out.println(choiceVotesMap);
 		
 		// Retrieve poll creator details
 //		User creator = userRepository.findById(poll.getCreatedBy())
@@ -132,11 +135,14 @@ public class PollService {
 			
 			// -- Vote Saved, Return the updated Poll Response now --
 
+			System.out.println("이건 투표하기야");
 			// Retrieve Vote Counts of every choice belonging to the current poll
 			List<ChoiceVoteCount> votes = voteRepository.countByPollIdGroupByChoiceId(pollId);
-
+			
+			System.out.println(votes);
 			Map<Long, Long> choiceVotesMap = votes.stream()
 					.collect(Collectors.toMap(ChoiceVoteCount::getChoiceId, ChoiceVoteCount::getVoteCount));
+			System.out.println(choiceVotesMap);
 
 			// Retrieve poll creator details
 			User creator = userRepository.findById(poll.getCreatedBy())
@@ -150,7 +156,7 @@ public class PollService {
 			voteRepository.deleteById(vote.getVoteId());
 			
 			// -- Vote Saved, Return the updated Poll Response now --
-
+			System.out.println("이건 투표 취소하기야");
 			// Retrieve Vote Counts of every choice belonging to the current poll
 			List<ChoiceVoteCount> votes = voteRepository.countByPollIdGroupByChoiceId(pollId);
 

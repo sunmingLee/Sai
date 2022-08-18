@@ -148,7 +148,10 @@ public class FeedServiceImpl implements FeedService {
 
 		// 게시글 DTO 세팅
 		Board board = boardRepository.findById(boardId).get();
+		System.out.println("게시글이야");
+		System.out.println(board.getUser().getUserId());
 		readBoardResponseDto.setViewBoardResponseDto(modelMapper.map(board, ViewBoardResponseDto.class));
+		System.out.println(readBoardResponseDto.getViewBoardResponseDto().getUserId());
 
 		// 게시글 미디어 DTO 세팅
 		List<ViewBoardMediaResponseDto> viewBoardMediaResponseDtos = new ArrayList<>();
@@ -163,6 +166,8 @@ public class FeedServiceImpl implements FeedService {
 			Poll poll = pollRepository.findByBoardBoardId(board.getBoardId());
 
 			PollResponse pollResponse = pollService.getPollById(poll.getPollId(), currUser);
+			System.out.println("투표 읽기");
+			System.out.println(pollResponse.getTotalVotes());
 			readBoardResponseDto.setPollResponse(pollResponse);
 
 //			ViewPollResponseDto viewPollResponseDto = new ViewPollResponseDto();
