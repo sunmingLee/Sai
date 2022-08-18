@@ -67,7 +67,7 @@
                   <div class="popup-wrap hidden" id="date-popup">
                       <div class="popup">
                         <div class="popup-header">
-                          <span class="header-title">누구랑 함께 했나요?</span>
+                          <span class="header-title">언제인가요?</span>
                         </div>
                         <div class="popup-content">
                           <div class="body-content">
