@@ -292,7 +292,7 @@ const userStore = {
         .then((res) => {
           console.log(res)
           window.localStorage.clear();
-          this.$router.push({name: 'login'})
+          router.push({name: 'login'})
         })
         .catch((err) => {
           console.log(err)

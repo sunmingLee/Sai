@@ -6,9 +6,14 @@
           <div class="image-group" v-for="(media, index) in mediaList" :key="index">
             <img v-if="media.albumMediaThumbnail" :src="media.albumMediaThumbnail" class="img-fluid" alt="thumbnail">
             <img v-else src="@/assets/images/image.svg" class="img-fluid" alt="empty thumbnail">
+            <!-- <img src="@/assets/images/여행1.jpg" class="img-fluid" alt="empty thumbnail"> -->
           </div>
         </div>
         <div class="nothing-wrap" v-else>등록된 사진이 없습니다.</div>
+     <!-- Button trigger modal -->
+    <button id="btn-modal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      <img style="width:25px;" src="@/assets/images/plus-lg.svg" alt="plus">
+    </button>
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -132,7 +137,7 @@ export default {
         height: 50px;
     }
 }
-
+///수빈
 .picture-wrap {
   display: flex;
   justify-content: center;
