@@ -185,7 +185,7 @@ const boardStore = {
         })
     },
     // 투표 선택 (임시 / 쿠키 세팅 이슈)
-    chooseVote ({ commit }, info) {
+    chooseVote (context, info) {
       const data = {
         choiceId: info.choiceId
       }
@@ -198,11 +198,16 @@ const boardStore = {
           'Content-Type': 'application/json'
         }
       })
-        .then((res) => {
+        .then(res => {
+          //console.log('여기다')
+          //console.log(res)
           router.go()
         })
         .catch((err) => {
-          console.log(err)
+          if(err.response.status === 400) {
+            alert(err.response.data)
+            router.go()
+          }
         })
     },
 
