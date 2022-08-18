@@ -160,10 +160,6 @@ export default {
         familyId: localStorage.getItem('familyId'),
         page: this.page
       }
-      // console.log(this.feedList)
-      const boardNum = boardId - 1
-      console.log(this.feedList)
-      console.log(this.feedList[0].boardLiked)
       for(let i = 0; i < this.feedList.length; i++) {
         if(this.feedList[i].viewBoardResponseDto.boardId === boardId) {
           if(!this.feedList[i].boardLiked) {

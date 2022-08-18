@@ -14,7 +14,7 @@ const boardStore = {
     myFeedList: [],
     myFeedCnt: 0,
     likeList: [],
-    myFeedPagenationCnt: 0
+    myFeedPagenationCnt: 0,
   },
   getters: {
     
@@ -38,11 +38,22 @@ const boardStore = {
     FEED_RESET (state) {
       state.feedList = []
     },
-    LIKE_All_LIST(state, likeList) {
-      state.likeList = likeList
-    },
     MY_FEED_PAGINATION(state, myFeedNum) {
       state.myFeedPagenationCnt = Math.ceil(myFeedNum / 3) 
+    },
+    LIKE_CHANGE(state, likeInfo) {
+      for(let i = 0; i < state.feedList.length; i++) {
+        if(state.feedList[i].viewBoardResponseDto.boardId === likeInfo.boardId) {
+          console.log(state.feedList[i].boardLiked)
+          if(!state.feedList[i].boardLiked) {
+            state.feedList[i].viewBoardResponseDto.boardLikeCnt = state.feedList[i].viewBoardResponseDto.boardLikeCnt + 1
+            state.feedList[i].boardLiked = true
+          } else {
+            state.feedList[i].viewBoardResponseDto.boardLikeCnt = state.feedList[i].viewBoardResponseDto.boardLikeCnt - 1
+            state.feedList[i].boardLiked = false
+          }
+        }
+      }
     }
   },
   actions: {
@@ -82,7 +93,7 @@ const boardStore = {
         })
     },
     // 피드 조회
-    feedAllList ({ commit }, info) {
+    feedAllList ({ commit, state }, info) {
       const familyId = info.familyId
       const userId = info.userId
       const params = {
@@ -95,6 +106,7 @@ const boardStore = {
       })
         .then((res) => {
           console.log(res.data)
+          console.log(state.feedFlag)
           if (res.data.length === 0) {
             alert('더 이상 불러올 게시물이 없습니다')
           } else {
@@ -186,32 +198,9 @@ const boardStore = {
       })
         .then((res) => {
           dispatch('getOneFeed', info)
-          dispatch('likeAllList', info)
+          commit('LIKE_CHANGE', info)
         })
         .catch((err) => {
-          console.log(err)
-        })
-    },
-    likeAllList({commit}, info) {
-      const familyId = info.familyId
-      const userId = info.userId
-      const params = {
-        page: info.page
-      }
-      instance({
-        url: api_url + '/' + familyId + '/' + userId,
-        method: 'GET',
-        params
-      })
-        .then((res) => {
-          if (res.data.length === 0) {
-            alert('더 이상 불러올 게시물이 없습니다')
-          } else {
-            commit('LIKE_All_LIST', res.data)
-          }
-        })
-        .catch((err) => {
-          console.log('에러')
           console.log(err)
         })
     },
@@ -223,7 +212,7 @@ const boardStore = {
       })
         .then((res) => {
           dispatch('getOneFeed', info)
-          // dispatch('feedAllList', info)
+          commit('LIKE_CHANGE', info)
         })
         .catch((err) => {
           console.log(err)
