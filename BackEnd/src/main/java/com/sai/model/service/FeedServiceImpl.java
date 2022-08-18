@@ -256,11 +256,12 @@ public class FeedServiceImpl implements FeedService {
 		if (board.getBoardTaggedYn()) {
 			List<InputBoardTaggedRequestDto> inputBoardTaggedRequestDtos = createBoardRequestDto
 					.getInputBoardTaggedRequestDtos();
-
-			for (InputBoardTaggedRequestDto inputBoardTaggedRequestDto : inputBoardTaggedRequestDtos) {
-				User user = userRepository.findById(inputBoardTaggedRequestDto.getUserId()).get();
-				BoardTagged boardTagged = BoardTagged.builder().board(board).user(user).build();
-
+					
+					for (InputBoardTaggedRequestDto inputBoardTaggedRequestDto : inputBoardTaggedRequestDtos) {
+						User user = userRepository.findById(inputBoardTaggedRequestDto.getUserId()).get();
+						BoardTagged boardTagged = BoardTagged.builder().board(board).user(user).build();
+						
+						boardTaggedRepository.save(boardTagged);
 				if (createBoardRequestDto.getInputBoardRequestDto().getUserId()
 						.equals(inputBoardTaggedRequestDto.getUserId()))
 					continue;
@@ -275,7 +276,6 @@ public class FeedServiceImpl implements FeedService {
 //				//	 userId를 boardTaggedId에 넣으려고 해서 에러가 발생
 //				boardTagged.setBoard(board);
 
-				boardTaggedRepository.save(boardTagged);
 			}
 		}
 	}
