@@ -143,17 +143,11 @@ const routes = [
   {
     path: '/searchId',
     name: 'searchId',
-    meta: {
-      requireAuth: true
-    },
     component: SearchIdView
   },
   {
     path: '/searchPassword',
     name: 'searchPassword',
-    meta: {
-      requireAuth: true
-    },
     component: SearchPasswordView
   },
   {
