@@ -225,7 +225,7 @@ export default {
       srcList: [],
       fileList: [],
       imageFlag: false,
-      fileFlag: true,
+      fileFlag: true
     }
   },
   created () {
@@ -254,7 +254,7 @@ export default {
       // 확장자 변경
       this.changeFile()
       // 미리보기
-      if(this.fileFlag) {
+      if (this.fileFlag) {
         this.previewFile()
         if (this.srcList.length !== 0) {
           this.imageFlag = true
@@ -273,8 +273,9 @@ export default {
         // 파일 하나 선택
         const file = files[i]
         let heicFile = ''
-        if(file.name.split('.')[1] !== 'jpg' && file.name.split('.')[1] !== 'png'
-          && file.name.split('.')[1] !== 'heic' && file.name.split('.')[1] !== 'mp4') {
+        const lowerName = file.name.toLowerCase()
+        if (lowerName.split('.')[1] !== 'jpg' && lowerName.split('.')[1] !== 'png' &&
+          lowerName.split('.')[1] !== 'heic' && lowerName.split('.')[1] !== 'mp4') {
           alert('지원하는 확장자가 아닙니다')
           this.fileFlag = false
         } else {
@@ -339,7 +340,7 @@ export default {
       const modal = document.getElementById('date-popup')
       modal.classList.remove('hidden')
     },
-    
+
     // 날짜 선택 모달창에서 확인 버튼 클릭
     dateConfirm () {
       if (this.boardDate === '') {
