@@ -18,7 +18,7 @@ const boardStore = {
     pollChoiceList: []
   },
   getters: {
-    
+
   },
   mutations: {
     FEED_All_LIST (state, feed) {
@@ -39,15 +39,15 @@ const boardStore = {
     FEED_RESET (state) {
       state.feedList = []
     },
-    MY_FEED_PAGINATION(state, myFeedNum) {
-      //한 페이지당 게시글
-      state.myFeedPagenationCnt = Math.ceil(myFeedNum / 6) 
+    MY_FEED_PAGINATION (state, myFeedNum) {
+      // 한 페이지당 게시글
+      state.myFeedPagenationCnt = Math.ceil(myFeedNum / 6)
     },
-    LIKE_CHANGE(state, likeInfo) {
-      for(let i = 0; i < state.feedList.length; i++) {
-        if(state.feedList[i].viewBoardResponseDto.boardId === likeInfo.boardId) {
+    LIKE_CHANGE (state, likeInfo) {
+      for (let i = 0; i < state.feedList.length; i++) {
+        if (state.feedList[i].viewBoardResponseDto.boardId === likeInfo.boardId) {
           console.log(state.feedList[i].boardLiked)
-          if(!state.feedList[i].boardLiked) {
+          if (!state.feedList[i].boardLiked) {
             state.feedList[i].viewBoardResponseDto.boardLikeCnt = state.feedList[i].viewBoardResponseDto.boardLikeCnt + 1
             state.feedList[i].boardLiked = true
           } else {
@@ -57,6 +57,26 @@ const boardStore = {
         }
       }
     },
+    SUB_ONE_VOTE (state, choiceId) {
+      // console.log(choiceId)
+      // console.log(state.feed.pollResponse.choices)
+      for (let i = 0; i < state.feed.pollResponse.choices.length; i++) {
+        console.log(state.feed.pollResponse.choices[i].voteCount)
+        if (state.feed.pollResponse.choices[i].id === choiceId) {
+          state.feed.pollResponse.choices[i].voteCount--
+        }
+      }
+    },
+    ADD_ONE_VOTE (state, choiceId) {
+      // console.log(choiceId)
+      // console.log(state.feed.pollResponse.choices)
+      for (let i = 0; i < state.feed.pollResponse.choices.length; i++) {
+        console.log(state.feed.pollResponse.choices[i].voteCount)
+        if (state.feed.pollResponse.choices[i].id === choiceId) {
+          state.feed.pollResponse.choices[i].voteCount++
+        }
+      }
+    }
     // BEST_POLL_CHOICE(state, feed) {
     //   //투표가 있을 때
     //   if(feed.pollResponse !== null) {
@@ -177,7 +197,7 @@ const boardStore = {
       })
         .then((res) => {
           console.log('수정이 됐어요')
-          alert("수정되었습니다.")
+          alert('수정되었습니다.')
           router.push({ name: 'feed' })
         })
         .catch((err) => {
@@ -198,11 +218,23 @@ const boardStore = {
           'Content-Type': 'application/json'
         }
       })
-        .then((res) => {
-          router.go()
+        .then(res => {
+          // console.log('여기다')
+          console.log(res.data)
+          if (res.data.isDup) {
+            alert('선택이 취소되었습니다.')
+            commit('SUB_ONE_VOTE', data.choiceId)
+            // router.go()
+          } else {
+            alert('선택하였습니다.')
+            commit('ADD_ONE_VOTE', data.choiceId)
+            // router.go()
+          }
         })
         .catch((err) => {
-          console.log(err)
+          if (err.response.status === 400) {
+            alert(err.response.data)
+          }
         })
     },
 

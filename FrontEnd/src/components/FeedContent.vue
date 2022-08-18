@@ -32,26 +32,26 @@
                               </table>
                             </div>
                             <div v-else-if="feed.viewBoardResponseDto.boardMediaYn" class="media-wrap">
-                                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-                                    <div class="carousel-inner" style="margin: 0 auto">
-                                      <div class="carousel-inner" style="margin: 0 auto">
+                                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" style="height: 300px">
+                                    <div class="carousel-inner" style="margin: 0 auto; height: 100%">
+                                      <div class="carousel-inner" style="margin: 0 auto; height: 100%">
                                         <div class="carousel-item active">
-                                            <div v-if="feed.viewBoardMediaResponseDto[0].boardMediaType.includes('video')">
-                                            <video autoplay playsinline loop muted :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100"/>
+                                            <div v-if="feed.viewBoardMediaResponseDto[0].boardMediaType.includes('video')" style="height: 100%">
+                                            <video autoplay playsinline loop muted :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100" style="height: 100%"/>
                                           </div>
-                                          <div v-else>
-                                            <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100">
-                                            <!-- <img src="@/assets/images/byebye.png" class="d-block w-100"> -->
+                                          <div v-else style="height: 100%">
+                                            <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100" style="height: 100%">
+                                            <!-- <img src="@/assets/images/byebye.png" class="d-block w-100" style="height: 100%; max-width=300px"> -->
                                             </div>
                                         </div>
-                                        <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index"> 
+                                        <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index" style="height: 100%"> 
                                           <div v-if="index !== 0" class="carousel-item">
-                                            <div v-if="src.boardMediaType.includes('video')">
-                                              <video autoplay playsinline loop muted :src="src.boardMediaPath" class="d-block w-100"/>
+                                            <div v-if="src.boardMediaType.includes('video')" style="height: 100%">
+                                              <video autoplay playsinline loop muted :src="src.boardMediaPath" class="d-block w-100" style="height: 100%"/>
                                             </div>
-                                            <div v-else>
-                                            <img :src="src.boardMediaPath" class="d-block w-100">
-                                            <!-- <img src="@/assets/images/dog2.png" class="d-block w-100"> -->
+                                            <div v-else style="height: 100%">
+                                              <img :src="src.boardMediaPath" class="d-block w-100" style="height: 100%">
+                                            <!-- <img src="@/assets/images/dog2.png" class="d-block w-100" style="height: 100%;"> -->
                                             </div>
                                           </div>
                                         </div>
@@ -218,7 +218,7 @@ p {
 }
 //캐러셀
 .carousel-inner{
-  width: 80%!important;
+  width: 100%!important;
   height: 250px;
 }
 .carousel-item{
@@ -230,8 +230,8 @@ p {
 .d-block {
   //사진 크기를 가운데
   margin: 0 auto;
-  width: auto!important;
-  height: 250px;
+  width: 300px!important;
+  height: 100%;
   //옆으로 길게 늘리기
   // width: 100%;
   //사진의 일부  

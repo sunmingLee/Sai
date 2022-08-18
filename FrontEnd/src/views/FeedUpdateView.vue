@@ -37,13 +37,13 @@
               <div class="carousel-inner" >
                 <div class="carousel-item active">
                   <!-- <img :src="srcList[0]" id="img" class="d-block w-100"> -->
-                  <img src="@/assets/images/여행1.jpg" class="d-block w-100">
-                  <!-- <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100"> -->
+                  <!-- <img src="@/assets/images/여행1.jpg" class="d-block w-100"> -->
+                  <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100">
                 </div>
                 <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index">
                   <div v-if="index !== 0" class="carousel-item">
-                    <img src="@/assets/images/여행2.jpg" class="d-block w-100">
-                    <!-- <img :src="src.boardMediaPath" id="img" class="d-block w-100"> -->
+                    <!-- <img src="@/assets/images/여행2.jpg" class="d-block w-100"> -->
+                    <img :src="src.boardMediaPath" id="img" class="d-block w-100">
                   </div>
                 </div>
               </div>
@@ -158,7 +158,7 @@
               <!-- 투표 항목 추가 버튼 -->
               <div class="poll-button">
                 <Button buttonClass="small information" buttonText="항목 추가" @click="addPollItem" style="margin: 10px 5px"/>
-                <Button buttonClass="big negative" buttonText="투표 초기화" @click="pollReset" style="margin: 10px 5px"/>
+                <Button buttonClass="big negative" buttonText="투표 삭제" @click="pollReset" style="margin: 10px 5px"/>
               </div>
               <div class="poll-time">
                 <div calss="poll-time-title" style="display: flex">
@@ -326,9 +326,8 @@ export default {
     // 투표 항목 추가하기
     addPollItem () {
       if (!this.pollCheck && this.pollYn) {
-        alert('원래 있던 투표는 수정하실 수 없습니다. 초기화 버튼으로 새로 만들어주세요!')
+        alert('원래 있던 투표는 수정하실 수 없습니다. 투표를 삭제하고 새로 만들어주세요!')
       } else {
-        this.boardModified = true
         if (this.choices.length < 5) {
           this.choices.push({ text: '' })
         } else {
@@ -483,12 +482,7 @@ export default {
     },
     // 게시글 작성
     feedUpdate () {
-      // 미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
-      if (fileList.length === 0 && this.boardContent === '' && !this.pollYn) {
-        alert('글이나 사진이나 투표를 등록해야 작성이 가능합니다.')
-        // this.files = test
-      } else {
-        // 투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
+      // 투표는 최소한 두 항목이 적혀 있어야 투표가 있다고 할 수 있다
         let pollOptionCnt = 0
         for (let i = 0; i < this.choices.length; i++) {
           if (this.choices[i].text !== '') {
@@ -496,28 +490,35 @@ export default {
           }
         }
         // 작성한 항목이 있는데
+        let pollValid = true
         if (pollOptionCnt !== 0) {
-          // 제목이 없으면
+            // 제목이 없으면
           if (this.question === '') {
             alert('투표 제목을 입력해주세요')
-          } else if (this.question !== '' && pollOptionCnt < 2) {
-            console.log('두번째')
+          } else if (pollOptionCnt < 2) {
             alert('투표 항목은 최소한 두 개 이상이어야 합니다')
+            this.pollYn = false
           } else {
-            console.log('마지막')
             for (let i = 0; i < this.choices.length; i++) {
+              console.log(this.choices[i].text === '')
               if (this.choices[i].text === '') {
-                alert('아무 것도 입력하지 않은 투표 항목이 있습니다')
-              } else {
-                if (this.pollCheck) {
-                  this.boardModified = true
-                  this.pollModified = true
-                  this.pollYn = 1
-                }
+                pollValid = false
               }
+            }
+            if(pollValid) {
+              this.boardModified = true
+              this.pollModified = true
+              this.pollYn = 1
+            } else {
+              alert('아무 것도 입력하지 않은 투표 항목이 있습니다')
             }
           }
         }
+      // 미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
+      if (fileList.length === 0 && this.boardContent === '' && !this.pollYn) {
+        alert('글이나 사진이나 투표를 등록해야 작성이 가능합니다.')
+        // this.files = test
+      } else {
         // 투표가 있고 그게 지금 수정한 경우
         if (this.pollYn && this.boardModified) {
           console.log('안녕' + this.boardModified)
@@ -531,8 +532,12 @@ export default {
             this.expirationDateTime = timeZone.toISOString()
           }
         }
-        // if (this.boardTaggedModified) {
-        // }
+        // 추가 정보에서 사람 태그 여부
+        const taggedResult = []
+        // 태그한 사람이 있을 경우
+        if (this.peopleList.length !== 0) {
+          this.boardTaggedYn = 1
+        }
         // 투표가 있을 경우
         if (this.pollModified) {
           this.pollRequest = {
@@ -557,43 +562,14 @@ export default {
               pollYn: this.pollYn
             },
             pollModified: this.pollModified,
-            pollRequest: this.pollRequest
+            pollRequest: this.pollRequest,
+            inputBoardTaggedRequestDtos: this.peopleList
           }
           console.log(updateBoardRequestDto)
           this.boardUpdate(updateBoardRequestDto)
         } else {
-          alert('수정한 것이 없습니다')
+          alert('수정한 것이 없거나 제대로 작성되지 않은 부분이 있습니다')
         }
-
-        // // 추가 정보에서 사람 태그 여부
-        // const taggedResult = []
-        // // 태그한 사람이 있을 경우
-        // if (this.peopleList.length !== 0) {
-        //   this.boardTaggedYn = 1
-        //   for (let i = 0; i < this.peopleList.length; i++) {
-        //     taggedResult[i] = this.peopleList[i]
-        //   }
-        //   Object.assign(createBoardRequestDto, { inputBoardTaggedRequestDtos: taggedResult })
-        // }
-        // const inputBoardRequestDto = {
-        //   familyId: localStorage.getItem('familyId'),
-        //   userId: localStorage.getItem('userId'),
-        //   boardContent: this.boardContent,
-        //   boardDate: this.boardDate,
-        //   boardLocation: this.boardLocation,
-        //   boardTaggedYn: this.boardTaggedYn,
-        //   boardMediaYn: this.boardMediaYn,
-        //   pollYn: this.pollYn,
-        //   boardLikeCnt: 0,
-        //   boardReplyCnt: 0
-        // }
-        // Object.assign(createBoardRequestDto, { inputBoardRequestDto })
-        // console.log(createBoardRequestDto)
-        // if (this.boardMediaYn === 1) {
-        //   this.boardCreate({ createBoardRequestDto, fileList })
-        // } else {
-        //   this.boardCreate({ createBoardRequestDto })
-        // }
       }
     }
   }

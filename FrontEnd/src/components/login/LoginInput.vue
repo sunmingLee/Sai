@@ -98,7 +98,7 @@ export default {
   }
 }
 .login-btn {
-  margin: 75px 0 20px 0;
+  margin: 40px 0 20px 0;
   display: flex;
   justify-content: center;
   div[data-v-67cfa612] {

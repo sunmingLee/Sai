@@ -17,18 +17,18 @@ instance.interceptors.request.use(
   }
 )
 
-axios.interceptors.response.use(
-  (response) => {
-    return response
-  },
-  (error) => {
-    if (error.response.status === 401 || error.response.status === 403) {
-      console.log('로그인 페이지로 갓!')
-      router.replace({
-        path: '/login'
-        // query: { redirect: router.currentRoute.fullPath }
-      })
-    }
-    return Promise.reject(error)
-  }
-)
+// axios.interceptors.response.use(
+//   (response) => {
+//     return response
+//   },
+//   (error) => {
+//     if (error.response.status === 401 || error.response.status === 403) {
+//       console.log('로그인 페이지로 갓!')
+//       router.replace({
+//         path: '/login'
+//         // query: { redirect: router.currentRoute.fullPath }
+//       })
+//     }
+//     return Promise.reject(error)
+//   }
+// )
