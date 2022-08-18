@@ -2,7 +2,6 @@
   <div class="picture-detail-wrap">
     <HeaderTitle hasBack="true"></HeaderTitle>
     <div class="button-wrap">
-        <Button style="margin-left:5px;" buttonClass="small information" buttonText="다운로드" @click="getMedia"></Button>
         <Button style="margin-left:5px;" buttonClass="small information" buttonText="삭제" @click="eraseMedia"></Button>
     </div>
     <img :src="albumMediaPath" class="d-block w-100" alt="image">
