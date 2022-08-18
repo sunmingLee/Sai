@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.catalina.security.SecurityUtil;
@@ -13,10 +14,12 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -175,14 +178,20 @@ public class UserController {
 	// 로그아웃
 	@ApiOperation(value = "logout: 로그아웃")
 	@PostMapping("/logout")
-	public void logout(HttpServletResponse response) {
+	public void logout(HttpServletRequest request, HttpServletResponse response) {
 		
-		Cookie cookie = new Cookie("X-AUTH-TOKEN", null);
-		cookie.setHttpOnly(true);
-		cookie.setSecure(false);
-		cookie.setMaxAge(0);
-		cookie.setPath("/");
-		response.addCookie(cookie);
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if(auth != null && auth.isAuthenticated()) {
+			new SecurityContextLogoutHandler().logout(request, response, auth);
+		}
+		
+		
+//		Cookie cookie = new Cookie("X-AUTH-TOKEN", null);
+//		cookie.setHttpOnly(true);
+//		cookie.setSecure(false);
+//		cookie.setMaxAge(0);
+//		cookie.setPath("/");
+//		response.addCookie(cookie);
 	}
 
 	// 아이디 찾기

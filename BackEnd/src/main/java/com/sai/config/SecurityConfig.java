@@ -81,10 +81,11 @@ public class SecurityConfig {
 //			.failureUrl("/api/user/login"); // 실패시 리다이렉트할 페이지
 
 		// 로그아웃
-		http.logout() // 로그아웃 처리
-				.logoutUrl("/api/user/logout") // 로그아웃 처리 URL
+//		http.logout() // 로그아웃 처리
+//				.logoutUrl("/logout")
+//				.permitAll()// 로그아웃 처리 URL
 //				.logoutSuccessUrl("/api/user/login") // 로그아웃 성공 후 이동페이지
-				.clearAuthentication(true);
+//				.clearAuthentication(true);
 //				.deleteCookies("JSESSIONID", "remember"); // 로그아웃 후 쿠키 삭제
 
 		// Remeber Me
