@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+// import instance from 'instance'
 import router from '@/router/index.js'
 import { API_BASE_URL } from '@/config'
 import { instance } from '@/api/index.js'
