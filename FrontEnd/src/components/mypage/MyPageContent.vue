@@ -125,6 +125,14 @@ p {
               align-items: center;
               justify-content: center;
               height: 210px;
+              div[data-v-ef26a08c] {
+                width: 235px;
+                height: 210px;
+                img {
+                  height: 100%;
+                  width: 100%!important;
+                }
+              }
               .d-block {
                 height: 100%;
               }
