@@ -18,7 +18,7 @@ const boardStore = {
     pollChoiceList: []
   },
   getters: {
-    
+
   },
   mutations: {
     FEED_All_LIST (state, feed) {
@@ -39,15 +39,15 @@ const boardStore = {
     FEED_RESET (state) {
       state.feedList = []
     },
-    MY_FEED_PAGINATION(state, myFeedNum) {
-      //한 페이지당 게시글
-      state.myFeedPagenationCnt = Math.ceil(myFeedNum / 6) 
+    MY_FEED_PAGINATION (state, myFeedNum) {
+      // 한 페이지당 게시글
+      state.myFeedPagenationCnt = Math.ceil(myFeedNum / 6)
     },
-    LIKE_CHANGE(state, likeInfo) {
-      for(let i = 0; i < state.feedList.length; i++) {
-        if(state.feedList[i].viewBoardResponseDto.boardId === likeInfo.boardId) {
+    LIKE_CHANGE (state, likeInfo) {
+      for (let i = 0; i < state.feedList.length; i++) {
+        if (state.feedList[i].viewBoardResponseDto.boardId === likeInfo.boardId) {
           console.log(state.feedList[i].boardLiked)
-          if(!state.feedList[i].boardLiked) {
+          if (!state.feedList[i].boardLiked) {
             state.feedList[i].viewBoardResponseDto.boardLikeCnt = state.feedList[i].viewBoardResponseDto.boardLikeCnt + 1
             state.feedList[i].boardLiked = true
           } else {
@@ -56,7 +56,7 @@ const boardStore = {
           }
         }
       }
-    },
+    }
     // BEST_POLL_CHOICE(state, feed) {
     //   //투표가 있을 때
     //   if(feed.pollResponse !== null) {
@@ -177,7 +177,7 @@ const boardStore = {
       })
         .then((res) => {
           console.log('수정이 됐어요')
-          alert("수정되었습니다.")
+          alert('수정되었습니다.')
           router.push({ name: 'feed' })
         })
         .catch((err) => {
@@ -185,7 +185,7 @@ const boardStore = {
         })
     },
     // 투표 선택 (임시 / 쿠키 세팅 이슈)
-    chooseVote (context, info) {
+    chooseVote ({ commit }, info) {
       const data = {
         choiceId: info.choiceId
       }
@@ -199,14 +199,19 @@ const boardStore = {
         }
       })
         .then(res => {
-          //console.log('여기다')
-          //console.log(res)
-          router.go()
+          // console.log('여기다')
+          console.log(res.data)
+          if (res.data.isDup) {
+            alert('선택이 취소되었습니다.')
+            router.go()
+          } else {
+            alert('선택하였습니다.')
+            router.go()
+          }
         })
         .catch((err) => {
-          if(err.response.status === 400) {
+          if (err.response.status === 400) {
             alert(err.response.data)
-            router.go()
           }
         })
     },

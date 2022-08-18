@@ -11,7 +11,12 @@
                 </div>
                 <div v-else-if="feed.viewBoardResponseDto.boardMediaYn" class="align">
                   <!-- <img src="@/assets/images/byebye.png" class="d-block w-100"> -->
-                  <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100">
+                  <div v-if="feed.viewBoardMediaResponseDto[0].boardMediaType.includes('video')">
+                  <video autoplay playsinline loop muted :src="feed.viewBoardMediaResponseDto[0].boardMediaPath"></video>
+                  </div>
+                  <div v-else>
+                    <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100">
+                  </div>
                 </div>
                 <div v-else class="align">
                   <span>{{feed.viewBoardResponseDto.boardContent}}</span>
