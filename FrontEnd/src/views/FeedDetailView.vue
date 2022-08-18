@@ -13,14 +13,21 @@
       <Button v-if="this.feed.viewBoardResponseDto.userId === this.userId" style="margin-right:5%" buttonClass="small negative" buttonText="삭제" @click="eraseFeed"></Button>
     </div>
     <!-- 투표 -->
-    <div class="poll-wrap" v-if="feed.viewBoardResponseDto.pollYn">
-        <h3>{{feed.pollResponse.question}}</h3>
-        <div v-for="(choice, index) in feed.pollResponse.choices" :key="index">
-            <div @click="choose(choice.id)">
-                <span>{{choice.text}}</span>
-                <span>{{choice.voteCount}}</span>
-            </div>
-        </div>
+    <div class="poll-body" v-if="feed.viewBoardResponseDto.pollYn">
+      <table>
+        <tr class="poll-title">
+          <th>{{feed.pollResponse.question}}</th>
+        </tr>
+        <tr class="poll-choice" v-for="(choice, index) in feed.pollResponse.choices" :key="index">
+          <!-- <div @click="choose(choice.id)"> -->
+          <td>{{choice.text}}</td>
+          <td><img class="poll-image" src="@/assets/images/person.svg" alt="user image">
+            <span>{{choice.voteCount}}</span>
+          </td>
+          <input type="radio" :id="choice.key" v-model="picked" :value="choice">
+        </tr>
+      </table>
+      <Button buttonText="투표하기" buttonClass="small positive" @click="choose(picked.id)"></Button>
     </div>
     <!-- 캐러셀 -->
     <div v-if="feed.viewBoardResponseDto.boardMediaYn" id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
@@ -119,7 +126,9 @@ export default {
     return {
       boardId: '',
       userId: '',
-      message: ''
+      message: '',
+      picked: '',
+      checkedvote: false
     }
   },
   created () {
@@ -157,11 +166,16 @@ export default {
     },
     // 투표 선택하기
     choose (choiceId) {
+      console.log(this.checkedvote)
       const info = {
         pollId: this.feed.pollResponse.id,
         choiceId
       }
-      // this.chooseVote(info)
+      if (this.checkedvote === false) {
+        //console.log(this.checkedvote)
+        this.checkedvote = true
+        this.chooseVote(info)
+      }
     },
     // 댓글 작성
     postReply () {
@@ -219,10 +233,6 @@ export default {
 }
 .feed-head-wrap{
   display: flex;
-}
-.poll-wrap{
-  margin-top: 5%;
-  border: 1px solid
 }
 #carouselExampleIndicators{
   // max-width: ;
@@ -285,9 +295,39 @@ export default {
     border: 1px solid #ae5f40;
   }
 }
-.button-wrap{
-  div{
-
+.poll-body {
+  table {
+    margin: 0 auto;
+    min-width: 300px;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    :nth:child(2) {
+    }
   }
+}
+//투표
+.poll-title {
+  th {
+    font-size: 23px;
+    text-align: left;
+  }
+}
+.poll-choice {
+  td {
+    border: 1px solid black;
+    text-align: left;
+  }
+  :nth-child(1) {
+    border-right: none;
+  }
+  :nth-child(2) {
+    border-left: none;
+    text-align: right;
+    min-width: 30px;
+  }
+}
+table {
+  border-collapse: separate;
+  border-spacing: 0 10px;
 }
 </style>
