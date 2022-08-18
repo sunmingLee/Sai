@@ -130,8 +130,9 @@ const albumStore = {
     downloadMedia ({ commit }, albumMediaId) {
       instance.get(api_url + '/media/' + albumMediaId)
         .then((res) => {
+          console.log(res)
           if (res.status === 200) {
-            // console.log(res)
+            alert('다운로드 성공!')
           } else {
             console.log(res)
           }
