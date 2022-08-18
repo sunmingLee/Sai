@@ -37,13 +37,13 @@
               <div class="carousel-inner" >
                 <div class="carousel-item active">
                   <!-- <img :src="srcList[0]" id="img" class="d-block w-100"> -->
-                  <img src="@/assets/images/여행1.jpg" class="d-block w-100">
-                  <!-- <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100"> -->
+                  <!-- <img src="@/assets/images/여행1.jpg" class="d-block w-100"> -->
+                  <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100">
                 </div>
                 <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index">
                   <div v-if="index !== 0" class="carousel-item">
-                    <img src="@/assets/images/여행2.jpg" class="d-block w-100">
-                    <!-- <img :src="src.boardMediaPath" id="img" class="d-block w-100"> -->
+                    <!-- <img src="@/assets/images/여행2.jpg" class="d-block w-100"> -->
+                    <img :src="src.boardMediaPath" id="img" class="d-block w-100">
                   </div>
                 </div>
               </div>
