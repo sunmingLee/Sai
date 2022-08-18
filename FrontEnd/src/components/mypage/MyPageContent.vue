@@ -1,5 +1,5 @@
 <template>  
-  <div>
+  <div style="height: 100%">
     <div class="count-wrap">
       <p>게시물 {{this.myFeedCnt}}개</p>
     </div>
@@ -19,6 +19,13 @@
             </div>
       </div>
     </div>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li class="page-item" ><a class="page-link" @click="pagination(this.currentPage-1)">이전</a></li>
+        <li class="page-item" v-for="(feed, index) in myFeedPagenationCnt" :key="index" ><a @click="pagination(index)" class="page-link">{{index+1}}</a></li>
+        <li class="page-item"><a class="page-link" @click="pagination(this.currentPage+1)">다음</a></li>
+      </ul>
+    </nav>
   </div>
 </template>
 <script>
@@ -32,26 +39,52 @@ export default {
   },
   data () {
     return {
-        feedCount: 0
+        feedCount: 0,
+        pageNum: 1,
+        currentPage: 0,
+        pageCount: 3, //화면에 나타낼 페이지 개수
+        limit: 2 //한 페이지당 나타날 데이터 개수
     }
   },
   created() {
     // 피드 조회
-    const userId = localStorage.getItem('userId')
+    const info = {
+      userId: localStorage.getItem('userId'),
+      page : 0
+    }
     // 피드 전체 리스트 조회
-    this.myFeedAllList(userId)
+    this.myFeedAllList(info)
+    console.log(this.myFeedPagenationCnt)
+    //지금 전체 개수 7개고 한 페이지에 2개만 나타났으면 좋겠어
+    //myFeedPagenationCnt
+
   },
   mounted() {
   },
   computed: {
-    ...mapState(boardStore, ['myFeedList', 'myFeedCnt'])
+    ...mapState(boardStore, ['myFeedList', 'myFeedCnt', 'myFeedPagenationCnt'])
   },
   methods: {
     ...mapActions(boardStore, ['myFeedAllList', 'setBoardId']),
     //상세보기 이동
     goDetail (boardId) {
-    //   console.log('들어가기 전: ' + boardId)
       this.setBoardId(boardId)
+    },
+    pagination(index) {
+      if(index === this.myFeedPagenationCnt) {
+        alert('더 이상 불러올 게시글이 없습니다')
+      }
+      else if(index < 0) {
+        alert('이전 게시글이 없습니다')
+      }
+      else {
+        this.currentPage = index
+        const info = {
+          userId: localStorage.getItem('userId'),
+          page: index
+        }
+        this.myFeedAllList(info)
+      }
     }
   }
 }
@@ -94,24 +127,19 @@ p {
         }
     }
 }
-// .mypage-wrap {
-//   width: 900px;
-
-//   .flex{
-//     display: flex;
-//     justify-content: center;
-//     text-align: center;
-
-//     .input-wrap{
-//       text-align: left;
-//       margin-bottom: 100px;
-
-//       .name-wrap, .email-wrap {
-//         margin: 10px 0 10px 0;
-//       }
-//     }
-//   }
-// }
+.pagination {
+  justify-content: center;
+}
+.pagination{
+  margin-top: 10px;
+    justify-content: center;
+    --bs-pagination-color: #7b371c;
+    --bs-pagination-hover-color : #7b371c;
+    --bs-pagination-focus-bg : #7b371c;
+    --bs-pagination-focus-color : white;
+    --bs-pagination-active-bg : #7b371c;
+    --bs-pagination-active-border-color : #7b371c;
+}
 
 </style>
 

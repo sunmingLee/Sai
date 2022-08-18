@@ -94,7 +94,7 @@ const userStore = {
           if (res.status === 200 & res.data.familyId != null) {
             localStorage.setItem('familyId', res.data.familyId)
             alert('환영합니다! 가족들의 피드를 보러갈까요!')
-            router.push({ name: 'feed' })
+            router.replace({ name: 'feed' })
           } else { // familyId가 없는 경우
             if (!res.data.familyRegYN) { // 가족 미신청
               router.push({ name: 'familyCode' })
@@ -148,6 +148,7 @@ const userStore = {
         params
       })
         .then((res) => {
+          console.log(res.data)
           if (res.data.msg.indexOf('입력하신 이메일로 임시 비밀번호가 전송되었습니다.') != -1) {
             alert(res.data.msg)
             router.push({ name: 'home' })
@@ -202,7 +203,7 @@ const userStore = {
     // 회원 탈퇴
     withdrawalMember ({ commit }, userId) {
       instance({
-        url: api_url + `/${userId.id}`,
+        url: api_url + `/${userId}`,
         method: 'DELETE'
       })
         .then((res) => {
@@ -278,6 +279,20 @@ const userStore = {
           console.log(res)
           // 개인 페이지에서 온 경우
           router.push({ name: 'myPage' })
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    out({commit}) {
+      instance({
+        url: api_url + '/logout',
+        method: 'POST',
+      })
+        .then((res) => {
+          console.log(res)
+          window.localStorage.clear();
+          this.$router.push({name: 'login'})
         })
         .catch((err) => {
           console.log(err)

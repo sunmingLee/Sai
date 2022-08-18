@@ -29,6 +29,7 @@
       </table>
       <Button buttonText="투표하기" buttonClass="small positive" @click="choose(picked.id)"></Button>
     </div>
+
     <!-- 캐러셀 -->
     <div v-if="feed.viewBoardResponseDto.boardMediaYn" id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
       <div class="carousel-inner">
@@ -177,6 +178,7 @@ export default {
         this.chooseVote(info)
       }
     },
+
     // 댓글 작성
     postReply () {
       if (this.message.length === 0) {

@@ -9,12 +9,12 @@
                 <p id="family-code" class="family-code">{{familyId}}</p>
             </div>
         </div>
-        <div class="flex">
+        <div class="flex" style="margin: 30px 0 10px 0">
             <Button buttonText="코드복사" buttonClass="small information" @click="copyCode"/>
         </div>
-          <!-- <div class="flex">
+          <div class="flex" style="margin-top: 30px">
               <Button buttonText="메인으로" buttonClass="small positive" @click="goMain"/>
-          </div> -->
+          </div>
     </div>
 </template>
 <script>
@@ -46,11 +46,10 @@ export default {
       document.execCommand('copy')
       sel.removeRange(range)
       alert('가족 코드가 복사되었습니다')
-      this.$router.push({ name: 'feed' })
     },
-    // goMain () {
-    //   this.$router.push({ name: 'feed' })
-    // }
+    goMain () {
+      this.$router.push({ name: 'feed' })
+    }
   },
   computed: {
   }

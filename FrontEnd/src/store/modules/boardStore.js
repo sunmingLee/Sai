@@ -12,10 +12,13 @@ const boardStore = {
     replyList: [],
     feed: [],
     myFeedList: [],
-    myFeedCnt: []
+    myFeedCnt: 0,
+    likeList: [],
+    myFeedPagenationCnt: 0,
+    pollChoiceList: []
   },
   getters: {
-
+    
   },
   mutations: {
     FEED_All_LIST (state, feed) {
@@ -35,7 +38,37 @@ const boardStore = {
     },
     FEED_RESET (state) {
       state.feedList = []
-    }
+    },
+    MY_FEED_PAGINATION(state, myFeedNum) {
+      //한 페이지당 게시글
+      state.myFeedPagenationCnt = Math.ceil(myFeedNum / 6) 
+    },
+    LIKE_CHANGE(state, likeInfo) {
+      for(let i = 0; i < state.feedList.length; i++) {
+        if(state.feedList[i].viewBoardResponseDto.boardId === likeInfo.boardId) {
+          console.log(state.feedList[i].boardLiked)
+          if(!state.feedList[i].boardLiked) {
+            state.feedList[i].viewBoardResponseDto.boardLikeCnt = state.feedList[i].viewBoardResponseDto.boardLikeCnt + 1
+            state.feedList[i].boardLiked = true
+          } else {
+            state.feedList[i].viewBoardResponseDto.boardLikeCnt = state.feedList[i].viewBoardResponseDto.boardLikeCnt - 1
+            state.feedList[i].boardLiked = false
+          }
+        }
+      }
+    },
+    // BEST_POLL_CHOICE(state, feed) {
+    //   //투표가 있을 때
+    //   if(feed.pollResponse !== null) {
+    //     for(let i = 0; i < feed.pollResponse.choices.length; i++) {
+
+    //     }
+    //     this.pollChoiceList.push({
+    //       boardId: feed.viewBoardResponseDto.boardId,
+
+    //     })
+    //   }
+    // }
   },
   actions: {
     // 게시글 작성
@@ -74,7 +107,7 @@ const boardStore = {
         })
     },
     // 피드 조회
-    feedAllList ({ commit }, info) {
+    feedAllList ({ commit, state }, info) {
       const familyId = info.familyId
       const userId = info.userId
       const params = {
@@ -86,10 +119,12 @@ const boardStore = {
         params
       })
         .then((res) => {
-          if (res.data.length === 0) {
+          console.log(res.data)
+          if (res.data.length === 0 & info.page !== 0) {
             alert('더 이상 불러올 게시물이 없습니다')
           } else {
             commit('FEED_All_LIST', res.data)
+            // commit('BEST_POLL_CHOICE', res.data)
           }
         })
         .catch((err) => {
@@ -132,7 +167,7 @@ const boardStore = {
     },
     // 게시글 수정
     boardUpdate ({ commit }, updateBoardRequestDto) {
-      axios({
+      instance({
         url: api_url + '/board',
         method: 'PUT',
         data: JSON.stringify(updateBoardRequestDto),
@@ -175,6 +210,7 @@ const boardStore = {
           }
         })
     },
+
     // 좋아요 등록
     upBoardLike ({ commit, dispatch }, info) {
       instance({
@@ -183,7 +219,7 @@ const boardStore = {
       })
         .then((res) => {
           dispatch('getOneFeed', info)
-          // dispatch('feedAllList', info)
+          commit('LIKE_CHANGE', info)
         })
         .catch((err) => {
           console.log(err)
@@ -197,7 +233,7 @@ const boardStore = {
       })
         .then((res) => {
           dispatch('getOneFeed', info)
-          // dispatch('feedAllList', info)
+          commit('LIKE_CHANGE', info)
         })
         .catch((err) => {
           console.log(err)
@@ -261,15 +297,20 @@ const boardStore = {
         })
     },
     // 개인페이지 피드 조회
-    myFeedAllList ({ commit }, userId) {
+    myFeedAllList ({ commit }, info) {
+      const params = {
+        page: info.page
+      }
       instance({
-        url: API_BASE_URL + '/api/user/myPage/' + userId,
-        method: 'GET'
+        url: API_BASE_URL + '/api/user/myPage/' + info.userId,
+        method: 'GET',
+        params
       })
         .then((res) => {
           console.log(res.data)
-          commit('MY_FEED_All_LIST', res.data)
-          commit('MY_FEED_All_LIST_COUNT', res.data.length)
+          commit('MY_FEED_All_LIST', res.data.readFeedResponseDtos)
+          commit('MY_FEED_All_LIST_COUNT', res.data.userBoardNum)
+          commit('MY_FEED_PAGINATION', res.data.userBoardNum)
         })
         .catch((err) => {
           console.log('에러')

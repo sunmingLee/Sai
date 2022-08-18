@@ -1,9 +1,12 @@
 <template>
     <div class="header-wrap">
         <div class="flex">
-            <div class="user-image">
-                <img src="@/assets/images/person-circle.svg" v-if="userInfo.userImagePath === null">
-                <img :src="userInfo.userImagePath">
+            <div class="default-image" v-if="userInfo.userImagePath === null">
+                <img src="@/assets/images/person-circle.svg" >
+            </div>
+            <div v-else class="user-image">
+              <img :src="userInfo.userImagePath">
+              <!-- <img src="@/assets/images/여행1.jpg"> -->
             </div>
             <div>
                 <div class="user-update">
@@ -80,11 +83,24 @@ p {
   display: flex;
   justify-content: space-evenly;
 }
-.user-image {
+.default-image {
   width: 100px;
   height: auto;
   img {
     width: 100%;
+  }
+}
+.user-image {
+  // width: 100px;
+  // height: auto;
+  border: 1px solid black;
+  border-radius: 50px;
+  max-width: 100px;
+  min-height: 100px;
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50px;
   }
 }
 .user-update {
