@@ -56,6 +56,26 @@ const boardStore = {
           }
         }
       }
+    },
+    SUB_ONE_VOTE (state, choiceId) {
+      // console.log(choiceId)
+      // console.log(state.feed.pollResponse.choices)
+      for (let i = 0; i < state.feed.pollResponse.choices.length; i++) {
+        console.log(state.feed.pollResponse.choices[i].voteCount)
+        if (state.feed.pollResponse.choices[i].id === choiceId) {
+          state.feed.pollResponse.choices[i].voteCount--
+        }
+      }
+    },
+    ADD_ONE_VOTE (state, choiceId) {
+      // console.log(choiceId)
+      // console.log(state.feed.pollResponse.choices)
+      for (let i = 0; i < state.feed.pollResponse.choices.length; i++) {
+        console.log(state.feed.pollResponse.choices[i].voteCount)
+        if (state.feed.pollResponse.choices[i].id === choiceId) {
+          state.feed.pollResponse.choices[i].voteCount++
+        }
+      }
     }
     // BEST_POLL_CHOICE(state, feed) {
     //   //투표가 있을 때
@@ -203,10 +223,12 @@ const boardStore = {
           console.log(res.data)
           if (res.data.isDup) {
             alert('선택이 취소되었습니다.')
-            router.go()
+            commit('SUB_ONE_VOTE', data.choiceId)
+            // router.go()
           } else {
             alert('선택하였습니다.')
-            router.go()
+            commit('ADD_ONE_VOTE', data.choiceId)
+            // router.go()
           }
         })
         .catch((err) => {
