@@ -13,15 +13,17 @@
       <Button v-if="this.feed.viewBoardResponseDto.userId === this.userId" style="margin-right:5%" buttonClass="small negative" buttonText="삭제" @click="eraseFeed"></Button>
     </div>
     <!-- 투표 -->
-    <div class="poll-wrap" v-if="feed.viewBoardResponseDto.pollYn">
+ <div class="poll-wrap" v-if="feed.viewBoardResponseDto.pollYn">
         <h3>{{feed.pollResponse.question}}</h3>
         <div v-for="(choice, index) in feed.pollResponse.choices" :key="index">
-            <div @click="choose(choice.id)">
-                <span>{{choice.text}}</span>
-                <span>{{choice.voteCount}}</span>
-            </div>
+            <!-- <div @click="choose(choice.id)"> -->
+            <input type="radio" :id="choice.key" v-model="picked" :value="choice">
+            <label :for="choice.key" class="text">{{choice.text}}</label>
+            <span>{{choice.voteCount}}</span>
         </div>
+        <Button buttonText="투표하기" buttonClass="small positive" @click="choose(picked.id)"></Button>
     </div>
+
     <!-- 캐러셀 -->
     <div v-if="feed.viewBoardResponseDto.boardMediaYn" id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
       <div class="carousel-inner">
@@ -119,7 +121,8 @@ export default {
     return {
       boardId: '',
       userId: '',
-      message: ''
+      message: '',
+          picked: ''
     }
   },
   created () {
@@ -157,12 +160,14 @@ export default {
     },
     // 투표 선택하기
     choose (choiceId) {
+      console.log(choiceId)
       const info = {
         pollId: this.feed.pollResponse.id,
         choiceId
       }
-      // this.chooseVote(info)
+      this.chooseVote(info)
     },
+
     // 댓글 작성
     postReply () {
       if (this.message.length === 0) {
