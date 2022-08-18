@@ -105,9 +105,7 @@ const boardStore = {
         params
       })
         .then((res) => {
-          console.log(res.data)
-          console.log(state.feedFlag)
-          if (res.data.length === 0) {
+          if (res.data.length === 0 & info.page !== 0) {
             alert('더 이상 불러올 게시물이 없습니다')
           } else {
             commit('FEED_All_LIST', res.data)
@@ -277,8 +275,9 @@ const boardStore = {
     },
     // 개인페이지 피드 조회
     myFeedAllList ({ commit }, info) {
-      const params = info.page
-      console.log(params)
+      const params = {
+        page: info.page
+      }
       instance({
         url: API_BASE_URL + '/api/user/myPage/' + info.userId,
         method: 'GET',
