@@ -166,8 +166,6 @@ public class FeedServiceImpl implements FeedService {
 			Poll poll = pollRepository.findByBoardBoardId(board.getBoardId());
 
 			PollResponse pollResponse = pollService.getPollById(poll.getPollId(), currUser);
-			System.out.println("투표 읽기");
-			System.out.println(pollResponse.getTotalVotes());
 			readBoardResponseDto.setPollResponse(pollResponse);
 
 //			ViewPollResponseDto viewPollResponseDto = new ViewPollResponseDto();

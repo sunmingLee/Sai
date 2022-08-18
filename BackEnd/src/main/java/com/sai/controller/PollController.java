@@ -71,14 +71,19 @@ public class PollController {
 	
 	// 선택 하기 & 선택 취소하기
 	@PostMapping("/{pollId}/votes")
-	public PollResponse castVote(@PathVariable Long pollId,
+	public ResponseEntity<?> castVote(@PathVariable Long pollId,
 //			 VoteRequest voteRequest,
 			@Valid @RequestBody VoteRequest voteRequest,
 			@CurrentUser UserPrincipal currentUser) {
 		// 대부분의 경우 @RequestBody는 복수개를 사용하지 않는다
 		// 화면 붙이기 전에 user 객체를 넘겼을 때 오류가 발생했던 이유는 @RequestBody가 두 개였기 때문
 		// 화면 붙이고 로그인 구현이 되면 서버에서 현재 로그인한 유저 정보를 가져올 수 있으므로 이런 문제 발생하지 않을 것
-		return pollService.castVoteAndGetUpdatedPoll(pollId, voteRequest, currentUser);
+		
+		try {
+			return ResponseEntity.status(200).body(pollService.castVoteAndGetUpdatedPoll(pollId, voteRequest, currentUser));
+		} catch (Exception e) {
+			return ResponseEntity.status(400).body(e.getMessage());
+		}
 	}
 	
 	// 기표 취소하기
