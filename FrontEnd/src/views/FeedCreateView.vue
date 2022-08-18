@@ -1,6 +1,6 @@
 <template>
     <div class="create-wrap">
-        <HeaderTitle hasBack="true" title="게시글 작성" hasIcon="true"/>
+        <HeaderTitle hasBack="true" title="게시글 작성"/>
         <div class="create-content">
           <div class="content-flex">
           <div class="content-wrap">

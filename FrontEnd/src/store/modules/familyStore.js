@@ -145,7 +145,7 @@ const familyStore = {
         // console.log(res)
           if (res.status === 200) {
             alert('가족 정보가 수정되었습니다.')
-            // router.push({ name: 'feed' })
+            router.push({ name: 'feed' })
           } else {
             console.log(res)
             alert('가족 정보 수정 중 오류가 발생했습니다.')

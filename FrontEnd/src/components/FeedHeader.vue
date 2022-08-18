@@ -5,7 +5,7 @@
                 <img :src="familyInfo.familyImagePath">
             </div>
             <div class="family-image" v-else>
-                <img src="@/assets/images/people-fill.svg" alt="family">
+                <img src="@/assets/images/familyimg.png" alt="family">
             </div>
             <div class="family-title">
                 <span class="title">{{ familyInfo.familyName }}</span>

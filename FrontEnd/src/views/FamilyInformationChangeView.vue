@@ -3,18 +3,22 @@
     <HeaderTitle title="가족정보수정"></HeaderTitle>
     <div class="family-flex">
       <!-- 미리보기가 없으면 -->
-      <div v-if="srcList[0] == null">
+      <div v-if="srcList[0] == null" style="position: relative">
         <!-- 패밀리 이미지가 없으면 샘플 이미지 출력 -->
         <img v-if="familyInfo.familyImagePath == null" src="@/assets/images/familyimg.png" alt="가족 사진" class="profile img-thumbnail rounded-circle">
         <!-- 있으면 패밀리 이미지 출력 -->
         <img v-else class="profile img-thumbnail rounded-circle" :src="familyInfo.familyImagePath" alt="가족 사진">
+        <label calss="file-label" for="customFile"><img src="@/assets/images/camera.svg" alt=""></label>
+        <input style="display: none" type="file" class="form-control" id="customFile" @change="fileCheck"/>
       </div>
       <!-- 미리보기가 있으면 미리보기 출력 -->
-      <div v-else>
+      <div v-else style="position: relative">
         <img class="profile img-thumbnail rounded-circle" :src="srcList[0]" alt="가족 사진">
+        <label calss="file-label" for="customFile"><img src="@/assets/images/camera.svg" alt=""></label>
+        <input style="display: none" type="file" class="form-control" id="customFile" @change="fileCheck"/>
       </div>
-      <label calss="file-label" for="customFile"><img src="@/assets/images/camera.svg" alt=""></label>
-      <input style="display: none" type="file" class="form-control" id="customFile" @change="fileCheck"/>
+      <!-- <label calss="file-label" for="customFile"><img src="@/assets/images/camera.svg" alt=""></label>
+      <input style="display: none" type="file" class="form-control" id="customFile" @change="fileCheck"/> -->
     </div>
     <div class="family-title">
       <InputBox @inputCheck="changeFamilyName" :inputValue="familyInfo.familyName" />
@@ -227,7 +231,6 @@ export default {
     justify-content: center;
     align-items: center;
     label {
-      margin-left: 30px;
       border: 1px solid #7b371c;
       background-color: #7b371c;
       border-radius: 38px;
@@ -235,6 +238,9 @@ export default {
       height: 41px;
       text-align: center;
       line-height: 31px;
+      position: absolute;
+      top: 54%;
+      left: 76%;
       img {
         width: 35px;
       }
@@ -286,5 +292,6 @@ export default {
 hr {
   border-top: 3px solid #7b371c;
 }
+
 
 </style>
