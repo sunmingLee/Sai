@@ -115,7 +115,7 @@ public class PollService {
 		User user = userRepository.findByUserId(currentUser.getUserId()).get();
 
 		// user와 poll 이용해서 vote가 있는지 확인
-
+		// 투표가 없는 경우
 		if (voteRepository.findByUserIdAndPollId(user.getUserId(), pollId) == null) {
 
 			Choice selectedChoice = poll.getChoices().stream()
@@ -130,7 +130,7 @@ public class PollService {
 			try {
 				vote = voteRepository.save(vote);
 			} catch (DataIntegrityViolationException ex) {
-				throw new BadRequestException("Sorry! You have already cast your vote in this poll");
+				throw new BadRequestException("이미 투표하셨습니다!");
 			}
 			
 			// -- Vote Saved, Return the updated Poll Response now --
@@ -139,10 +139,8 @@ public class PollService {
 			// Retrieve Vote Counts of every choice belonging to the current poll
 			List<ChoiceVoteCount> votes = voteRepository.countByPollIdGroupByChoiceId(pollId);
 			
-			System.out.println(votes);
 			Map<Long, Long> choiceVotesMap = votes.stream()
 					.collect(Collectors.toMap(ChoiceVoteCount::getChoiceId, ChoiceVoteCount::getVoteCount));
-			System.out.println(choiceVotesMap);
 
 			// Retrieve poll creator details
 			User creator = userRepository.findById(poll.getCreatedBy())
@@ -150,10 +148,18 @@ public class PollService {
 
 			return PollModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator, vote.getChoice().getChoiceId());
 			
-			
+			// 투표가 있는 경우
 		} else {
 			Vote vote = voteRepository.findByUserIdAndPollId(user.getUserId(), pollId);
-			voteRepository.deleteById(vote.getVoteId());
+
+			// 다른 선택지를 고른 경우
+			if(vote.getChoice().getChoiceId() != voteRequest.getChoiceId()) {
+				throw new BadRequestException("이미 투표하셨습니다!");
+				// 같은 선택지를 고른 경우
+			} else {
+				voteRepository.deleteById(vote.getVoteId());
+			}
+			
 			
 			// -- Vote Saved, Return the updated Poll Response now --
 			System.out.println("이건 투표 취소하기야");
