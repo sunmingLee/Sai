@@ -12,11 +12,21 @@
             <div v-if="imageFlag" id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
               <div class="carousel-inner" >
                 <div class="carousel-item active">
+                  <div v-if="srcList[0].includes('video')">
+                    <video autoplay playsinline loop muted :src="srcList[0]" class="d-block w-100"/>
+                  </div>
+                  <div v-else>
                   <img :src="srcList[0]" id="img" class="d-block w-100">
+                  </div>
                 </div>
                 <div v-for="(src, index) in srcList" :key="index">
                   <div v-if="index !== 0" class="carousel-item">
+                  <div v-if="src.includes('video')">
+                    <video autoplay playsinline loop muted :src="src" class="d-block w-100"/>
+                  </div>
+                  <div v-else>
                     <img :src="src" id="img" class="d-block w-100">
+                    </div>
                   </div>
                 </div>
               </div>
@@ -214,7 +224,8 @@ export default {
       pollCnt: 2,
       srcList: [],
       fileList: [],
-      imageFlag: false
+      imageFlag: false,
+      fileFlag: true,
     }
   },
   created () {
@@ -243,9 +254,11 @@ export default {
       // 확장자 변경
       this.changeFile()
       // 미리보기
-      this.previewFile()
-      if (this.srcList.length !== 0) {
-        this.imageFlag = true
+      if(this.fileFlag) {
+        this.previewFile()
+        if (this.srcList.length !== 0) {
+          this.imageFlag = true
+        }
       }
     },
     changeFile () {
@@ -260,19 +273,25 @@ export default {
         // 파일 하나 선택
         const file = files[i]
         let heicFile = ''
-        // 파일의 확장자가 heic일 경우
-        if (file.name.split('.')[1] === 'heic') {
-          // file의 타입을 "image/jpg"로 바꾸고 이름 뒤에 확장자도 .jpg로 바꾼다
-          heic2any({ blob: file, toType: 'image/jpg' })
-            .then(function (resultBlob) {
-              heicFile = new File([resultBlob], file.name.split('.')[0] + '.jpg', { type: 'image/jpg', lastModified: new Date().getTime() })
-              fileList.push(heicFile)
-            })
-            .catch((err) => {
-              console.log(err)
-            })
+        if(file.name.split('.')[1] !== 'jpg' && file.name.split('.')[1] !== 'png'
+          && file.name.split('.')[1] !== 'heic' && file.name.split('.')[1] !== 'mp4') {
+          alert('지원하는 확장자가 아닙니다')
+          this.fileFlag = false
         } else {
-          fileList.push(file)
+          // 파일의 확장자가 heic일 경우
+          if (file.name.split('.')[1] === 'heic') {
+            // file의 타입을 "image/jpg"로 바꾸고 이름 뒤에 확장자도 .jpg로 바꾼다
+            heic2any({ blob: file, toType: 'image/jpg' })
+              .then(function (resultBlob) {
+                heicFile = new File([resultBlob], file.name.split('.')[0] + '.jpg', { type: 'image/jpg', lastModified: new Date().getTime() })
+                fileList.push(heicFile)
+              })
+              .catch((err) => {
+                console.log(err)
+              })
+          } else {
+            fileList.push(file)
+          }
         }
       }
     },
@@ -419,8 +438,8 @@ export default {
     feedCreate () {
       const createBoardRequestDto = {}
       // 미디어 or 글 or 투표 중 하나라도 있어야 게시글 작성이 가능하다
-      if (fileList.length === 0 && this.boardContent === '' && this.pollYn) {
-        alert('글이나 사진을 등록해야 작성이 가능합니다.')
+      if (fileList.length === 0 && this.boardContent === '' && !this.pollYn) {
+        alert('글이나 사진 또는 투표를 등록해야 작성이 가능합니다.')
         // this.files = test
       } else {
         // 미디어 파일이 있다!

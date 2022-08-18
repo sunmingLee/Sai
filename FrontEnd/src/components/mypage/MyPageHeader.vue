@@ -14,7 +14,7 @@
                     <img src="@/assets/images/pencil-fill.svg" alt="calendar" style="width: 15px" @click="goUpdateUser">
                 </div>
                 <div class="user-msg">
-                    <p v-if="userInfo.userMessage === null">상태 메시지를 등록해주세요</p>
+                    <p v-if="userInfo.userMessage === null || userInfo.userMessage === '' || userInfo.userMessage === undefined">상태 메시지를 등록해주세요</p>
                     <p>{{userInfo.userMessage}}</p>
                 </div>
             </div>
@@ -71,12 +71,6 @@ p {
   margin: 0;
 }
 .header-wrap {
-  // width: 900px;
-  // top: 0;
-  // padding: 0 5%;
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
   margin: 5% 0 2% 0;
 }
 .flex {
@@ -91,8 +85,6 @@ p {
   }
 }
 .user-image {
-  // width: 100px;
-  // height: auto;
   border: 1px solid black;
   border-radius: 50px;
   max-width: 100px;
@@ -114,23 +106,5 @@ hr {
   height: 3px;
   background-color: #7B371C;
 }
-// .mypage-wrap {
-//   width: 900px;
-
-//   .flex{
-//     display: flex;
-//     justify-content: center;
-//     text-align: center;
-
-//     .input-wrap{
-//       text-align: left;
-//       margin-bottom: 100px;
-
-//       .name-wrap, .email-wrap {
-//         margin: 10px 0 10px 0;
-//       }
-//     }
-//   }
-// }
 
 </style>

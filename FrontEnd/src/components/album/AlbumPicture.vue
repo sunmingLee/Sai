@@ -1,17 +1,14 @@
 <template>
-  <div class="picture-wrap">
+  <div>
     <HeaderTitle :title="albumName" hasBack="true"></HeaderTitle>
-    <ul class="list-group list-group-flush" v-if="mediaList.length">
-      <li class="list-group-item" v-for="(media, index) in mediaList" :key="index" @click="seePicture(media)">
-        <img v-if="media.albumMediaThumbnail" :src="media.albumMediaThumbnail" class="img-fluid" alt="thumbnail">
-        <img v-else src="@/assets/images/image.svg" class="img-fluid" alt="empty thumbnail">
-      </li>
-    </ul>
-    <div class="nothing-wrap" v-else>등록된 사진이 없습니다.</div>
-     <!-- Button trigger modal -->
-    <button id="btn-modal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    <img style="width:25px;" src="@/assets/images/plus-lg.svg" alt="plus">
-    </button>
+      <div class="picture-wrap">
+        <div class="picture-flex" v-if="mediaList.length">
+          <div class="image-group" v-for="(media, index) in mediaList" :key="index">
+            <img v-if="media.albumMediaThumbnail" :src="media.albumMediaThumbnail" class="img-fluid" alt="thumbnail">
+            <img v-else src="@/assets/images/image.svg" class="img-fluid" alt="empty thumbnail">
+          </div>
+        </div>
+        <div class="nothing-wrap" v-else>등록된 사진이 없습니다.</div>
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -32,8 +29,8 @@
         </div>
     </div>
     </div>
-
   </div>
+</div>
 </template>
 
 <script>
@@ -114,18 +111,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.picture-wrap{
-  height: 90%;
-    .container{
-        height: 100%;
-        .row{
-            height: 30%;
-            .col{
-                border: 0.5px solid;
-            }
-        }
-    }
-}
 .nothing-wrap{
     text-align: center;
     font-size: x-large;
@@ -134,19 +119,6 @@ export default {
     position: absolute;
     top: 5%;
     right: 5%;
-}
-ul{
-  text-align: center;
-  li{
-    background-color: #fafafa;
-    border: 0;
-    padding: 2px;
-    min-height: 20vh;
-    img{
-      height: 100vh;
-      max-height: 30vh;
-    }
-  }
 }
 .btn{
     height: 40px;
@@ -165,5 +137,24 @@ ul{
         width: 50px;
         height: 50px;
     }
+}
+
+.picture-wrap {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  .picture-flex {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    .image-group {
+      width: 235px;
+      height: 210px;
+      margin: 20px auto;
+    }
+  }
+  img {
+    height: 100%;
+  }
 }
 </style>
