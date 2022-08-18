@@ -125,13 +125,9 @@
                 <Button v-if="boardLocation !== ''" buttonClass="small negative" buttonText="삭제" @click="deleteLocation"/>
                 <span v-if="this.peopleList.length !== 0">
                   <!-- <p>선택된 사람이 있어</p> -->
+                  <span>언급 : </span>
                   <span v-for="(callsign, index) in familyCallsignList" :key="index">
-                    <!-- <span v-for="(id, index) in this.peopleList" :key="index">
-                      <p>{{id[0]}}</p>
-                      <span v-if="callsign.toUserId === id">
-                        <p>얏호</p>
-                      </span>
-                      <span v-if="callsign.toUserId === id">{{callsign}}</span> -->
+                    <span v-if="this.peopleList.some(v => v.userId === callsign.toUserId)">{{callsign.callsign}}</span>
                   </span>
                 </span>
               </div>

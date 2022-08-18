@@ -532,8 +532,12 @@ export default {
             this.expirationDateTime = timeZone.toISOString()
           }
         }
-        // if (this.boardTaggedModified) {
-        // }
+        // 추가 정보에서 사람 태그 여부
+        const taggedResult = []
+        // 태그한 사람이 있을 경우
+        if (this.peopleList.length !== 0) {
+          this.boardTaggedYn = 1
+        }
         // 투표가 있을 경우
         if (this.pollModified) {
           this.pollRequest = {
@@ -558,43 +562,14 @@ export default {
               pollYn: this.pollYn
             },
             pollModified: this.pollModified,
-            pollRequest: this.pollRequest
+            pollRequest: this.pollRequest,
+            inputBoardTaggedRequestDtos: this.peopleList
           }
           console.log(updateBoardRequestDto)
           this.boardUpdate(updateBoardRequestDto)
         } else {
           alert('수정한 것이 없거나 제대로 작성되지 않은 부분이 있습니다')
         }
-
-        // // 추가 정보에서 사람 태그 여부
-        // const taggedResult = []
-        // // 태그한 사람이 있을 경우
-        // if (this.peopleList.length !== 0) {
-        //   this.boardTaggedYn = 1
-        //   for (let i = 0; i < this.peopleList.length; i++) {
-        //     taggedResult[i] = this.peopleList[i]
-        //   }
-        //   Object.assign(createBoardRequestDto, { inputBoardTaggedRequestDtos: taggedResult })
-        // }
-        // const inputBoardRequestDto = {
-        //   familyId: localStorage.getItem('familyId'),
-        //   userId: localStorage.getItem('userId'),
-        //   boardContent: this.boardContent,
-        //   boardDate: this.boardDate,
-        //   boardLocation: this.boardLocation,
-        //   boardTaggedYn: this.boardTaggedYn,
-        //   boardMediaYn: this.boardMediaYn,
-        //   pollYn: this.pollYn,
-        //   boardLikeCnt: 0,
-        //   boardReplyCnt: 0
-        // }
-        // Object.assign(createBoardRequestDto, { inputBoardRequestDto })
-        // console.log(createBoardRequestDto)
-        // if (this.boardMediaYn === 1) {
-        //   this.boardCreate({ createBoardRequestDto, fileList })
-        // } else {
-        //   this.boardCreate({ createBoardRequestDto })
-        // }
       }
     }
   }
