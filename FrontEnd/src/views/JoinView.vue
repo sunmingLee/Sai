@@ -4,30 +4,35 @@
     <div class="flex">
       <form id="join-form" @submit.prevent="onJoin">
         <div class="input-wrap">
-          <InputBox :hasLabel="true" labelName="아이디" @inputCheck="checkId"></InputBox>
+          <JoinInputBox :hasLabel="true" labelName="아이디" @inputCheck="checkId"></JoinInputBox>
           <p v-if="validId" class="valid-error">아이디는 4자 이상 16자 이하로 입력하세요.</p>
-          <Button buttonText="중복확인" buttonClass="small information" @click.prevent="duplicateId"></Button>
+          <p v-else class="valid-error">&nbsp;</p>
+          <Button buttonText="중복확인" class="join-btn" buttonClass="small information" @click.prevent="duplicateId"></Button>
           <br>
         </div>
         <div class="input-wrap">
-          <InputBox :hasLabel="true" labelName="이름" @inputCheck="checkName"></InputBox>
+          <JoinInputBox :hasLabel="true" labelName="이름" @inputCheck="checkName"></JoinInputBox>
           <p v-if="validName" class="valid-error">이름을 2자 이상으로 입력하세요.</p>
+          <p v-else class="valid-error">&nbsp;</p>
           <br>
         </div>
         <div class="input-wrap">
-          <InputBox :hasLabel="true" labelName="이메일" @inputCheck="checkEmail"></InputBox>
+          <JoinInputBox :hasLabel="true" labelName="이메일" @inputCheck="checkEmail"></JoinInputBox>
           <p v-if="validEmail" class="valid-error">이메일 형식으로 입력하세요.</p>
-          <Button buttonText="중복확인" buttonClass="small information" @click.prevent="duplicateEmail"></Button>
+          <p v-else class="valid-error">&nbsp;</p>
+          <Button buttonText="중복확인" class="join-btn" buttonClass="small information" @click.prevent="duplicateEmail"></Button>
           <br>
         </div>
         <div class="input-wrap">
-          <InputBox :hasLabel="true" labelName="비밀번호" inputType="password" @inputCheck="checkPassword"></InputBox>
-          <p v-if="validPassword" class="valid-error">비밀번호는 영문,숫자,특수문자를 포함하여 8자 이상으로 입력하세요.</p>
+          <JoinInputBox :hasLabel="true" labelName="비밀번호" inputType="password" @inputCheck="checkPassword"></JoinInputBox>
+          <p v-if="validPassword" class="valid-error">영문, 숫자, 특수문자를 포함하여 8자 이상으로 입력하세요.</p>
+          <p v-else class="valid-error">&nbsp;</p>
           <br>
         </div>
         <div class="input-wrap">
-          <InputBox :hasLabel="true" labelName="비밀번호 확인" inputType="password" @inputCheck="checkPasswordConfirm"></InputBox>
+          <JoinInputBox :hasLabel="true" labelName="비밀번호 확인" inputType="password" @inputCheck="checkPasswordConfirm"></JoinInputBox>
           <p v-if="validPasswordConfirm" class="valid-error">비밀번호가 일치하지 않습니다.</p>
+          <p v-else class="valid-error">&nbsp;</p>
           <br>
         </div>
         <div>
@@ -66,8 +71,8 @@
         </div>
         <br>
         <div>
-          <Button buttonText="회원가입" buttonClass="small disabled" v-if="checked === false"></Button>
-          <Button type="submit" buttonText="회원가입" buttonClass="small positive" v-else @click.prevent="onJoin"></Button>
+          <Button buttonText="회원가입" class="join-btn" buttonClass="small disabled" v-if="checked === false"></Button>
+          <Button type="submit" class="join-btn" buttonText="회원가입" buttonClass="small positive" v-else @click.prevent="onJoin"></Button>
         </div>
       </form>
     </div>
@@ -76,7 +81,7 @@
 
 <script>
 import Button from '@/components/common/Button.vue'
-import InputBox from '@/components/common/InputBox.vue'
+import JoinInputBox from '@/components/common/JoinInputBox.vue'
 import HeaderTitle from '@/components/common/HeaderTitle.vue'
 import { mapState, mapActions } from 'vuex'
 //import joinStore from '@/store/modules/joinStore'
@@ -86,7 +91,7 @@ export default {
   name: 'JoinView',
   components: {
     Button,
-    InputBox,
+    JoinInputBox,
     HeaderTitle
   },
   data () {
@@ -220,7 +225,12 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.join-btn {
+  width: auto;
+  display: flex;
+  justify-content: center;
+}
 .valid-error {
     color: red;
     font-size: 12px;
