@@ -26,8 +26,13 @@
     <div v-if="feed.viewBoardResponseDto.boardMediaYn" id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
       <div class="carousel-inner">
         <div class="carousel-item active">
+          <div v-if="feed.viewBoardMediaResponseDto[0].boardMediaType.includes('video')">
+              <video autoplay playsinline loop muted :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100"/>
+          </div>
+          <div v-else>
           <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" id="img" class="d-block w-100" alt="...">
           <!-- <img src="@/assets/images/여행3.jpg" id="img" class="d-block w-100" alt="..."> -->
+          </div>
         </div>
         <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index">
           <div v-if="index !== 0" class="carousel-item">
