@@ -23,11 +23,11 @@ INSERT INTO `album` (`album_id`, `family_id`, `album_name`, `album_start_date`, 
 -- 테이블 데이터 sai.album_media:~5 rows (대략적) 내보내기
 /*!40000 ALTER TABLE `album_media` DISABLE KEYS */;
 INSERT INTO `album_media` (`album_media_id`, `album_id`, `album_media_thumbnail`, `album_media_thumb_server`, `album_media_path`, `album_media_path_server`, `album_media_original_name`, `album_media_type`) VALUES
-	(1, 1, '/saimedia/Album/305305/th_45ad78a4-6f28-49a7-8e8b-7c0b820070bd_동해.jpg', '/app/Album/305305/th_45ad78a4-6f28-49a7-8e8b-7c0b820070bd_동해.jpg', '/saimedia/Album/305305/45ad78a4-6f28-49a7-8e8b-7c0b820070bd_동해.jpg', '/app/Album/305305/45ad78a4-6f28-49a7-8e8b-7c0b820070bd_동해.jpg', '동해.jpg', 'image/jpeg'),
 	(2, 2, '/saimedia/Album/305305/th_5447b0ce-b7a2-48d3-aa38-80f48e60030c_캠핑.jpg', '/app/Album/305305/th_5447b0ce-b7a2-48d3-aa38-80f48e60030c_캠핑.jpg', '/saimedia/Album/305305/5447b0ce-b7a2-48d3-aa38-80f48e60030c_캠핑.jpg', '/app/Album/305305/5447b0ce-b7a2-48d3-aa38-80f48e60030c_캠핑.jpg', '캠핑.jpg', 'image/jpeg'),
 	(3, 3, '/saimedia/Album/305305/th_31cc2d38-1593-4d4e-81b2-f929a0e06e0a_부산여행1.jpg', '/app/Album/305305/th_31cc2d38-1593-4d4e-81b2-f929a0e06e0a_부산여행1.jpg', '/saimedia/Album/305305/31cc2d38-1593-4d4e-81b2-f929a0e06e0a_부산여행1.jpg', '/app/Album/305305/31cc2d38-1593-4d4e-81b2-f929a0e06e0a_부산여행1.jpg', '부산여행1.jpg', 'image/jpeg'),
 	(4, 3, '/saimedia/Album/305305/th_d3f6b0af-e6eb-4ab6-9206-a9a032fa57bf_부산여행2.jpg', '/app/Album/305305/th_d3f6b0af-e6eb-4ab6-9206-a9a032fa57bf_부산여행2.jpg', '/saimedia/Album/305305/d3f6b0af-e6eb-4ab6-9206-a9a032fa57bf_부산여행2.jpg', '/app/Album/305305/d3f6b0af-e6eb-4ab6-9206-a9a032fa57bf_부산여행2.jpg', '부산여행2.jpg', 'image/jpeg'),
-	(5, 3, '/saimedia/Album/305305/th_8fcba026-2577-4ce8-8431-e648471fb2ce_부산여행3.jpg', '/app/Album/305305/th_8fcba026-2577-4ce8-8431-e648471fb2ce_부산여행3.jpg', '/saimedia/Album/305305/8fcba026-2577-4ce8-8431-e648471fb2ce_부산여행3.jpg', '/app/Album/305305/8fcba026-2577-4ce8-8431-e648471fb2ce_부산여행3.jpg', '부산여행3.jpg', 'image/jpeg');
+	(6, 1, '/saimedia/Album/305305/th_91f88235-d4aa-404e-9dda-fd09c4458705_동해.jpg', '/app/Album/305305/th_91f88235-d4aa-404e-9dda-fd09c4458705_동해.jpg', '/saimedia/Album/305305/91f88235-d4aa-404e-9dda-fd09c4458705_동해.jpg', '/app/Album/305305/91f88235-d4aa-404e-9dda-fd09c4458705_동해.jpg', '동해.jpg', 'image/jpeg'),
+	(7, 3, '/saimedia/Album/305305/th_846f34e0-e64b-4204-843f-8feb67f08ca7_부산여행3.jpg', '/app/Album/305305/th_846f34e0-e64b-4204-843f-8feb67f08ca7_부산여행3.jpg', '/saimedia/Album/305305/846f34e0-e64b-4204-843f-8feb67f08ca7_부산여행3.jpg', '/app/Album/305305/846f34e0-e64b-4204-843f-8feb67f08ca7_부산여행3.jpg', '부산여행3.jpg', 'image/jpeg');
 /*!40000 ALTER TABLE `album_media` ENABLE KEYS */;
 
 -- 테이블 데이터 sai.board:~7 rows (대략적) 내보내기
