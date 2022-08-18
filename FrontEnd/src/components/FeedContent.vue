@@ -36,13 +36,23 @@
                                     <div class="carousel-inner" >
                                       <div class="carousel-inner" >
                                         <div class="carousel-item active">
+                                            <div v-if="feed.viewBoardMediaResponseDto[0].boardMediaType.includes('video')">
+                                            <video autoplay playsinline loop muted :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100"/>
+                                          </div>
+                                          <div v-else>
                                             <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100">
                                             <!-- <img src="@/assets/images/byebye.png" class="d-block w-100"> -->
+                                            </div>
                                         </div>
                                         <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index"> 
                                           <div v-if="index !== 0" class="carousel-item">
+                                            <div v-if="src.boardMediaType.includes('video')">
+                                              <video autoplay playsinline loop muted :src="src.boardMediaPath" class="d-block w-100"/>
+                                            </div>
+                                            <div v-else>
                                             <img :src="src.boardMediaPath" class="d-block w-100">
                                             <!-- <img src="@/assets/images/dog2.png" class="d-block w-100"> -->
+                                            </div>
                                           </div>
                                         </div>
                                     </div>

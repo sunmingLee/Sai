@@ -189,6 +189,7 @@ const boardStore = {
       const data = {
         choiceId: info.choiceId
       }
+      console.log(info)
       instance({
         url: API_BASE_URL + `/api/poll/${info.pollId}/votes`,
         method: 'POST',
@@ -204,6 +205,7 @@ const boardStore = {
           console.log(err)
         })
     },
+
     // 좋아요 등록
     upBoardLike ({ commit, dispatch }, info) {
       instance({
