@@ -28,10 +28,6 @@ export default {
   },
   methods: {
     ...mapActions(albumStore, ['downloadMedia', 'deleteMedia']),
-    // 사진 다운로드
-    getMedia () {
-      this.downloadMedia(this.albumMediaId)
-    },
     // 사진 삭제
     eraseMedia () {
       this.deleteMedia(this.albumMediaId)
