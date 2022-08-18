@@ -19,7 +19,7 @@
             <div v-if="userInfo.userImagePath === null" @click="dropDown" class="user-image">
                 <img src="@/assets/images/person-circle.svg" alt="user" style="width:28px">
             </div>
-            <div v-else @click="dropDown" class="user-image"> 
+            <div v-else @click="dropDown" class="user-image">
                 <!-- <img src="@/assets/images/여행1.jpg"> -->
                 <img :src="userInfo.userImagePath">
             </div>
@@ -52,60 +52,61 @@ const familyStore = 'familyStore'
 const notificationStore = 'notificationStore'
 const userStore = 'userStore'
 export default {
-    name: 'FeedHeader',
-    data () {
-        return {
-            menuFlag: false
-        }
-    },
-    created() {
-        //알림 조회
-        const userId = localStorage.getItem('userId')
-        this.listNotification(userId)
-        //가족 정보 조회(가족 이름, 이미지)
-        const familyId = localStorage.getItem('familyId')
-        this.getFamilyInfo(familyId)
-    },
-    computed: {
-        ...mapState(userStore, ['userInfo']),
-        ...mapState(familyStore, ['familyInfo']),
-        ...mapState(notificationStore, ['notificationList']),
-        ...mapGetters(notificationStore, ['notificationCount'])
-    },
-    methods: {
-        ...mapActions(userStore, ['out']),
-        ...mapActions(familyStore, ['getFamilyInfo']),
-        ...mapActions(notificationStore, ['listNotification']),
-        //가족 정보 수정 페이지로 이동
-        goFamilyUpdate() {
-            this.$router.push({ name: "familyInfoChange" });
-        },
-        //드롭다운
-        dropDown() {
-            console.log(this.menuFlag)
-            if(this.menuFlag) {
-                this.menuFlag = false
-            } else {
-                this.menuFlag = true
-            }
-        },
-        //알림함 이동
-        goNotice() {
-            this.$router.push({name : 'notification'})
-        },
-        //로그아웃
-        logout() {
-            this.out()
-        },
-        //마이 페이지 이동
-        goMyPage() {
-            this.$router.push({name: 'myPage'})
-        },
-        //계정관리 페이지 이동
-        goAccount() {
-            this.$router.push({name: 'accountConfirm'})
-        }
+  name: 'FeedHeader',
+  data () {
+    return {
+      menuFlag: false
     }
+  },
+  created () {
+    // 알림 조회
+    const userId = localStorage.getItem('userId')
+    this.listNotification(userId)
+    // 가족 정보 조회(가족 이름, 이미지)
+    const familyId = localStorage.getItem('familyId')
+    this.getFamilyInfo(familyId)
+  },
+  computed: {
+    ...mapState(userStore, ['userInfo']),
+    ...mapState(familyStore, ['familyInfo']),
+    ...mapState(notificationStore, ['notificationList']),
+    ...mapGetters(notificationStore, ['notificationCount'])
+  },
+  methods: {
+    ...mapActions(userStore, ['out']),
+    ...mapActions(familyStore, ['getFamilyInfo']),
+    ...mapActions(notificationStore, ['listNotification']),
+    // 가족 정보 수정 페이지로 이동
+    goFamilyUpdate () {
+      this.$router.push({ name: 'familyInfoChange' })
+    },
+    // 드롭다운
+    dropDown () {
+      console.log(this.menuFlag)
+      if (this.menuFlag) {
+        this.menuFlag = false
+      } else {
+        this.menuFlag = true
+      }
+    },
+    // 알림함 이동
+    goNotice () {
+      this.$router.push({ name: 'notification' })
+    },
+    // 로그아웃
+    logout () {
+    console.log('헤더에서 불러')
+      this.out()
+    },
+    // 마이 페이지 이동
+    goMyPage () {
+      this.$router.push({ name: 'myPage' })
+    },
+    // 계정관리 페이지 이동
+    goAccount () {
+      this.$router.push({ name: 'accountConfirm' })
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>

@@ -56,7 +56,7 @@ export default {
     flex-direction: row;
     justify-content: center;
     align-items: flex-end; */
-    position: absolute;
+    position: fixed;
     left: 0;
     bottom: 0;
     width: -webkit-fill-available;

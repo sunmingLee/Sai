@@ -1,16 +1,15 @@
 <template>
   <div>
-    <HeaderTitle :title="albumName" hasBack="true"></HeaderTitle>
-      <div class="picture-wrap">
-        <div class="picture-flex" v-if="mediaList.length">
-          <div class="image-group" v-for="(media, index) in mediaList" :key="index">
-            <img v-if="media.albumMediaThumbnail" :src="media.albumMediaThumbnail" class="img-fluid" alt="thumbnail">
-            <img v-else src="@/assets/images/image.svg" class="img-fluid" alt="empty thumbnail">
-            <!-- <img src="@/assets/images/여행1.jpg" class="img-fluid" alt="empty thumbnail"> -->
-          </div>
-        </div>
-        <div class="nothing-wrap" v-else>등록된 사진이 없습니다.</div>
-     <!-- Button trigger modal -->
+  <HeaderTitle :title="albumName" hasBack="true"></HeaderTitle>
+  <div class="picture-wrap">
+    <div class="picture-flex" v-if="mediaList.length">
+      <div class="image-group" v-for="(media, index) in mediaList" :key="index" @click="seePicture(media)">
+        <img v-if="media.albumMediaThumbnail" :src="media.albumMediaThumbnail" class="img-fluid" alt="thumbnail">
+        <img v-else src="@/assets/images/image.svg" class="img-fluid" alt="empty thumbnail">
+      </div>
+    </div>
+    <div class="nothing-wrap" v-else>등록된 사진이 없습니다.</div>
+    <!-- Button trigger modal -->
     <button id="btn-modal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
       <img style="width:25px;" src="@/assets/images/plus-lg.svg" alt="plus">
     </button>
@@ -101,10 +100,16 @@ export default {
       this.$refs.imageUploader.value = null
       fileList = []
     },
-    // 미디어 삭제
-    eraseMedia (albumMediaId) {
-      this.deleteMedia(albumMediaId)
+    // 사진 상세보기
+    seePicture (media) {
+      const picture = {
+        albumMediaId: media.albumMediaId,
+        albumMediaPath: media.albumMediaPath
+      }
+      localStorage.setItem('picture', JSON.stringify(picture))
+      this.$router.push({ name: 'pictureDetail' })
     }
+
   }
 }
 </script>

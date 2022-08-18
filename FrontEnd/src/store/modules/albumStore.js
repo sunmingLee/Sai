@@ -35,7 +35,7 @@ const albumStore = {
     getFolderList ({ commit }, familyId) {
       instance.get(api_url + `/family/${familyId}`)
         .then((res) => {
-          console.log(res)
+          // console.log(res)
           if (res.status === 200) {
             commit('SET_FOLDER_LIST', res.data)
           } else {
@@ -50,7 +50,7 @@ const albumStore = {
     makeAlbum ({ commit, dispatch }, info) {
       instance.post(api_url + '/', info)
         .then((res) => {
-          console.log(res)
+          // console.log(res)
           if (res.status === 200) {
             dispatch('getFolderList', info.familyId)
           } else {
@@ -65,7 +65,7 @@ const albumStore = {
     deleteAlbum ({ commit, dispatch }, albumId) {
       instance.delete(api_url + '/' + albumId)
         .then((res) => {
-          console.log(res)
+          // console.log(res)
           if (res.status === 200) {
             dispatch('getFolderList', localStorage.getItem('familyId'))
           } else {
@@ -88,7 +88,7 @@ const albumStore = {
     getMediaList ({ commit }) {
       instance.get(api_url + '/' + localStorage.getItem('albumId'))
         .then((res) => {
-          console.log(res)
+          // console.log(res)
           if (res.status === 200) {
             commit('SET_MEDIA_LIST', res.data)
           } else {
@@ -103,7 +103,7 @@ const albumStore = {
     insertMedia ({ commit, dispatch }, mediaList) {
       const formData = new FormData()
       for (let i = 0; i < mediaList.length; i++) {
-        console.log(mediaList[i])
+        // console.log(mediaList[i])
         formData.append('files', mediaList[i])
       }
       instance({
@@ -126,13 +126,29 @@ const albumStore = {
           console.log(err)
         })
     },
-    // 앨범 미디어 삭제
-    deleteMedia ({ commit, dispatch }, albumMediaId) {
-      instance.delete(api_url + '/media/' + albumMediaId)
+    // 앨범 미디어 다운로드
+    downloadMedia ({ commit }, albumMediaId) {
+      instance.get(api_url + '/media/' + albumMediaId)
         .then((res) => {
           console.log(res)
           if (res.status === 200) {
-            dispatch('getMediaList')
+            alert('다운로드 성공!')
+          } else {
+            console.log(res)
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    // 앨범 미디어 삭제
+    deleteMedia ({ commit }, albumMediaId) {
+      instance.delete(api_url + '/media/' + albumMediaId)
+        .then((res) => {
+          // console.log(res)
+          if (res.status === 200) {
+            alert('사진을 삭제했습니다.')
+            router.push({ name: 'picture' })
           } else {
             console.log(res)
           }
