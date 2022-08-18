@@ -72,6 +72,7 @@ export default {
         ...mapGetters(notificationStore, ['notificationCount'])
     },
     methods: {
+        ...mapActions(userStore, ['out']),
         ...mapActions(familyStore, ['getFamilyInfo']),
         ...mapActions(notificationStore, ['listNotification']),
         //가족 정보 수정 페이지로 이동
@@ -93,6 +94,7 @@ export default {
         },
         //로그아웃
         logout() {
+            this.out()
             //로컬 스토리지에 있는 값을 모두 지우고 로그인 페이지로 이동
             window.localStorage.clear();
             this.$router.push({name: 'login'})

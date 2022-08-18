@@ -283,6 +283,20 @@ const userStore = {
         .catch((err) => {
           console.log(err)
         })
+    },
+    out({commit}) {
+      instance({
+        url: api_url + '/logout',
+        method: 'POST',
+      })
+        .then((res) => {
+          console.log(res)
+          window.localStorage.clear();
+          this.$router.push({name: 'login'})
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     }
 
   },

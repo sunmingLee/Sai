@@ -19,6 +19,7 @@
 </template>
 
 <script>
+// window.localStorage.clear();
 import Button from '@/components/common/Button.vue'
 import LoginInput from '@/components/login/LoginInput.vue'
 import LoginSocial from '@/components/login/LoginSocial.vue'
@@ -29,8 +30,10 @@ export default {
     goJoin () {
       this.$router.push({ name: 'join' })
     }
-  }
-
+  },
+  beforeCreate() {
+    window.localStorage.clear();
+  },
 }
 </script>
 
@@ -53,8 +56,5 @@ a {
 
 #buttonLogin {
   margin-bottom: 20px;
-  /* position: absolute;
-  left: 223px;
-  top: 320px; */
 }
 </style>
