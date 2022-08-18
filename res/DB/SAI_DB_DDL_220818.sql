@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `sai`.`user` (
   `user_id` VARCHAR(20) NOT NULL,
   `family_id` VARCHAR(10) NULL DEFAULT NULL,
   `user_name` VARCHAR(10) NULL DEFAULT NULL,
-  `email` VARCHAR(30) NULL DEFAULT NULL,
+  `email` VARCHAR(30) NULL DEFAULT NULL unique,
   `password` VARCHAR(100) NULL DEFAULT NULL,
   `user_type` VARCHAR(30) NULL DEFAULT NULL,
   `birthday` DATE NULL DEFAULT NULL,
@@ -310,7 +310,7 @@ DROP TABLE IF EXISTS `sai`.`family_register` ;
 CREATE TABLE IF NOT EXISTS `sai`.`family_register` (
   `family_register_id` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `family_id` VARCHAR(10) NOT NULL,
-  `user_id` VARCHAR(20) NOT NULL,
+  `user_id` VARCHAR(20) NOT NULL unique,
   `approve_yn` TINYINT(1) NULL DEFAULT NULL,
   PRIMARY KEY (`family_register_id`),
   INDEX `FK_FAMILY_TO_FAMILY_REGISTER_1` (`family_id` ASC),
