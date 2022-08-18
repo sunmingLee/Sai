@@ -46,7 +46,7 @@
                                         </div>
                                         <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index"> 
                                           <div v-if="index !== 0" class="carousel-item">
-                                            <div v-if="src.boardMediaType.incldues('video')">
+                                            <div v-if="src.boardMediaType.includes('video')">
                                               <video autoplay playsinline loop muted :src="src.boardMediaPath" class="d-block w-100"/>
                                             </div>
                                             <div v-else>
