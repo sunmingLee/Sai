@@ -151,7 +151,7 @@ public class AlbumServiceImpl implements AlbumService {
 	public DownloadAlbumMediaDto downloadAlbumMedia(Long albumMediaId) {
 
 		AlbumMedia albumMedia = albumMediaRepository.findById(albumMediaId).get();
-		Path path = Paths.get(albumMedia.getAlbumMediaPath());
+		Path path = Paths.get(albumMedia.getAlbumMediaPathServer());
 //		String contentType = albumMedia.getAlbumMediaType();
 		try {
 			String contentType = Files.probeContentType(path);
