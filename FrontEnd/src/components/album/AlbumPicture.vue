@@ -9,7 +9,6 @@
       </div>
     </div>
     <div class="nothing-wrap" v-else>등록된 사진이 없습니다.</div>
-
     <!-- Button trigger modal -->
     <button id="btn-modal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
       <img style="width:25px;" src="@/assets/images/plus-lg.svg" alt="plus">
@@ -143,7 +142,7 @@ export default {
         height: 50px;
     }
 }
-
+///수빈
 .picture-wrap {
   display: flex;
   justify-content: center;
