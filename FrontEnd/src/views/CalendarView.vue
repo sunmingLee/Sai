@@ -130,7 +130,7 @@
             </div>
         </div>
     </div>
-    <BottomTap></BottomTap>
+    <BottomTap feedLink="nav-link" refrideLink="nav-link" albumLink="nav-link" calendarLink="nav-link active"></BottomTap>
   </div>
 </template>
 

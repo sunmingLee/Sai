@@ -1,46 +1,47 @@
 <template>
   <div class="join-wrap">
     <HeaderTitle hasBack="true" class="header" title="회원가입"/>
-    <br>
-    <form id="join-form" @submit.prevent="onJoin">
-      <div class="input-wrap">
-        <InputBox :hasLabel="true" labelName="이름" @inputCheck="checkName"></InputBox>
-        <p v-if="validName" class="valid-error">이름을 2자 이상으로 입력하세요.</p>
+    <div class="flex">
+      <form id="join-form" @submit.prevent="onJoin">
+        <div class="input-wrap">
+          <InputBox :hasLabel="true" labelName="아이디" @inputCheck="checkId"></InputBox>
+          <p v-if="validId" class="valid-error">아이디는 4자 이상 16자 이하로 입력하세요.</p>
+          <Button buttonText="중복확인" buttonClass="small information" @click.prevent="duplicateId"></Button>
+          <br>
+        </div>
+        <div class="input-wrap">
+          <InputBox :hasLabel="true" labelName="이름" @inputCheck="checkName"></InputBox>
+          <p v-if="validName" class="valid-error">이름을 2자 이상으로 입력하세요.</p>
+          <br>
+        </div>
+        <div class="input-wrap">
+          <InputBox :hasLabel="true" labelName="이메일" @inputCheck="checkEmail"></InputBox>
+          <p v-if="validEmail" class="valid-error">이메일 형식으로 입력하세요.</p>
+          <Button buttonText="중복확인" buttonClass="small information" @click.prevent="duplicateEmail"></Button>
+          <br>
+        </div>
+        <div class="input-wrap">
+          <InputBox :hasLabel="true" labelName="비밀번호" inputType="password" @inputCheck="checkPassword"></InputBox>
+          <p v-if="validPassword" class="valid-error">비밀번호는 영문,숫자,특수문자를 포함하여 8자 이상으로 입력하세요.</p>
+          <br>
+        </div>
+        <div class="input-wrap">
+          <InputBox :hasLabel="true" labelName="비밀번호 확인" inputType="password" @inputCheck="checkPasswordConfirm"></InputBox>
+          <p v-if="validPasswordConfirm" class="valid-error">비밀번호가 일치하지 않습니다.</p>
+          <br>
+        </div>
+        <div>
+          <label for="privacyPolice">개인정보 수집 동의 </label>
+          <input type="checkbox" id="privacyPolice" v-model="checked">
+          <br>
+        </div>
         <br>
-      </div>
-      <div class="input-wrap">
-        <InputBox :hasLabel="true" labelName="아이디" @inputCheck="checkId"></InputBox>
-        <p v-if="validId" class="valid-error">아이디는 4자 이상 16자 이하로 입력하세요.</p>
-        <Button buttonText="중복확인" buttonClass="small information" @click.prevent="duplicateId"></Button>
-        <br>
-      </div>
-      <div class="input-wrap">
-        <InputBox :hasLabel="true" labelName="이메일" @inputCheck="checkEmail"></InputBox>
-      <p v-if="validEmail" class="valid-error">이메일 형식으로 입력하세요.</p>
-      <Button buttonText="중복확인" buttonClass="small information" @click.prevent="duplicateEmail"></Button>
-      <br>
-      </div>
-      <div class="input-wrap">
-        <InputBox :hasLabel="true" labelName="비밀번호" inputType="password" @inputCheck="checkPassword"></InputBox>
-        <p v-if="validPassword" class="valid-error">비밀번호는 영문,숫자,특수문자를 포함하여 8자 이상으로 입력하세요.</p>
-        <br>
-      </div>
-      <div class="input-wrap">
-        <InputBox :hasLabel="true" labelName="비밀번호 확인" inputType="password" @inputCheck="checkPasswordConfirm"></InputBox>
-        <p v-if="validPasswordConfirm" class="valid-error">비밀번호가 일치하지 않습니다.</p>
-        <br>
-      </div>
-      <div>
-        <label for="privacyPolice">개인정보 수집 동의 </label>
-        <input type="checkbox" id="privacyPolice" v-model="checked">
-        <br>
-      </div>
-      <br>
-      <div>
-        <Button buttonText="회원가입" buttonClass="small disabled" v-if="checked === false"></Button>
-        <Button type="submit" buttonText="회원가입" buttonClass="small positive" v-else @click.prevent="onJoin"></Button>
-      </div>
-    </form>
+        <div>
+          <Button buttonText="회원가입" buttonClass="small disabled" v-if="checked === false"></Button>
+          <Button type="submit" buttonText="회원가입" buttonClass="small positive" v-else @click.prevent="onJoin"></Button>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
