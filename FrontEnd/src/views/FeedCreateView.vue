@@ -12,11 +12,21 @@
             <div v-if="imageFlag" id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
               <div class="carousel-inner" >
                 <div class="carousel-item active">
+                  <div v-if="srcList[0].includes('video')">
+                    <video autoplay playsinline loop muted :src="srcList[0]" class="d-block w-100"/>
+                  </div>
+                  <div v-else>
                   <img :src="srcList[0]" id="img" class="d-block w-100">
+                  </div>
                 </div>
                 <div v-for="(src, index) in srcList" :key="index">
                   <div v-if="index !== 0" class="carousel-item">
+                  <div v-if="src.includes('video')">
+                    <video autoplay playsinline loop muted :src="src" class="d-block w-100"/>
+                  </div>
+                  <div v-else>
                     <img :src="src" id="img" class="d-block w-100">
+                    </div>
                   </div>
                 </div>
               </div>
