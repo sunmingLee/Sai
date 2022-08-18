@@ -158,7 +158,7 @@
               <!-- 투표 항목 추가 버튼 -->
               <div class="poll-button">
                 <Button buttonClass="small information" buttonText="항목 추가" @click="addPollItem" style="margin: 10px 5px"/>
-                <Button buttonClass="big negative" buttonText="투표 초기화" @click="pollReset" style="margin: 10px 5px"/>
+                <Button buttonClass="big negative" buttonText="투표 삭제" @click="pollReset" style="margin: 10px 5px"/>
               </div>
               <div class="poll-time">
                 <div calss="poll-time-title" style="display: flex">
@@ -326,7 +326,7 @@ export default {
     // 투표 항목 추가하기
     addPollItem () {
       if (!this.pollCheck && this.pollYn) {
-        alert('원래 있던 투표는 수정하실 수 없습니다. 초기화 버튼으로 새로 만들어주세요!')
+        alert('원래 있던 투표는 수정하실 수 없습니다. 투표를 삭제하고 새로 만들어주세요!')
       } else {
         this.boardModified = true
         if (this.choices.length < 5) {
@@ -509,11 +509,9 @@ export default {
               if (this.choices[i].text === '') {
                 alert('아무 것도 입력하지 않은 투표 항목이 있습니다')
               } else {
-                if (this.pollCheck) {
                   this.boardModified = true
                   this.pollModified = true
                   this.pollYn = 1
-                }
               }
             }
           }
