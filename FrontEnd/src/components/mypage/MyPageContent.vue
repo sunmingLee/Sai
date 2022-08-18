@@ -1,5 +1,5 @@
 <template>  
-  <div style="height: 90%">
+  <div style="height: 100%">
     <div class="count-wrap">
       <p>게시물 {{this.myFeedCnt}}개</p>
     </div>

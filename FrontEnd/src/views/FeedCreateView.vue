@@ -113,6 +113,17 @@
                 <Button v-if="date !== ''" buttonClass="small negative" buttonText="삭제" @click="deleteDate"/>
                 <span v-if="boardLocation !== ''">위치 : {{boardLocation}}</span>
                 <Button v-if="boardLocation !== ''" buttonClass="small negative" buttonText="삭제" @click="deleteLocation"/>
+                <span v-if="this.peopleList.length !== 0">
+                  <!-- <p>선택된 사람이 있어</p> -->
+                  <span v-for="(callsign, index) in familyCallsignList" :key="index">
+                    <!-- <span v-for="(id, index) in this.peopleList" :key="index">
+                      <p>{{id[0]}}</p>
+                      <span v-if="callsign.toUserId === id">
+                        <p>얏호</p>
+                      </span>
+                      <span v-if="callsign.toUserId === id">{{callsign}}</span> -->
+                  </span>
+                </span>
               </div>
             </div>
             <!-- 투표 만들기 -->
@@ -309,11 +320,7 @@ export default {
       const modal = document.getElementById('date-popup')
       modal.classList.remove('hidden')
     },
-    // 누구랑?
-    showFamily () {
-      const modal = document.getElementById('popup')
-      modal.classList.remove('hidden')
-    },
+    
     // 날짜 선택 모달창에서 확인 버튼 클릭
     dateConfirm () {
       if (this.boardDate === '') {
@@ -342,17 +349,20 @@ export default {
       this.date = ''
       this.boardDate = ''
     },
+    // 누구랑?
+    showFamily () {
+      const modal = document.getElementById('popup')
+      modal.classList.remove('hidden')
+    },
     // 사람 태그 확인
     personConfirm () {
       const test = document.getElementsByName('callsign')
       console.log(test)
       for (let i = 0; i < test.length; i++) {
         const user = test[i].value
-
         const person = {
           userId: user
         }
-
         if (test[i].checked) {
           const find = this.peopleList.find(v => v.userId === test[i].value)
           if (!find) {

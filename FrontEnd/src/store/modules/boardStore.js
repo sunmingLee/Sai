@@ -15,6 +15,7 @@ const boardStore = {
     myFeedCnt: 0,
     likeList: [],
     myFeedPagenationCnt: 0,
+    pollChoiceList: []
   },
   getters: {
     
@@ -39,7 +40,8 @@ const boardStore = {
       state.feedList = []
     },
     MY_FEED_PAGINATION(state, myFeedNum) {
-      state.myFeedPagenationCnt = Math.ceil(myFeedNum / 3) 
+      //한 페이지당 게시글
+      state.myFeedPagenationCnt = Math.ceil(myFeedNum / 6) 
     },
     LIKE_CHANGE(state, likeInfo) {
       for(let i = 0; i < state.feedList.length; i++) {
@@ -54,7 +56,19 @@ const boardStore = {
           }
         }
       }
-    }
+    },
+    // BEST_POLL_CHOICE(state, feed) {
+    //   //투표가 있을 때
+    //   if(feed.pollResponse !== null) {
+    //     for(let i = 0; i < feed.pollResponse.choices.length; i++) {
+
+    //     }
+    //     this.pollChoiceList.push({
+    //       boardId: feed.viewBoardResponseDto.boardId,
+
+    //     })
+    //   }
+    // }
   },
   actions: {
     // 게시글 작성
@@ -105,10 +119,12 @@ const boardStore = {
         params
       })
         .then((res) => {
+          console.log(res.data)
           if (res.data.length === 0 & info.page !== 0) {
             alert('더 이상 불러올 게시물이 없습니다')
           } else {
             commit('FEED_All_LIST', res.data)
+            // commit('BEST_POLL_CHOICE', res.data)
           }
         })
         .catch((err) => {

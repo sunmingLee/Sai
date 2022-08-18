@@ -264,9 +264,6 @@ p {
         table {
           margin: 0 auto;
           min-width: 300px;
-          :nth:child(2) {
-
-          }
         }
       }
     }
@@ -335,11 +332,12 @@ p {
     border: 1px solid black;
   }
   :nth-child(1) {
+    padding: 7px;
     border-right: none;
   }
   :nth-child(2) {
     border-left: none;
-    text-align: right;
+    text-align: center;
     min-width: 30px;
   }
 }

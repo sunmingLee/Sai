@@ -16,10 +16,11 @@
         </div>
         <div class="flex right">
             <!-- 유저 사진 -->
-            <div v-if="userInfo.userImagePath === null" @click="dropDown">
+            <div v-if="userInfo.userImagePath === null" @click="dropDown" class="user-image">
                 <img src="@/assets/images/person-circle.svg" alt="user" style="width:28px">
             </div>
-            <div v-else @click="dropDown"> 
+            <div v-else @click="dropDown" class="user-image"> 
+                <!-- <img src="@/assets/images/여행1.jpg"> -->
                 <img :src="userInfo.userImagePath">
             </div>
             <!-- <router-link :to="{name : 'detailreview'}">상세보기</router-link> -->
@@ -35,7 +36,7 @@
                 </div>
             </div>
             <!-- 알림 -->
-            <div v-if="notificationCount === 0" @click="goNotice">
+            <div v-if="notificationCount === 0" @click="goNotice" style="display: flex">
                 <img src="@/assets/images/alert-svgrepo-com.svg" alt="calendar" style="width: 28px">
             </div>
             <div v-else @click="goNotice">
@@ -121,7 +122,7 @@ export default {
     margin: 5% 0 2% 0;
     .flex {
         display: flex;
-        justify-content: space-evenly;
+        justify-content: center;
         &.right {
             justify-content: flex-end
         }
@@ -130,12 +131,24 @@ export default {
 .family-image {
     display: inline-block;
     > img {
-        width: 28px;
+        width: 33px;
         border: 1px solid black;
         border-radius: 30px;
     }
 }
+.user-image {
+    width: 34px;
+    height: 34px;
+    border: 1px solid #fafafa;
+    border-radius: 30px;
+    img {
+        width: 100%;
+        height: 100%;
+        border-radius: 30px;
+    }
+}
 .title {
+  margin-left: 10px;
   color: #7B371C;
   font-size: 20px;
   font-weight: bold;
