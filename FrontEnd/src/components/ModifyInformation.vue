@@ -1,11 +1,24 @@
 <template>
   <div class="add-info-wrap">
      <HeaderTitle title="내 정보"></HeaderTitle>
-    <img v-if="(srcList[0] == null) && (currPic != null)" class="profile img-thumbnail" :src="currPic" alt="user image">
-    <img v-else-if="srcList[0] == null" class="profile img-thumbnail" src="@/assets/images/user-solid.svg" alt="user image">
-    <img v-else-if="srcList[0] !== null" class="profile img-thumbnail" :src="srcList[0]" alt="user image">
-    <!-- <label class="form-label" for="customFile">Default file input example</label> -->
-    <input type="file" class="form-control" id="customFile" @change="fileCheck"/>
+     <div class="user-flex">
+      <!-- 미리보기가 없으면 -->
+      <div v-if="srcList[0] == null" style="position: relative">
+        <!-- 프로필 이미지가 없으면 샘플 이미지 출력 -->
+        <img v-if="currPic == null" class="profile img-thumbnail rounded-circle" src="@/assets/images/user-solid.svg" alt="user image">
+        <!-- 프로필 이미지가 있으면 프로필 이미지 출력 -->
+        <img v-else class="profile img-thumbnail rounded-circle" :src="currPic" alt="user image">
+          <label calss="file-label" for="customFile"><img src="@/assets/images/camera.svg" alt=""></label>
+          <input style="display: none" type="file" class="form-control" id="customFile" @change="fileCheck"/>
+      </div>
+    <!-- 미리보기가 있으면 미리보기 출력 -->
+    <div v-else style="position: relative">
+      <img class="profile img-thumbnail rounded-circle" :src="srcList[0]" alt="user image">
+      <label calss="file-label" for="customFile"><img src="@/assets/images/camera.svg" alt=""></label>
+        <input style="display: none" type="file" class="form-control" id="customFile" @change="fileCheck"/>
+    </div>
+    </div>
+    <!-- 생일 입력 -->
     <div class="date">
       <span>생일</span>
       <Datepicker
@@ -16,11 +29,15 @@
       ></Datepicker>
     </div>
     <div class="left">
-      <input type="radio" id="radioSolar" value="false" v-model="addInfo.lunar" />
+      <span>양력/음력</span>
+      <div class="lunar">
+        <input type="radio" id="radioSolar" value="false" v-model="addInfo.lunar" />
       <label for="radioSolar">양력</label>
       <input type="radio" id="radioLunar" value="true" v-model="addInfo.lunar" />
       <label for="radioLunar">음력</label>
+      </div>
     </div>
+    
     <div class="user-message">
       <span>상태<br />메세지</span>
       <textarea v-model="addInfo.userMessage"></textarea>
@@ -57,15 +74,13 @@ export default {
   components: { HeaderTitle, Datepicker, Button },
   data () {
     return {
+      userId: '',
+
       addInfo: {
         userId: '',
         lunar: '',
         userMessage: '',
         birthday: new Date()
-        // userId: JSON.parse(localStorage.getItem('userInfo')).userId,
-        // radioValues: JSON.parse(localStorage.getItem('userInfo')).radioValues,
-        // userMessage: JSON.parse(localStorage.getItem('userInfo')).userMessage,
-        // date: JSON.parse(localStorage.getItem('userInfo')).date
       },
       isProfilePic: false,
       currPic: JSON.parse(localStorage.getItem('userInfo')).userImagePath,
@@ -73,15 +88,13 @@ export default {
       fileList: []
     }
   },
-  created () {
-    // 유저 정보 조회
-    this.addInfo.userId = localStorage.getItem('userId')
-    console.log(this.addInfo.userId)
-    this.checkUserInfo(this.addInfo.userId)
-  },
   computed: {
     ...mapState(userStore, ['userInfo'])
-    // ...mapGetters(userStore, ['checkUserInfo'])
+  },
+  created () {
+    // 유저 정보 조회
+    this.userId = localStorage.getItem('userId')
+    this.checkUserInfo(this.userId)
   },
   methods: {
     ...mapActions(userStore, ['modifyUserInfo', 'checkUserInfo']),
@@ -162,7 +175,10 @@ div {
 }
 .left {
   text-align: left;
-  padding-left: 85px;
+  // padding-left: 85px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   input,
   label {
     margin-right: 2%;
@@ -189,6 +205,7 @@ textarea {
   resize: vertical;
 }
 span {
+    text-align: center;
   color: #ae5f40;
 }
 .button {
@@ -201,5 +218,38 @@ span {
   display: inline-block;
   vertical-align: top;
   /* margin-left: 1%; */
+}
+.user-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+   label {
+     border: 1px solid #7b371c;
+     background-color: #7b371c;
+     border-radius: 38px;
+     width: 44px;
+     height: 41px;
+     text-align: center;
+     line-height: 31px;
+     position: absolute;
+     top: 54%;
+     left: 76%;
+     img {
+       width: 35px;
+     }
+   }
+}
+.dp__input_wrap {
+    margin: 0px 0px 0px 20px;
+    width: 200px;
+}
+.container {
+    position: absolute;
+    overflow: visible;
+    height: 100vh;
+    width: 340px;
+}
+.lunar {
+  width: 200px;
 }
 </style>
