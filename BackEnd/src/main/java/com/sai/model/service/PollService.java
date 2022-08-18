@@ -135,7 +135,6 @@ public class PollService {
 			
 			// -- Vote Saved, Return the updated Poll Response now --
 
-			System.out.println("이건 투표하기야");
 			// Retrieve Vote Counts of every choice belonging to the current poll
 			List<ChoiceVoteCount> votes = voteRepository.countByPollIdGroupByChoiceId(pollId);
 			
@@ -145,8 +144,11 @@ public class PollService {
 			// Retrieve poll creator details
 			User creator = userRepository.findById(poll.getCreatedBy())
 					.orElseThrow(() -> new ResourceNotFoundException("User", "id", poll.getCreatedBy()));
-
-			return PollModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator, vote.getChoice().getChoiceId());
+			
+			PollResponse pollResponse = PollModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator, vote.getChoice().getChoiceId());
+			pollResponse.setIsDup(false);
+			return pollResponse;
+//			return PollModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator, vote.getChoice().getChoiceId());
 			
 			// 투표가 있는 경우
 		} else {
@@ -159,10 +161,7 @@ public class PollService {
 			} else {
 				voteRepository.deleteById(vote.getVoteId());
 			}
-			
-			
 			// -- Vote Saved, Return the updated Poll Response now --
-			System.out.println("이건 투표 취소하기야");
 			// Retrieve Vote Counts of every choice belonging to the current poll
 			List<ChoiceVoteCount> votes = voteRepository.countByPollIdGroupByChoiceId(pollId);
 
@@ -173,7 +172,11 @@ public class PollService {
 			User creator = userRepository.findById(poll.getCreatedBy())
 					.orElseThrow(() -> new ResourceNotFoundException("User", "id", poll.getCreatedBy()));
 
-			return PollModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator, vote.getChoice().getChoiceId());
+			
+			PollResponse pollResponse = PollModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator, vote.getChoice().getChoiceId());
+			pollResponse.setIsDup(true);
+			return pollResponse;
+//			return PollModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator, vote.getChoice().getChoiceId());
 		}
 
 //		// -- Vote Saved, Return the updated Poll Response now --

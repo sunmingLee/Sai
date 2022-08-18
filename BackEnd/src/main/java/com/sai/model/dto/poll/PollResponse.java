@@ -21,4 +21,6 @@ public class PollResponse {
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private Long selectedChoice;
 	private Long totalVotes;
+	
+	private Boolean isDup;
 }
