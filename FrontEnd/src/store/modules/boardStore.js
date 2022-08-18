@@ -132,7 +132,7 @@ const boardStore = {
     },
     // 게시글 수정
     boardUpdate ({ commit }, updateBoardRequestDto) {
-      axios({
+      instance({
         url: api_url + '/board',
         method: 'PUT',
         data: JSON.stringify(updateBoardRequestDto),
@@ -154,6 +154,7 @@ const boardStore = {
       const data = {
         choiceId: info.choiceId
       }
+      console.log(info)
       instance({
         url: API_BASE_URL + `/api/poll/${info.pollId}/votes`,
         method: 'POST',
@@ -169,6 +170,7 @@ const boardStore = {
           console.log(err)
         })
     },
+
     // 좋아요 등록
     upBoardLike ({ commit, dispatch }, info) {
       instance({
@@ -262,8 +264,8 @@ const boardStore = {
       })
         .then((res) => {
           console.log(res.data)
-          commit('MY_FEED_All_LIST', res.data)
-          commit('MY_FEED_All_LIST_COUNT', res.data.length)
+          commit('MY_FEED_All_LIST', res.data.readFeedResponseDtos)
+          commit('MY_FEED_All_LIST_COUNT', res.data.userBoardNum)
         })
         .catch((err) => {
           console.log('에러')
