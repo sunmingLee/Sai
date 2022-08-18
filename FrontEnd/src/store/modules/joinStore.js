@@ -81,9 +81,10 @@ const joinStore = {
       }).catch((err) => {
         if  (err.response.status === 409) {
           alert(err.response.data)
-          console.log(err.response.data)
+          //console.log(err.response.data)
         }else {
           alert('회원가입에 실패하였습니다.')
+          console.log(err)
         }
       })
     }
