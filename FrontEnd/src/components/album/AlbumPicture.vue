@@ -3,7 +3,7 @@
     <HeaderTitle :title="albumName" hasBack="true"></HeaderTitle>
       <div class="picture-wrap">
         <div class="picture-flex" v-if="mediaList.length">
-          <div class="image-group" v-for="(media, index) in mediaList" :key="index">
+          <div class="image-group" v-for="(media, index) in mediaList" :key="index" @click="seePicture(media)">
             <img v-if="media.albumMediaThumbnail" :src="media.albumMediaThumbnail" class="img-fluid" alt="thumbnail">
             <img v-else src="@/assets/images/image.svg" class="img-fluid" alt="empty thumbnail">
           </div>
@@ -96,10 +96,16 @@ export default {
       this.$refs.imageUploader.value = null
       fileList = []
     },
-    // 미디어 삭제
-    eraseMedia (albumMediaId) {
-      this.deleteMedia(albumMediaId)
+    // 사진 상세보기
+    seePicture (media) {
+      const picture = {
+        albumMediaId: media.albumMediaId,
+        albumMediaPath: media.albumMediaPath
+      }
+      localStorage.setItem('picture', JSON.stringify(picture))
+      this.$router.push({ name: 'pictureDetail' })
     }
+
   }
 }
 </script>
