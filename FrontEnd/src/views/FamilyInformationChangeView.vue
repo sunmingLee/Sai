@@ -1,44 +1,42 @@
 <template>
   <div class="family-info">
-
     <HeaderTitle title="가족정보수정"></HeaderTitle>
-
-    <!-- <img v-if="familyInfo.familyImagePath == null && srcList[0] == null" src="@/assets/images/familyimg.png" alt="가족 사진" class="profile img-thumbnail rounded-circle">
-    <div v-else>
-      <img v-if="srcList[0] == null" class="profile img-thumbnail rounded-circle" :src="familyInfo.familyImagePath" alt="가족 사진">
-      <img v-else class="profile img-thumbnail rounded-circle" :src="srcList[0]" alt="가족 사진">
-    </div> -->
-
-    <!-- 미리보기가 없으면 -->
-    <div v-if="srcList[0] == null">
-      <!-- 패밀리 이미지가 없으면 샘플 이미지 출력 -->
-      <img v-if="familyInfo.familyImagePath == null" src="@/assets/images/familyimg.png" alt="가족 사진" class="profile img-thumbnail rounded-circle">
-      <!-- 있으면 패밀리 이미지 출력 -->
-      <img v-else class="profile img-thumbnail rounded-circle" :src="familyInfo.familyImagePath" alt="가족 사진">
+    <div class="family-flex">
+      <!-- 미리보기가 없으면 -->
+      <div v-if="srcList[0] == null">
+        <!-- 패밀리 이미지가 없으면 샘플 이미지 출력 -->
+        <img v-if="familyInfo.familyImagePath == null" src="@/assets/images/familyimg.png" alt="가족 사진" class="profile img-thumbnail rounded-circle">
+        <!-- 있으면 패밀리 이미지 출력 -->
+        <img v-else class="profile img-thumbnail rounded-circle" :src="familyInfo.familyImagePath" alt="가족 사진">
+      </div>
+      <!-- 미리보기가 있으면 미리보기 출력 -->
+      <div v-else>
+        <img class="profile img-thumbnail rounded-circle" :src="srcList[0]" alt="가족 사진">
+      </div>
+      <label calss="file-label" for="customFile"><img src="@/assets/images/camera.svg" alt=""></label>
+      <input style="display: none" type="file" class="form-control" id="customFile" @change="fileCheck"/>
     </div>
-    <!-- 미리보기가 있으면 미리보기 출력 -->
-    <img v-else class="profile img-thumbnail rounded-circle" :src="srcList[0]" alt="가족 사진">
-
-
-    <input type="file" class="form-control" id="customFile" @change="fileCheck"/>
-    
-
-    
-    <InputBox @inputCheck="changeFamilyName" :inputValue="familyInfo.familyName" ></InputBox><span>{{familyNameLength}}/20</span>
-    <Button class="invitebtn" buttonText="가족 초대하기" buttonClass="big information" @click="goInvite"></Button>
-
+    <div class="family-title">
+      <InputBox @inputCheck="changeFamilyName" :inputValue="familyInfo.familyName" />
+      <span>{{familyNameLength}}/20</span>
+    </div>
+    <div class="invite-button">
+      <Button class="invitebtn" buttonText="가족 초대하기" buttonClass="big information" @click="goInvite"></Button>
+    </div>
+    <hr>
     <h6>우리 가족의 애칭을 정해주세요</h6>
-    
     <!-- <div v-for="(familyCallsign, index) in familyCallsigns" :key="index"> -->
     <div v-for="(familyCallsign, index) in familyCallsignList" :key="index">
-      <div v-if="familyCallsign.toUserId!=userId">
-        <img v-if="familyCallsign.toUserImage == null" src="@/assets/images/familyimg.png" alt="프로필 사진" class="profile img-thumbnail rounded-circle">
-        <img v-else class="profile img-thumbnail rounded-circle" :src="familyCallsign.toUserImage" alt="프로필 사진">
-        <p>{{familyCallsign.toUserName}} 님은</p>
-        <!-- <InputBox @change="callsignChange(familyCallsign.familyCallsignId)" :inputValue="familyCallsign.callsign" :hasLabel="true" labelName="나의"></InputBox> -->
-        <!-- <InputBox @inputCheck="callsignChange" :inputValue="familyCallsign.callsign" :hasLabel="true" labelName="나의"></InputBox> -->
-        <label class="label-box" for="input-box">나의</label>
-        <input class="input-box" v-model="familyCallsign.callsign" @change="callsignChange"/>
+      <div v-if="familyCallsign.toUserId!=userId" class="callsign-list">
+        <div class="body-image">
+          <img v-if="familyCallsign.toUserImage == null" src="@/assets/images/familyimg.png" alt="프로필 사진" class="profile img-thumbnail rounded-circle">
+          <img v-else class="profile img-thumbnail rounded-circle" :src="familyCallsign.toUserImage" alt="프로필 사진">
+        </div>
+        <div class="body-callsign">
+        <p><b>{{familyCallsign.toUserName}}</b> 님은</p>
+          <label class="label-box" for="input-box">나의</label>
+          <input class="input-box" v-model="familyCallsign.callsign" @change="callsignChange"/>
+        </div>
       </div>
     </div>
     <div class="btns">
@@ -107,34 +105,15 @@ export default {
   },
 
   created() {
-
     this.familyId = localStorage.getItem('familyId');
     this.userId = localStorage.getItem('userId');
 
     this.callsignList(this.userId);
     this.getFamilyInfo(this.familyId);
   },
-
-  // mounted() {
-
-  //   this.familyCallsigns = this.familyCallsignList;
-  //   console.log(this.familyCallsigns);
-  //   console.log(this.familyCallsignList);
-    
-  // },
-
   methods: {
 
     ...mapActions(familyStore, ["callsignList", "getFamilyInfo", "updateFamilyInfo"]),
-
-    // mylog(){
-    //   console.log("로그");
-
-    // // console.log(this.familyInfo);
-    // console.log(this.familyCallsignList);
-    // // console.log(this.familyCallsigns);
-    // },
-
     // 파일 처리
     fileCheck (e) {
       this.changeFile()
@@ -142,16 +121,12 @@ export default {
     },
     // 확장자 변경
     changeFile () {
-
       fileList.pop()
-
       const fileInput = document.getElementById('customFile')
       // 선택한 파일의 정보
       const files = fileInput.files
-
       // heic 파일 확장자 변경
       const file = files[0]
-
       let heicFile = ''
       // 파일의 확장자가 heic일 경우
       if (file.name.split('.')[1] === 'heic') {
@@ -173,7 +148,6 @@ export default {
       this.srcList.pop()
       this.srcList.push(URL.createObjectURL(fileList[0]))
     },
-
 
     changeFamilyName(data){
       this.familyNameModified = true;
@@ -222,16 +196,17 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   .invitebtn{
     display: flex;
-    justify-content: flex-end
-
+    justify-content: center;
+    margin-bottom: 20px;
   }
 
   .btns{
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
+    margin-top: 25px;
   }
 
   h6 {
@@ -246,4 +221,70 @@ export default {
     border-radius: 5px;
     border: 1px solid #ae5f40;
   }
+
+  .family-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    label {
+      margin-left: 30px;
+      border: 1px solid #7b371c;
+      background-color: #7b371c;
+      border-radius: 38px;
+      width: 44px;
+      height: 41px;
+      text-align: center;
+      line-height: 31px;
+      img {
+        width: 35px;
+      }
+    }
+  }
+  .family-info{
+    width: 900px;
+  }
+  .family-title {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+    min-width: 300px;
+    max-width: 900px;
+    .form-wrap {
+      max-width: 160px;
+    }
+  }
+
+::v-deep {
+  table {
+    width: 160px;
+  }
+  tr {
+    td:nth-child(1) {
+      display: none;
+    }
+  }
+  colgroup {
+    col:nth-child(2) {
+      width: 5%!important;
+    }
+  }
+}
+
+.callsign-list{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .body-callsign {
+    margin-left: 20px;
+    .input-box {
+      margin-left: 5px;
+    }
+  }
+  
+}
+
+hr {
+  border-top: 3px solid #7b371c;
+}
+
 </style>

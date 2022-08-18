@@ -94,7 +94,7 @@ const userStore = {
           if (res.status === 200 & res.data.familyId != null) {
             localStorage.setItem('familyId', res.data.familyId)
             alert('환영합니다! 가족들의 피드를 보러갈까요!')
-            router.push({ name: 'feed' })
+            router.replace({ name: 'feed' })
           } else { // familyId가 없는 경우
             if (!res.data.familyRegYN) { // 가족 미신청
               router.push({ name: 'familyCode' })
