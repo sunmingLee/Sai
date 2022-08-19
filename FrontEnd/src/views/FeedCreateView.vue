@@ -293,6 +293,7 @@ export default {
           } else {
             fileList.push(file)
           }
+        }
       }
     },
     previewFile () {
