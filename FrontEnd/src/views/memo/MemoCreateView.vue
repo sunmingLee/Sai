@@ -54,7 +54,6 @@ export default {
         //메모 색상 바꾸기
         colorChange(e) {
             const color = e.target.getAttribute('value')
-            console.log(color)
             this.color = color
         },
         //메모지 등록

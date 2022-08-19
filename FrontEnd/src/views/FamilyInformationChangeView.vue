@@ -136,7 +136,6 @@ export default {
             fileList.push(heicFile)
           })
           .catch((err) => {
-            console.log(err)
           })
       } else {
         fileList.push(file)

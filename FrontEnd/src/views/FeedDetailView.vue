@@ -167,7 +167,6 @@ export default {
     },
     // 투표 선택하기
     choose (choiceId) {
-      console.log(this.checkedvote)
       const info = {
         pollId: this.feed.pollResponse.id,
         choiceId
@@ -219,9 +218,6 @@ export default {
         this.downBoardLike(info)
       }
     }
-  },
-  changeReplyList () {
-    console.log('change')
   }
 }
 </script>

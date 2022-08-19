@@ -82,7 +82,6 @@ export default {
     },
     // 드롭다운
     dropDown () {
-      console.log(this.menuFlag)
       if (this.menuFlag) {
         this.menuFlag = false
       } else {
@@ -95,7 +94,6 @@ export default {
     },
     // 로그아웃
     logout () {
-    console.log('헤더에서 불러')
       this.out()
     },
     // 마이 페이지 이동

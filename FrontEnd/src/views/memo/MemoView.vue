@@ -52,7 +52,6 @@ export default {
         //메모 색상 바꾸기
         memoColor(e) {
             this.color = e.target.value
-            console.log(this.color)
         },
         //메모 등록 페이지 이동
         goMemoCreate() {

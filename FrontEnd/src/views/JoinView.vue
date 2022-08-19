@@ -203,7 +203,6 @@ export default {
       }
     },
     onJoin () {
-      console.log(this.checked)
       if (this.checked === true) {
         if (!this.validName && !this.validId && !this.validEmail && !this.validPassword && !this.validPasswordConfirm 
         && this.dupcheck1 && this.dupcheck2) {

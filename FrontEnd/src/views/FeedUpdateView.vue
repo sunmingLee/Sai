@@ -283,7 +283,6 @@ export default {
         this.choices = this.feed.pollResponse.choices
       }
       this.peopleList = this.feed.viewBoardTaggedResponseDto
-      console.log(this.callsign.length)
       if(this.callsign.length > 0) {
         for(let i = 0; i < this.callsign.length; i++) {
           if(this.peopleList.some(v => v.userId === this.callsign[i].toUserId)) {
@@ -376,9 +375,7 @@ export default {
     },
     // 날짜 제거 했을때
     removeDate () {
-      console.log('안녕' + this.boardModified)
       this.boardModified = true
-      console.log(this.boardDate)
       this.date = ''
     },
     // 날짜 선택 모달창에서 확인 버튼 클릭
@@ -389,11 +386,9 @@ export default {
       const modal = document.getElementById('date-popup')
       // 모달창 숨기기
       modal.classList.add('hidden')
-      console.log(this.boardDate)
     },
     // 날짜 선택 모달창에서 취소 버튼 클릭
     dateCancle () {
-      console.log(this.originBoardDate)
       this.boardDate = this.originBoardDate
       const modal = document.getElementById('date-popup')
       this.date = this.boardDate
@@ -401,7 +396,6 @@ export default {
     },
     // 날짜 삭제
     deleteDate () {
-      console.log('안녕' + this.boardModified)
       this.boardModified = true
       this.date = ''
       this.originBoardDate = ''
@@ -415,7 +409,6 @@ export default {
     // 사람 태그 확인
     personConfirm () {
       const test = document.getElementsByName('callsign')
-      console.log(test)
       for (let i = 0; i < test.length; i++) {
         const user = test[i].value
         const person = {
@@ -433,7 +426,6 @@ export default {
           this.peopleList = find
         }
       }
-      console.log(this.peopleList)
       // 확인 버튼을 클릭했을 경우 모달창을 끈다
       const modal = document.getElementById('popup')
       modal.classList.add('hidden')
@@ -466,7 +458,6 @@ export default {
           if (fullRoadAddr !== '') {
             fullRoadAddr += extraRoadAddr
           }
-          console.log('안녕' + this.boardModified)
           this.boardModified = true
           this.boardLocation = fullRoadAddr
         }
@@ -475,7 +466,6 @@ export default {
     // 위치 삭제
     deleteLocation () {
       if (this.boardLocation !== '') {
-        console.log('안녕' + this.boardModified)
         this.boardModified = true
       }
       this.boardLocation = ''
@@ -500,7 +490,6 @@ export default {
             this.pollYn = false
           } else {
             for (let i = 0; i < this.choices.length; i++) {
-              console.log(this.choices[i].text === '')
               if (this.choices[i].text === '') {
                 pollValid = false
               }
@@ -521,7 +510,6 @@ export default {
       } else {
         // 투표가 있고 그게 지금 수정한 경우
         if (this.pollYn && this.boardModified) {
-          console.log('안녕' + this.boardModified)
           if (this.pollDateDisabled) {
             const timeOff = new Date().getTimezoneOffset() * 60000
             const timeZone = new Date(Date.now() - timeOff) // 현재 시간
@@ -547,7 +535,6 @@ export default {
             boardId: localStorage.getItem('boardId')
           }
         }
-        console.log(this.boardModified)
         if (this.boardModified) {
           const updateBoardRequestDto = {
             boardModified: this.boardModified,
@@ -565,7 +552,6 @@ export default {
             pollRequest: this.pollRequest,
             inputBoardTaggedRequestDtos: this.peopleList
           }
-          console.log(updateBoardRequestDto)
           this.boardUpdate(updateBoardRequestDto)
         } else {
           alert('수정한 것이 없거나 제대로 작성되지 않은 부분이 있습니다')
