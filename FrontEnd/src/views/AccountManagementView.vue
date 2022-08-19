@@ -3,6 +3,7 @@
         <HeaderTitle hasBack=true title="계정 관리"/>
         <div class="flex">
           <div class="input-disabled">
+            <p class="password-title">기본 회원정보</p>
             <div class="name-wrap">
               <InputBox inputSelect="input-underline" hasLabel=true labelName="이름" validDisabled="disabled" :inputValue="userInfo.userName"/>
             </div>
@@ -12,7 +13,7 @@
           </div>
         </div>
         <div class="flex">
-          <div calss="input-wrap">
+          <div class="input-wrap">
             <p class="password-title">비밀번호 변경</p>
             <div class="password-wrap">
               <InputBox inputSelect="input-box" hasLabel=true labelName="비밀번호" inputType="password" @inputCheck="checkPassword"/>
@@ -27,9 +28,9 @@
           </div>
         </div>
         <div class="flex">
-          <div calss="input-wrap">
-            <p calss="withdrawal">회원탈퇴하기</p>
-            <Button class="btn" data-bs-toggle="modal" data-bs-target="#withdraw" buttonClass="small negative" buttonText="회원탈퇴"></Button>
+          <div class="input-wrap">
+            <p class="withdrawal password-title">회원 탈퇴하기</p>
+            <Button class="btn flex" data-bs-toggle="modal" data-bs-target="#withdraw" buttonClass="small negative" buttonText="회원탈퇴"></Button>
           </div>
         </div>
         <div class="modal fade" id="withdraw" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -127,32 +128,33 @@ export default {
 <style lang="scss" scoped>
 .account-wrap {
   width: 900px;
-
+  
   .flex{
     display: flex;
     justify-content: center;
-    text-align: center;
+    margin-bottom: 8%;
 
     & div:nth-child(0) {
       width: 300px;
     }
     .input-wrap, .input-disabled {
       text-align: left;
-      margin-bottom: 100px;
-
-      .password-title {
-        color: #AE5F40;
-      }
-
-      .name-wrap, .email-wrap, .password-wrap, .pwcheck-wrap {
+      
+    }
+    .name-wrap,.email-wrap,.password-wrap, .pwcheck-wrap{
         margin: 10px 0 10px 0;
       }
     }
   }
-}
+
 p {
   color: #AE5F40;
   font-weight: bold;
   padding-right: 200px;
+  .password-title {
+    color: #AE5F40;
+    margin-bottom: 10px;
+    text-align: center;
+  }
 }
 </style>
