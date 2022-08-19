@@ -16,6 +16,7 @@
       <div class="content-body">
         <!-- 투표 -->
         <div v-if="feed.viewBoardResponseDto.pollYn" class="poll-body">
+          <h3 style="font-weight: bold">{{feed.pollResponse.question}}</h3>
           <table>
             <colgroup>
               <col width="20%">
@@ -24,7 +25,6 @@
               <col width="5%">
             </colgroup>
             <tr class="poll-title">
-              <th>{{feed.pollResponse.question}}</th>
             </tr>
             <tr class="poll-choice" v-for="(choice, index) in feed.pollResponse.choices" :key="index">
               <td><input type="radio" :id="choice.key" v-model="picked" :value="choice"/></td>
