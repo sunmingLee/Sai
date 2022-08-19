@@ -18,7 +18,6 @@ const planStore = {
   mutations: {
     PLAN_All_LIST (state, planList) {
       state.planList = planList
-      // console.log(state.planList)
     },
     SET_PLAN_DETAIL (state, planDetail) {
       state.planDetail = planDetail
@@ -28,24 +27,20 @@ const planStore = {
   actions: {
     // 일정 작성
     planCreate ({ commit }, planInfo) {
-      console.log(planInfo)
       instance({
         url: api_url,
         method: 'POST',
         data: planInfo
       })
         .then((res) => {
-          // console.log(res)
           if (res.status === 200) {
             alert('작성이 완료되었습니다')
             router.go()
           } else {
             alert('일정 등록 중 문제가 생겼습니다.')
-            console.log(res)
           }
         })
         .catch((err) => {
-          console.log(err)
           alert('잘못된 코드입니다')
         })
     },
@@ -56,7 +51,6 @@ const planStore = {
         method: 'GET'
       })
         .then((res) => {
-          // console.log(res.data)
           commit('SET_PLAN_DETAIL', res.data)
           const attrs = []
           for (let i = 0; i < res.data.length; i++) {
@@ -66,7 +60,6 @@ const planStore = {
               const year = res.data[i].mainPlanStartDatetime.slice(0, 4)
               const month = res.data[i].mainPlanStartDatetime.slice(5, 7) - 1
               const date = res.data[i].mainPlanStartDatetime.slice(8, 10)
-              // console.log(year + ' ' + month + ' ' + date)
               plan.dates = new Date(year, month, date)
               if (res.data[i].planType === 'personal') {
                 plan.dot = 'red'
@@ -100,30 +93,24 @@ const planStore = {
           commit('PLAN_All_LIST', attrs)
         })
         .catch((err) => {
-          console.log('에러')
-          console.log(err)
         })
     },
     // 일정 수정하기
     planModify ({ commit, dispatch }, info) {
-      // console.log(info.plan)
       instance({
         url: api_url + `/${info.mainPlanId}`,
         method: 'PUT',
         data: info
       })
         .then((res) => {
-          console.log(res)
           if (res.status === 200) {
             alert('수정이 완료되었습니다')
             dispatch('planAllList', info.familyId)
           } else {
             alert('일정 수정 중 문제가 생겼습니다.')
-            console.log(res)
           }
         })
         .catch((err) => {
-          console.log(err)
           alert('잘못된 코드입니다')
         })
     },
@@ -137,7 +124,6 @@ const planStore = {
           dispatch('planAllList', localStorage.getItem('familyId'))
         })
         .catch((err) => {
-          console.log(err)
         })
     }
   },

@@ -61,11 +61,8 @@ const userStore = {
       instance.post(api_url + '/login', data, {
       })
         .then((res) => {
-          console.log(res)
-          // console.log(res.headers)
           if (res.status === 200) {
             // const jwtToken = res.headers['Set-Cookie']
-            // console.log(jwtToken)
             // vueCookies.set('accessToken', res.data) // return this
             localStorage.setItem('userId', data.userId)
             localStorage.setItem('accessToken', res.data)
@@ -76,7 +73,6 @@ const userStore = {
           }
         })
         .catch((err) => {
-          console.log(err)
           alert('아이디와 비밀번호를 다시한번 확인해주세요.')
         })
     },
@@ -86,10 +82,8 @@ const userStore = {
         userId: user
         // password: user.password
       }
-      // console.log(user)
       instance.post(api_url + '/login/info', data)
         .then((res) => {
-          // console.log(res)
           // familyId가 있는 경우, 메인으로 이동
           if (res.status === 200 & res.data.familyId != null) {
             localStorage.setItem('familyId', res.data.familyId)
@@ -108,12 +102,10 @@ const userStore = {
           }
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 아이디 찾기
     findId ({ commit }, userInfo) {
-      console.log(userInfo.userName)
       const params = {
         userName: userInfo.userName,
         email: userInfo.email
@@ -132,7 +124,6 @@ const userStore = {
           }
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 비밀번호 찾기
@@ -148,7 +139,6 @@ const userStore = {
         params
       })
         .then((res) => {
-          console.log(res.data)
           if (res.data.msg.indexOf('입력하신 이메일로 임시 비밀번호가 전송되었습니다.') != -1) {
             alert(res.data.msg)
             router.push({ name: 'home' })
@@ -157,7 +147,6 @@ const userStore = {
           }
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 비밀번호 확인
@@ -172,12 +161,10 @@ const userStore = {
         }
       })
         .then((res) => {
-          console.log(res)
           router.push({ name: 'account' })
         })
         .catch((err) => {
           alert('비밀번호가 틀렸습니다')
-          console.log(err)
         })
     },
     // 비밀번호 변경
@@ -194,10 +181,8 @@ const userStore = {
       })
         .then((res) => {
           alert('비밀번호가 변경되었습니다.')
-          console.log(res)
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 회원 탈퇴
@@ -211,7 +196,6 @@ const userStore = {
           router.push({ name: 'home' })
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 유저(회원) 정보 조회
@@ -225,7 +209,6 @@ const userStore = {
           localStorage.setItem('userInfo', JSON.stringify(res.data))
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 회원 정보 추가
@@ -248,12 +231,10 @@ const userStore = {
       })
         .then((res) => {
           alert('추가 정보가 입력되었습니다')
-          console.log(res)
           // 회원 가입 후
           router.push({ name: 'familyCode' })
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 회원정보 수정
@@ -265,7 +246,6 @@ const userStore = {
         formData.append('file', files[0])
       }
       formData.append('addInfo', new Blob([JSON.stringify(addInfo)], { type: 'application/json' }))
-      console.log(formData)
       instance({
         url: api_url + '/addInfo',
         method: 'POST',
@@ -276,12 +256,10 @@ const userStore = {
       })
         .then((res) => {
           alert('추가 정보가 입력되었습니다')
-          console.log(res)
           // 개인 페이지에서 온 경우
           router.push({ name: 'myPage' })
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     out ({ commit }) {
@@ -290,12 +268,10 @@ const userStore = {
         method: 'POST'
       })
         .then((res) => {
-          console.log(res)
           window.localStorage.clear()
           router.push({ name: 'login' })
         })
         .catch((err) => {
-          console.log(err)
         })
     }
 

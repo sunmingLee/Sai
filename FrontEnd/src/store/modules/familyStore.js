@@ -43,17 +43,14 @@ const familyStore = {
         }
       })
         .then((res) => {
-          // console.log(res)
           if (res.status === 200) {
             alert('가족 들어가기 신청 완료')
             commit('SET_FAMILY_ID', userInfo.familyId)
             router.push({ name: 'applywait' })
           } else {
-            console.log(res)
           }
         })
         .catch((err) => {
-          console.log(err)
           alert('잘못된 코드입니다')
         })
     },
@@ -64,17 +61,14 @@ const familyStore = {
         method: 'POST'
       })
         .then((res) => {
-          console.log(res)
           if (res.status === 200) {
             localStorage.setItem('familyId', res.data.familyId)
             commit('SET_FAMILY_ID', res.data.familyId)
             router.push({ name: 'familyInvite' })
           } else {
-            console.log(res)
           }
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 가족 콜사인 리스트
@@ -88,7 +82,6 @@ const familyStore = {
           commit('CALLSIGN_LIST', res.data)
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 가족 신청 취소
@@ -103,7 +96,6 @@ const familyStore = {
           router.push({ name: 'familyCode' })
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 가족 정보 조회
@@ -116,7 +108,6 @@ const familyStore = {
           commit('SET_FAMILY_INFO', res.data)
         })
         .catch((err) => {
-          console.log(err)
         })
     },
 
@@ -142,17 +133,14 @@ const familyStore = {
         }
       })
         .then((res) => {
-        // console.log(res)
           if (res.status === 200) {
             alert('가족 정보가 수정되었습니다.')
             router.push({ name: 'feed' })
           } else {
-            console.log(res)
             alert('가족 정보 수정 중 오류가 발생했습니다.')
           }
         })
         .catch((err) => {
-          console.log(err)
           alert('가족 정보 수정 중 오류가 발생했습니다.')
         })
     },
@@ -178,7 +166,6 @@ const familyStore = {
           }
         })
         .catch((err) => {
-          console.log(err)
         })
     }
 

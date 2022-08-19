@@ -32,7 +32,6 @@ const joinStore = {
         url: api_url + '/user/duplication/id',
         params
       }).then(res => {
-        //console.log(res)
         if (res.data === true) {
           alert('중복된 아이디입니다!')
           context.commit('SET_CHECKED', false)
@@ -41,7 +40,6 @@ const joinStore = {
           context.commit('SET_CHECKED', true)
         }
       }).catch((res) => {
-        console.log(res)
       })
     },
     checkDuplicateEmail (context, email) {
@@ -61,7 +59,6 @@ const joinStore = {
           context.commit('SET_CHECKED', true)
         }
       }).catch((res) => {
-        console.log(res)
       })
     },
     checkJoin (context, userJoin) {
@@ -81,10 +78,8 @@ const joinStore = {
       }).catch((err) => {
         if  (err.response.status === 409) {
           alert(err.response.data)
-          //console.log(err.response.data)
         }else {
           alert('회원가입에 실패하였습니다.')
-          console.log(err)
         }
       })
     }
