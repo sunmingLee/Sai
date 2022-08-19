@@ -26,11 +26,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 
-		System.out.println("나는 filter야");
 		// 헤더에서 JWT를 받아온다
 		  String token = jwtTokenProvider.resolveToken(request);
-		  System.out.println(token);
-		  // 여기서 밑으로 안넘어가고 반복됨 왜지?
 		// 토큰 유효성 검사
 	      if(token != null && jwtTokenProvider.checkClaim(token)){
 	    	  // 토큰이 유효하면 토큰으로부터 유저 정보 받아오기
@@ -39,8 +36,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 	            SecurityContextHolder.getContext().setAuthentication(authentication);
 	            // 로그용
 	            UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
-	            System.out.println("이건 필터가 authentication.getprincipal 아이디를 가져온거야");
-	    		System.out.println(userDetails.getUserId());
 	    		
 	      }
 

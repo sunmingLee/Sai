@@ -88,9 +88,7 @@ public class ReplyServiceImpl implements ReplyService {
 
 	@Override
 	public String getUserIdByReplyId(Long replyId) {
-//		System.out.println("조회 디버깅");
 		String userId = replyRepository.findById(replyId).get().getUser().getUserId();
-		System.out.println(userId);
 		return userId;
 	}
 

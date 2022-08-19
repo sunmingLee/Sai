@@ -54,11 +54,6 @@ public class Family {
 		this.familyName = familyName;
 	}
 
-//	@Builder.Default
-//	@OneToMany(mappedBy = "family", fetch = FetchType.LAZY)
-//	@JsonIgnore
-//	private List<FamilyRegister> familyRegisters = new ArrayList<FamilyRegister>();
-
 	public void addUser(User user) {
 		this.users.add(user);
 		if (user.getFamily() != this)
@@ -73,11 +68,6 @@ public class Family {
 		this.familyImageType = familyImageType;
 	}
 
-//	public void addFamilyRegister(FamilyRegister familyRegister) {
-//		this.familyRegisters.add(familyRegister);
-//		if (familyRegister.getFamily() != this)
-//			familyRegister.setFamily(this);
-//	}
 
 	public boolean deleteImage() {
 		File file = new File(familyImagePathServer);

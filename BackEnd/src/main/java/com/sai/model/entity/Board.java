@@ -73,13 +73,6 @@ public class Board {
 	@Column(name = "poll_yn", columnDefinition = "TINYINT(1)")
 	private Boolean pollYn;
 
-//	public void setBoardId(Long boardId) {
-//		this.boardId = boardId;
-//	}
-
-//	public void setFamily(String familyId) {
-//		
-//	}
 
 	public void upBoardLike() {
 		this.boardLikeCnt++;

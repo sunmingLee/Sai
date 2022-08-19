@@ -16,16 +16,9 @@ public class CreatePlanRequsetDto {
 	private String planTitle;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss")
-//	@DateTimeFormat(pattern = "yyyy-MM-dd kk:mm:ss")
 	private List<LocalDateTime> date;
-//	private LocalDateTime mainPlanStartDatetime;
-//	private LocalDateTime mainPlanEndDatetime;
-//	private LocalDateTime planNotiDatetime;
 	private Integer planRoutineDay;
 	private String planPlace;
 	private Boolean planNotiYn;
-//	private LocalDate routineEndDate;
-//	private boolean planTaggedYn;
-//	private List<InputPlanTaggedRequestDto> inputPlanTaggedRequestDtos;
 
 }

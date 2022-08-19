@@ -110,7 +110,6 @@ public class FamilyServiceImpl implements FamilyService {
 	@Override
 	public void applyFamily(InsertFamilyRegisterRequestDto insertFamilyRegisterRequestDto) {
 		FamilyRegister familyRegister = modelMapper.map(insertFamilyRegisterRequestDto, FamilyRegister.class);
-		System.out.println(familyRegister.getFamilyRegisterId());
 		Family family = familyRepository.findById(insertFamilyRegisterRequestDto.getFamilyId()).get();
 
 //		familyRegisterRepository.save(modelMapper.map(insertFamilyRegisterRequestDto, FamilyRegister.class));
@@ -118,11 +117,9 @@ public class FamilyServiceImpl implements FamilyService {
 
 		familyRegister = familyRegisterRepository
 				.findOneByUser(userRepository.findByUserId(insertFamilyRegisterRequestDto.getUserId()).get());
-		System.out.println(familyRegister.getFamilyRegisterId());
 
 		List<User> userList = family.getUsers();
 		for (User user : userList) {
-			System.out.println(familyRegister.getFamilyRegisterId());
 			CreateNotificationRequestDto cnrd = CreateNotificationRequestDto.builder()
 					.notiFromUserId(insertFamilyRegisterRequestDto.getUserId()).notiToUserId(user.getUserId())
 					.notiContent("님이 당신의 가족인가요?").notiType(NotiType.FAMILYREGISTER)

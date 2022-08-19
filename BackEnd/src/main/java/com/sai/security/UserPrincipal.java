@@ -34,16 +34,6 @@ public class UserPrincipal implements UserDetails, OAuth2User{
 	private String userAuth;
 	
 	public static UserPrincipal create(User user) {
-//		Collection<GrantedAuthority> authorities = new HashSet<>();
-//		authorities.add(new GrantedAuthority() {
-//			@Override
-//			public String getAuthority() {
-//				return user.getRoleKey();
-//			}
-//		});
-		
-//		List<GrantedAuthority> authorities = user.getRoles().stream().map(role ->
-//		new SimpleGrantedAuthority(role.getName().name())).collect(Collectors.toList());
 
 		return new UserPrincipal(
                 user.getUserId(),
@@ -51,7 +41,6 @@ public class UserPrincipal implements UserDetails, OAuth2User{
                 user.getEmail(),
                 user.getPassword(),
                 user.getRoleKey()
-//                authorities
         );
 
 	}

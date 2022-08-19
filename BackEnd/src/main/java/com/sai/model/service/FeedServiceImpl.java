@@ -148,10 +148,7 @@ public class FeedServiceImpl implements FeedService {
 
 		// 게시글 DTO 세팅
 		Board board = boardRepository.findById(boardId).get();
-		System.out.println("게시글이야");
-		System.out.println(board.getUser().getUserId());
 		readBoardResponseDto.setViewBoardResponseDto(modelMapper.map(board, ViewBoardResponseDto.class));
-		System.out.println(readBoardResponseDto.getViewBoardResponseDto().getUserId());
 
 		// 게시글 미디어 DTO 세팅
 		List<ViewBoardMediaResponseDto> viewBoardMediaResponseDtos = new ArrayList<>();
@@ -300,7 +297,6 @@ public class FeedServiceImpl implements FeedService {
 		// 미디어 삭제
 		if (deleteBoardMediaIds != null) {
 			for (Long deleteBoardMediaId : deleteBoardMediaIds) {
-//				System.out.println(deleteBoardMediaId);
 				BoardMedia boardMedia = boardMediaRepository.findById(deleteBoardMediaId).get();
 				boardMedia.delete();
 				boardMediaRepository.delete(boardMedia);
@@ -321,14 +317,12 @@ public class FeedServiceImpl implements FeedService {
 					// 재생성
 					PollRequest pollRequest = updateBoardRequestDto.getPollRequest();
 					if (pollRequest != null) {
-						System.out.println("투표가 있을 때 재생성할 거야");
 						pollService.createPoll(pollRequest);
 					}
 				}
 			}
 			// 투표가 없는 경우 새로 만들기
 			else {
-				System.out.println("투표가 없어서 만들거야");
 				PollRequest pollRequest = updateBoardRequestDto.getPollRequest();
 				if (pollRequest != null) {
 					pollService.createPoll(pollRequest);

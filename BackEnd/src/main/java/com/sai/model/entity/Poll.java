@@ -28,13 +28,11 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "poll")
 public class Poll extends UserDateAudit {
-//	public class Poll  {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "poll_id")
 	private Long pollId;
 
-//	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "board_id")
 	private Board board;

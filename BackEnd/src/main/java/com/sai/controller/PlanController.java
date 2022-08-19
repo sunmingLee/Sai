@@ -39,7 +39,6 @@ public class PlanController {
 	// 일정 등록
 	@PostMapping
 	public ResponseEntity<?> createPlan(@RequestBody CreatePlanRequsetDto createPlanRequsetDto ) throws Exception {
-		System.out.println(createPlanRequsetDto);
 		try {
 			planService.createPlan(createPlanRequsetDto);
 			return ResponseEntity.status(200).body("일정이 등록되었습니다.");

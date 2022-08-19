@@ -60,11 +60,6 @@ public class User {
 	// 음력 사용 여부
 	private Boolean lunar;
 
-	// roles(for poll)
-//	@ManyToMany(fetch = FetchType.LAZY)
-//	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-//	private final Set<Role> roles = new HashSet<>();
-
 	// role
 	@Column(name = "role")
 	@Enumerated(EnumType.STRING)

@@ -15,5 +15,4 @@ public interface AlbumMediaRepository extends JpaRepository<AlbumMedia, Long> {
 	List<AlbumMedia> findByAlbum(Album album);
 
 	AlbumMedia findFirstByAlbumOrderByAlbumMediaIdDesc(Album album);
-//	OrderByAlbumMediaIdDesc();
 }

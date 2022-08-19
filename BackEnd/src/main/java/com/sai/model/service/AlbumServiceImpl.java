@@ -106,7 +106,6 @@ public class AlbumServiceImpl implements AlbumService {
 
 	@Override
 	public void insertAlbumMedia(Long albumId, List<MultipartFile> files) {
-		System.out.println(uploadPath);
 		Album album = albumRepository.findById(albumId).get();
 
 		if (files != null && files.size() > 0) {
