@@ -51,7 +51,6 @@ export default {
     this.checkUserInfo(userId)
   },
   mounted () {
-    console.log(this.feedCount)
   },
   computed: {
     ...mapState(userStore, ['userInfo'])

@@ -33,23 +33,23 @@
                             </div>
                             <div v-else-if="feed.viewBoardResponseDto.boardMediaYn" class="media-wrap">
                                 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" style="height: 300px">
-                                    <div class="carousel-inner" style="margin: 0 auto; height: 100%">
-                                      <div class="carousel-inner" style="margin: 0 auto; height: 100%">
+                                    <div class="carousel-inner">
+                                      <div class="carousel-inner">
                                         <div class="carousel-item active">
-                                            <div v-if="feed.viewBoardMediaResponseDto[0].boardMediaType.includes('video')" style="height: 100%">
+                                          <div v-if="feed.viewBoardMediaResponseDto[0].boardMediaType.includes('video')" style="height: 100%">
                                             <video autoplay playsinline loop muted :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100" style="height: 100%"/>
                                           </div>
                                           <div v-else style="height: 100%">
                                             <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100" style="height: 100%">
                                             <!-- <img src="@/assets/images/byebye.png" class="d-block w-100" style="height: 100%; max-width=300px"> -->
-                                            </div>
+                                          </div>
                                         </div>
-                                        <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index" style="height: 100%"> 
+                                        <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index"> 
                                           <div v-if="index !== 0" class="carousel-item">
-                                            <div v-if="src.boardMediaType.includes('video')" style="height: 100%">
+                                            <div class="test" v-if="src.boardMediaType.includes('video')" style="height: 100%">
                                               <video autoplay playsinline loop muted :src="src.boardMediaPath" class="d-block w-100" style="height: 100%"/>
                                             </div>
-                                            <div v-else style="height: 100%">
+                                            <div class="test" v-else style="height: 100%">
                                               <img :src="src.boardMediaPath" class="d-block w-100" style="height: 100%">
                                             <!-- <img src="@/assets/images/dog2.png" class="d-block w-100" style="height: 100%;"> -->
                                             </div>
@@ -109,9 +109,6 @@
                 <h3>등록된 게시글이 없습니다</h3>
             </div>
         </div>
-        <!-- <div class="feed-more">
-                  <button>더보기</button>
-                </div> -->
       <button id="btn-modal" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="goBoardCreate">
         <img style="width:25px;" src="@/assets/images/plus-lg.svg" alt="plus">
       </button>
@@ -186,7 +183,6 @@ export default {
     },
     // 글 상세보기 페이지 이동
     goDetail (boardId) {
-    //   console.log('들어가기 전: ' + boardId)
       this.setBoardId(boardId)
     },
     //더보기
@@ -219,23 +215,18 @@ p {
 //캐러셀
 .carousel-inner{
   width: 100%!important;
-  height: 250px;
+  // height: 250px;
+  height: 100%;
+  margin: 0 auto
 }
 .carousel-item{
-  // width: auto;
-  // height: 100px;
   width: 100%;
   height: 100%;
 }
 .d-block {
-  //사진 크기를 가운데
   margin: 0 auto;
   width: 300px!important;
   height: 100%;
-  //옆으로 길게 늘리기
-  // width: 100%;
-  //사진의 일부  
-  // height: 100%;
 }
 
 .media-wrap {
@@ -256,19 +247,13 @@ p {
   margin: 10px 0 10px 0;
 }
 
-
 //글, 사진, 투표의 공간
 .flex {
   &.body {
-    // width: 500px;
     border: 1px solid #7b371c;
     padding: 10px;
-    // height: 300px;
     height: auto;
     margin: 0 10px;
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
     .content-body {
       .poll-body {
         table {
@@ -280,7 +265,16 @@ p {
   }
 }
 
+.carousel-control-next, .carousel-control-prev {
+  top: 150px;
+}
+.carousel-control-prev-icon { 
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E"); 
+ }
 
+.carousel-control-next-icon {
+   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E"); 
+}
 
 // content
 .feed-wrap {
@@ -313,10 +307,6 @@ p {
   &.reaction {
     display: flex;
     padding: 10px 24px;
-    // border: 1px solid black;
-    // .detail-button {
-    //   margin-left: 375px;
-    // }
   }
   .content-cnt {
     padding-right: 20px;
@@ -382,16 +372,4 @@ table {
   margin: 0 auto;
   text-align: center;
 }
-// .feed-more {
-//   height: 30px;
-//   width: 120px;
-//   color: white;
-//   margin: 20px auto;
-//   text-align: center;
-//   button {
-//     background-color: #7b371c;
-//     height: 30px;
-//     width: 120px;
-//   }
-// }
 </style>

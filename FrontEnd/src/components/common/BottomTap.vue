@@ -1,5 +1,5 @@
 <template>
-  <ul class="nav nav-pills nav-fill" id="pills-tab" role="tablist">
+  <ul class="nav nav-pills nav-fill" id="pills-tab" role="tablist" style="z-index: 3">
     <li class="nav-item" role="presentation">
       <button :class="feedLink" id="feed-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true" aria-current="page" @click="moveFeed">거실</button>
     </li>

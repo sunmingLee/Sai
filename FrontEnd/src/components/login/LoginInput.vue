@@ -52,23 +52,8 @@ export default {
   },
   methods: {
     ...mapActions(userStore, ['login', 'getUserInfo']),
-    // putId (userId) {
-    //   this.user.userId = userId
-    // },
-    // putPassword (password) {
-    //   this.user.password = password
-    // },
     async onLogin () {
-      console.log(this.user.userId)
       await this.login(this.user)
-      // await this.userConfirm(this.user)
-      // const token = sessionStorage.getItem('access-token')
-      if (this.isLogin) {
-        // console.log('isLogin')
-        // await this.getUserInfo(this.user)
-        // this.notifyVue(1, '<span> <b>로그인 완료</b> </span>')
-        // this.$router.push({ name: 'about' })
-      }
     }
   }
 }
@@ -81,7 +66,6 @@ export default {
   .input-flex {
     display: flex;
     flex-wrap: wrap;
-    // gap: 1em;
     .id-div, .pw-div {
       margin: 10px 0;
       min-width: 300px;

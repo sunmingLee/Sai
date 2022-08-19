@@ -46,7 +46,6 @@ const boardStore = {
     LIKE_CHANGE (state, likeInfo) {
       for (let i = 0; i < state.feedList.length; i++) {
         if (state.feedList[i].viewBoardResponseDto.boardId === likeInfo.boardId) {
-          console.log(state.feedList[i].boardLiked)
           if (!state.feedList[i].boardLiked) {
             state.feedList[i].viewBoardResponseDto.boardLikeCnt = state.feedList[i].viewBoardResponseDto.boardLikeCnt + 1
             state.feedList[i].boardLiked = true
@@ -58,20 +57,14 @@ const boardStore = {
       }
     },
     SUB_ONE_VOTE (state, choiceId) {
-      // console.log(choiceId)
-      // console.log(state.feed.pollResponse.choices)
       for (let i = 0; i < state.feed.pollResponse.choices.length; i++) {
-        console.log(state.feed.pollResponse.choices[i].voteCount)
         if (state.feed.pollResponse.choices[i].id === choiceId) {
           state.feed.pollResponse.choices[i].voteCount--
         }
       }
     },
     ADD_ONE_VOTE (state, choiceId) {
-      // console.log(choiceId)
-      // console.log(state.feed.pollResponse.choices)
       for (let i = 0; i < state.feed.pollResponse.choices.length; i++) {
-        console.log(state.feed.pollResponse.choices[i].voteCount)
         if (state.feed.pollResponse.choices[i].id === choiceId) {
           state.feed.pollResponse.choices[i].voteCount++
         }
@@ -98,7 +91,6 @@ const boardStore = {
       const formData = new FormData()
       if (files !== undefined) {
         for (let i = 0; i < files.length; i++) {
-          console.log(files[i])
           formData.append('files', files[i])
         }
       }
@@ -112,17 +104,14 @@ const boardStore = {
         }
       })
         .then((res) => {
-          // console.log(res)
           if (res.status === 200) {
             alert('작성이 완료되었습니다')
             router.push({ name: 'feed' })
           } else {
             alert('안됐지롱')
-            console.log(res)
           }
         })
         .catch((err) => {
-          console.log(err)
           alert('잘못된 코드입니다')
         })
     },
@@ -139,7 +128,6 @@ const boardStore = {
         params
       })
         .then((res) => {
-          console.log(res.data)
           if (res.data.length === 0 & info.page !== 0) {
             alert('더 이상 불러올 게시물이 없습니다')
           } else {
@@ -148,8 +136,6 @@ const boardStore = {
           }
         })
         .catch((err) => {
-          console.log('에러')
-          console.log(err)
         })
     },
     setBoardId ({ commit }, boardId) {
@@ -164,11 +150,9 @@ const boardStore = {
         method: 'GET'
       })
         .then((res) => {
-          console.log(res)
           commit('SET_FEED', res.data)
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 게시글 삭제
@@ -182,7 +166,6 @@ const boardStore = {
           router.push({ name: 'feed' })
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 게시글 수정
@@ -196,12 +179,10 @@ const boardStore = {
         }
       })
         .then((res) => {
-          console.log('수정이 됐어요')
           alert('수정되었습니다.')
           router.push({ name: 'feed' })
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 투표 선택 (임시 / 쿠키 세팅 이슈)
@@ -209,7 +190,6 @@ const boardStore = {
       const data = {
         choiceId: info.choiceId
       }
-      console.log(info)
       instance({
         url: API_BASE_URL + `/api/poll/${info.pollId}/votes`,
         method: 'POST',
@@ -219,8 +199,6 @@ const boardStore = {
         }
       })
         .then(res => {
-          // console.log('여기다')
-          console.log(res.data)
           if (res.data.isDup) {
             alert('선택이 취소되었습니다.')
             commit('SUB_ONE_VOTE', data.choiceId)
@@ -249,7 +227,6 @@ const boardStore = {
           commit('LIKE_CHANGE', info)
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 좋아요 취소
@@ -263,7 +240,6 @@ const boardStore = {
           commit('LIKE_CHANGE', info)
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 댓글 조회
@@ -273,11 +249,9 @@ const boardStore = {
         method: 'GET'
       })
         .then((res) => {
-          // console.log(res)
           commit('SET_REPLY_LIST', res.data.replyList)
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 댓글 작성
@@ -298,7 +272,6 @@ const boardStore = {
           dispatch('getReplyList', info.boardId)
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 댓글 수정
@@ -320,7 +293,6 @@ const boardStore = {
           dispatch('getReplyList', info.boardId)
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 개인페이지 피드 조회
@@ -334,14 +306,11 @@ const boardStore = {
         params
       })
         .then((res) => {
-          console.log(res.data)
           commit('MY_FEED_All_LIST', res.data.readFeedResponseDtos)
           commit('MY_FEED_All_LIST_COUNT', res.data.userBoardNum)
           commit('MY_FEED_PAGINATION', res.data.userBoardNum)
         })
         .catch((err) => {
-          console.log('에러')
-          console.log(err)
         })
     },
     // 게시글 초기화

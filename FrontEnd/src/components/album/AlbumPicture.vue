@@ -85,7 +85,6 @@ export default {
               fileList.push(heicFile)
             })
             .catch((err) => {
-              console.log(err)
             })
         } else {
           fileList.push(file)
@@ -94,7 +93,6 @@ export default {
     },
     // 미디어 등록
     addMedia () {
-      // console.log(fileList)
       this.insertMedia(fileList)
       // 선택했던 파일 없애기
       this.$refs.imageUploader.value = null

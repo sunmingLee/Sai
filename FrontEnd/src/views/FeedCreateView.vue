@@ -284,7 +284,6 @@ export default {
                 fileList.push(heicFile)
               })
               .catch((err) => {
-                console.log(err)
               })
           } else {
             fileList.push(file)
@@ -293,14 +292,11 @@ export default {
       }
     },
     previewFile () {
-      console.log(fileList)
       if (fileList.length != 0) {
         for (let i = 0; i < fileList.length; i++) {
           this.srcList.push(URL.createObjectURL(fileList[i]))
         }
       }
-      console.log('안녕')
-      console.log(this.srcList)
     },
     // 추가기록과 투표만들기 토글
     record () {
@@ -373,7 +369,6 @@ export default {
     // 사람 태그 확인
     personConfirm () {
       const test = document.getElementsByName('callsign')
-      console.log(test)
       for (let i = 0; i < test.length; i++) {
         const user = test[i].value
         const person = {
@@ -390,7 +385,6 @@ export default {
           this.peopleList = find
         }
       }
-      console.log(this.peopleList)
       // 확인 버튼을 클릭했을 경우 모달창을 끈다
       const modal = document.getElementById('popup')
       modal.classList.add('hidden')
@@ -444,7 +438,6 @@ export default {
             pollOptionCnt = pollOptionCnt + 1
           }
         }
-        console.log(this.pollOption)
         // 작성한 항목이 있는데
         if (pollOptionCnt !== 0) {
           // 제목이 없으면
@@ -462,7 +455,6 @@ export default {
         // this.files = test
       } else {
         // 미디어 파일이 있다!
-        console.log(fileList.length)
         // 투표가 있을 경우
         if (this.pollYn === 1) {
           if (this.pollDateDisabled) {
@@ -514,7 +506,6 @@ export default {
           boardReplyCnt: 0
         }
         Object.assign(createBoardRequestDto, { inputBoardRequestDto })
-        console.log(createBoardRequestDto)
         if (this.boardMediaYn === 1) {
           this.boardCreate({ createBoardRequestDto, fileList })
         } else {
@@ -724,8 +715,6 @@ export default {
         }
         .record-confirm {
           text-align: center;
-          // display: flex;
-          // justify-content: center;
           span {
             margin-right: 10px;
           }
@@ -757,14 +746,10 @@ export default {
   margin: 0 auto;
 }
 .carousel-control-prev {
-  position: unset;
-  background-color: #A57966;
   width: 30px;
   display: inline-block;
 }
 .carousel-control-next {
-  position: unset;
-  background-color: #A57966;
   width: 30px;
   display: inline-block;
 }

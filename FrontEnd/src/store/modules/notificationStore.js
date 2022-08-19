@@ -34,13 +34,11 @@ const notificationStore = {
       instance.put(api_url + `/${userId}`)
         .then((res) => {
           if (res.status === 200) {
-            // console.log(res)
           } else {
             alert(res.data.msg)
           }
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 알림 리스트 조회
@@ -49,26 +47,21 @@ const notificationStore = {
         page: pageInfo.currentPage,
         size: pageInfo.perPage
       }
-      // console.log(params)
       instance.get(api_url + '/' + localStorage.getItem('userId'), { params })
         .then((res) => {
-          // console.log(res)
           if (res.status === 200) {
-            // console.log(res.data.notiList)
             commit('SET_NOTIFICATION_LIST', res.data.notiList)
           } else {
             alert(res.data.msg)
           }
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 알림 삭제
     deleteNotification ({ commit, dispatch }, info) {
       instance.delete(api_url + `/${info.notiId}`, { data: localStorage.userId })
         .then((res) => {
-          // console.log(res)
           if (res.status === 200) {
             dispatch('listNotification', info.pageInfo)
           } else {
@@ -76,14 +69,12 @@ const notificationStore = {
           }
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 알림 전체 삭제
     deleteAllNotification ({ commit, dispatch }, pageInfo) {
       instance.delete(api_url, { data: localStorage.userId })
         .then((res) => {
-          // console.log(res)
           if (res.status === 200) {
             dispatch('listNotification', pageInfo)
           } else {
@@ -91,7 +82,6 @@ const notificationStore = {
           }
         })
         .catch((err) => {
-          console.log(err)
         })
     }
   }

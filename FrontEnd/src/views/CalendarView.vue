@@ -1,5 +1,5 @@
 <template>
-  <div class="calendar-wrap">
+  <div class="calendar-wrap" style="width: 900px">
     <!-- 색상 설명 -->
     <div class="explain-wrap">
       <span class="personal">빨강: 개인</span>
@@ -252,7 +252,6 @@ export default {
 .explain-wrap{
   position: absolute;
   top: 6%;
-  right: 3%;
   span{
     margin-left: 10px;
   }

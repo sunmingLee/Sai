@@ -152,7 +152,6 @@ export default {
             fileList.push(heicFile);
           })
           .catch((err) => {
-            console.log(err);
           });
       } else {
         fileList.pop();
@@ -178,7 +177,6 @@ export default {
 
       Object.assign(userInfo, this.addInfo);
       if (this.isProfilePic) {
-        console.log(fileList);
         this.addUserInfo({ userInfo, fileList });
       } else {
         this.addUserInfo({ userInfo });

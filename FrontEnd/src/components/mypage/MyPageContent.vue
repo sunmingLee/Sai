@@ -59,7 +59,6 @@ export default {
     }
     // 피드 전체 리스트 조회
     this.myFeedAllList(info)
-    console.log(this.myFeedPagenationCnt)
     //지금 전체 개수 7개고 한 페이지에 2개만 나타났으면 좋겠어
     //myFeedPagenationCnt
 
