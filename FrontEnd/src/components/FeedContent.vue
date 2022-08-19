@@ -40,8 +40,8 @@
                                             <video autoplay playsinline loop muted :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100" style="height: 100%"/>
                                           </div>
                                           <div v-else style="height: 100%">
-                                            <!-- <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100" style="height: 100%"> -->
-                                            <img src="@/assets/images/byebye.png" class="d-block w-100" style="height: 100%; max-width=300px">
+                                            <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100" style="height: 100%">
+                                            <!-- <img src="@/assets/images/byebye.png" class="d-block w-100" style="height: 100%; max-width=300px"> -->
                                           </div>
                                         </div>
                                         <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index"> 
@@ -50,8 +50,8 @@
                                               <video autoplay playsinline loop muted :src="src.boardMediaPath" class="d-block w-100" style="height: 100%"/>
                                             </div>
                                             <div class="test" v-else style="height: 100%">
-                                              <!-- <img :src="src.boardMediaPath" class="d-block w-100" style="height: 100%"> -->
-                                            <img src="@/assets/images/dog2.png" class="d-block w-100" style="height: 100%;">
+                                              <img :src="src.boardMediaPath" class="d-block w-100" style="height: 100%">
+                                            <!-- <img src="@/assets/images/dog2.png" class="d-block w-100" style="height: 100%;"> -->
                                             </div>
                                           </div>
                                         </div>
