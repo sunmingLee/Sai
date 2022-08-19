@@ -17,7 +17,5 @@ public interface MemoRepository extends JpaRepository<Memo, Long> {
 	public List<Memo> findAllByFamilyAndMemoRegDateTimeBetweenOrderByMemoRegDateTimeDesc(Family family, LocalDateTime startDatetime,
 			LocalDateTime endDatetime);
 
-//	public List<Memo> findAllByFamilyAndMemoRegDateTimeBetween(Family family, LocalDateTime startDatetime,
-//			LocalDateTime endDatetime);
 
 }

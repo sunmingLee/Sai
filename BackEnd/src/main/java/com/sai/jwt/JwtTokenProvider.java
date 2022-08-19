@@ -79,15 +79,12 @@ public class JwtTokenProvider {
 	// 토큰에서 회원정보 추출
 	 public String getUserPk(String jwt) {
 		 String info = this.getJwtContents(jwt).getSubject();
-		 System.out.println("토큰의 회원정보야");
-		 System.out.println(info);
 	        return info;
 	    }
 
 	 // Request의 Header에서 token 값을 가져옵니다. "accessToken" : "TOKEN값'
     public String resolveToken(HttpServletRequest request) {
         String token = null;
-        System.out.println("토큰 프로바이더");
         if(request.getHeader("Authorization") != null) token = request.getHeader("Authorization");
 //        Cookie cookie = WebUtils.getCookie(request, "accessToken");
 //        if(cookie != null) token = cookie.getValue();
@@ -97,7 +94,6 @@ public class JwtTokenProvider {
     // JWT 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
-        System.out.println(userDetails.getAuthorities().toString());
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 

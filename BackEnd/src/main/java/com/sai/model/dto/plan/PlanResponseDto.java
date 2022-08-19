@@ -14,10 +14,6 @@ public class PlanResponseDto {
 
 	private Long mainPlanId;
 	
-//	private Family family;
-	
-//	private List<User> users;
-	
 	private String planType;
 	
 	private String planTitle;

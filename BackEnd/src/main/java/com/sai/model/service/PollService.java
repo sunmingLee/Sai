@@ -43,7 +43,6 @@ public class PollService {
 	// 투표 만들기
 	public Poll createPoll(PollRequest pollRequest) {
 		Poll poll = new Poll();
-		System.out.println(pollRequest.getBoardId());
 		
 		poll.setBoard(boardRepository.findById(pollRequest.getBoardId()).get());		
 		poll.setPollTitle(pollRequest.getQuestion());
@@ -51,10 +50,6 @@ public class PollService {
 		pollRequest.getChoices().forEach(choiceRequest -> {
 			poll.addChoice(new Choice(choiceRequest.getText()));
 		});
-
-//		Instant now = Instant.now();
-//		Instant expirationDateTime = now.plus(Duration.ofDays(pollRequest.getPollLength().getDays()))
-//				.plus(Duration.ofHours(pollRequest.getPollLength().getHours()));
 
 		poll.setExpirationDateTime(pollRequest.getExpirationDateTime());
 
@@ -72,26 +67,11 @@ public class PollService {
 		Poll poll = pollRepository.findById(pollId)
 				.orElseThrow(() -> new ResourceNotFoundException("Poll", "id", pollId));
 
-//		Vote vote = voteRepository.findByPoll(poll);
-		
-//		System.out.println(vote.getVoteId());
-		
-//		Map<Long, Long> choiceVotesMap = new HashMap<>();
-//		if(vote != null) {
 		// Retrieve Vote Counts of every choice belonging to the current poll
 		List<ChoiceVoteCount> votes = voteRepository.countByPollIdGroupByChoiceId(pollId);
-		System.out.println(votes);
 		
 		Map<Long, Long> choiceVotesMap = votes.stream()
 				.collect(Collectors.toMap(ChoiceVoteCount::getChoiceId, ChoiceVoteCount::getVoteCount));
-//		} 
-		System.out.println("지금 투표 서비스야");
-		System.out.println(choiceVotesMap);
-		
-		// Retrieve poll creator details
-//		User creator = userRepository.findById(poll.getCreatedBy())
-//				.orElseThrow(() -> new ResourceNotFoundException("User", "id", poll.getCreatedBy()));
-
 		
 		// Retrieve vote done by logged in user
 		Vote userVote = null;
@@ -148,7 +128,6 @@ public class PollService {
 			PollResponse pollResponse = PollModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator, vote.getChoice().getChoiceId());
 			pollResponse.setIsDup(false);
 			return pollResponse;
-//			return PollModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator, vote.getChoice().getChoiceId());
 			
 			// 투표가 있는 경우
 		} else {
@@ -176,22 +155,8 @@ public class PollService {
 			PollResponse pollResponse = PollModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator, vote.getChoice().getChoiceId());
 			pollResponse.setIsDup(true);
 			return pollResponse;
-//			return PollModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator, vote.getChoice().getChoiceId());
 		}
 
-//		// -- Vote Saved, Return the updated Poll Response now --
-//
-//		// Retrieve Vote Counts of every choice belonging to the current poll
-//		List<ChoiceVoteCount> votes = voteRepository.countByPollIdGroupByChoiceId(pollId);
-//
-//		Map<Long, Long> choiceVotesMap = votes.stream()
-//				.collect(Collectors.toMap(ChoiceVoteCount::getChoiceId, ChoiceVoteCount::getVoteCount));
-//
-//		// Retrieve poll creator details
-//		User creator = userRepository.findById(poll.getCreatedBy())
-//				.orElseThrow(() -> new ResourceNotFoundException("User", "id", poll.getCreatedBy()));
-//
-//		return ModelMapper.mapPollToPollResponse(poll, choiceVotesMap, creator, vote.getChoice().getChoiceId());
 	}
 
 	private Map<Long, Long> getChoiceVoteCountMap(List<Long> pollIds) {

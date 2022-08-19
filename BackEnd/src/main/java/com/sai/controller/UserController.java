@@ -109,7 +109,6 @@ public class UserController {
 	@PostMapping("/verify/{userId}")
 	public ResponseEntity<?> verifyUser(@PathVariable String userId, @RequestBody String password) {
 		try {
-			System.out.println(password);
 			userService.verifyUser(userId, password);
 			return ResponseEntity.status(200).body("유저 확인");
 			
@@ -140,7 +139,6 @@ public class UserController {
 		LoginUserResponseDto loginUserResponseDto = new LoginUserResponseDto();
 		try {
 			String JWT = userService.login(user);
-			System.out.println("로그인 끝");
 			return ResponseEntity.status(200).body(JWT);
 		} catch (Exception e) {
 			loginUserResponseDto.setMsg("로그인 에러");
@@ -167,7 +165,6 @@ public class UserController {
 	@PostMapping("/login/info")
 	public ResponseEntity<InfoUserResponseDto> loginUserInfo(@RequestBody LoginUserRequestDto loginUserRequestDto){
 		try {
-			System.out.println("여긴 회원정보야");
 			return ResponseEntity.ok(userService.loginUserInfo(loginUserRequestDto));
 		} catch (Exception e) {
 			return ResponseEntity.status(404).body(userService.loginUserInfo(loginUserRequestDto));

@@ -28,37 +28,15 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 	// JWT 관련 친구들
 	private final JwtTokenProvider jwtTokenProvider;
-//	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	private final OAuth2UserServiceImpl oAuth2UserServiceImpl;
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-
-	// pw 암호화를 위한 BCrypt 해시 설정
-	// 순환 참조 방지 위해서 따로 클래스를 만들어 관리 passwordEncoder를 Bean으로 등록
-//	@Bean
-//	public BCryptPasswordEncoder bCryptPasswordEncoder() {
-//		return new BCryptPasswordEncoder();
-//	}
 
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
 			throws Exception {
 		return authenticationConfiguration.getAuthenticationManager();
 	}
-
-//	@Bean
-//	public CorsConfigurationSource configurationSource() {
-//		CorsConfiguration corsConfiguration = new CorsConfiguration();
-//		
-//		corsConfiguration.addAllowedOrigin("http://localhost:8081");
-//		corsConfiguration.addAllowedHeader("*");
-//		corsConfiguration.addAllowedMethod("*");
-//		corsConfiguration.setAllowCredentials(true);
-//		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//		source.registerCorsConfiguration("/**", corsConfiguration);
-//		return source;
-//		
-//	}
 
 	// 인증 또는 인가에 대한 설정
 	@Bean
@@ -72,29 +50,6 @@ public class SecurityConfig {
 			.exceptionHandling()
             .authenticationEntryPoint(jwtAuthenticationEntryPoint)
             .accessDeniedHandler(jwtAccessDeniedHandler); // post 방식으로 값을 전송할 때 token을 사용해야 하는 보안 설정을 해제
-//			.formLogin()
-//			.loginPage("/api/user/login") // 인증되지 않은 사용자가 인증을 필요로 하는 endpoint에 접근했을 때 이동하는 페이지
-//			.loginProcessingUrl("/api/user/login") // '/user/logInProc'로 post 요청이 올 때 로그인 처리를 수행
-//			.usernameParameter("userId") // 사용자를 찾기 위해 사용할 매개변수(아이디)
-//			.passwordParameter("password"); // 비밀번호 매개변수
-//			.defaultSuccessUrl("/api/feed") // 성공시 리다이렉트할 페이지
-//			.failureUrl("/api/user/login"); // 실패시 리다이렉트할 페이지
-
-		// 로그아웃
-//		http.logout() // 로그아웃 처리
-//				.logoutUrl("/logout")
-//				.permitAll()// 로그아웃 처리 URL
-//				.logoutSuccessUrl("/api/user/login") // 로그아웃 성공 후 이동페이지
-//				.clearAuthentication(true);
-//				.deleteCookies("JSESSIONID", "remember"); // 로그아웃 후 쿠키 삭제
-
-		// Remeber Me
-//		http
-//			.rememberMe()
-//			.rememberMeParameter("remember") // 기본 파라미터명은 remember-me
-//			.tokenValiditySeconds(3600) // Default 는 14일
-//			.alwaysRemember(true); // 리멤버 미 기능이 활성화되지 않아도 항상 실행
-//			.userDetailsService(userDetailsService);
 
 		http.authorizeRequests()
 				.antMatchers("/", "/favicon.ico", "/**/*.png", "/**/*.gif", "/**/*.svg", "/**/*.jpg", "/**/*.html",
@@ -104,16 +59,11 @@ public class SecurityConfig {
 				// user - 로그인, 회원가입, 아이디 찾기, 비밀번호 찾기
 //			.antMatchers("/**").permitAll()	// 개발 기간 동안 모든 사이트 허용
 				.antMatchers("/api/user/duplication/**", "/api/user/join", "/api/user/login", "/api/user/findId", "/api/user/findPw").permitAll()
-//			.antMatchers("/api/poll/**").permitAll()
 				.antMatchers("/v2/api-docs", "/swagger*/**").permitAll()
-//			.anyRequest().hasAnyRole("USER");
 				.anyRequest().hasAnyAuthority("ROLE_USER");
-//			.anyRequest().authenticated();
 
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		// stateless일 때는 설정하지 말 것
-//		.maximumSessions(1)
-//				.maxSessionsPreventsLogin(true);
+
 //		http
 //			.oauth2Login()
 //			.userInfoEndpoint()

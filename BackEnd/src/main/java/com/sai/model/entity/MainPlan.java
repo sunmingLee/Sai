@@ -56,9 +56,6 @@ public class MainPlan {
 	@Column(name = "main_plan_end_datetime")
 	private LocalDateTime mainPlanEndDatetime;
 	
-//	@Column(name = "plan_noti_datetime")
-//	private LocalDateTime planNotiDatetime;
-	
 	@Column(name = "plan_routine_day")
 	private Integer planRoutineDay;
 	
@@ -68,11 +65,6 @@ public class MainPlan {
 	@Column(name="plan_noti_yn", columnDefinition = "TINYINT(1)")
 	private Boolean planNotiYn;
 	
-//	@Column(name = "routine_end_date")
-//	private LocalDate routineEndDate;
-	
-//	@Column(name = "plan_tagged_yn", columnDefinition = "TINYINT(1)")
-//	private Boolean planTaggedYn;
 	
 	// 업데이트
 	public void update(UpdatePlanRequestDto updatePlanRequestDto) {
@@ -81,10 +73,7 @@ public class MainPlan {
 		this.planTitle = updatePlanRequestDto.getPlanTitle();
 		this.mainPlanStartDatetime = updatePlanRequestDto.getDate().get(0);
 		this.mainPlanEndDatetime = updatePlanRequestDto.getDate().get(1);
-//		this.planNotiDatetime = updatePlanRequestDto.getPlanNotiDatetime();
 		this.planRoutineDay = updatePlanRequestDto.getPlanRoutineDay();
-//		this.routineEndDate = updatePlanRequestDto.getRoutineEndDate();
-//		this.planTaggedYn = updatePlanRequestDto.getPlanTaggedYn();
 		this.planPlace = updatePlanRequestDto.getPlanPlace();
 		this.planNotiYn = updatePlanRequestDto.getPlanNotiYn();
 		System.out.println("업데이트");

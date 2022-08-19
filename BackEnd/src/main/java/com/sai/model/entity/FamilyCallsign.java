@@ -29,21 +29,13 @@ public class FamilyCallsign {
 	@Column(name = "family_callsign_id", updatable = false, insertable = false)
 	private Long familyCallsignId;
 
-//	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "from_user_id")
 	private User fromUser;
 
-//	@Column(name = "from_user_id")
-//	private String fromUser;
-
-//	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "to_user_id")
 	private User toUser;
-
-//	@Column(name = "to_user_id")
-//	private String toUser;
 
 	private String callsign;
 
@@ -51,16 +43,5 @@ public class FamilyCallsign {
 		this.callsign = callsign;
 	}
 
-//	public void setFromUser(User fromUser) {
-//		if (this.fromUser != null) {
-//			this.fromUser.getFamilyCallsigns().remove(this);
-//		}
-//		this.fromUser = fromUser;
-//
-//		if (!fromUser.getFamilyCallsigns().contains(this)) {
-//			fromUser.addFamilyCallsigns(this);
-//		}
-//
-//	}
 
 }

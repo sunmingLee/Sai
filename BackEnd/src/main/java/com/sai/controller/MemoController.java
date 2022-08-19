@@ -53,7 +53,6 @@ public class MemoController {
 	// 전체 메모 리스트 조회(가족별)
 	@GetMapping(value = "/list/{familyId}")
 	public ResponseEntity<?> getMemo(@PathVariable String familyId) {
-		System.out.println("메모리스트 조회야");
 		try {
 			List<MemoDto> list = memoService.getMemo(familyId);
 			return new ResponseEntity<List<MemoDto>>(list, HttpStatus.OK);

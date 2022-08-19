@@ -46,19 +46,9 @@ public class FeedController {
             @PageableDefault(size = 10, sort = "boardRegDatetime", direction = Direction.DESC) Pageable pageable, @CurrentUser UserPrincipal currUser)
 			throws Exception {
 
-		System.err.println("피드");
 		try {
-			// userprincipal 있는지 확인
-			UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			System.out.println(principal.getUsername());
-			System.out.println(principal.getUserId());
-
-//			System.out.println(currUser.getUserId());
-			
 			List<ReadFeedResponseDto> readFeedResponseDtos = feedService.readAllBoard(familyId, userId, pageable, currUser);
 			
-			System.out.println("피드 조회 끝");
-
 			if (readFeedResponseDtos != null) {
 				return new ResponseEntity<List<ReadFeedResponseDto>>(readFeedResponseDtos, HttpStatus.OK);
 			} else {
@@ -76,7 +66,6 @@ public class FeedController {
 
 		try {
 			ReadBoardResponseDto readBoardResponseDto = feedService.readOneBoard(boardId, userId, currUser);
-//			System.out.println("글 상세조회 끝");
 			if (readBoardResponseDto != null) {
 				return new ResponseEntity<ReadBoardResponseDto>(readBoardResponseDto, HttpStatus.OK);
 			} else {

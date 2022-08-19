@@ -36,8 +36,6 @@ public class PollModelMapper {
 		}).collect(Collectors.toList());
 
 		pollResponse.setChoices(choiceResponses);
-//		UserSummary creatorSummary = new UserSummary(creator.getUserId(), creator.getUserName());
-//		pollResponse.setCreatedBy(creatorSummary);
 		pollResponse.setCreatedBy(null);
 
 		if (userVote != null) {
