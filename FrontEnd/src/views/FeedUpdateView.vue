@@ -135,6 +135,13 @@
                 </div>
                 <span v-if="this.boardLocation !== ''">위치 : {{this.boardLocation}}</span>
                 <Button v-if="this.boardLocation !== ''" buttonClass="small negative" buttonText="삭제" @click="deleteLocation"/>
+                <span v-if="this.peopleList.length !== 0">
+                  <!-- <p>선택된 사람이 있어</p> -->
+                  <span>언급 : </span>
+                  <span v-for="(callsign, index) in familyCallsignList" :key="index">
+                    <span v-if="this.peopleList.some(v => v.userId === callsign.toUserId)">{{callsign.callsign}}</span>
+                  </span>
+                </span>
               </div>
             </div>
             <!-- 투표 만들기 -->
@@ -241,7 +248,8 @@ export default {
       pollFlag: false,
       pollRequest: {},
       callsignCheck: [],
-      callsign : []
+      callsign : [],
+      originPeopleList: []
     }
   },
   created () {
@@ -282,7 +290,13 @@ export default {
         this.question = this.feed.pollResponse.question
         this.choices = this.feed.pollResponse.choices
       }
-      this.peopleList = this.feed.viewBoardTaggedResponseDto
+      for(let i = 0; i < this.feed.viewBoardTaggedResponseDto.length; i++) {
+        const user = {
+          userId : this.feed.viewBoardTaggedResponseDto[i].userId
+        }
+        this.peopleList.push(user)
+        this.originPeopleList.push(user)
+      }
       if(this.callsign.length > 0) {
         for(let i = 0; i < this.callsign.length; i++) {
           if(this.peopleList.some(v => v.userId === this.callsign[i].toUserId)) {
@@ -414,7 +428,6 @@ export default {
         const person = {
           userId: user
         }
-
         if (test[i].checked) {
           const find = this.peopleList.find(v => v.userId === test[i].value)
           if (!find) {
@@ -425,6 +438,10 @@ export default {
           const find = this.peopleList.filter(v => v.userId !== test[i].value)
           this.peopleList = find
         }
+      }
+      if(this.peopleList !== this.originPeopleList) {
+          this.boardModified = true
+          this.boardTaggedModified = true
       }
       // 확인 버튼을 클릭했을 경우 모달창을 끈다
       const modal = document.getElementById('popup')
@@ -524,7 +541,11 @@ export default {
         const taggedResult = []
         // 태그한 사람이 있을 경우
         if (this.peopleList.length !== 0) {
-          this.boardTaggedYn = 1
+          if(this.boardTaggedYn === 0) {
+            this.boardTaggedModified = true
+            this.boardModified = true
+            this.boardTaggedYn = 1
+          }
         }
         // 투표가 있을 경우
         if (this.pollModified) {
