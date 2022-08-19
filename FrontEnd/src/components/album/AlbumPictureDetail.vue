@@ -50,7 +50,7 @@ export default {
 .button-wrap{
     display: flex;
     justify-content: right;
-    margin-bottom: 5%;
+    margin-bottom: 9%;
 }
 .img-wrap {
   display: flex;
