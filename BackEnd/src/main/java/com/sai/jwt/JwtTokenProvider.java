@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class JwtTokenProvider {
 	private String secretKey = "16글자를넘겨야한다니정말로어렵군요흑흑빨리끝나라";
-	private long tokenValidTime = 1000L * 60 * 60;
+	private long tokenValidTime = 1000L * 60 * 120;
 
 	Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
 
