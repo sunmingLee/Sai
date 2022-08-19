@@ -128,7 +128,7 @@ p {
               div[data-v-ef26a08c] {
                 width: 235px;
                 height: 210px;
-                img {
+                img, video {
                   height: 100%;
                   width: 100%!important;
                 }
