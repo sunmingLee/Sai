@@ -9,32 +9,37 @@
 - 가족관리
     - 회원가입 시 새로운 가족을 만들거나, 기존에 존재하는 가족에 합류할 수 있습니다.
     - 가입 후에는 우리 가족의 별명을 짓거나 대표사진을 지정할 수 있고, 가족 구성원의 호칭을 설정할 수 있습니다.
-    - ![가족관리](https://imgbox.com/SFq5Irul)
+<img src="https://images2.imgbox.com/84/5d/SFq5Irul_o.png" alt="가족관리"/>
+    <!-- - ![가족관리](https://imgbox.com/SFq5Irul) -->
 
 - 거실
   - 거실은 텍스트, 이미지, 투표가 포함된 게시글을 통해 소통할 수 있는 공간입니다.
   - 또한 게시글에는 날짜, 장소, 인물을 추가해서 추억을 정리할 수 있습니다.
   - 거실에 작성한 게시글에는 댓글과 좋아요를 달 수 있습니다.
-  - ![거실](https://imgbox.com/RYRn0jMS)
+<img src="https://images2.imgbox.com/3d/4c/RYRn0jMS_o.png" alt="거실"/>
+  <!-- - ![거실](https://imgbox.com/RYRn0jMS) -->
 
 - 냉장고
     - 냉장고는 누구나 읽고 삭제할 수 있는 메모를 통해 소통할 수 있는 공간입니다.
-    - ![냉장고](https://imgbox.com/Pa3O1GqI)
+<img src="https://images2.imgbox.com/93/71/Pa3O1GqI_o.png" alt="냉장고"/>
+    <!-- - ![냉장고](https://imgbox.com/Pa3O1GqI) -->
 
 - 앨범
     - 앨범은 가족들의 사진을 정리해서 보관할 수 있는 공간입니다.
-    - ![앨범](https://imgbox.com/3StF8Aol)
+    <img src="https://images2.imgbox.com/fe/8d/3StF8Aol_o.png" alt="앨범"/>
+    <!-- - ![앨범](https://imgbox.com/3StF8Aol) -->
 
 - 달력
     - 달력은 가족들의 일정을 함께 볼 수 있는 공간입니다.
     - 일정은 개인일정/가족일정/기념일로 구분되어 표시됩니다.
-    - ![달력](https://imgbox.com/DhZQeMoj)
+  <img src="https://images2.imgbox.com/b2/35/DhZQeMoj_o.png" alt="달력"/>
+    <!-- - ![달력](https://imgbox.com/DhZQeMoj) -->
 
 ## 기술스택 및 아키텍쳐
 -----------------------
-![기술스택](https://imgbox.com/UZaAjKSY)
+<img src="https://images2.imgbox.com/11/4a/UZaAjKSY_o.png" alt="기술스택"/>
 
-![아키텍쳐](https://imgbox.com/SX4QTK63)
+<img src="https://images2.imgbox.com/16/8d/SX4QTK63_o.png" alt="아키텍쳐"/>
 
 ## 기대효과
 ------------
@@ -43,11 +48,11 @@
 - 말로는 표현하기 어려운 진솔한 이야기를 나눌 수 있습니다.
 ## ERD
 ------
-![ERD](https://imgbox.com/ijPAfzAA)
+<img src="https://images2.imgbox.com/a8/02/ijPAfzAA_o.png" alt="ERD"/>
 
 ## 목업
 ----
-![목업](https://imgbox.com/cDHdMh7j)
+<img src="https://images2.imgbox.com/c9/f0/cDHdMh7j_o.png" alt="목업"/>
 
 ## 멤버소개
 ---
