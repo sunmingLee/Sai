@@ -26,13 +26,13 @@
 
 - 앨범
     - 앨범은 가족들의 사진을 정리해서 보관할 수 있는 공간입니다.
-    <img src="https://images2.imgbox.com/fe/8d/3StF8Aol_o.png" alt="앨범"/>
+  <img src="https://images2.imgbox.com/b2/35/DhZQeMoj_o.png" alt="앨범"/>
     <!-- - ![앨범](https://imgbox.com/3StF8Aol) -->
 
 - 달력
     - 달력은 가족들의 일정을 함께 볼 수 있는 공간입니다.
     - 일정은 개인일정/가족일정/기념일로 구분되어 표시됩니다.
-  <img src="https://images2.imgbox.com/b2/35/DhZQeMoj_o.png" alt="달력"/>
+    <img src="https://images2.imgbox.com/fe/8d/3StF8Aol_o.png" alt="달력"/>
     <!-- - ![달력](https://imgbox.com/DhZQeMoj) -->
 
 ## 기술스택 및 아키텍쳐
