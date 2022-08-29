@@ -9,6 +9,6 @@ import com.sai.model.entity.MainPlan;
 public interface MainPlanRepository extends JpaRepository<MainPlan, Long> {
 
 
-	List<MainPlan> findAllByFamilyFamilyId(String familyId);
+	List<MainPlan> findAllByFamilyFamilyIdOrderByMainPlanStartDatetimeAsc(String familyId);
 
 }

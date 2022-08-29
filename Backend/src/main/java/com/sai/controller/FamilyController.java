@@ -145,7 +145,6 @@ public class FamilyController {
 
 		try {
 			FamilyDto familyDto = familyService.searchFamily(familyId);
-
 			if (familyDto != null) {
 				return new ResponseEntity<FamilyDto>(familyDto, HttpStatus.OK);
 			} else {

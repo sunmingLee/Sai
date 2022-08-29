@@ -12,12 +12,10 @@ import com.sai.model.entity.Memo;
 @Repository
 public interface MemoRepository extends JpaRepository<Memo, Long> {
 
-	public List<Memo> findMemosByFamily(Family family);
+	public List<Memo> findMemosByFamilyOrderByMemoRegDateTimeDesc(Family family);
 
-	public List<Memo> findAllByFamilyAndMemoRegDateTimeBetween(Family family, LocalDateTime startDatetime,
+	public List<Memo> findAllByFamilyAndMemoRegDateTimeBetweenOrderByMemoRegDateTimeDesc(Family family, LocalDateTime startDatetime,
 			LocalDateTime endDatetime);
 
-//	public List<Memo> findAllByFamilyAndMemoRegDateTimeBetween(Family family, LocalDateTime startDatetime,
-//			LocalDateTime endDatetime);
 
 }

@@ -9,9 +9,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
+import javax.persistence.EntityExistsException;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +36,7 @@ import com.sai.model.repository.BoardRepository;
 import com.sai.model.repository.FamilyRegisterRepository;
 import com.sai.model.repository.UserRepository;
 import com.sai.model.service.MailService;
+import com.sai.security.UserPrincipal;
 
 import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
@@ -51,7 +57,8 @@ public class UserServiceImpl implements UserService {
 	private final JwtTokenProvider jwtTokenProvider;
 	private final PasswordEncoder passwordEncoder;
 	private final ModelMapper modelMapper;
-
+	private final AuthenticationManager authenticationManager;
+	
 	// 아이디 중복 체크
 	@Override
 	public boolean checkUserIdDuplicate(String userId) {
@@ -66,27 +73,32 @@ public class UserServiceImpl implements UserService {
 
 	// 직접 회원 가입
 	@Override
-	public String insertUser(UserDto userInfo) {
+	public String insertUser(UserDto userInfo) throws Exception{
 		String userId = userInfo.getUserId();
 		String email = userInfo.getEmail();
 		String password = userInfo.getPassword();
 		String userName = userInfo.getUserName();
 		String role = userInfo.getRole();
-
+		
+		if(userRepository.existsById(userId)) {
+			throw new EntityExistsException("중복된 아이디입니다!");
+		}
+		
+		if(userRepository.existsByEmail(email)) {
+			throw new EntityExistsException("중복된 이메일입니다!");
+		}
+		
 		User user = User.builder().userId(userId).email(email).password(passwordEncoder.encode(password))
 				.role(UserRole.USER).userName(userName).build();
 		userRepository.save(user);
-		return "회원가입 성공";
+		return jwtTokenProvider.createToken(user.getUserId());
 	}
 
 	// 회원정보 추가 혹은 수정
 	@Override
 	public String addUserInfo(UserInfoDTO addInfo, MultipartFile file) throws Exception {
-		System.out.println(addInfo);
 		User user = userRepository.findByUserId(addInfo.getUserId()).get();
 		user.addUserinfo(addInfo);
-		System.out.println(user.toString());
-//		userRepository.save(user);
 
 		if (file == null) {
 			System.out.println("파일이 읍따");
@@ -95,7 +107,6 @@ public class UserServiceImpl implements UserService {
 		// 유저 이미지 업로드
 //		if (!file.isEmpty() || file != null) {
 		if (file != null) {
-			System.out.println("나야");
 			// 폴더 생성
 			File uploadPathFolder = new File(uploadPath);
 			if (!uploadPathFolder.exists()) {
@@ -126,16 +137,12 @@ public class UserServiceImpl implements UserService {
 				Thumbnails.of(originalImage).size(500, 500).crop(Positions.CENTER).toFile(thumbnailFile);
 
 			} catch (IOException e) {
-				System.out.println("너니?");
 				e.printStackTrace();
 			}
-			System.out.println("나거든");
 			user.updateUserImage(OriginalName, frontThumbnailPath, thumbnailPath, fileType);
 		}
 
-		System.out.println("test3");
 		userRepository.save(user);
-		System.out.println("test2");
 		return "유저 정보 추가 성공";
 	}
 
@@ -180,11 +187,11 @@ public class UserServiceImpl implements UserService {
 	// 로그인
 	@Override
 	public String login(LoginUserRequestDto user) {
-//		LoginUserResponseDto loginUserResponseDto = new LoginUserResponseDto();
+		
+		
 		User loginUser = userRepository.findByUserId(user.getUserId())
 				.orElseThrow(() -> new ResourceNotFoundException("User", "userId", user.getUserId()));
 		if (!passwordEncoder.matches(user.getPassword(), loginUser.getPassword())) {
-//			loginUserResponseDto.setJWT(jwtTokenProvider.createToken(loginUser.getUserId()));
 			throw new IllegalArgumentException("잘못된 비밀번호입니다.");
 		}
 		return jwtTokenProvider.createToken(user.getUserId());
@@ -226,7 +233,6 @@ public class UserServiceImpl implements UserService {
 		} else {
 			infoUserResponseDto.setFamilyId(loginUser.getFamily().getFamilyId());
 		}
-
 		return infoUserResponseDto;
 	}
 

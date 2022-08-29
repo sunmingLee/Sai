@@ -14,10 +14,6 @@ public class PlanResponseDto {
 
 	private Long mainPlanId;
 	
-	private Family family;
-	
-	private List<User> users;
-	
 	private String planType;
 	
 	private String planTitle;
@@ -28,8 +24,10 @@ public class PlanResponseDto {
 	
 	private LocalDateTime planNotiDatetime;
 	
-	private int planRoutineDay;
+	private Integer planRoutineDay;
 	
-	private LocalDate routineEndDate;
+	private String planPlace;
+	
+	private Boolean allDayYn; 
 	
 }

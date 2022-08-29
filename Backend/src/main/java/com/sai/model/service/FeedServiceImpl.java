@@ -26,6 +26,7 @@ import com.sai.model.dto.boardMedia.ViewBoardMediaResponseDto;
 import com.sai.model.dto.boardTagged.InputBoardTaggedRequestDto;
 import com.sai.model.dto.boardTagged.ViewBoardTaggedResponseDto;
 import com.sai.model.dto.notification.CreateNotificationRequestDto;
+import com.sai.model.dto.poll.PollRequest;
 import com.sai.model.dto.poll.PollResponse;
 import com.sai.model.dto.reply.ReplyDto;
 import com.sai.model.entity.Board;
@@ -255,25 +256,26 @@ public class FeedServiceImpl implements FeedService {
 		if (board.getBoardTaggedYn()) {
 			List<InputBoardTaggedRequestDto> inputBoardTaggedRequestDtos = createBoardRequestDto
 					.getInputBoardTaggedRequestDtos();
-
-			for (InputBoardTaggedRequestDto inputBoardTaggedRequestDto : inputBoardTaggedRequestDtos) {
-				User user = userRepository.findById(inputBoardTaggedRequestDto.getUserId()).get();
-				BoardTagged boardTagged = BoardTagged.builder().board(board).user(user).build();
-
+					
+					for (InputBoardTaggedRequestDto inputBoardTaggedRequestDto : inputBoardTaggedRequestDtos) {
+						User user = userRepository.findById(inputBoardTaggedRequestDto.getUserId()).get();
+						BoardTagged boardTagged = BoardTagged.builder().board(board).user(user).build();
+						
+						boardTaggedRepository.save(boardTagged);
 				if (createBoardRequestDto.getInputBoardRequestDto().getUserId()
 						.equals(inputBoardTaggedRequestDto.getUserId()))
 					continue;
 
 				CreateNotificationRequestDto cnrd = CreateNotificationRequestDto.builder()
 						.notiFromUserId(board.getUser().getUserId()).notiToUserId(user.getUserId())
-						.notiContent("님이 당신을 태그했습니다 !").notiType(NotiType.TAGGED).build();
+						.notiContent("님이 당신을 태그했습니다 !").notiContentId(Long.toString(board.getBoardId()))
+						.notiType(NotiType.TAGGED).build();
 				notiService.createNoti(cnrd);
 
 //				BoardTagged boardTagged = modelMapper.map(inputBoardTaggedRequestDto, BoardTagged.class);
 //				//	 userId를 boardTaggedId에 넣으려고 해서 에러가 발생
 //				boardTagged.setBoard(board);
 
-				boardTaggedRepository.save(boardTagged);
 			}
 		}
 	}
@@ -295,37 +297,53 @@ public class FeedServiceImpl implements FeedService {
 		// 미디어 삭제
 		if (deleteBoardMediaIds != null) {
 			for (Long deleteBoardMediaId : deleteBoardMediaIds) {
-//				System.out.println(deleteBoardMediaId);
 				BoardMedia boardMedia = boardMediaRepository.findById(deleteBoardMediaId).get();
 				boardMedia.delete();
 				boardMediaRepository.delete(boardMedia);
 			}
 		}
 
-		// 투표 삭제 후 재생성
-		if (updateBoardRequestDto.isPollModified()) {
-			// 삭제
-			Poll poll = pollRepository.findByBoardBoardId(board.getBoardId());
-			pollRepository.delete(poll);
+		if (modifyBoardRequestDto.getPollYn()) {
 
-			// 재생성
-			pollService.createPoll(updateBoardRequestDto.getPollRequest());
-		}
+			// 투표 삭제 후 재생성
+			if (updateBoardRequestDto.isPollModified()) {
+				// 삭제
+				Poll poll = pollRepository.findByBoardBoardId(board.getBoardId());
 
-		// 태그 삭제 후 재생성
-		if (updateBoardRequestDto.isBoardTaggedModified()) {
-			boardTaggedRepository.deleteByBoard(board);
+				// 투표가 있는 경우
+				if (poll != null) {
+					pollRepository.delete(poll);
 
-			List<InputBoardTaggedRequestDto> inputBoardTaggedRequestDtos = updateBoardRequestDto
-					.getInputBoardTaggedRequestDtos();
-
-			if (inputBoardTaggedRequestDtos != null)
-				for (InputBoardTaggedRequestDto inputBoardTaggedRequestDto : inputBoardTaggedRequestDtos) {
-					User user = userRepository.findById(inputBoardTaggedRequestDto.getUserId()).get();
-					BoardTagged boardTagged = BoardTagged.builder().board(board).user(user).build();
-
-					boardTaggedRepository.save(boardTagged);
+					// 재생성
+					PollRequest pollRequest = updateBoardRequestDto.getPollRequest();
+					if (pollRequest != null) {
+						pollService.createPoll(pollRequest);
+					}
 				}
+			}
+			// 투표가 없는 경우 새로 만들기
+			else {
+				PollRequest pollRequest = updateBoardRequestDto.getPollRequest();
+				if (pollRequest != null) {
+					pollService.createPoll(pollRequest);
+				}
+			}
+
+			// 태그 삭제 후 재생성
+			if (updateBoardRequestDto.isBoardTaggedModified()) {
+				boardTaggedRepository.deleteByBoard(board);
+
+				List<InputBoardTaggedRequestDto> inputBoardTaggedRequestDtos = updateBoardRequestDto
+						.getInputBoardTaggedRequestDtos();
+
+				if (inputBoardTaggedRequestDtos != null)
+					for (InputBoardTaggedRequestDto inputBoardTaggedRequestDto : inputBoardTaggedRequestDtos) {
+						User user = userRepository.findById(inputBoardTaggedRequestDto.getUserId()).get();
+						BoardTagged boardTagged = BoardTagged.builder().board(board).user(user).build();
+
+						boardTaggedRepository.save(boardTagged);
+					}
+			}
 		}
 	}
 
@@ -350,7 +368,7 @@ public class FeedServiceImpl implements FeedService {
 		if (!userId.equals(board.getUser().getUserId())) {
 			CreateNotificationRequestDto cnrd = CreateNotificationRequestDto.builder()
 					.notiToUserId(board.getUser().getUserId()).notiFromUserId(userId).notiContent("좋아요를 눌렀습니다.")
-					.notiType(NotiType.LIKE).build();
+					.notiContentId(Long.toString(boardId)).notiType(NotiType.LIKE).build();
 			notiService.createNoti(cnrd);
 		}
 

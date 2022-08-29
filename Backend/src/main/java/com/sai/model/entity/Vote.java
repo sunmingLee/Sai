@@ -13,7 +13,9 @@ import javax.persistence.UniqueConstraint;
 import com.sai.model.audit.DateAudit;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper=false)
 @Data
 @Entity
 @Table(name = "vote", uniqueConstraints = { @UniqueConstraint(columnNames = { "poll_id", "user_id" }) })

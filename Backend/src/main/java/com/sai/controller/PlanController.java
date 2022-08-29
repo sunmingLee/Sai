@@ -1,8 +1,9 @@
 package com.sai.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.event.PublicInvocationEvent;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sai.model.dto.plan.CreatePlanRequsetDto;
+import com.sai.model.dto.plan.PlanResponseDto;
 import com.sai.model.dto.plan.UpdatePlanRequestDto;
 import com.sai.model.service.PlanService;
 
@@ -37,7 +39,6 @@ public class PlanController {
 	// 일정 등록
 	@PostMapping
 	public ResponseEntity<?> createPlan(@RequestBody CreatePlanRequsetDto createPlanRequsetDto ) throws Exception {
-		
 		try {
 			planService.createPlan(createPlanRequsetDto);
 			return ResponseEntity.status(200).body("일정이 등록되었습니다.");
@@ -73,7 +74,9 @@ public class PlanController {
 	@GetMapping("/{familyId}")
 	public ResponseEntity<?> selectAllPlan(@PathVariable String familyId ) throws Exception {
 		try {
-			return ResponseEntity.status(200).body(planService.getPlanAll(familyId));
+			List<PlanResponseDto> planResponseDtos = planService.getPlanAll(familyId);
+			
+			return ResponseEntity.status(200).body(planResponseDtos);
 		} catch (Exception e) {
 			return exceptionHandling(e);
 		}

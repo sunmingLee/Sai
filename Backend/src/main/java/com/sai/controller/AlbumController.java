@@ -52,7 +52,6 @@ public class AlbumController {
 	@ApiOperation(value = "getAlbumList : 앨범 리스트 조회")
 	@GetMapping("/family/{familyId}")
 	public ResponseEntity<?> getAlbumList(@PathVariable String familyId) throws Exception {
-
 		try {
 			List<ViewAlbumResponseDto> viewAlbumListResponseDtos = albumService.getAlbumList(familyId);
 

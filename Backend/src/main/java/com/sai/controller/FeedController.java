@@ -8,6 +8,8 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,7 +48,7 @@ public class FeedController {
 
 		try {
 			List<ReadFeedResponseDto> readFeedResponseDtos = feedService.readAllBoard(familyId, userId, pageable, currUser);
-
+			
 			if (readFeedResponseDtos != null) {
 				return new ResponseEntity<List<ReadFeedResponseDto>>(readFeedResponseDtos, HttpStatus.OK);
 			} else {
@@ -65,13 +66,11 @@ public class FeedController {
 
 		try {
 			ReadBoardResponseDto readBoardResponseDto = feedService.readOneBoard(boardId, userId, currUser);
-
 			if (readBoardResponseDto != null) {
 				return new ResponseEntity<ReadBoardResponseDto>(readBoardResponseDto, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 			}
-
 		} catch (Exception e) {
 			return exceptionHandling(e);
 		}

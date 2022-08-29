@@ -46,7 +46,7 @@ public class MemoServiceImpl implements MemoService {
 		List<MemoPopupDto> resultList = new ArrayList<MemoPopupDto>();
 
 		// 위에서 찾은 Family 객체를 이용하여 우리 가족의 메모 리스트를 모두 불러옵니다.
-		List<Memo> memoList = memoRepository.findMemosByFamily(family);
+		List<Memo> memoList = memoRepository.findMemosByFamilyOrderByMemoRegDateTimeDesc(family);
 
 		// 우리 가족의 메모 리스트 중 아직 내가 확인하지 않은 메모를 MemoPopup 리스트에 담습니다.
 		for (Memo memo : memoList) {
@@ -89,7 +89,7 @@ public class MemoServiceImpl implements MemoService {
 		List<MemoDto> resultList = new ArrayList<MemoDto>();
 
 		// 위에서 찾은 Family 객체를 이용하여 우리 가족의 메모 리스트를 모두 불러옵니다.
-		List<Memo> memoList = memoRepository.findMemosByFamily(family);
+		List<Memo> memoList = memoRepository.findMemosByFamilyOrderByMemoRegDateTimeDesc(family);
 
 		// 우리 가족의 메모를 Memo 리스트에 담습니다.
 		for (Memo memo : memoList) {
@@ -111,7 +111,7 @@ public class MemoServiceImpl implements MemoService {
 		// 위에서 찾은 Family 객체를 이용하여 오늘 작성된 우리 가족의 메모 리스트를 모두 불러옵니다.
 		LocalDateTime startDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0, 0));
 		LocalDateTime endDatetime = LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 59, 59));
-		List<Memo> memoList = memoRepository.findAllByFamilyAndMemoRegDateTimeBetween(family, startDatetime,
+		List<Memo> memoList = memoRepository.findAllByFamilyAndMemoRegDateTimeBetweenOrderByMemoRegDateTimeDesc(family, startDatetime,
 				endDatetime);
 
 		// 우리 가족의 메모를 Memo 리스트에 담습니다.
@@ -126,7 +126,7 @@ public class MemoServiceImpl implements MemoService {
 	@Override
 	public void readMemo(String userId) {
 		Family family = userRepository.findById(userId).get().getFamily();
-		List<Memo> memoList = memoRepository.findMemosByFamily(family);
+		List<Memo> memoList = memoRepository.findMemosByFamilyOrderByMemoRegDateTimeDesc(family);
 		for (Memo memo : memoList) {
 			// 현재 메모의 읽음 목록에 내 아이디가 있는지 확인하는 플래그입니다.
 			boolean flag = false;
