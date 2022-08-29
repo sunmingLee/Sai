@@ -3,16 +3,19 @@
     <div style="height: 100%">
        <FeedHeader />
       <div class="feed-wrap">
-            <div class="feed-flex" v-if="feedList.length">
+            <div class="feed-flex" v-if="this.feedList.length">
                 <div v-for="(feed, index) in feedList" :key="index" class="feed-div">
-                    <div class="flex">
+                    <div class="header-flex">
                         <div class="content-header">
                             <div v-for="(callsign, index) in familyCallsignList" :key="index" class="famliy-callsign">
                                 <div v-if="feed.viewBoardResponseDto.userId === callsign.toUserId">
                                     <span>{{callsign.callsign}}</span>
                                 </div>
+                                <div v-else style="display: none"></div>
                             </div>
-                            <span>{{feed.viewBoardResponseDto.boardRegDatetime.substring(0,10)}}</span>
+                        </div>
+                        <div class="header-date">
+                          <span>{{feed.viewBoardResponseDto.boardRegDatetime.substring(0,10)}}</span>
                         </div>
                     </div>
                     <div class="flex body">
@@ -27,26 +30,29 @@
                                   <td><img class="poll-image" src="@/assets/images/person.svg" alt="user image">{{choice.voteCount}}</td>
                                 </tr>
                               </table>
-                                <!-- <h3>{{feed.pollResponse.question}}</h3>
-                                <div v-for="(choice, index) in feed.pollResponse.choices" :key="index">
-                                    <div>
-                                        <span>{{choice.text}}</span>
-                                        <span>{{choice.voteCount}}</span>
-                                    </div>
-                                </div> -->
                             </div>
                             <div v-else-if="feed.viewBoardResponseDto.boardMediaYn" class="media-wrap">
-                                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-                                    <div class="carousel-inner" >
-                                      <div class="carousel-inner" >
+                                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" style="height: 300px">
+                                    <div class="carousel-inner">
+                                      <div class="carousel-inner">
                                         <div class="carousel-item active">
-                                            <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100">
-                                            <!-- <img src="@/assets/images/byebye.png" class="d-block w-100"> -->
+                                          <div v-if="feed.viewBoardMediaResponseDto[0].boardMediaType.includes('video')" style="height: 100%">
+                                            <video autoplay playsinline loop muted :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100" style="height: 100%"/>
+                                          </div>
+                                          <div v-else style="height: 100%">
+                                            <img :src="feed.viewBoardMediaResponseDto[0].boardMediaPath" class="d-block w-100" style="height: 100%">
+                                            <!-- <img src="@/assets/images/byebye.png" class="d-block w-100" style="height: 100%; max-width=300px"> -->
+                                          </div>
                                         </div>
                                         <div v-for="(src, index) in feed.viewBoardMediaResponseDto" :key="index"> 
                                           <div v-if="index !== 0" class="carousel-item">
-                                            <img :src="src.boardMediaPath" class="d-block w-100">
-                                            <!-- <img src="@/assets/images/dog2.png" class="d-block w-100"> -->
+                                            <div class="test" v-if="src.boardMediaType.includes('video')" style="height: 100%">
+                                              <video autoplay playsinline loop muted :src="src.boardMediaPath" class="d-block w-100" style="height: 100%"/>
+                                            </div>
+                                            <div class="test" v-else style="height: 100%">
+                                              <img :src="src.boardMediaPath" class="d-block w-100" style="height: 100%">
+                                            <!-- <img src="@/assets/images/dog2.png" class="d-block w-100" style="height: 100%;"> -->
+                                            </div>
                                           </div>
                                         </div>
                                     </div>
@@ -67,11 +73,13 @@
                         </div>
                     </div>
                     <div class="flex reaction">
+                      <!-- 좋아요 -->
                         <div class="content-cnt">
-                            <img v-if="feed.boardLiked" :src="like" @click="unlikeButton" class="like-icon">
-                            <img v-else :src="unlike" @click="likeButton" class="like-icon">
+                            <img v-if="feed.boardLiked" src="@/assets/images/suit-heart-fill.svg" @click="likeButton(feed.viewBoardResponseDto.boardId)" class="like-icon">
+                            <img v-else src="@/assets/images/suit-heart.svg" @click="likeButton(feed.viewBoardResponseDto.boardId)" class="like-icon">
                             {{feed.viewBoardResponseDto.boardLikeCnt}}
                         </div>
+                        <!-- 댓글 -->
                         <div class="content-reply">
                             <img src="@/assets/images/comment-regular.svg" alt="calendar" class="reply-icon">
                             {{feed.viewBoardResponseDto.boardReplyCnt}}
@@ -80,17 +88,21 @@
                           <Button buttonClass="small information" buttonText="상세보기" @click="goDetail(feed.viewBoardResponseDto.boardId)"></Button>
                         </div>
                     </div>
-                    <div v-if="feed.replyDto !== null">
+                    <!-- 첫번째 댓글 -->
+                    <div v-if="feed.replyDto !== null" style="padding:2px 20px">
                       <div v-for="(callsign, index) in familyCallsignList" :key="index" class="famliy-callsign">
                         <div v-if="feed.replyDto.userId === callsign.toUserId">
-                          <span>{{callsign.callsign}}</span>
+                          <span style="font-weight: bold">{{callsign.callsign}}</span>
                         </div>
                       </div>
                       {{feed.replyDto.replyContent}}
                     </div>
-                    <div v-else>
-                      <span>등록된 댓글이 없습니다. 첫 댓글의 주인공이 되어보세요!</span>
+                    <div v-else style="padding:2px 20px">
+                      <span>등록된 댓글이 없습니다</span>
                     </div>
+                </div>
+                <div class="feed-more">
+                  <Button buttonClass="small positive" buttonText="더보기" @click="feedMore"></Button>
                 </div>
             </div>
             <div v-else>
@@ -119,8 +131,11 @@ export default {
     // 피드 조회
     const info = {
       userId: localStorage.getItem('userId'),
-      familyId: localStorage.getItem('familyId')
+      familyId: localStorage.getItem('familyId'),
+      page: this.page
     }
+    // 피드 초기화부터 때리고
+    this.feedReset()
     // 피드 전체 리스트 조회
     this.feedAllList(info)
     // 가족 콜사인 조회
@@ -129,42 +144,38 @@ export default {
     this.getFamilyInfo(info.familyId)
     // 유저 정보 조회
     this.checkUserInfo(info.userId)
-    const user = localStorage.getItem('userInfo')
-    const userInfo = JSON.parse(user)
   },
   mounted () {
-
+    
   },
   computed: {
     ...mapState(boardStore, ['feedList']),
     ...mapState(familyStore, ['familyCallsignList']),
+    image() {
+      return feedList.boardLiked
+    }
   },
   methods: {
     ...mapActions(userStore, ['checkUserInfo']),
-    ...mapActions(boardStore, ['feedAllList', 'setBoardId']),
+    ...mapActions(boardStore, ['feedAllList', 'setBoardId', 'upBoardLike', 'downBoardLike', 'feedReset']),
     ...mapActions(familyStore, ['callsignList', 'getFamilyInfo']),
     // 좋아요 버튼 클릭
-    likeButton () {
+    likeButton (boardId) {
       const info = {
-        userId: this.$store.state.userId,
-        familyId: this.$store.state.familyId
+        userId: localStorage.getItem('userId'),
+        boardId: boardId,
+        familyId: localStorage.getItem('familyId'),
+        page: this.page
       }
-      const icon = document.querySelector('.like-icon')
-      console.log(icon)
-      this.unlike = require('@/assets/images/heart-fill.svg')
-      if (this.$store.state.feedAllList.boardLiked) {
-        console.log('좋아요')
-        // console.log(document.querySelector('.like-icon'))
-        // this.$store.dispatch('likeClick', info)
-      } else {
-        console.log('좋아요 취소')
-        this.unlike = require('@/assets/images/heart.svg')
-        // this.$store.dispatch('unlikeClick', info)
+      for(let i = 0; i < this.feedList.length; i++) {
+        if(this.feedList[i].viewBoardResponseDto.boardId === boardId) {
+          if(!this.feedList[i].boardLiked) {
+            this.upBoardLike(info)
+          } else {
+            this.downBoardLike(info)
+          }
+        }
       }
-    },
-    // 좋아요 취소
-    unlikeButton () {
-
     },
     // 글 작성 페이지 이동
     goBoardCreate () {
@@ -172,15 +183,23 @@ export default {
     },
     // 글 상세보기 페이지 이동
     goDetail (boardId) {
-    //   console.log('들어가기 전: ' + boardId)
       this.setBoardId(boardId)
+    },
+    //더보기
+    feedMore() {
+      this.page++
+      const info = {
+        userId: localStorage.getItem('userId'),
+        page: this.page,
+        familyId: localStorage.getItem('familyId')
+      }
+      this.feedAllList(info)
     }
   },
   data () {
     return {
-      test: '',
-      like: require('@/assets/images/heart-fill.svg'),
-      unlike: require('@/assets/images/heart.svg')
+      page: 0,
+      list: []
     }
   }
 }
@@ -195,24 +214,19 @@ p {
 }
 //캐러셀
 .carousel-inner{
-  width: auto;
-  height: 250px;
+  width: 100%!important;
+  // height: 250px;
+  height: 100%;
+  margin: 0 auto
 }
 .carousel-item{
-  // width: auto;
-  // height: 100px;
   width: 100%;
   height: 100%;
 }
 .d-block {
-  //사진 크기를 가운데
   margin: 0 auto;
-  // width: auto!important;
-  // height: 250px;
-  //옆으로 길게 늘리기
-  width: 100%;
-  //사진의 일부  
-  // height: 100%;
+  width: 300px!important;
+  height: 100%;
 }
 
 .media-wrap {
@@ -220,29 +234,47 @@ p {
 }
 
 //콜사인과 날짜
-.content-header {
-  font-weight: bold;
+.header-flex {
   display: flex;
   justify-content: space-around;
+  .header-date {
+    font-weight: bold;
+    margin: 10px 0 10px 0;
+  }
+}
+.content-header {
+  font-weight: bold;
   margin: 10px 0 10px 0;
 }
 
 //글, 사진, 투표의 공간
 .flex {
   &.body {
-    // width: 500px;
-    border: 1px solid black;
+    border: 1px solid #7b371c;
     padding: 10px;
-    // height: 300px;
     height: auto;
-    margin: 0 auto;
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
+    margin: 0 10px;
+    .content-body {
+      .poll-body {
+        table {
+          margin: 0 auto;
+          min-width: 300px;
+        }
+      }
+    }
   }
 }
 
+.carousel-control-next, .carousel-control-prev {
+  top: 150px;
+}
+.carousel-control-prev-icon { 
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E"); 
+ }
 
+.carousel-control-next-icon {
+   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E"); 
+}
 
 // content
 .feed-wrap {
@@ -274,11 +306,7 @@ p {
 .flex {
   &.reaction {
     display: flex;
-    padding: 10px;
-    // border: 1px solid black;
-    // .detail-button {
-    //   margin-left: 375px;
-    // }
+    padding: 10px 24px;
   }
   .content-cnt {
     padding-right: 20px;
@@ -304,10 +332,13 @@ p {
     border: 1px solid black;
   }
   :nth-child(1) {
+    padding: 7px;
     border-right: none;
   }
   :nth-child(2) {
     border-left: none;
+    text-align: center;
+    min-width: 30px;
   }
 }
 table {
@@ -333,5 +364,12 @@ table {
         width: 50px;
         height: 50px;
     }
+}
+.feed-more {
+  min-width: 300px;
+  min-height: auto;
+  flex-basis: 600px;
+  margin: 0 auto;
+  text-align: center;
 }
 </style>

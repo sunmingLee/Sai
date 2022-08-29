@@ -2,31 +2,61 @@
   <div class="picture-detail-wrap">
     <HeaderTitle hasBack="true"></HeaderTitle>
     <div class="button-wrap">
-        <Button buttonClass="small information" buttonText="상세정보"></Button>
-        <Button style="margin-left:5px;" buttonClass="small information" buttonText="앨범이동"></Button>
-        <Button style="margin-left:5px;" buttonClass="small information" buttonText="다운로드"></Button>
-        <Button style="margin-left:5px;" buttonClass="small information" buttonText="삭제"></Button>
+        <Button style="margin-left:5px;" buttonClass="small information" buttonText="삭제" @click="eraseMedia"></Button>
     </div>
-    <img src="@/assets/images/여행1.jpg" class="img-fluid" alt="image">
+    <div class="img-wrap">
+      <!-- <img src="@/assets/images/여행1.jpg"> -->
+      <img :src="albumMediaPath" class="d-block w-100" alt="image">
+    </div>
   </div>
 </template>
 
 <script>
 import HeaderTitle from '../common/HeaderTitle.vue'
 import Button from '../common/Button.vue'
+
+import { mapActions } from 'vuex'
+const albumStore = 'albumStore'
 export default {
-  components: { HeaderTitle, Button }
+  components: { HeaderTitle, Button },
+  data () {
+    return {
+      albumMediaId: '',
+      albumMediaPath: ''
+    }
+  },
+  created () {
+    this.albumMediaId = JSON.parse(localStorage.getItem('picture')).albumMediaId
+    this.albumMediaPath = JSON.parse(localStorage.getItem('picture')).albumMediaPath
+  },
+  methods: {
+    ...mapActions(albumStore, ['downloadMedia', 'deleteMedia']),
+    // 사진 삭제
+    eraseMedia () {
+      this.deleteMedia(this.albumMediaId)
+    }
+  }
 }
 </script>
 
 <style scoped lang="scss">
 .picture-detail-wrap{
     height: 90%;
+    img {
+      width: 100%!important;
+      height: auto;
+    }
 }
 .button-wrap{
     display: flex;
     justify-content: right;
-    margin-bottom: 5%;
+    margin-bottom: 9%;
+}
+.img-wrap {
+  display: flex;
+  align-items: center;
+  min-height: 550px;
+  max-height: 500px;
 }
 img{
     height: 80%;

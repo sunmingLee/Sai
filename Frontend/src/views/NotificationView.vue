@@ -22,6 +22,11 @@
                 <span style="font-weight: bold;"> 좋아요 </span>
                 <span> {{callsign.callsign}}님이 {{noti.notiContent}}</span>
               </span>
+              <!-- 태그 -->
+              <span v-else-if="noti.notiType === 'TAGGED'">
+                <span style="font-weight: bold;"> 언급 </span>
+                <span> {{callsign.callsign}}{{noti.notiContent}}</span>
+              </span>
             </span>
           </span>
           <!-- 가족신청 -->

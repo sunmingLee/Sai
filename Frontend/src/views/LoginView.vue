@@ -1,24 +1,25 @@
 <template>
   <div class="container">
-    <img
-      style="margin-top: 30px"
-      src="@/assets/images/사이logo_cut.png"
-      alt="Logo"
-    />
-    <LoginInput></LoginInput>
-    <LoginSocial></LoginSocial>
-    <div style="margin-bottom: 50px; margin-top: 10px">
-      <router-link to="/searchId">아이디 찾기</router-link> |
-      <router-link to="/searchPassword">비밀번호 찾기</router-link>
+    <div class="sai-image">
+      <img src="@/assets/images/사이logo_cut.png" alt="Logo"/>
     </div>
-    <div class="signIn">
-      아직 회원이 아니신가요?
-      <Button buttonClass="small positive" buttonText="회원가입" @click="goJoin"></Button>
+    <LoginInput></LoginInput>
+    <div>
+      <div style="margin-bottom: 50px; margin-top: 10px" class="search-wrap">
+        <router-link to="/searchId">아이디 찾기</router-link>
+        <span>|</span>
+        <router-link to="/searchPassword">비밀번호 찾기</router-link>
+      </div>
+      <div class="signIn">
+        <span>아직 회원이 아니신가요?</span>
+        <Button buttonClass="small positive" buttonText="회원가입" @click="goJoin"></Button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+// window.localStorage.clear();
 import Button from '@/components/common/Button.vue'
 import LoginInput from '@/components/login/LoginInput.vue'
 import LoginSocial from '@/components/login/LoginSocial.vue'
@@ -29,14 +30,50 @@ export default {
     goJoin () {
       this.$router.push({ name: 'join' })
     }
-  }
-
+  },
+  beforeCreate() {
+    window.localStorage.clear();
+  },
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 .container{
-  text-align: center;
+  /* text-align: center; */
+  max-width: 900px;
+  .sai-image {
+    top: 0;
+    padding: 0 5%;
+    display: flex;
+    align-items: center;
+    margin: 5% 0 2% 0;
+    justify-content: center;
+    margin: 40px 0;
+  }
+}
+::v-deep {
+  .input-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    div {
+      min-width: 300px;
+      min-height: auto;
+      display: flex;
+      justify-content: center;
+      max-width: 900px;
+      flex-basis: 600px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+    }
+  }
+}
+.search-wrap {
+  display: flex;
+  justify-content: center;
+  span {
+    padding: 0 10px;
+  }
 }
 
 a {
@@ -49,12 +86,12 @@ a {
   justify-content: center;
   align-items: center;
   margin-top: 15px;
+  span {
+    margin-right: 15px;
+  }
 }
 
 #buttonLogin {
   margin-bottom: 20px;
-  /* position: absolute;
-  left: 223px;
-  top: 320px; */
 }
 </style>

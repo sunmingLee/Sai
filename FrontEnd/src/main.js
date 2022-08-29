@@ -7,9 +7,6 @@ import router from './router'
 import store from './store'
 // import fab from 'vue-fab'
 
-// Vue-cookies
-import VueCookies from 'vue-cookies'
-
 import Datepicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import VCalendar from 'v-calendar'

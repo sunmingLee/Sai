@@ -16,7 +16,7 @@ export default {
   position: absolute;
   overflow: visible;
   height: 100vh;
-  width: inherit;
+  width: 340px;
 }
 .profile{
     margin-top: 20px;

@@ -2,6 +2,7 @@
 import axios from 'axios'
 import router from '@/router/index.js'
 import { API_BASE_URL } from '@/config'
+import { instance } from '@/api/index.js'
 
 const api_url = API_BASE_URL + '/album'
 const albumStore = {
@@ -32,47 +33,38 @@ const albumStore = {
   actions: {
     // 앨범 리스트 조회
     getFolderList ({ commit }, familyId) {
-      axios.get(api_url + `/family/${familyId}`)
+      instance.get(api_url + `/family/${familyId}`)
         .then((res) => {
-          console.log(res)
           if (res.status === 200) {
             commit('SET_FOLDER_LIST', res.data)
           } else {
-            console.log(res)
           }
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 앨범 생성
     makeAlbum ({ commit, dispatch }, info) {
-      axios.post(api_url + '/', info)
+      instance.post(api_url + '/', info)
         .then((res) => {
-          console.log(res)
           if (res.status === 200) {
             dispatch('getFolderList', info.familyId)
           } else {
-            console.log(res)
           }
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 앨범 삭제
     deleteAlbum ({ commit, dispatch }, albumId) {
-      axios.delete(api_url + '/' + albumId)
+      instance.delete(api_url + '/' + albumId)
         .then((res) => {
-          console.log(res)
           if (res.status === 200) {
             dispatch('getFolderList', localStorage.getItem('familyId'))
           } else {
-            console.log(res)
           }
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 앨범 정보 저장 후 앨범 상세 조회 페이지로 이동(로컬스토리지)
@@ -85,27 +77,23 @@ const albumStore = {
     },
     // 앨범 상세 조회(미디어리스트 조회)
     getMediaList ({ commit }) {
-      axios.get(api_url + '/' + localStorage.getItem('albumId'))
+      instance.get(api_url + '/' + localStorage.getItem('albumId'))
         .then((res) => {
-          console.log(res)
           if (res.status === 200) {
             commit('SET_MEDIA_LIST', res.data)
           } else {
-            console.log(res)
           }
         })
         .catch((err) => {
-          console.log(err)
         })
     },
     // 앨범 미디어 등록
     insertMedia ({ commit, dispatch }, mediaList) {
       const formData = new FormData()
       for (let i = 0; i < mediaList.length; i++) {
-        console.log(mediaList[i])
         formData.append('files', mediaList[i])
       }
-      axios({
+      instance({
         url: api_url + '/' + localStorage.getItem('albumId'),
         method: 'POST',
         data: formData,
@@ -114,30 +102,37 @@ const albumStore = {
         }
       })
         .then((res) => {
-          console.log(res)
           if (res.status === 200) {
             dispatch('getMediaList')
           } else {
-            console.log(res)
           }
         })
         .catch((err) => {
-          console.log(err)
+        })
+    },
+    // 앨범 미디어 다운로드
+    downloadMedia ({ commit }, albumMediaId) {
+      instance.get(api_url + '/media/' + albumMediaId)
+        .then((res) => {
+          if (res.status === 200) {
+            alert('다운로드 성공!')
+          } else {
+          }
+        })
+        .catch((err) => {
         })
     },
     // 앨범 미디어 삭제
-    deleteMedia ({ commit, dispatch }, albumMediaId) {
-      axios.delete(api_url + '/media/' + albumMediaId)
+    deleteMedia ({ commit }, albumMediaId) {
+      instance.delete(api_url + '/media/' + albumMediaId)
         .then((res) => {
-          console.log(res)
           if (res.status === 200) {
-            dispatch('getMediaList')
+            alert('사진을 삭제했습니다.')
+            router.push({ name: 'picture' })
           } else {
-            console.log(res)
           }
         })
         .catch((err) => {
-          console.log(err)
         })
     }
   }

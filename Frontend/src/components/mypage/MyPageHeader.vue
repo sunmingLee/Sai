@@ -1,9 +1,12 @@
 <template>
     <div class="header-wrap">
         <div class="flex">
-            <div class="user-image">
-                <img src="@/assets/images/person-circle.svg" v-if="userInfo.userImagePath === null">
-                <img :src="userInfo.userImagePath">
+            <div class="default-image" v-if="userInfo.userImagePath === null">
+                <img src="@/assets/images/person-circle.svg" >
+            </div>
+            <div v-else class="user-image">
+              <img :src="userInfo.userImagePath">
+              <!-- <img src="@/assets/images/여행1.jpg"> -->
             </div>
             <div>
                 <div class="user-update">
@@ -11,7 +14,7 @@
                     <img src="@/assets/images/pencil-fill.svg" alt="calendar" style="width: 15px" @click="goUpdateUser">
                 </div>
                 <div class="user-msg">
-                    <p v-if="userInfo.userMessage === null">상태 메시지를 등록해주세요</p>
+                    <p v-if="userInfo.userMessage === null || userInfo.userMessage === '' || userInfo.userMessage === undefined">상태 메시지를 등록해주세요</p>
                     <p>{{userInfo.userMessage}}</p>
                 </div>
             </div>
@@ -48,7 +51,6 @@ export default {
     this.checkUserInfo(userId)
   },
   mounted () {
-    console.log(this.feedCount)
   },
   computed: {
     ...mapState(userStore, ['userInfo'])
@@ -68,23 +70,28 @@ p {
   margin: 0;
 }
 .header-wrap {
-  // width: 900px;
-  // top: 0;
-  // padding: 0 5%;
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
   margin: 5% 0 2% 0;
 }
 .flex {
   display: flex;
   justify-content: space-evenly;
 }
-.user-image {
+.default-image {
   width: 100px;
   height: auto;
   img {
     width: 100%;
+  }
+}
+.user-image {
+  border: 1px solid black;
+  border-radius: 50px;
+  max-width: 100px;
+  min-height: 100px;
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50px;
   }
 }
 .user-update {
@@ -98,23 +105,5 @@ hr {
   height: 3px;
   background-color: #7B371C;
 }
-// .mypage-wrap {
-//   width: 900px;
-
-//   .flex{
-//     display: flex;
-//     justify-content: center;
-//     text-align: center;
-
-//     .input-wrap{
-//       text-align: left;
-//       margin-bottom: 100px;
-
-//       .name-wrap, .email-wrap {
-//         margin: 10px 0 10px 0;
-//       }
-//     }
-//   }
-// }
 
 </style>

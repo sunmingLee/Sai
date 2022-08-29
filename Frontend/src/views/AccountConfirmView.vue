@@ -2,7 +2,10 @@
     <div class="account-wrap">
         <HeaderTitle :hasBack=true title="계정 관리"/>
         <div class="flex">
+          <div class="input-wrap">
+            <div class="flex"><p class="password-title">비밀번호를 입력해주세요.</p></div>
             <InputBox inputSelect="input-box" :hasLabel="true" labelName="비밀번호" inputType="password" @inputCheck="inputPassword"/>
+          </div>
         </div>
         <div class="flex">
           <Button buttonClass="small positive" buttonText="확인" @click="confirmPassword"/>
@@ -55,6 +58,20 @@ export default {
   .flex{
     display: flex;
     justify-content: center;
+    align-content: center;
+    text-align: center;
+    margin-bottom: 10%;
+    .input-wrap {
+      text-align: center;
+    }
+  }
+}
+p {
+  color: #AE5F40;
+  font-weight: bold;
+  .password-title {
+    color: #AE5F40;
+    margin-bottom: 10%;
     text-align: center;
   }
 }

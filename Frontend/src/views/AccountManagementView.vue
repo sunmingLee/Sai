@@ -3,16 +3,17 @@
         <HeaderTitle hasBack=true title="계정 관리"/>
         <div class="flex">
           <div class="input-disabled">
+            <p class="password-title">기본 회원정보</p>
             <div class="name-wrap">
-              <InputBox inputSelect="input-underline" hasLabel=true labelName="이름" validDisabled="disabled" :inputValue="name"/>
+              <InputBox inputSelect="input-underline" hasLabel=true labelName="이름" validDisabled="disabled" :inputValue="userInfo.userName"/>
             </div>
             <div class="email-wrap">
-              <InputBox inputSelect="input-underline" hasLabel=true labelName="이메일" validDisabled="disabled" :inputValue="email"/>
+              <InputBox inputSelect="input-underline" hasLabel=true labelName="이메일" validDisabled="disabled" :inputValue="userInfo.email"/>
             </div>
           </div>
         </div>
         <div class="flex">
-          <div calss="input-wrap">
+          <div class="input-wrap">
             <p class="password-title">비밀번호 변경</p>
             <div class="password-wrap">
               <InputBox inputSelect="input-box" hasLabel=true labelName="비밀번호" inputType="password" @inputCheck="checkPassword"/>
@@ -27,9 +28,9 @@
           </div>
         </div>
         <div class="flex">
-          <div calss="input-wrap">
-            <p calss="withdrawal">회원탈퇴하기</p>
-            <Button class="btn" data-bs-toggle="modal" data-bs-target="#withdraw" buttonClass="small negative" buttonText="회원탈퇴"></Button>
+          <div class="input-wrap">
+            <p class="withdrawal password-title">회원 탈퇴하기</p>
+            <Button class="btn flex" data-bs-toggle="modal" data-bs-target="#withdraw" buttonClass="small negative" buttonText="회원탈퇴"></Button>
           </div>
         </div>
         <div class="modal fade" id="withdraw" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -39,7 +40,8 @@
                 <h5 class="modal-title" id="exampleModalLabel">회원탈퇴</h5>
               </div>
               <div class="modal-body">
-                정말로 탈퇴하시겠습니까? 정말? 진짜로?
+                정말로 탈퇴하시겠습니까?<br>
+                탈퇴하면 더 이상 사이를 이용하실 수 없습니다
               </div>
               <div class="modal-footer">
                 <Button buttonClass="small positive" buttonText= "취소" class="btn" data-bs-dismiss="modal"></Button>
@@ -68,16 +70,20 @@ export default {
   data () {
     return {
       // 나중에 로그인한 회원의 정보로 받아오는 것으로 수정이 필요(지금은 임의의 데이터)
-      name: '최수빈',
-      email: 'test@naver.com',
       validPassword: false,
       validPasswordConfirm: false,
       passwordCurrent: '',
-      passwordUpdate: ''
+      passwordUpdate: '',
     }
   },
+  computed: {
+    ...mapState(userStore, ['userInfo'])
+  },
+  created() {
+    this.checkUserInfo(localStorage.getItem('userId'))
+  },
   methods: {
-    ...mapActions(userStore, ['withdrawalMember', 'updatePassword']),
+    ...mapActions(userStore, ['withdrawalMember', 'updatePassword', 'checkUserInfo']),
     // 비밀번호 유효성 검사 실행
     checkPassword (password) {
       this.passwordCurrent = password
@@ -116,41 +122,39 @@ export default {
     withdrawal () {
       this.withdrawalMember(this.userInfo.userId)
     }
-  },
-  computed: {
-    ...mapState(userStore, ['userInfo'])
   }
 }
 </script>
 <style lang="scss" scoped>
 .account-wrap {
   width: 900px;
-
+  
   .flex{
     display: flex;
     justify-content: center;
-    text-align: center;
+    margin-bottom: 8%;
 
     & div:nth-child(0) {
       width: 300px;
     }
     .input-wrap, .input-disabled {
       text-align: left;
-      margin-bottom: 100px;
-
-      .password-title {
-        color: #AE5F40;
-      }
-
-      .name-wrap, .email-wrap, .password-wrap, .pwcheck-wrap {
+      
+    }
+    .name-wrap,.email-wrap,.password-wrap, .pwcheck-wrap{
         margin: 10px 0 10px 0;
       }
     }
   }
-}
+
 p {
   color: #AE5F40;
   font-weight: bold;
   padding-right: 200px;
+  .password-title {
+    color: #AE5F40;
+    margin-bottom: 10px;
+    text-align: center;
+  }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
     <div>
         <HeaderTitle hasBack=true title="메모지"/>
-        <div>
+        <div style="margin: 45px 0">
             <textarea name="memo" id="memo-text" cols="30" rows="10" :class="color"></textarea>
         </div>
         <div class="color-select">
@@ -16,7 +16,9 @@
             <button class="lightblue-button" value="LightBlue" @click="colorChange"/>
             <button class="purple-button" value="Purple" @click="colorChange"/>
         </div>
-        <Button buttonClass="small positive" buttonText="등록" @click="addMeMo"/>
+        <div class="btn-wrap">
+            <Button buttonClass="small positive" buttonText="등록" @click="addMeMo"/>
+        </div>
         <!-- <input type="button" id="clear_button" value="스티키 노트 전부 삭제"> --> 
     </div>
 </template>
@@ -52,7 +54,6 @@ export default {
         //메모 색상 바꾸기
         colorChange(e) {
             const color = e.target.getAttribute('value')
-            console.log(color)
             this.color = color
         },
         //메모지 등록
@@ -165,6 +166,11 @@ textarea {
         outline-color: #f5ba4d;
         border: 1px solid #f5ba4d;
     }
+}
+.btn-wrap{
+    width: 80px;
+    height: 30px;
+    margin: 40px auto;
 }
 
 
